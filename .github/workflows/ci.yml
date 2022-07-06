@@ -29,3 +29,4 @@ jobs:
       - run: pnpm nx affected:test
       - run: pnpm nx affected:lint
       - run: pnpm nx format:check
+      - run: pnpm nx workspace-lint
