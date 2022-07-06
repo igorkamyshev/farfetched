@@ -2,7 +2,9 @@
   "name": "farfetched",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "typecheck": "pnpm tsc -p tsconfig.base.json --noEmit"
+  },
   "private": true,
   "dependencies": {
     "tslib": "^2.3.0"

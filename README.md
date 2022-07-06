@@ -11,6 +11,7 @@
   - run tests via `pnpm nx affected:test`
   - run linter via `pnpm nx affected:lint`
   - format code via `pnpm nx format:write`
+  - type correctness via `pnpm typecheck`
 - open a PR
 - enjoy 🎉
 
