@@ -6,9 +6,6 @@
     "typecheck": "pnpm tsc -p tsconfig.base.json --noEmit"
   },
   "private": true,
-  "dependencies": {
-    "tslib": "^2.3.0"
-  },
   "devDependencies": {
     "@nrwl/cli": "14.4.1",
     "@nrwl/eslint-plugin-nx": "14.4.1",
