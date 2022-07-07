@@ -5,12 +5,16 @@
   "targets": {
     "build": {
       "executor": "@nrwl/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/packages/core",
         "main": "packages/core/src/index.ts",
         "tsConfig": "packages/core/tsconfig.lib.json",
-        "assets": ["packages/core/*.md"]
+        "assets": [
+          "packages/core/*.md"
+        ]
       }
     },
     "publish": {
@@ -27,19 +31,28 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["packages/core/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/core/**/*.ts"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/core"],
+      "outputs": [
+        "coverage/packages/core"
+      ],
       "options": {
         "jestConfig": "packages/core/jest.config.ts",
         "passWithNoTests": true
       }
     }
   },
+  "implicitDependencies": [
+    "!test-utils"
+  ],
   "tags": []
 }

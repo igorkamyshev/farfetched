@@ -12,37 +12,27 @@
 with `pnpm`
 
 ```sh
-pnpm install effector @farfecthed/core
+pnpm install @farfecthed/core effector
 ```
 
 with `yarn`
 
 ```sh
-yarn add effector @farfecthed/core
+yarn add @farfecthed/core effector
 ```
 
 with `npm`
 
 ```sh
-npm install effector @farfecthed/core
+npm install @farfecthed/core effector
 ```
 
 2. Create a _Query_
 
 ```ts
-const languageListQuery = createJsonQuery({
-  // Declare that the Query should be called with `limit` parameter
-  params: declareParams<{ limit: number }>(),
-  request: {
-    // Define the request URL
-    url: 'https://api.salo.com/languages.json',
-    // Transform Query parameters to search params of the request
-    query: (params) => new URLSearchParams({ limit: params.limit }),
-  },
-  response: {
-    // Do not validate response
-    contract: unkownContract,
-  },
+const languageListQuery = createQuery({
+  handler: async () =>
+    fetch('https://api.salo.com/languages.json').then((res) => res.json()),
 });
 ```
 
@@ -56,8 +46,13 @@ languageListQuery.$data.watch((languages) => {
   renderLanguageList(languages);
 });
 
+// Subscribe on the received error
+languageListQuery.$error.watch((error) => {
+  renderErrorScreen(error);
+});
+
 // Start execution
-languageListQuery.start({ limit: 10 });
+languageListQuery.start();
 ```
 
 4. You are gorgeous! A Query starts right after `start` call, when it has done, callback in `watch` will be executed with received data.
