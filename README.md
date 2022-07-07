@@ -70,6 +70,7 @@ Continue reading about `farfetched` in the [documentation](./docs/README.md). It
 - make changes
 - make sure that your changes is passing checks:
   - run tests via `pnpm nx affected:test`
+  - run type tests via `pnpm nx affected --target=typetest`
   - run linter via `pnpm nx affected:lint`
   - format code via `pnpm nx format:write`
   - type correctness via `pnpm typecheck`

@@ -1,5 +1,5 @@
 import { allSettled, createEffect, fork } from 'effector';
-import { Contract } from '../../contract/type';
+
 import { createQuery } from '../create_query';
 
 describe('core/createQuery/handler', () => {
