@@ -1,7 +1,8 @@
 import { allSettled, createEffect, fork } from 'effector';
+import { Contract } from '../../contract/type';
 import { createQuery } from '../create_query';
 
-describe('core/createQuery/promise', () => {
+describe('core/createQuery/handler', () => {
   test('uses resolved Promise as data source', async () => {
     const query = createQuery({ handler: async (p: number) => p + 15 });
 
@@ -71,8 +72,8 @@ describe('core/createQuery/effect', () => {
   });
 });
 
-describe('core/createQuery/no-handler/effect', () => {
-  // Case for non-TS users who forget to provide handler/effect
+// Case for non-TS users who forget to provide handler/effect
+test('core/createQuery/no-handler-or-effect', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   expect(() => createQuery({} as any)).toThrowErrorMatchingInlineSnapshot(
     `"handler or effect must be passed to createQuery"`

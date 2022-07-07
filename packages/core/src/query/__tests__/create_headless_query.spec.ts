@@ -4,9 +4,14 @@ import { watchQuery } from '@farfetched/test-utils';
 
 import { createHeadlessQuery } from '../create_headless_query';
 import { createDefer } from '../../misc/defer';
+import { unkownContract } from '../../contract/unkown_contract';
+import { InvalidDataError } from '../../contract/error';
 
-describe('core/createHeadlessQuery', () => {
-  const query = createHeadlessQuery({ sid: 'any_string' });
+describe('core/createHeadlessQuery without contract', () => {
+  const query = createHeadlessQuery(
+    { contract: unkownContract },
+    { sid: 'any_string' }
+  );
 
   test('start triggers executeFx', async () => {
     const mockFn = jest.fn();
@@ -151,5 +156,142 @@ describe('core/createHeadlessQuery', () => {
 
     expect(scope.getState(query.$data)).toBeNull();
     expect(scope.getState(query.$error)).toEqual(new Error('second error'));
+  });
+});
+
+describe('core/createHeadlessQuery with contract', () => {
+  test('contract find error', async () => {
+    const extractedError = Symbol('extractedError');
+
+    const query = createHeadlessQuery(
+      {
+        contract: {
+          data: { validate: () => null, extract: () => null },
+          error: { is: () => true, extract: () => extractedError },
+        },
+      },
+      { sid: 'any_string' }
+    );
+
+    const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
+
+    const { listeners } = watchQuery(query, scope);
+
+    await allSettled(query.start, { scope, params: 42 });
+
+    expect(scope.getState(query.$error)).toEqual(extractedError);
+
+    expect(listeners.onError).toHaveBeenCalledTimes(1);
+    expect(listeners.onError).toHaveBeenCalledWith(extractedError);
+  });
+
+  test('contract find invalid data', async () => {
+    const query = createHeadlessQuery(
+      {
+        contract: {
+          data: { validate: () => ['got it'], extract: () => null },
+          error: { is: () => false, extract: () => null },
+        },
+      },
+      { sid: 'any_string' }
+    );
+
+    const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
+
+    const { listeners } = watchQuery(query, scope);
+
+    await allSettled(query.start, { scope, params: 42 });
+
+    expect(scope.getState(query.$error)).toEqual(
+      new InvalidDataError(null, ['got it'])
+    );
+
+    expect(listeners.onError).toHaveBeenCalledTimes(1);
+    expect(listeners.onError).toHaveBeenCalledWith(
+      new InvalidDataError(null, ['got it'])
+    );
+  });
+
+  test('contract transforms data', async () => {
+    const extractedData = Symbol('extractedData');
+
+    const query = createHeadlessQuery(
+      {
+        contract: {
+          data: { validate: () => null, extract: () => extractedData },
+          error: { is: () => false, extract: () => null },
+        },
+      },
+      { sid: 'any_string' }
+    );
+
+    const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
+
+    const { listeners } = watchQuery(query, scope);
+
+    await allSettled(query.start, { scope, params: 42 });
+
+    expect(scope.getState(query.$data)).toEqual(extractedData);
+
+    expect(listeners.onDone).toHaveBeenCalledTimes(1);
+    expect(listeners.onDone).toHaveBeenCalledWith(extractedData);
+  });
+
+  test('contract receives response (for data)', async () => {
+    const response = Symbol('response');
+
+    const validate = jest.fn().mockReturnValue(null);
+    const extract = jest.fn().mockReturnValue(null);
+
+    const query = createHeadlessQuery(
+      {
+        contract: {
+          data: { validate, extract },
+          error: { is: () => false, extract: () => null },
+        },
+      },
+      { sid: 'any_string' }
+    );
+
+    const scope = fork({
+      handlers: [[query.__.executeFx, jest.fn(() => response)]],
+    });
+
+    await allSettled(query.start, { scope, params: 42 });
+
+    expect(validate).toHaveBeenCalledTimes(1);
+    expect(validate).toHaveBeenCalledWith(response);
+
+    expect(extract).toHaveBeenCalledTimes(1);
+    expect(extract).toHaveBeenCalledWith(response);
+  });
+
+  test('contract receives response (for error)', async () => {
+    const response = Symbol('response');
+
+    const is = jest.fn().mockReturnValue(true);
+    const extract = jest.fn().mockReturnValue(null);
+
+    const query = createHeadlessQuery(
+      {
+        contract: {
+          data: { validate: () => null, extract: () => null },
+          error: { is, extract },
+        },
+      },
+      { sid: 'any_string' }
+    );
+
+    const scope = fork({
+      handlers: [[query.__.executeFx, jest.fn(() => response)]],
+    });
+
+    await allSettled(query.start, { scope, params: 42 });
+
+    expect(is).toHaveBeenCalledTimes(1);
+    expect(is).toHaveBeenCalledWith(response);
+
+    expect(extract).toHaveBeenCalledTimes(1);
+    expect(extract).toHaveBeenCalledWith(response);
   });
 });
