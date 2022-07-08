@@ -56,7 +56,7 @@
     "size": {
       "executor": "./tools/executors/size-limit:size-limit",
       "options": {
-        "limit": "4.8 kB",
+        "limit": "1.2 kB",
         "outputPath": "dist/packages/runtypes"
       },
       "dependsOn": [
