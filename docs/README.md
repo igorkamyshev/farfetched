@@ -5,6 +5,7 @@
 ### Primitives
 
 - [_Query_](./core/primitives/query.md)
+- [_Contract_](./core/primitives/contract.md)
 
 ### Factories
 
