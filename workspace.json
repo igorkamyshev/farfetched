@@ -4,6 +4,7 @@
   "projects": {
     "core": "packages/core",
     "runtypes": "packages/runtypes",
+    "showcase-json-react": "apps/showcase/json-react",
     "test-utils": "packages/test-utils"
   }
 }

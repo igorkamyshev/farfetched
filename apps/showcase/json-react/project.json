@@ -1,0 +1,83 @@
+{
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/showcase/json-react/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/showcase/json-react",
+        "index": "apps/showcase/json-react/src/index.html",
+        "baseHref": "/",
+        "main": "apps/showcase/json-react/src/main.tsx",
+        "polyfills": "apps/showcase/json-react/src/polyfills.ts",
+        "tsConfig": "apps/showcase/json-react/tsconfig.app.json",
+        "assets": [
+          "apps/showcase/json-react/src/favicon.ico",
+          "apps/showcase/json-react/src/assets"
+        ],
+        "styles": ["apps/showcase/json-react/src/styles.css"],
+        "scripts": [],
+        "webpackConfig": "@nrwl/react/plugins/webpack"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/showcase/json-react/src/environments/environment.ts",
+              "with": "apps/showcase/json-react/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/web:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "showcase-json-react:build",
+        "hmr": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "showcase-json-react:build:development"
+        },
+        "production": {
+          "buildTarget": "showcase-json-react:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/showcase/json-react/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/showcase/json-react"],
+      "options": {
+        "jestConfig": "apps/showcase/json-react/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
