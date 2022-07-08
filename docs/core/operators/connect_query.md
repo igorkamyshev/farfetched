@@ -6,7 +6,7 @@ Creates static connection between [_Queries_](../primitives/query.md). Every tim
 
 ### `connectQuery({ source, target })`
 
-This form is used for `target` Query without parameters. It does not pass any data to `target`.
+This form is used for `target` [_Query_](../primitives/query.md) without parameters. It does not pass any data to `target`.
 
 ```ts
 const languagesQuery: Query<unkown, unkown, unkown>;
