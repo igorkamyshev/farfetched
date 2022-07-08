@@ -1,0 +1,71 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/runtypes/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/runtypes",
+        "main": "packages/runtypes/src/index.ts",
+        "tsConfig": "packages/runtypes/tsconfig.lib.json",
+        "assets": ["packages/runtypes/*.md"]
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs runtypes {args.ver} {args.tag}"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/runtypes/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/runtypes"],
+      "options": {
+        "jestConfig": "packages/runtypes/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "typetest": {
+      "executor": "./tools/executors/tsd:tsd",
+      "inputs": ["{projectRoot}/**/*.type_spec.ts"]
+    },
+    "typecheck": {
+      "executor": "@nrwl/js:tsc",
+      "options": {
+        "noEmit": true,
+        "outputPath": "dist/packages/runtypes",
+        "main": "packages/runtypes/src/index.ts",
+        "tsConfig": "packages/runtypes/tsconfig.lib.json"
+      }
+    },
+    "size": {
+      "executor": "./tools/executors/size-limit:size-limit",
+      "options": {
+        "limit": "4.8 kB",
+        "outputPath": "dist/packages/runtypes"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    }
+  },
+  "tags": []
+}
