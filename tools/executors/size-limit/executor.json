@@ -1,0 +1,9 @@
+{
+  "executors": {
+    "size-limit": {
+      "implementation": "./impl.js",
+      "schema": "./schema.json",
+      "description": "Runs `size-limit`"
+    }
+  }
+}
