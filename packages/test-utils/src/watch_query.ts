@@ -1,6 +1,7 @@
 import { createWatch, Event, Scope } from 'effector';
 
 interface QueryLike {
+  start: Event<any>;
   done: {
     success: Event<any>;
     error: Event<any>;
@@ -10,10 +11,14 @@ interface QueryLike {
 }
 
 function watchQuery(query: QueryLike, scope: Scope) {
+  const onStart = jest.fn();
+
   const onDone = jest.fn();
   const onSkip = jest.fn();
   const onError = jest.fn();
   const onFinally = jest.fn();
+
+  const startUnwatch = createWatch({ unit: query.start, fn: onStart, scope });
 
   const doneUnwatch = createWatch({
     unit: query.done.success,
@@ -33,8 +38,9 @@ function watchQuery(query: QueryLike, scope: Scope) {
   });
 
   return {
-    listeners: { onDone, onSkip, onError, onFinally },
+    listeners: { onDone, onSkip, onError, onFinally, onStart },
     unwatch: () => {
+      startUnwatch();
       doneUnwatch();
       skipUnwatch();
       errorUnwatch();
