@@ -1,6 +1,8 @@
 # Documentation
 
-## `@farfetched/core`
+## Tutorial
+
+## Handbook
 
 ### Primitives
 
@@ -18,3 +20,5 @@
 ### Integrations
 
 - [`@farfetched/runtypes`](./runtypes/README.md) — bindings between `farfetched` and [`runtypes`](https://github.com/pelotom/runtypes), it allows using `Runtype` as a [_Contract_](./core/primitives/contract.md).
+
+## Examples
