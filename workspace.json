@@ -3,6 +3,7 @@
   "version": 2,
   "projects": {
     "core": "packages/core",
+    "runtypes": "packages/runtypes",
     "test-utils": "packages/test-utils"
   }
 }

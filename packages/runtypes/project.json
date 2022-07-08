@@ -1,22 +1,22 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/core/src",
+  "sourceRoot": "packages/runtypes/src",
   "projectType": "library",
   "targets": {
     "build": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/core",
-        "main": "packages/core/src/index.ts",
-        "tsConfig": "packages/core/tsconfig.lib.json",
-        "assets": ["packages/core/*.md"]
+        "outputPath": "dist/packages/runtypes",
+        "main": "packages/runtypes/src/index.ts",
+        "tsConfig": "packages/runtypes/tsconfig.lib.json",
+        "assets": ["packages/runtypes/*.md"]
       }
     },
     "publish": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "node tools/scripts/publish.mjs core {args.ver} {args.tag}"
+        "command": "node tools/scripts/publish.mjs runtypes {args.ver} {args.tag}"
       },
       "dependsOn": [
         {
@@ -29,14 +29,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/core/**/*.ts"]
+        "lintFilePatterns": ["packages/runtypes/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/core"],
+      "outputs": ["coverage/packages/runtypes"],
       "options": {
-        "jestConfig": "packages/core/jest.config.ts",
+        "jestConfig": "packages/runtypes/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -47,8 +47,8 @@
     "size": {
       "executor": "./tools/executors/size-limit:size-limit",
       "options": {
-        "limit": "4.8 kB",
-        "outputPath": "dist/packages/core"
+        "limit": "1.2 kB",
+        "outputPath": "dist/packages/runtypes"
       },
       "dependsOn": [
         {
@@ -58,6 +58,5 @@
       ]
     }
   },
-  "implicitDependencies": ["!test-utils"],
   "tags": []
 }
