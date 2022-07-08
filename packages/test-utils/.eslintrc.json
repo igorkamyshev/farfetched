@@ -4,7 +4,7 @@
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "rules": {}
+      "rules": { "@typescript-eslint/no-explicit-any": "off" }
     },
     {
       "files": ["*.ts", "*.tsx"],
@@ -13,17 +13,6 @@
     {
       "files": ["*.js", "*.jsx"],
       "rules": {}
-    },
-    {
-      "files": ["*.spec.ts"],
-      "rules": { "@nrwl/nx/enforce-module-boundaries": "off" }
-    },
-    {
-      "files": ["*.type_spec.ts"],
-      "rules": {
-        "no-unused-labels": "off",
-        "@typescript-eslint/no-unused-vars": "off"
-      }
     }
   ]
 }

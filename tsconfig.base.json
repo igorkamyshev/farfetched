@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@farfetched/core": ["packages/core/src/index.ts"]
+      "@farfetched/core": ["packages/core/src/index.ts"],
+      "@farfetched/test-utils": ["packages/test-utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

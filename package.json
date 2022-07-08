@@ -2,12 +2,11 @@
   "name": "farfetched",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {
-    "typecheck": "pnpm tsc -p tsconfig.base.json --noEmit"
-  },
+  "scripts": {},
   "private": true,
   "devDependencies": {
     "@nrwl/cli": "14.4.1",
+    "@nrwl/devkit": "^14.4.2",
     "@nrwl/eslint-plugin-nx": "14.4.1",
     "@nrwl/jest": "14.4.1",
     "@nrwl/js": "14.4.1",
@@ -17,6 +16,7 @@
     "@types/node": "16.11.7",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
+    "effector": "^22.3.0",
     "eslint": "~8.15.0",
     "eslint-config-prettier": "8.1.0",
     "jest": "27.5.1",
@@ -24,6 +24,10 @@
     "prettier": "^2.6.2",
     "ts-jest": "27.1.4",
     "ts-node": "~10.8.0",
+    "tsd": "^0.22.0",
     "typescript": "~4.7.2"
+  },
+  "dependencies": {
+    "patronum": "^1.8.5"
   }
 }
