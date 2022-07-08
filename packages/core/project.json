@@ -47,7 +47,7 @@
     "size": {
       "executor": "./tools/executors/size-limit:size-limit",
       "options": {
-        "limit": "4.8 kB",
+        "limit": "5.3 kB",
         "outputPath": "dist/packages/core"
       },
       "dependsOn": [

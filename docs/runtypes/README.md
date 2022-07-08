@@ -1,5 +1,25 @@
 # `@farfetched/runtypes`
 
+> It is a separate package `@farfetched/runtypes`, you have to install it and its peer dependencies before usage
+
+with `pnpm`
+
+```sh
+pnpm install runtypes @farfecthed/runtypes
+```
+
+with `yarn`
+
+```sh
+yarn add runtypes @farfecthed/runtypes
+```
+
+with `npm`
+
+```sh
+npm install runtypes @farfecthed/runtypes
+```
+
 ### Formulae
 
 #### `runtypeContract(runtype)`
