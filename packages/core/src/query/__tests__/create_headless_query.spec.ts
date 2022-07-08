@@ -1,4 +1,4 @@
-import { allSettled, fork } from 'effector';
+import { allSettled, createStore, fork } from 'effector';
 
 import { watchQuery } from '@farfetched/test-utils';
 
@@ -6,10 +6,11 @@ import { createHeadlessQuery } from '../create_headless_query';
 import { createDefer } from '../../misc/defer';
 import { unkownContract } from '../../contract/unkown_contract';
 import { InvalidDataError } from '../../contract/error';
+import { identity } from '../../misc/identity';
 
 describe('core/createHeadlessQuery without contract', () => {
   const query = createHeadlessQuery(
-    { contract: unkownContract },
+    { contract: unkownContract, mapData: identity },
     { sid: 'any_string' }
   );
 
@@ -169,6 +170,7 @@ describe('core/createHeadlessQuery with contract', () => {
           data: { validate: () => null, extract: () => null },
           error: { is: () => true, extract: () => extractedError },
         },
+        mapData: identity,
       },
       { sid: 'any_string' }
     );
@@ -192,6 +194,7 @@ describe('core/createHeadlessQuery with contract', () => {
           data: { validate: () => ['got it'], extract: () => null },
           error: { is: () => false, extract: () => null },
         },
+        mapData: identity,
       },
       { sid: 'any_string' }
     );
@@ -221,6 +224,7 @@ describe('core/createHeadlessQuery with contract', () => {
           data: { validate: () => null, extract: () => extractedData },
           error: { is: () => false, extract: () => null },
         },
+        mapData: identity,
       },
       { sid: 'any_string' }
     );
@@ -249,6 +253,7 @@ describe('core/createHeadlessQuery with contract', () => {
           data: { validate, extract },
           error: { is: () => false, extract: () => null },
         },
+        mapData: identity,
       },
       { sid: 'any_string' }
     );
@@ -278,6 +283,7 @@ describe('core/createHeadlessQuery with contract', () => {
           data: { validate: () => null, extract: () => null },
           error: { is, extract },
         },
+        mapData: identity,
       },
       { sid: 'any_string' }
     );
@@ -293,5 +299,61 @@ describe('core/createHeadlessQuery with contract', () => {
 
     expect(extract).toHaveBeenCalledTimes(1);
     expect(extract).toHaveBeenCalledWith(response);
+  });
+});
+
+describe('core/createHeadlessQuery with contract and', () => {
+  test('core/createHeadlessQuery with contract and mapData (callback)', async () => {
+    const rawRata = Symbol('rawRata');
+    const passedParams = Symbol('passedParams');
+    const mappedData = Symbol('mappedData');
+
+    const query = createHeadlessQuery(
+      {
+        contract: unkownContract,
+        mapData(data, params) {
+          expect(data).toBe(rawRata);
+          expect(params).toBe(passedParams);
+          return mappedData;
+        },
+      },
+      { sid: 'random_sid' }
+    );
+
+    const scope = fork({
+      handlers: [[query.__.executeFx, jest.fn(() => rawRata)]],
+    });
+
+    await allSettled(query.start, { scope, params: passedParams });
+
+    expect(scope.getState(query.$data)).toEqual(mappedData);
+  });
+
+  test('sourced callback)', async () => {
+    const $source = createStore('first');
+
+    const mappedData = Symbol('mappedData');
+
+    const query = createHeadlessQuery(
+      {
+        contract: unkownContract,
+        mapData: {
+          source: $source,
+          fn: (data, params, source) => {
+            expect(source).toBe('first');
+            return mappedData;
+          },
+        },
+      },
+      { sid: 'random_sid' }
+    );
+
+    const scope = fork({
+      handlers: [[query.__.executeFx, jest.fn()]],
+    });
+
+    await allSettled(query.start, { scope, params: 'random data' });
+
+    expect(scope.getState(query.$data)).toEqual(mappedData);
   });
 });

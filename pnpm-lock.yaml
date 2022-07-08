@@ -17,11 +17,15 @@ specifiers:
   eslint-config-prettier: 8.1.0
   jest: 27.5.1
   nx: 14.4.1
+  patronum: ^1.8.5
   prettier: ^2.6.2
   ts-jest: 27.1.4
   ts-node: ~10.8.0
   tsd: ^0.22.0
   typescript: ~4.7.2
+
+dependencies:
+  patronum: 1.8.5_effector@22.3.0
 
 devDependencies:
   '@nrwl/cli': 14.4.1
@@ -1770,7 +1774,6 @@ packages:
   /effector/22.3.0:
     resolution: {integrity: sha512-Nh7IXn8U4emq8YtAZf2+y2Rs6n4W/gjPaNZpZLFOXOIAsRZSNBFjtK1vHTWNKxxmNFZOaZN6XUXdT8FDs0mAdQ==}
     engines: {node: '>=11.0.0'}
-    dev: true
 
   /ejs/3.1.8:
     resolution: {integrity: sha512-/sXZeMlhS0ArkfX2Aw780gJzXSMPnKjtspYZv+f3NiKLlubezAHDU5+9xz6gd3/NhG3txQCo6xlglmTS+oTGEQ==}
@@ -3501,6 +3504,14 @@ packages:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
     engines: {node: '>=8'}
     dev: true
+
+  /patronum/1.8.5_effector@22.3.0:
+    resolution: {integrity: sha512-XI38LyqbzAn+S+1dFNNmxGeTPM+0UAxyqWnFEedjYPcveopMmir3vmShgatOUxP3NcnUk1oo6YdJxt6MS118XQ==}
+    peerDependencies:
+      effector: ^22.1.2
+    dependencies:
+      effector: 22.3.0
+    dev: false
 
   /picocolors/1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}

@@ -1,6 +1,7 @@
-import { createEffect } from 'effector';
+import { createEffect, createStore } from 'effector';
 import { expectType } from 'tsd';
 import { InvalidDataError } from '../../contract/error';
+import { unkownContract } from '../../contract/unkown_contract';
 
 import { createQuery } from '../create_query';
 import { Query } from '../type';
@@ -73,6 +74,7 @@ effect_contract: {
   const incorrectTypesInContractDataImpossibleQuery = createQuery({
     effect: createEffect<number, string, { effectError: boolean }>(),
     contract: {
+      // @ts-expect-error it's impossiple to pass invalid type to extract (expect `string`, given `number`)
       data: { validate: () => null, extract: (p: number) => 'some string' },
       // @ts-expect-error it's impossiple to infer types here for now
       error: { is: () => true, extract: (p) => ({ contractError: 'string' }) },
@@ -87,8 +89,30 @@ effect_contract: {
       data: { validate: () => null, extract: (p) => 'some string' },
       error: {
         is: () => true,
+        // @ts-expect-error it's impossiple to pass invalid type to extract (expect `string`, given `number`)
         extract: (p: number) => ({ contractError: 'string' }),
       },
     },
   });
+}
+
+effect_contarct_mapData: {
+  const toNumberQuery = createQuery({
+    effect: createEffect(() => 12),
+    contract: unkownContract,
+    mapData: () => 12,
+  });
+
+  expectType<Query<void, number, unknown>>(toNumberQuery);
+
+  const toSourceQuery = createQuery({
+    effect: createEffect(() => 12),
+    contract: unkownContract,
+    mapData: {
+      source: createStore(12),
+      fn: (data: unknown, params: void, source: number): string => 'string',
+    },
+  });
+
+  expectType<Query<void, string, unknown>>(toSourceQuery);
 }

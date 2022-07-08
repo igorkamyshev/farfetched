@@ -6,6 +6,8 @@ import { InvalidConfigError } from '../misc/config';
 import { Contract } from '../contract/type';
 import { unkownContract } from '../contract/unkown_contract';
 import { InvalidDataError } from '../contract/error';
+import { identity } from '../misc/identity';
+import { TwoArgsSourcedField } from '../misc/sourced';
 
 // Overload: Only handler
 function createQuery<Params, Response>(config: {
@@ -33,20 +35,41 @@ function createQuery<
   Error | InvalidDataError<Response> | ContractError
 >;
 
+// Overload: Effect, Contract and MapData
+function createQuery<
+  Params,
+  Response,
+  Error,
+  ContractData,
+  ContractError,
+  MappedData,
+  MapDataSource = void
+>(config: {
+  effect: Effect<Params, Response, Error>;
+  contract: Contract<Response, ContractData, ContractError>;
+  mapData: TwoArgsSourcedField<ContractData, Params, MappedData, MapDataSource>;
+}): Query<
+  Params,
+  MappedData,
+  Error | InvalidDataError<Response> | ContractError
+>;
+
 // -- Implementation --
 function createQuery<
   Params,
   Response,
   Error,
   ContractData = Response,
-  ContractError = never
+  ContractError = never,
+  MappedData = ContractData,
+  MapDataSource = void
 >(
   // Use any because of overloads
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config: any
 ): Query<
   Params,
-  ContractData,
+  MappedData,
   Error | InvalidDataError<Response> | ContractError
 > {
   const query = createHeadlessQuery<
@@ -54,8 +77,13 @@ function createQuery<
     Response,
     Error,
     ContractData,
-    ContractError
-  >({ contract: config.contract ?? unkownContract });
+    ContractError,
+    MappedData,
+    MapDataSource
+  >({
+    contract: config.contract ?? unkownContract,
+    mapData: config.mapData ?? identity,
+  });
 
   query.__.executeFx.use(resolveExecuteEffect<Params, Response, Error>(config));
 

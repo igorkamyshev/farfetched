@@ -4,6 +4,11 @@ import { InvalidDataError } from '../contract/error';
 import { Contract } from '../contract/type';
 
 import { mergeOptionalConfig, OptionalConfig } from '../misc/sid';
+import {
+  normalizeSourced,
+  TwoArgsSourcedField,
+  reduceTwoArgs,
+} from '../misc/sourced';
 import { FetchingStatus } from '../status/type';
 import { Query } from './type';
 
@@ -19,13 +24,26 @@ function createHeadlessQuery<
   Response,
   Error,
   ContractData,
-  ContractError
+  ContractError,
+  MappedData,
+  MapDataSource
 >(
-  { contract }: { contract: Contract<Response, ContractData, ContractError> },
+  {
+    contract,
+    mapData,
+  }: {
+    contract: Contract<Response, ContractData, ContractError>;
+    mapData: TwoArgsSourcedField<
+      ContractData,
+      Params,
+      MappedData,
+      MapDataSource
+    >;
+  },
   config?: OptionalConfig
 ): Query<
   Params,
-  ContractData,
+  MappedData,
   Error | InvalidDataError<Response> | ContractError
 > {
   // Dummy effect, it will be replaced with real in head-full query creator
@@ -51,14 +69,14 @@ function createHeadlessQuery<
 
   // Signal-events
   const done = {
-    success: createEvent<ContractData>(),
+    success: createEvent<MappedData>(),
     error: createEvent<Error | InvalidDataError<Response> | ContractError>(),
     skip: createEvent(),
     finally: createEvent(),
   };
 
   // -- Main stores --
-  const $data = createStore<ContractData | null>(
+  const $data = createStore<MappedData | null>(
     null,
     mergeOptionalConfig({ sid: 'd', name: '$data' }, config)
   );
@@ -75,7 +93,19 @@ function createHeadlessQuery<
   sample({ clock: executeFx.doneData, target: applyContractFx });
   sample({ clock: executeFx.failData, target: done.error });
 
-  sample({ clock: applyContractFx.doneData, target: done.success });
+  sample({
+    clock: applyContractFx.doneData,
+    source: normalizeSourced(
+      reduceTwoArgs({
+        field: mapData,
+        clock: {
+          data: applyContractFx.doneData,
+          params: start,
+        },
+      })
+    ),
+    target: done.success,
+  });
   sample({ clock: applyContractFx.failData, target: done.error });
 
   sample({ clock: done.success, fn: () => null, target: $error });
