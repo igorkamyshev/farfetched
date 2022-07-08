@@ -52,6 +52,19 @@
         "main": "packages/core/src/index.ts",
         "tsConfig": "packages/core/tsconfig.lib.json"
       }
+    },
+    "size": {
+      "executor": "./tools/executors/size-limit:size-limit",
+      "options": {
+        "limit": "4.8 kB",
+        "outputPath": "dist/packages/core"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
     }
   },
   "implicitDependencies": ["!test-utils"],
