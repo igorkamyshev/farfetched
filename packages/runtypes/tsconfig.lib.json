@@ -4,11 +4,6 @@
     "outDir": "../../dist/out-tsc",
     "declaration": true,
     "types": [],
-    "paths": {
-      "@farfetched/core": ["packages/core/src/index.ts"],
-      "@farfetched/runtypes": ["packages/runtypes/src/index.ts"],
-      "@farfetched/test-utils": ["packages/test-utils/src/index.ts"]
-    }
   },
   "include": ["**/*.ts"],
   "exclude": [
