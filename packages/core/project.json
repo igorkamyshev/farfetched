@@ -41,7 +41,8 @@
       }
     },
     "typetest": {
-      "executor": "./tools/executors/tsd:tsd"
+      "executor": "./tools/executors/tsd:tsd",
+      "inputs": ["{projectRoot}/**/*.type_spec.ts"]
     }
   },
   "implicitDependencies": ["!test-utils"],
