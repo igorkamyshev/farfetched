@@ -28,7 +28,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm nx affected:test
       - run: pnpm nx affected --target=typetest
+      - run: pnpm nx affected --target=typecheck
       - run: pnpm nx affected:lint
       - run: pnpm nx format:check
-      - run: pnpm typecheck
       - run: pnpm nx workspace-lint

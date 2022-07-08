@@ -71,9 +71,9 @@ Continue reading about `farfetched` in the [documentation](./docs/README.md). It
 - make sure that your changes is passing checks:
   - run tests via `pnpm nx affected:test`
   - run type tests via `pnpm nx affected --target=typetest`
+  - type correctness via `pnpm nx affected --target=typecheck`
   - run linter via `pnpm nx affected:lint`
   - format code via `pnpm nx format:write`
-  - type correctness via `pnpm typecheck`
 - open a PR
 - enjoy 🎉
 
