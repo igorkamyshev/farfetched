@@ -3,8 +3,18 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "declaration": true,
-    "types": []
+    "types": [],
+    "paths": {
+      "@farfetched/core": ["packages/core/src/index.ts"],
+      "@farfetched/runtypes": ["packages/runtypes/src/index.ts"],
+      "@farfetched/test-utils": ["packages/test-utils/src/index.ts"]
+    }
   },
   "include": ["**/*.ts"],
-  "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"]
+  "exclude": [
+    "jest.config.ts",
+    "**/*.spec.ts",
+    "**/*.type_spec.ts",
+    "**/*.test.ts"
+  ]
 }

@@ -44,15 +44,6 @@
       "executor": "./tools/executors/tsd:tsd",
       "inputs": ["{projectRoot}/**/*.type_spec.ts"]
     },
-    "typecheck": {
-      "executor": "@nrwl/js:tsc",
-      "options": {
-        "noEmit": true,
-        "outputPath": "dist/packages/core",
-        "main": "packages/core/src/index.ts",
-        "tsConfig": "packages/core/tsconfig.lib.json"
-      }
-    },
     "size": {
       "executor": "./tools/executors/size-limit:size-limit",
       "options": {
