@@ -1,17 +1,18 @@
+// TODO: jest-28
+import 'isomorphic-fetch';
+
 import { allSettled, createEvent, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
+import { watchEffect } from '@farfetched/test-utils';
 
-import { watchEffect } from '../../test_utils/watch_effect';
-import { AbortedError } from '../../utils/abortable';
+import { AbortedError } from '../../misc/abortable';
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
 
-describe('remote_data/transport/api.abapi.concurrency.strategy', () => {
+describe('fetch/api.concurrency.strategy', () => {
   // Does not matter
   const response = {
-    prepare: { extract: async <T>(v: T) => v },
-    data: { validate: async () => null, extract: async <T>(v: T) => v },
-    error: { is: async () => false, extract: async <T>(v: T) => v },
+    extract: async <T>(v: T) => v,
   };
 
   // Does not matter
@@ -30,13 +31,14 @@ describe('remote_data/transport/api.abapi.concurrency.strategy', () => {
       response,
       concurrency: { strategy: 'TAKE_LATEST' as const },
     });
-    const watcher = watchEffect(apiCallFx);
 
     const scope = fork({
       handlers: [
         [fetchFx, () => setTimeout(100).then(() => new Response('OK'))],
       ],
     });
+
+    const watcher = watchEffect(apiCallFx, scope);
 
     const FIRST_QUERY = new URLSearchParams({ index: '1' });
     const SECOND_QUERY = new URLSearchParams({ index: '2' });
@@ -61,26 +63,26 @@ describe('remote_data/transport/api.abapi.concurrency.strategy', () => {
     await allSettled(abort, { scope });
 
     // Fail first two
-    expect(watcher.onFail).toBeCalledTimes(2);
-    expect(watcher.onFail).toBeCalledWith(
+    expect(watcher.listeners.onFail).toBeCalledTimes(2);
+    expect(watcher.listeners.onFail).toBeCalledWith(
       expect.objectContaining({
         params: expect.objectContaining({ query: FIRST_QUERY }),
         error: new AbortedError(),
-      }),
+      })
     );
-    expect(watcher.onFail).toBeCalledWith(
+    expect(watcher.listeners.onFail).toBeCalledWith(
       expect.objectContaining({
         params: expect.objectContaining({ query: SECOND_QUERY }),
         error: new AbortedError(),
-      }),
+      })
     );
 
     // Done latest
-    expect(watcher.onDone).toBeCalledTimes(1);
-    expect(watcher.onDone).toBeCalledWith(
+    expect(watcher.listeners.onDone).toBeCalledTimes(1);
+    expect(watcher.listeners.onDone).toBeCalledWith(
       expect.objectContaining({
         params: expect.objectContaining({ query: LATEST_QUERY }),
-      }),
+      })
     );
   });
 });

@@ -1,10 +1,12 @@
+// TODO: jest-28
+import 'isomorphic-fetch';
+
 import { allSettled, createStore, fork } from 'effector';
-import { expectAssignable } from 'tsd';
 
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
 
-describe('remote_data/transport/api.request.credentials', () => {
+describe('fetch/api.request.credentials', () => {
   // Does not matter
   const mapBody = () => 'any body';
   const url = 'https://api.salo.com';
@@ -12,9 +14,7 @@ describe('remote_data/transport/api.request.credentials', () => {
 
   // Does not matter
   const response = {
-    prepare: { extract: async <T>(v: T) => v },
-    data: { validate: async () => null, extract: async <T>(v: T) => v },
-    error: { is: async () => false, extract: async <T>(v: T) => v },
+    extract: async <T>(v: T) => v,
   };
 
   test('pass static credentials on call to request', async () => {
@@ -45,9 +45,6 @@ describe('remote_data/transport/api.request.credentials', () => {
 
     const scope = fork({ handlers: [[fetchFx, fetchMock]] });
 
-    // exclude method from callApiFx signature
-    expectAssignable<Parameters<typeof callApiFx>[0]>({});
-
     await allSettled(callApiFx, { scope, params: {} });
 
     expect(fetchMock).toBeCalledWith(new Request(url, { credentials: 'omit' }));
@@ -65,9 +62,6 @@ describe('remote_data/transport/api.request.credentials', () => {
 
     const scope = fork({ handlers: [[fetchFx, fetchMock]] });
 
-    // exclude method from callApiFx signature
-    expectAssignable<Parameters<typeof callApiFx>[0]>({});
-
     // with original value
     await allSettled(callApiFx, { scope, params: {} });
     expect(fetchMock).toBeCalledWith(new Request(url, { credentials: 'omit' }));
@@ -76,7 +70,7 @@ describe('remote_data/transport/api.request.credentials', () => {
     await allSettled($credentials, { scope, params: 'include' });
     await allSettled(callApiFx, { scope, params: {} });
     expect(fetchMock).toBeCalledWith(
-      new Request(url, { credentials: 'include' }),
+      new Request(url, { credentials: 'include' })
     );
   });
 });
