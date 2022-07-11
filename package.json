@@ -44,6 +44,7 @@
     "typescript": "~4.7.2"
   },
   "dependencies": {
+    "antd": "^4.21.6",
     "core-js": "^3.6.5",
     "effector-react": "^22.0.6",
     "patronum": "^1.8.5",

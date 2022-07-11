@@ -9,7 +9,15 @@ const pokemonsQuery = createQuery({
   ),
   contract: unkownContract,
   mapData(data: any) {
-    return data.results as Array<{ name: string }>;
+    return (data.results as Array<any>).map((pokemon) => {
+      const id = pokemon.url.split('/').filter(Boolean).pop();
+
+      return {
+        name: pokemon.name as string,
+        url: pokemon.url as string,
+        image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+      };
+    });
   },
 });
 

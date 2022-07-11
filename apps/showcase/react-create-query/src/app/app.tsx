@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useStore } from 'effector-react';
+import { Layout, InputNumber, Button, List, Avatar, PageHeader } from 'antd';
 
 import { pokemonsQuery } from './pokemon';
 import styles from './app.module.css';
@@ -11,22 +12,44 @@ export function App() {
   const [limit, setLimit] = useState(10);
 
   return (
-    <>
-      <h1>Pokemon list</h1>
-      <label>
-        Limit:
-        <input
+    <Layout className={styles['layout']}>
+      <PageHeader title="Pokemon list">
+        <InputNumber
+          min={1}
           value={limit}
-          type="number"
-          onChange={(e) => setLimit(e.target.valueAsNumber)}
-        ></input>
-        <button onClick={() => pokemonsQuery.start({ limit })}>
-          Request pokemons
-        </button>
-      </label>
-      {loading && <p>Loading...</p>}
-      <ol>{pokemons && pokemons.map((pokemon) => <li>{pokemon.name}</li>)}</ol>
-    </>
+          onChange={setLimit}
+          addonBefore="Limit"
+        />
+        <Button
+          onClick={() => pokemonsQuery.start({ limit })}
+          type="primary"
+          className={styles['loadButton']}
+        >
+          Load pokemons
+        </Button>
+      </PageHeader>
+      {pokemons && (
+        <Layout.Content className={styles['content']}>
+          <List
+            loading={loading}
+            dataSource={pokemons}
+            renderItem={(pokemon) => (
+              <List.Item className={styles['item']}>
+                <List.Item.Meta
+                  avatar={<Avatar src={pokemon.image} />}
+                  // description={pokemon.url}
+                  title={pokemon.name}
+                />
+              </List.Item>
+            )}
+            rowKey={(pokemon) => pokemon.url}
+            className={styles['list']}
+            size="small"
+            bordered
+          />
+        </Layout.Content>
+      )}
+    </Layout>
   );
 }
 
