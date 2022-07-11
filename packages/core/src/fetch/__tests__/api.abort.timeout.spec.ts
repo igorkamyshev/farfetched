@@ -1,17 +1,18 @@
+// TODO: jest-28
+import 'isomorphic-fetch';
+
 import { allSettled, createStore, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 
-import { expectEffectFail, watchEffect } from '../../test_utils/watch_effect';
-import { TimeoutError } from '../../utils/timeout_abort_controller';
+import { TimeoutError } from '../../misc/timeout_abort_controller';
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
+import { watchEffect } from '@farfetched/test-utils';
 
-describe('remote_data/transport/api.abort.timeout', () => {
+describe('fetch/api.abort.timeout', () => {
   // Does not matter
   const response = {
-    prepare: { extract: async <T>(v: T) => v },
-    data: { validate: async () => null, extract: async <T>(v: T) => v },
-    error: { is: async () => false, extract: async <T>(v: T) => v },
+    extract: async <T>(v: T) => v,
   };
 
   // Does not matter
@@ -31,8 +32,6 @@ describe('remote_data/transport/api.abort.timeout', () => {
       abort: { timeout },
     });
 
-    const watcher = watchEffect(apiCallFx);
-
     // Use real fetch
     const fetchMock = jest
       .fn()
@@ -42,13 +41,21 @@ describe('remote_data/transport/api.abort.timeout', () => {
       handlers: [[fetchFx, fetchMock]],
     });
 
+    const watcher = watchEffect(apiCallFx, scope);
+
     // Do not await
     allSettled(apiCallFx, { scope, params: {} });
 
     await setTimeout(timeout + 10);
 
-    expect(fetchMock.mock.lastCall[0].signal.aborted).toBeTruthy();
-    expectEffectFail(watcher, new TimeoutError(timeout));
+    expect(fetchMock.mock.calls[0][0].signal.aborted).toBeTruthy();
+    expect(watcher.listeners.onFailData).toHaveBeenCalledTimes(1);
+    expect(watcher.listeners.onFailData).toHaveBeenCalledWith(
+      new TimeoutError(timeout)
+    );
+
+    expect(watcher.listeners.onDone).not.toHaveBeenCalled();
+    expect(fetchMock.mock.calls[0][0].signal.aborted).toBeTruthy();
   });
 
   test('fail effect and cancel execution execution after timeout (reactive)', async () => {
@@ -60,8 +67,6 @@ describe('remote_data/transport/api.abort.timeout', () => {
       abort: { timeout: createStore(timeout) },
     });
 
-    const watcher = watchEffect(apiCallFx);
-
     // Use real fetch
     const fetchMock = jest
       .fn()
@@ -71,13 +76,20 @@ describe('remote_data/transport/api.abort.timeout', () => {
       handlers: [[fetchFx, fetchMock]],
     });
 
+    const watcher = watchEffect(apiCallFx, scope);
     // Do not await
     allSettled(apiCallFx, { scope, params: {} });
 
     await setTimeout(timeout + 10);
 
-    expect(fetchMock.mock.lastCall[0].signal.aborted).toBeTruthy();
-    expectEffectFail(watcher, new TimeoutError(timeout));
+    expect(fetchMock.mock.calls[0][0].signal.aborted).toBeTruthy();
+    expect(watcher.listeners.onFailData).toHaveBeenCalledTimes(1);
+    expect(watcher.listeners.onFailData).toHaveBeenCalledWith(
+      new TimeoutError(timeout)
+    );
+
+    expect(watcher.listeners.onDone).not.toHaveBeenCalled();
+    expect(fetchMock.mock.calls[0][0].signal.aborted).toBeTruthy();
   });
 
   test('fail slow effect and do not canel fast request', async () => {
@@ -88,7 +100,6 @@ describe('remote_data/transport/api.abort.timeout', () => {
       response,
       abort: { timeout },
     });
-    const watcher = watchEffect(apiCallFx);
 
     // Use real fetch
     const fetchMock = jest
@@ -100,6 +111,8 @@ describe('remote_data/transport/api.abort.timeout', () => {
       handlers: [[fetchFx, fetchMock]],
     });
 
+    const watcher = watchEffect(apiCallFx, scope);
+
     // Do not await
     allSettled(apiCallFx, { scope, params: {} });
     allSettled(apiCallFx, { scope, params: {} });
@@ -108,11 +121,11 @@ describe('remote_data/transport/api.abort.timeout', () => {
 
     // Cancell first slow request
     expect(fetchMock.mock.calls[0][0].signal.aborted).toBeTruthy();
-    expect(watcher.onFail).toBeCalledTimes(1);
-    expect(watcher.onFailData).toBeCalledWith(new TimeoutError(timeout));
+    expect(watcher.listeners.onFail).toBeCalledTimes(1);
+    expect(watcher.listeners.onFailData).toBeCalledWith(new TimeoutError(timeout));
 
     // Do not cancel second fast request
     expect(fetchMock.mock.calls[1][0].signal.aborted).toBeTruthy();
-    expect(watcher.onDone).toBeCalledTimes(1);
+    expect(watcher.listeners.onDone).toBeCalledTimes(1);
   });
 });

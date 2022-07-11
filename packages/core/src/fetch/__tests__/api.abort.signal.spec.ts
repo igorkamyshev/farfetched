@@ -1,3 +1,6 @@
+// TODO: jest-28
+import 'isomorphic-fetch'
+
 import { allSettled, createEvent, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { watchEffect } from '@farfetched/test-utils';
@@ -42,11 +45,9 @@ describe('remote_data/transport/api.abort.signal', () => {
     const watcher = watchEffect(apiCallFx, scope);
 
     // Do not await
-    await allSettled(apiCallFx, { scope, params: {} });
+    allSettled(apiCallFx, { scope, params: {} });
 
-    // await allSettled(abort, { scope, params: 'random string' });
-
-    console.log(fetchMock.mock);
+    await allSettled(abort, { scope, params: 'random string' });
 
     expect(watcher.listeners.onFailData).toHaveBeenCalledTimes(1);
     expect(watcher.listeners.onFailData).toHaveBeenCalledWith(
@@ -54,7 +55,6 @@ describe('remote_data/transport/api.abort.signal', () => {
     );
 
     expect(watcher.listeners.onDone).not.toHaveBeenCalled();
-
     expect(fetchMock.mock.calls[0][0].signal.aborted).toBeTruthy();
   });
 });
