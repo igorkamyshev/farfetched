@@ -13,13 +13,11 @@
         "index": "apps/showcase/react-create-query/src/index.html",
         "baseHref": "/",
         "main": "apps/showcase/react-create-query/src/main.tsx",
-        "polyfills": "apps/showcase/react-create-query/src/polyfills.ts",
         "tsConfig": "apps/showcase/react-create-query/tsconfig.app.json",
         "assets": [
-          "apps/showcase/react-create-query/src/favicon.ico",
-          "apps/showcase/react-create-query/src/assets"
+          "apps/showcase/react-create-query/src/favicon.ico"
         ],
-        "styles": ["apps/showcase/react-create-query/src/styles.css"],
+        "styles": [],
         "scripts": [],
         "webpackConfig": "@nrwl/react/plugins/webpack"
       },
@@ -31,12 +29,6 @@
           "vendorChunk": true
         },
         "production": {
-          "fileReplacements": [
-            {
-              "replace": "apps/showcase/react-create-query/src/environments/environment.ts",
-              "with": "apps/showcase/react-create-query/src/environments/environment.prod.ts"
-            }
-          ],
           "optimization": true,
           "outputHashing": "all",
           "sourceMap": false,
