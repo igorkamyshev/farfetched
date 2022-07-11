@@ -4,6 +4,7 @@
   "projects": {
     "core": "packages/core",
     "runtypes": "packages/runtypes",
+    "showcase-react-create-query": "apps/showcase/react-create-query",
     "test-utils": "packages/test-utils"
   }
 }
