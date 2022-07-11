@@ -1,6 +1,6 @@
 {
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/showcase/json-react/src",
+  "sourceRoot": "apps/showcase/react-create-query/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -9,17 +9,17 @@
       "defaultConfiguration": "production",
       "options": {
         "compiler": "babel",
-        "outputPath": "dist/apps/showcase/json-react",
-        "index": "apps/showcase/json-react/src/index.html",
+        "outputPath": "dist/apps/showcase/react-create-query",
+        "index": "apps/showcase/react-create-query/src/index.html",
         "baseHref": "/",
-        "main": "apps/showcase/json-react/src/main.tsx",
-        "polyfills": "apps/showcase/json-react/src/polyfills.ts",
-        "tsConfig": "apps/showcase/json-react/tsconfig.app.json",
+        "main": "apps/showcase/react-create-query/src/main.tsx",
+        "polyfills": "apps/showcase/react-create-query/src/polyfills.ts",
+        "tsConfig": "apps/showcase/react-create-query/tsconfig.app.json",
         "assets": [
-          "apps/showcase/json-react/src/favicon.ico",
-          "apps/showcase/json-react/src/assets"
+          "apps/showcase/react-create-query/src/favicon.ico",
+          "apps/showcase/react-create-query/src/assets"
         ],
-        "styles": ["apps/showcase/json-react/src/styles.css"],
+        "styles": ["apps/showcase/react-create-query/src/styles.css"],
         "scripts": [],
         "webpackConfig": "@nrwl/react/plugins/webpack"
       },
@@ -33,8 +33,8 @@
         "production": {
           "fileReplacements": [
             {
-              "replace": "apps/showcase/json-react/src/environments/environment.ts",
-              "with": "apps/showcase/json-react/src/environments/environment.prod.ts"
+              "replace": "apps/showcase/react-create-query/src/environments/environment.ts",
+              "with": "apps/showcase/react-create-query/src/environments/environment.prod.ts"
             }
           ],
           "optimization": true,
@@ -50,15 +50,15 @@
       "executor": "@nrwl/web:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "showcase-json-react:build",
+        "buildTarget": "showcase-react-create-query:build",
         "hmr": true
       },
       "configurations": {
         "development": {
-          "buildTarget": "showcase-json-react:build:development"
+          "buildTarget": "showcase-react-create-query:build:development"
         },
         "production": {
-          "buildTarget": "showcase-json-react:build:production",
+          "buildTarget": "showcase-react-create-query:build:production",
           "hmr": false
         }
       }
@@ -67,14 +67,16 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/showcase/json-react/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "apps/showcase/react-create-query/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/showcase/json-react"],
+      "outputs": ["coverage/apps/showcase/react-create-query"],
       "options": {
-        "jestConfig": "apps/showcase/json-react/jest.config.ts",
+        "jestConfig": "apps/showcase/react-create-query/jest.config.ts",
         "passWithNoTests": true
       }
     }
