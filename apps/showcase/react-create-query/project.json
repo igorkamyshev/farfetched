@@ -14,9 +14,7 @@
         "baseHref": "/",
         "main": "apps/showcase/react-create-query/src/main.tsx",
         "tsConfig": "apps/showcase/react-create-query/tsconfig.app.json",
-        "assets": [
-          "apps/showcase/react-create-query/src/favicon.ico"
-        ],
+        "assets": ["apps/showcase/react-create-query/src/favicon.ico"],
         "styles": [],
         "scripts": [],
         "webpackConfig": "@nrwl/react/plugins/webpack"

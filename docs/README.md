@@ -23,4 +23,4 @@
 
 ## Showcases
 
-+ [React + `createQuery`](../apps/showcase/react-create-query/)
+- [React + `createQuery`](../apps/showcase/react-create-query/)
