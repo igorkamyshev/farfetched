@@ -116,6 +116,28 @@ function reduceTwoArgs<Data, Params, Result, Source = void>({
   };
 }
 
+// -- Static ot reactive case
+
+type StaticOrReactive<T> = T | Store<Exclude<T, undefined>>;
+
+function normalizeStaticOrReactive<T>(
+  v?: StaticOrReactive<T>
+): Store<Exclude<T, undefined> | null> {
+  if (!v) {
+    return createStore<Exclude<T, undefined> | null>(null, {
+      serialize: 'ignore',
+    });
+  }
+
+  if (is.store(v)) {
+    return v;
+  }
+
+  return createStore<Exclude<T, undefined> | null>(v as Exclude<T, undefined>, {
+    serialize: 'ignore',
+  });
+}
+
 // -- Exports --
 
 export {
@@ -123,4 +145,6 @@ export {
   normalizeSourced,
   type TwoArgsSourcedField,
   reduceTwoArgs,
+  type StaticOrReactive,
+  normalizeStaticOrReactive,
 };

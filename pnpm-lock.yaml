@@ -45,6 +45,7 @@ specifiers:
   ts-node: ~10.8.0
   tsd: ^0.22.0
   typescript: ~4.7.2
+  whatwg-fetch: ^3.6.2
 
 dependencies:
   core-js: 3.23.3
@@ -93,6 +94,7 @@ devDependencies:
   ts-node: 10.8.2_t4lrjbt3sxauai4t5o275zsepa
   tsd: 0.22.0
   typescript: 4.7.4
+  whatwg-fetch: 3.6.2
 
 packages:
 
@@ -10193,6 +10195,10 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       iconv-lite: 0.6.3
+    dev: true
+
+  /whatwg-fetch/3.6.2:
+    resolution: {integrity: sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==}
     dev: true
 
   /whatwg-mimetype/2.3.0:
