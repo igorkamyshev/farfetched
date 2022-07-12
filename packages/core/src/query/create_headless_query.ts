@@ -87,6 +87,10 @@ function createHeadlessQuery<
     'initial',
     mergeOptionalConfig({ sid: 's', name: '$status' }, config)
   );
+  const $stale = createStore<boolean>(
+    false,
+    mergeOptionalConfig({ sid: 's', name: '$stale' }, config)
+  );
 
   // -- Execution --
   sample({ clock: start, target: executeFx });
@@ -132,6 +136,15 @@ function createHeadlessQuery<
     target: $status,
   });
 
+  // -- Handle stale
+  sample({
+    clock: done.finally,
+    fn() {
+      return false;
+    },
+    target: $stale,
+  });
+
   // -- Derived stores --
   const $pending = $status.map((status) => status === 'pending');
 
@@ -142,6 +155,7 @@ function createHeadlessQuery<
     done,
     $status,
     $pending,
+    $stale,
     __: { executeFx },
   };
 }

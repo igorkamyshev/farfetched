@@ -1,4 +1,4 @@
-import { combine, EventPayload, sample } from 'effector';
+import { combine, EventPayload, merge, sample } from 'effector';
 import { combineEvents } from 'patronum';
 
 import { Query } from '../query/type';
@@ -49,6 +49,16 @@ function connectQuery<
       }
     )
   );
+
+  const anyStart = merge(Object.values(source).map((query) => query.start));
+
+  sample({
+    clock: anyStart,
+    fn() {
+      return true;
+    },
+    target: target.$stale,
+  });
 
   const allLoadSuccess = combineEvents({
     events: Object.values(source).map((query) => query.done.success),

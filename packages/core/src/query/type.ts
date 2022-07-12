@@ -26,6 +26,8 @@ interface Query<Params, TransformedData, Error> {
   $status: Store<FetchingStatus>;
   /** Is fetching in progress right now? */
   $pending: Store<boolean>;
+  /** Is data stale */
+  $stale: Store<boolean>;
   /** Event to trigger query manual */
   start: Event<Params>;
   /** Set of events that represent end of query */
