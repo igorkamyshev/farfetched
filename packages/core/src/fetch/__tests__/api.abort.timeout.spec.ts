@@ -122,7 +122,9 @@ describe('fetch/api.abort.timeout', () => {
     // Cancell first slow request
     expect(fetchMock.mock.calls[0][0].signal.aborted).toBeTruthy();
     expect(watcher.listeners.onFail).toBeCalledTimes(1);
-    expect(watcher.listeners.onFailData).toBeCalledWith(new TimeoutError(timeout));
+    expect(watcher.listeners.onFailData).toBeCalledWith(
+      new TimeoutError(timeout)
+    );
 
     // Do not cancel second fast request
     expect(fetchMock.mock.calls[1][0].signal.aborted).toBeTruthy();

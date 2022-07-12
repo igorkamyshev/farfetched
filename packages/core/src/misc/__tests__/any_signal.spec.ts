@@ -27,7 +27,7 @@ describe('anySignal', () => {
 
   test('ignores non signals', async () => {
     const controllers: any[] = [...new Array(5)].map(
-      () => new AbortController(),
+      () => new AbortController()
     );
 
     const signals = controllers.map((c) => c.signal);
