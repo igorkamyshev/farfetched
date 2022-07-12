@@ -16,7 +16,9 @@ module.exports = async function tsdExecutor(options, context) {
   if (!success) {
     for (const diagnostic of diagnostics) {
       console.error(
-        chalk.red(diagnostic.fileName),
+        chalk.red(
+          `${diagnostic.fileName}:${diagnostic.line}:${diagnostic.column}`
+        ),
         '\n',
         chalk.red(diagnostic.message),
         '\n'
