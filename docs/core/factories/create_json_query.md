@@ -13,9 +13,9 @@ Config fields:
 
 - `request`: declarative rules to formulate request to the API.
 
-  - `method` (`_String_`): HTTP method for the request
+  - `method` (_`String`_): HTTP method for the request
   - `url`: URL for the request, available overloads:
-    - `_String_` will be passed as is
-    - `_Store<String>_` resolves to the current value that will be passed to the request
+    - _`String`_ will be passed as is
+    - _`Store<String>`_ resolves to the current value that will be passed to the request
 
 - `response`: declarative rules to handle response from the API.
