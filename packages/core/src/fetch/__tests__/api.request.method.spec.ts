@@ -1,5 +1,7 @@
+// TODO: jest-28
+import 'whatwg-fetch';
+
 import { allSettled, createStore, fork } from 'effector';
-import { expectAssignable } from 'tsd';
 
 import { createApiRequest, HttpMethod } from '../api';
 import { fetchFx } from '../fetch';
@@ -12,9 +14,7 @@ describe('remote_data/transport/api.request.method', () => {
 
   // Does not matter
   const response = {
-    prepare: { extract: async <T>(v: T) => v },
-    data: { validate: async () => null, extract: async <T>(v: T) => v },
-    error: { is: async () => false, extract: async <T>(v: T) => v },
+    extract: async <T>(v: T) => v,
   };
 
   test('pass static method on creation to request', async () => {
@@ -27,12 +27,9 @@ describe('remote_data/transport/api.request.method', () => {
 
     const scope = fork({ handlers: [[fetchFx, fetchMock]] });
 
-    // exclude method from callApiFx signature
-    expectAssignable<Parameters<typeof callApiFx>[0]>({ url });
-
     await allSettled(callApiFx, { scope, params: { url } });
 
-    expect(fetchMock).toBeCalledWith(new Request(url, { method: 'QUERY' }));
+    expect(fetchMock.mock.calls[0][0].method).toEqual('QUERY');
   });
 
   test('pass reactive method on creation to request', async () => {
@@ -47,16 +44,13 @@ describe('remote_data/transport/api.request.method', () => {
 
     const scope = fork({ handlers: [[fetchFx, fetchMock]] });
 
-    // exclude method from callApiFx signature
-    expectAssignable<Parameters<typeof callApiFx>[0]>({ url });
-
     // with original value
     await allSettled(callApiFx, { scope, params: { url } });
-    expect(fetchMock).toBeCalledWith(new Request(url, { method: 'GET' }));
+    expect(fetchMock.mock.calls[0][0].method).toEqual('GET');
 
     // with new value
     await allSettled($method, { scope, params: 'POST' });
     await allSettled(callApiFx, { scope, params: { url } });
-    expect(fetchMock).toBeCalledWith(new Request(url, { method: 'POST' }));
+    expect(fetchMock.mock.calls[1][0].method).toEqual('POST');
   });
 });

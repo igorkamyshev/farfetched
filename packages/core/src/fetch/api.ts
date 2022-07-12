@@ -8,7 +8,12 @@ import {
   TimeoutError,
 } from '../misc/timeout_abort_controller';
 import { NonOptionalKeys } from '../misc/ts';
-import { formatUrl, mergeHeaders, mergeQuery } from '../misc/fetch_api';
+import {
+  formatUrl,
+  mergeRecords,
+  formatHeaders,
+  type FetchApiRecord,
+} from '../misc/fetch_api';
 import { HttpError, requestFx } from './request';
 
 type HttpMethod =
@@ -40,8 +45,8 @@ interface ExclusiveRequestConfig<B> extends ExclusiveRequestConfigShared {
 
 // These settings can be defined twice — both statically and dynamically, they will be merged
 interface InclusiveRequestConfig {
-  query?: URLSearchParams;
-  headers?: HeadersInit;
+  query?: FetchApiRecord;
+  headers?: FetchApiRecord;
 }
 
 type CreationRequestConfigShared<E> = {
@@ -159,7 +164,7 @@ function createApiRequest<
 
       const request = new Request(formatUrl(url, query), {
         method,
-        headers,
+        headers: formatHeaders(headers),
         credentials,
         body: mappedBody,
         signal: anySignal(abortController.signal, timeoutController?.signal),
@@ -211,8 +216,8 @@ function createApiRequest<
 
       // Inclusive settings
 
-      const query = mergeQuery(staticConfig.query, dynamicConfig.query);
-      const headers = mergeHeaders(staticConfig.headers, dynamicConfig.headers);
+      const query = mergeRecords(staticConfig.query, dynamicConfig.query);
+      const headers = mergeRecords(staticConfig.headers, dynamicConfig.headers);
 
       // Other settings
       const { method } = staticConfig;

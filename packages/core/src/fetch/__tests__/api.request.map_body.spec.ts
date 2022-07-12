@@ -1,6 +1,8 @@
+// TODO: jest-28
+import 'whatwg-fetch';
+
 import { allSettled, createStore, fork } from 'effector';
 
-import { fetchCalledBodyText } from '../../test_utils/fetch_mock';
 import { createApiRequest, RequestBody } from '../api';
 import { fetchFx } from '../fetch';
 
@@ -11,9 +13,7 @@ describe('remote_data/transport/api.request.map_body', () => {
 
   // Does not matter
   const response = {
-    prepare: { extract: async <T>(v: T) => v },
-    data: { validate: async () => null, extract: async <T>(v: T) => v },
-    error: { is: async () => false, extract: async <T>(v: T) => v },
+    extract: async <T>(v: T) => v,
   };
 
   test('call mapBody on dynamic body', async () => {
@@ -34,7 +34,7 @@ describe('remote_data/transport/api.request.map_body', () => {
 
     expect(mapBody).toBeCalledTimes(1);
     expect(mapBody).toBeCalledWith('двараза');
-    expect(await fetchCalledBodyText(fetchMock)).toBe('дваразадвараза');
+    expect(await fetchMock.mock.calls[0][0].text()).toBe('дваразадвараза');
   });
 
   test('call mapBody on static body', async () => {
@@ -61,7 +61,7 @@ describe('remote_data/transport/api.request.map_body', () => {
 
     expect(mapBody).toBeCalledTimes(1);
     expect(mapBody).toBeCalledWith('двараза');
-    expect(await fetchCalledBodyText(fetchMock)).toBe('дваразадвараза');
+    expect(await fetchMock.mock.calls[0][0].text()).toBe('дваразадвараза');
   });
 
   test('call mapBody on reactive body', async () => {
@@ -89,12 +89,12 @@ describe('remote_data/transport/api.request.map_body', () => {
     await allSettled(callApiFx, { scope, params: {} });
     expect(mapBody).toBeCalledTimes(1);
     expect(mapBody).toBeCalledWith('раз');
-    expect(await fetchCalledBodyText(fetchMock, 0)).toBe('разраз');
+    expect(await await fetchMock.mock.calls[0][0].text()).toBe('разраз');
 
     await allSettled($body, { scope, params: 'два' });
     await allSettled(callApiFx, { scope, params: {} });
     expect(mapBody).toBeCalledTimes(2);
     expect(mapBody).toBeCalledWith('два');
-    expect(await fetchCalledBodyText(fetchMock, 1)).toBe('двадва');
+    expect(await await fetchMock.mock.calls[1][0].text()).toBe('двадва');
   });
 });

@@ -40,9 +40,9 @@ describe('fetch/api.concurrency.strategy', () => {
 
     const watcher = watchEffect(apiCallFx, scope);
 
-    const FIRST_QUERY = new URLSearchParams({ index: '1' });
-    const SECOND_QUERY = new URLSearchParams({ index: '2' });
-    const LATEST_QUERY = new URLSearchParams({ index: 'latest' });
+    const FIRST_QUERY = { index: '1' };
+    const SECOND_QUERY = { index: '2' };
+    const LATEST_QUERY = { index: 'latest' };
 
     // Do not await
     allSettled(apiCallFx, {

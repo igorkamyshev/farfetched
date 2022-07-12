@@ -1,9 +1,13 @@
+// TODO: jest-28
+import 'whatwg-fetch';
+
 import { allSettled, createStore, fork } from 'effector';
 
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
+import { FetchApiRecord } from '../../misc/fetch_api';
 
-describe('remote_data/transport/api.request.query', () => {
+describe('fetch/api.request.query', () => {
   // Does not matter
   const mapBody = () => 'any body';
   const url = 'https://api.salo.com';
@@ -11,11 +15,7 @@ describe('remote_data/transport/api.request.query', () => {
   const credentials = 'same-origin';
 
   // Does not matter
-  const response = {
-    prepare: { extract: async <T>(v: T) => v },
-    data: { validate: async () => null, extract: async <T>(v: T) => v },
-    error: { is: async () => false, extract: async <T>(v: T) => v },
-  };
+  const response = { extract: async <T>(v: T) => v };
 
   test('pass static query on call to request', async () => {
     const callApiFx = createApiRequest({
@@ -29,10 +29,10 @@ describe('remote_data/transport/api.request.query', () => {
 
     await allSettled(callApiFx, {
       scope,
-      params: { query: new URLSearchParams({ foo: 'bar' }) },
+      params: { query: { foo: 'bar' } },
     });
 
-    expect(fetchMock).toBeCalledWith(new Request(`${url}?foo=bar`));
+    expect(fetchMock.mock.calls[0][0].url).toEqual(`${url}?foo=bar`);
   });
 
   test('pass static query on creation to request', async () => {
@@ -42,7 +42,7 @@ describe('remote_data/transport/api.request.query', () => {
         method,
         url,
         credentials,
-        query: new URLSearchParams({ test: 'yes' }),
+        query: { test: 'yes' },
       },
       response,
     });
@@ -53,11 +53,11 @@ describe('remote_data/transport/api.request.query', () => {
 
     await allSettled(callApiFx, { scope, params: {} });
 
-    expect(fetchMock).toBeCalledWith(new Request(`${url}?test=yes`));
+    expect(fetchMock.mock.calls[0][0].url).toEqual(`${url}?test=yes`);
   });
 
   test('pass reactive query on creation to request', async () => {
-    const $query = createStore(new URLSearchParams({ test: 'value' }));
+    const $query = createStore<FetchApiRecord>({ test: 'value' });
 
     const callApiFx = createApiRequest({
       request: { mapBody, method, url, credentials, query: $query },
@@ -70,15 +70,15 @@ describe('remote_data/transport/api.request.query', () => {
 
     // with original value
     await allSettled(callApiFx, { scope, params: {} });
-    expect(fetchMock).toBeCalledWith(new Request(`${url}?test=value`));
+    expect(fetchMock.mock.calls[0][0].url).toEqual(`${url}?test=value`);
 
     // with new value
     await allSettled($query, {
       scope,
-      params: new URLSearchParams({ other: 'new' }),
+      params: { other: 'new' },
     });
     await allSettled(callApiFx, { scope, params: {} });
-    expect(fetchMock).toBeCalledWith(new Request(`${url}?other=new`));
+    expect(fetchMock.mock.calls[1][0].url).toEqual(`${url}?other=new`);
   });
 
   test('merge sttaic and dynamic queries', async () => {
@@ -88,7 +88,7 @@ describe('remote_data/transport/api.request.query', () => {
         url,
         method,
         credentials,
-        query: new URLSearchParams({ static: 'one', shared: 'static' }),
+        query: { static: 'one', shared: 'static' },
       },
       response,
     });
@@ -100,12 +100,12 @@ describe('remote_data/transport/api.request.query', () => {
     await allSettled(callApiFx, {
       scope,
       params: {
-        query: new URLSearchParams({ dynamic: 'two', shared: 'dynamic' }),
+        query: { dynamic: 'two', shared: 'dynamic' },
       },
     });
 
-    expect(fetchMock).toBeCalledWith(
-      new Request(`${url}?static=one&shared=static&dynamic=two&shared=dynamic`),
+    expect(fetchMock.mock.calls[0][0].url).toEqual(
+      `${url}?static=one&shared=static&shared=dynamic&dynamic=two`
     );
   });
 });

@@ -1,9 +1,13 @@
+// TODO: jest-28
+import 'whatwg-fetch';
+
 import { allSettled, createStore, fork } from 'effector';
 
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
+import { FetchApiRecord } from '../../misc/fetch_api';
 
-describe('remote_data/transport/api.request.headers', () => {
+describe('fetch/api.request.headers', () => {
   // Does not matter
   const mapBody = () => 'any body';
   const url = 'https://api.salo.com';
@@ -12,9 +16,7 @@ describe('remote_data/transport/api.request.headers', () => {
 
   // Does not matter
   const response = {
-    prepare: { extract: async <T>(v: T) => v },
-    data: { validate: async () => null, extract: async <T>(v: T) => v },
-    error: { is: async () => false, extract: async <T>(v: T) => v },
+    extract: async <T>(v: T) => v,
   };
 
   test('pass static headers on call to request', async () => {
@@ -32,8 +34,8 @@ describe('remote_data/transport/api.request.headers', () => {
       params: { headers: { foo: 'bar' } },
     });
 
-    expect(fetchMock).toBeCalledWith(
-      new Request(url, { headers: { foo: 'bar' } }),
+    expect(fetchMock.mock.calls[0][0].headers).toEqual(
+      new Headers({ foo: 'bar' })
     );
   });
 
@@ -55,13 +57,13 @@ describe('remote_data/transport/api.request.headers', () => {
 
     await allSettled(callApiFx, { scope, params: {} });
 
-    expect(fetchMock).toBeCalledWith(
-      new Request(url, { headers: { test: 'yes' } }),
+    expect(fetchMock.mock.calls[0][0].headers).toEqual(
+      new Headers({ test: 'yes' })
     );
   });
 
   test('pass reactive headers on creation to request', async () => {
-    const $headers = createStore<HeadersInit>({ test: 'value' });
+    const $headers = createStore<FetchApiRecord>({ test: 'value' });
 
     const callApiFx = createApiRequest({
       request: { mapBody, method, url, credentials, headers: $headers },
@@ -74,8 +76,8 @@ describe('remote_data/transport/api.request.headers', () => {
 
     // with original value
     await allSettled(callApiFx, { scope, params: {} });
-    expect(fetchMock).toBeCalledWith(
-      new Request(url, { headers: { test: 'value' } }),
+    expect(fetchMock.mock.calls[0][0].headers).toEqual(
+      new Headers({ test: 'value' })
     );
 
     // with new value
@@ -84,8 +86,8 @@ describe('remote_data/transport/api.request.headers', () => {
       params: { other: 'new' },
     });
     await allSettled(callApiFx, { scope, params: {} });
-    expect(fetchMock).toBeCalledWith(
-      new Request(url, { headers: { other: 'new' } }),
+    expect(fetchMock.mock.calls[1][0].headers).toEqual(
+      new Headers({ other: 'new' })
     );
   });
 
@@ -112,14 +114,12 @@ describe('remote_data/transport/api.request.headers', () => {
       },
     });
 
-    expect(fetchMock).toBeCalledWith(
-      new Request(url, {
-        headers: {
-          static: 'one',
-          shared: 'static, dynamic',
-          dynamic: 'two',
-        },
-      }),
+    expect(fetchMock.mock.calls[0][0].headers).toEqual(
+      new Headers({
+        static: 'one',
+        shared: 'static, dynamic',
+        dynamic: 'two',
+      })
     );
   });
 });

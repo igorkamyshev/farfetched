@@ -1,30 +1,49 @@
-function mergeHeaders(
-  ...headersLists: (HeadersInit | undefined | null)[]
-): Record<string, string> {
-  const final: Record<string, string> = {};
+type FetchApiRecord = Record<string, string | string[]>;
 
-  for (const item of headersLists) {
+function mergeRecords(
+  ...records: (FetchApiRecord | undefined | null)[]
+): FetchApiRecord {
+  const final: FetchApiRecord = {};
+
+  for (const item of records) {
     for (const [key, value] of Object.entries(item || {})) {
-      final[key] = [final[key], value].filter(Boolean).join(', ');
+      if (final[key]) {
+        final[key] = [final[key], value].flat();
+      } else {
+        final[key] = value;
+      }
     }
   }
 
   return final;
 }
 
-function mergeQuery(
-  ...queries: (URLSearchParams | undefined | null)[]
-): URLSearchParams {
-  const final = new URLSearchParams();
-
-  for (const item of queries) {
-    item?.forEach((value, key) => final.append(key, value));
+function formatHeaders(headersRecord: FetchApiRecord): Headers {
+  const headers = new Headers();
+  for (const [key, value] of Object.entries(headersRecord)) {
+    if (Array.isArray(value)) {
+      for (const v of value) {
+        headers.append(key, v);
+      }
+    } else {
+      headers.append(key, value);
+    }
   }
 
-  return final;
+  return headers;
 }
 
-function formatUrl(url: string, query: URLSearchParams): string {
+function formatUrl(url: string, queryRecord: FetchApiRecord): string {
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(queryRecord)) {
+    if (Array.isArray(value)) {
+      for (const v of value) {
+        query.append(key, v);
+      }
+    } else {
+      query.append(key, value);
+    }
+  }
   const queryString = query.toString();
 
   if (!queryString) {
@@ -34,4 +53,4 @@ function formatUrl(url: string, query: URLSearchParams): string {
   return `${url}?${queryString}`;
 }
 
-export { formatUrl, mergeHeaders, mergeQuery };
+export { formatUrl, formatHeaders, mergeRecords, type FetchApiRecord };
