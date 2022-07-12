@@ -18,6 +18,6 @@ Config fields:
     - _`String`_ will be passed as is
     - _`Store<String>`_ resolves to the current value that will be passed to the request
     - _`(params) => String`_ is called with parameter of the [_Query_](../primitives/query.md), returned value will be passed to the request as a URL
-    - _`{ source: Store<String>, fn: (params, source) => String }`_ is a full form, so `fn` will be called with parameter of the [_Query_](../primitives/query.md) and current value of the `source` store, returned value will be passed to the request as a URL
+    - _`{ source: Store<String>, fn: (params, source) => String }`_, in this case `fn` will be called with parameter of the [_Query_](../primitives/query.md) and current value of the `source` store, returned value will be passed to the request as a URL
 
 - `response`: declarative rules to handle response from the API.
