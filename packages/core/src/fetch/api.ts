@@ -296,6 +296,8 @@ export {
   type ApiConfigShared,
   type CreationRequestConfigShared,
   type ExclusiveRequestConfigShared,
+  type ExclusiveRequestConfig,
+  type InclusiveRequestConfig,
   type StaticOnlyRequestConfig,
   type ApiRequestError,
 };
