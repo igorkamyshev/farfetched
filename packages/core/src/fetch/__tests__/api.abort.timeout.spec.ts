@@ -1,5 +1,5 @@
 // TODO: jest-28
-import 'isomorphic-fetch';
+import 'whatwg-fetch';
 
 import { allSettled, createStore, fork } from 'effector';
 import { setTimeout } from 'timers/promises';

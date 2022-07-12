@@ -1,6 +1,5 @@
 // TODO: jest-28
-import 'isomorphic-fetch';
-
+import 'whatwg-fetch';
 import { allSettled, createStore, fork } from 'effector';
 
 import { createApiRequest, RequestBody } from '../api';
@@ -181,6 +180,6 @@ describe('remote_data/transport/api.request.body', () => {
 
     await allSettled($body, { scope, params: 'Second body' });
     await allSettled(callApiFx, { scope, params: {} });
-    expect(await fetchMock.mock.calls[0][0].text()).toBe('Second body');
+    expect(await fetchMock.mock.calls[1][0].text()).toBe('Second body');
   });
 });

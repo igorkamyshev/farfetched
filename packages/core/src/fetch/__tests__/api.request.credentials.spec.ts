@@ -1,5 +1,5 @@
 // TODO: jest-28
-import 'isomorphic-fetch';
+import 'whatwg-fetch';
 
 import { allSettled, createStore, fork } from 'effector';
 
@@ -32,7 +32,7 @@ describe('fetch/api.request.credentials', () => {
       params: { credentials: 'omit' as const },
     });
 
-    expect(fetchMock).toBeCalledWith(new Request(url, { credentials: 'omit' }));
+    expect(fetchMock.mock.calls[0][0].credentials).toEqual('omit');
   });
 
   test('pass static credentials on creation to request', async () => {
@@ -47,7 +47,7 @@ describe('fetch/api.request.credentials', () => {
 
     await allSettled(callApiFx, { scope, params: {} });
 
-    expect(fetchMock).toBeCalledWith(new Request(url, { credentials: 'omit' }));
+    expect(fetchMock.mock.calls[0][0].credentials).toEqual('omit');
   });
 
   test('pass reactive credentials on creation to request', async () => {
@@ -64,13 +64,11 @@ describe('fetch/api.request.credentials', () => {
 
     // with original value
     await allSettled(callApiFx, { scope, params: {} });
-    expect(fetchMock).toBeCalledWith(new Request(url, { credentials: 'omit' }));
+    expect(fetchMock.mock.calls[0][0].credentials).toEqual('omit');
 
     // with new value
     await allSettled($credentials, { scope, params: 'include' });
     await allSettled(callApiFx, { scope, params: {} });
-    expect(fetchMock).toBeCalledWith(
-      new Request(url, { credentials: 'include' })
-    );
+    expect(fetchMock.mock.calls[1][0].credentials).toEqual('include');
   });
 });
