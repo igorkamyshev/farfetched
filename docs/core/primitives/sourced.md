@@ -1,4 +1,4 @@
-# `Sourced`
+# Sourced
 
 Almost all of config's fields can be written in many ways:
 
