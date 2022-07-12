@@ -8,27 +8,16 @@ import { setTimeout } from 'timers/promises';
 import { fetchFx } from '../../fetch/fetch';
 import { AbortedError } from '../../misc/abortable';
 import { createJsonQuery } from '../create_json_query';
+import { unkownContract } from '../../contract/unkown_contract';
 
 describe('remote_data/query/json.fetching.concurrent', () => {
-  // Does not matter
-  const response = {
-    contract: {
-      data: { validate: () => null, extract: <T>(v: T) => v },
-      error: { is: () => false, extract: <T>(v: T) => v },
-    },
-    mapData: <T>(v: T) => v,
-  };
-
-  // Does not matter
-  const request = {
-    url: 'http://api.salo.com',
-    method: 'GET' as const,
-  };
-
   test('abort inflight requests', async () => {
     const query = createJsonQuery({
-      request,
-      response,
+      request: {
+        url: 'http://api.salo.com',
+        method: 'GET' as const,
+      },
+      response: { contract: unkownContract },
     });
 
     const firstResponse = { first: 1 };
