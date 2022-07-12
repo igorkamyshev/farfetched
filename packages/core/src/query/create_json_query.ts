@@ -67,34 +67,6 @@ interface BaseJsonQueryConfigWithParams<
 
 // -- Overloads
 
-// No params + mapData
-function createJsonQuery<
-  Data,
-  TransformedData,
-  Error,
-  BodySource = void,
-  QuerySource = void,
-  HeadersSource = void,
-  UrlSource = void,
-  DataSource = void
->(
-  config: BaseJsonQueryConfigNoParams<
-    BodySource,
-    QuerySource,
-    HeadersSource,
-    UrlSource
-  > & {
-    response: {
-      contract: Contract<unknown, Data, Error>;
-      mapData: TwoArgsSourcedField<Data, void, TransformedData, DataSource>;
-    };
-  }
-): Query<
-  void,
-  TransformedData,
-  ApiRequestError | Error | InvalidDataError<Response>
->;
-
 // params + mapData
 function createJsonQuery<
   Params,
@@ -125,27 +97,6 @@ function createJsonQuery<
   ApiRequestError | Error | InvalidDataError<Response>
 >;
 
-// No params + no mapData
-function createJsonQuery<
-  Data,
-  Error,
-  BodySource = void,
-  QuerySource = void,
-  HeadersSource = void,
-  UrlSource = void
->(
-  config: BaseJsonQueryConfigNoParams<
-    BodySource,
-    QuerySource,
-    HeadersSource,
-    UrlSource
-  > & {
-    response: {
-      contract: Contract<unknown, Data, Error>;
-    };
-  }
-): Query<void, Data, ApiRequestError | Error | InvalidDataError<Response>>;
-
 // params + no mapData
 function createJsonQuery<
   Params,
@@ -168,6 +119,55 @@ function createJsonQuery<
     };
   }
 ): Query<Params, Data, ApiRequestError | Error | InvalidDataError<Response>>;
+
+// No params + mapData
+function createJsonQuery<
+  Data,
+  TransformedData,
+  Error,
+  BodySource = void,
+  QuerySource = void,
+  HeadersSource = void,
+  UrlSource = void,
+  DataSource = void
+>(
+  config: BaseJsonQueryConfigNoParams<
+    BodySource,
+    QuerySource,
+    HeadersSource,
+    UrlSource
+  > & {
+    response: {
+      contract: Contract<unknown, Data, Error>;
+      mapData: TwoArgsSourcedField<Data, void, TransformedData, DataSource>;
+    };
+  }
+): Query<
+  void,
+  TransformedData,
+  ApiRequestError | Error | InvalidDataError<Response>
+>;
+
+// No params + no mapData
+function createJsonQuery<
+  Data,
+  Error,
+  BodySource = void,
+  QuerySource = void,
+  HeadersSource = void,
+  UrlSource = void
+>(
+  config: BaseJsonQueryConfigNoParams<
+    BodySource,
+    QuerySource,
+    HeadersSource,
+    UrlSource
+  > & {
+    response: {
+      contract: Contract<unknown, Data, Error>;
+    };
+  }
+): Query<void, Data, ApiRequestError | Error | InvalidDataError<Response>>;
 
 // -- Implementation --
 

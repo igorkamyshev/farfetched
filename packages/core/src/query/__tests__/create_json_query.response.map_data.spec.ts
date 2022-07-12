@@ -47,7 +47,7 @@ describe('remote_data/query/json.response.map_data', () => {
       request,
       response: {
         contract: unkownContract,
-        mapData: (data, params: string) => {
+        mapData: (data, params) => {
           expect(data).toBe(response);
           expect(params).toBe('caller params');
 

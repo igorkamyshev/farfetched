@@ -18,7 +18,7 @@ describe('remote_data/query/json.request.query', () => {
         method: 'GET' as const,
         query: {
           source: $source,
-          fn: (param: string, source) => {
+          fn: (param, source) => {
             return { at: `${param}_${source}` };
           },
         },

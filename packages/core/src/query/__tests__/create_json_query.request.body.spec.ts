@@ -18,7 +18,7 @@ describe('remote_data/query/json.request.body', () => {
         method: 'POST' as const,
         body: {
           source: $source,
-          fn: (param: string, source) => {
+          fn: (param, source) => {
             return { param, source };
           },
         },

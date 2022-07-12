@@ -18,7 +18,7 @@ describe('remote_data/query/json.request.headers', () => {
         method: 'GET' as const,
         headers: {
           source: $source,
-          fn: (param: string, source) => {
+          fn: (param, source) => {
             return { param, source: source.toString() };
           },
         },
