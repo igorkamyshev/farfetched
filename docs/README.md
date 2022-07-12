@@ -12,6 +12,7 @@
 ### Factories
 
 - [`createQuery`](./core/factories/create_query.md) — a basic factory to create a [_Query_](./core/primitives/query.md) based on function or [_Effect_](https://effector.dev/docs/api/effector/effect).
+- [`createJsonQuery`](./core/factories/create_json_query.md) — creates a [_Query_](./core/primitives/query.md) based on declarative config for any JSON API.
 
 ### Operators
 
