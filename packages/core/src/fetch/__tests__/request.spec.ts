@@ -1,20 +1,17 @@
-import { allSettled, fork } from 'effector';
+// TODO: jest-28
+import 'whatwg-fetch';
 
-import {
-  expectEffectDone,
-  expectEffectFail,
-  watchEffect,
-} from '../../test_utils/watch_effect';
+import { allSettled, fork } from 'effector';
+import { watchEffect } from '@farfetched/test-utils';
+
 import { fetchFx } from '../fetch';
 import { HttpError, requestFx } from '../request';
 
-describe('remote_data/transport/request', () => {
+describe('fetch/request', () => {
   describe('status codes', () => {
     test.each([200, 201, 202, 203, 204, 205, 206, 207, 208, 226])(
       'pass response with successful code %p as is',
       async (code) => {
-        const effectWatcher = watchEffect(requestFx);
-
         const SUCCESSFUL_RESPONSE = new Response(null, {
           status: code,
         });
@@ -22,14 +19,17 @@ describe('remote_data/transport/request', () => {
         const scope = fork({
           handlers: [[fetchFx, () => SUCCESSFUL_RESPONSE]],
         });
+        const effectWatcher = watchEffect(requestFx, scope);
 
         await allSettled(requestFx, {
           scope,
           params: new Request('https://api.salo.com'),
         });
 
-        expectEffectDone(effectWatcher, SUCCESSFUL_RESPONSE);
-      },
+        expect(effectWatcher.listeners.onDoneData).toHaveBeenCalledWith(
+          SUCCESSFUL_RESPONSE
+        );
+      }
     );
 
     test.each([
@@ -37,8 +37,6 @@ describe('remote_data/transport/request', () => {
       415, 416, 417, 418, 421, 422, 423, 424, 425, 426, 428, 429, 431, 451, 500,
       501, 502, 503, 504, 505, 506, 507, 508, 510, 511,
     ])('transforms response with error code %p to error', async (code) => {
-      const effectWatcher = watchEffect(requestFx);
-
       const FAILED_RESPONSE = new Response(null, {
         status: code,
         statusText: 'Request cannot',
@@ -48,12 +46,16 @@ describe('remote_data/transport/request', () => {
         handlers: [[fetchFx, () => FAILED_RESPONSE]],
       });
 
+      const effectWatcher = watchEffect(requestFx, scope);
+
       await allSettled(requestFx, {
         scope,
         params: new Request('https://api.salo.com'),
       });
 
-      expectEffectFail(effectWatcher, new HttpError(FAILED_RESPONSE));
+      expect(effectWatcher.listeners.onFailData).toHaveBeenCalledWith(
+        new HttpError(FAILED_RESPONSE)
+      );
     });
   });
 });

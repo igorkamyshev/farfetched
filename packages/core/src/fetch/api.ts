@@ -116,13 +116,12 @@ interface ApiConfig<B, R extends CreationRequestConfig<B>, P>
   response: ApiConfigResponse<P>;
 }
 
-type ApiRequestError<P> =
+type ApiRequestError =
   | AbortedError
   | TimeoutError
   | TypeError
   | HttpError
   | TimeoutError
-  | ExtractionError<P>
   | PreparationError;
 
 function createApiRequest<
@@ -142,7 +141,7 @@ function createApiRequest<
         method: HttpMethod;
       },
     ApiRequestResult,
-    ApiRequestError<P>
+    ApiRequestError
   >(
     async ({
       url,
@@ -248,7 +247,7 @@ function createApiRequest<
   const boundAbortableApiRequestFx = abortable<
     ApiRequestParams,
     ApiRequestResult,
-    ApiRequestError<P>
+    ApiRequestError
   >({
     abort: { signal: abortSignal },
     effect(params, abortContext) {
@@ -289,24 +288,8 @@ class PreparationError extends Error {
   }
 }
 
-/**
- * `data.extract`, `error.extract` or `error.is` throws error, so extraction is impossible
- */
-class ExtractionError<P> extends Error {
-  constructor(
-    /** Prepared response */
-    readonly prepared: P,
-    /** Field with failed extraction */
-    readonly field: 'error' | 'data',
-    cause: Error
-  ) {
-    super(`Cannot extract ${field} from response`, { cause });
-  }
-}
-
 export {
   createApiRequest,
-  ExtractionError,
   PreparationError,
   type HttpMethod,
   type RequestBody,

@@ -1,0 +1,90 @@
+// TODO: jest-28
+import 'whatwg-fetch';
+
+import { allSettled, fork } from 'effector';
+import { watchEffect } from '@farfetched/test-utils';
+
+import { createApiRequest, PreparationError } from '../api';
+import { fetchFx } from '../fetch';
+
+describe('fetch/api.response.prepare', () => {
+  // Does not matter
+  const request = {
+    method: 'GET' as const,
+    url: 'https://api.salo.com',
+    credentials: 'same-origin' as const,
+    mapBody: () => 'some_body',
+  };
+
+  test('pass oriiginal response to preparation', async () => {
+    const extractMock = jest.fn().mockImplementation((t) => t);
+
+    const apiCallFx = createApiRequest({
+      request,
+      response: {
+        extract: extractMock,
+      },
+    });
+
+    const ORIGINAL_RESPONSE = new Response('ok');
+
+    const scope = fork({ handlers: [[fetchFx, () => ORIGINAL_RESPONSE]] });
+
+    await allSettled(apiCallFx, {
+      scope,
+      params: {},
+    });
+
+    expect(extractMock).toHaveBeenCalledWith(ORIGINAL_RESPONSE);
+  });
+});
+
+describe('fetch/api.response.exceptions', () => {
+  // Does not matter
+  const request = {
+    method: 'GET' as const,
+    url: 'https://api.salo.com',
+    credentials: 'same-origin' as const,
+    mapBody: () => 'some_body',
+  };
+
+  test.each([
+    {
+      type: 'sync',
+      fn: (): any => {
+        throw new Error('oops');
+      },
+    },
+    {
+      type: 'async',
+      fn: async (): Promise<any> => {
+        throw new Error('oops');
+      },
+    },
+  ])(
+    'return PreparationError if reponse.extract throw $type error in callback',
+    async ({ fn }) => {
+      const apiCallFx = createApiRequest({
+        request,
+        response: {
+          extract: fn,
+        },
+      });
+
+      const ORIGINAL_RESPONSE = new Response('ok');
+
+      const scope = fork({ handlers: [[fetchFx, () => ORIGINAL_RESPONSE]] });
+
+      const effectWatcher = watchEffect(apiCallFx, scope);
+
+      await allSettled(apiCallFx, {
+        scope,
+        params: {},
+      });
+
+      expect(effectWatcher.listeners.onFailData).toHaveBeenCalledWith(
+        new PreparationError(ORIGINAL_RESPONSE, new Error('Oooops'))
+      );
+    }
+  );
+});
