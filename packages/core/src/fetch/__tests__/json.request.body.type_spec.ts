@@ -1,5 +1,5 @@
 import { createStore } from 'effector';
-import { expectNotAssignable, expectType } from 'tsd';
+import { expectAssignable, expectNotAssignable } from 'tsd';
 
 import { createJsonApiRequest, Json } from '../json';
 
@@ -17,7 +17,7 @@ disallow_date_in_json: {
     body: { date: new Date() },
   });
 
-  expectType<Parameters<typeof callJsonApiFx>[0]>({
+  expectAssignable<Parameters<typeof callJsonApiFx>[0]>({
     body: { date: new Date().toISOString() },
   });
 }
