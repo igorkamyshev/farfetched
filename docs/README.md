@@ -25,3 +25,4 @@
 ## Showcases
 
 - [React + `createQuery`](../apps/showcase/react-create-query/)
+- [React + `createJsonQuery`](../apps/showcase/react-create-json-query/)
