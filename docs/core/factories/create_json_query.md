@@ -20,3 +20,4 @@ Config fields:
   - `headers?`: _[Sourced](../primitives/sourced.md) object_, keys of the object must be `String` and values must be `String` or `Array<String>`
 
 - `response`: declarative rules to handle response from the API.
+  - `contract`: [_Contract_](../primitives/contract.md) allows you to validate the response and decide how your application should treat it — as a success response or as a failed one.
