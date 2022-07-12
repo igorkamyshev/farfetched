@@ -22,5 +22,5 @@ Config fields:
 - `response`: declarative rules to handle response from the API.
   - `contract`: [_Contract_](../primitives/contract.md) allows you to validate the response and decide how your application should treat it — as a success response or as a failed one.
   - `mapData?`: optional mapper for the response data, available overloads:
-    - `Function`: `(data, params) => mapped`
-    - `{ source: Store, fn }`: `(data, params, source) => mapped`
+    - `(data, params) => mapped`
+    - `{ source: Store, fn: (data, params, source) => mapped }`
