@@ -7,16 +7,18 @@ import { Contract } from '../contract/type';
 import { unkownContract } from '../contract/unkown_contract';
 import { InvalidDataError } from '../contract/error';
 import { identity } from '../misc/identity';
-import { TwoArgsSourcedField } from '../misc/sourced';
+import { StaticOrReactive, TwoArgsSourcedField } from '../misc/sourced';
 
 // Overload: Only handler
 function createQuery<Params, Response>(config: {
   handler: (p: Params) => Promise<Response>;
+  enabled?: StaticOrReactive<boolean>;
 }): Query<Params, Response, unknown>;
 
 // Overload: Only effect
 function createQuery<Params, Response, Error>(config: {
   effect: Effect<Params, Response, Error>;
+  enabled?: StaticOrReactive<boolean>;
 }): Query<Params, Response, Error>;
 
 // Overload: Effect and Contract
@@ -29,6 +31,7 @@ function createQuery<
 >(config: {
   effect: Effect<Params, Response, Error>;
   contract: Contract<Response, ContractData, ContractError>;
+  enabled?: StaticOrReactive<boolean>;
 }): Query<
   Params,
   ContractData,
@@ -48,6 +51,7 @@ function createQuery<
   effect: Effect<Params, Response, Error>;
   contract: Contract<Response, ContractData, ContractError>;
   mapData: TwoArgsSourcedField<ContractData, Params, MappedData, MapDataSource>;
+  enabled?: StaticOrReactive<boolean>;
 }): Query<
   Params,
   MappedData,
@@ -83,6 +87,7 @@ function createQuery<
   >({
     contract: config.contract ?? unkownContract,
     mapData: config.mapData ?? identity,
+    enabled: config.enabled,
   });
 
   query.__.executeFx.use(resolveExecuteEffect<Params, Response, Error>(config));

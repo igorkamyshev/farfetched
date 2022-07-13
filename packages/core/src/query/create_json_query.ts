@@ -7,6 +7,7 @@ import {
   TwoArgsSourcedField,
   SourcedField,
   normalizeSourced,
+  StaticOrReactive,
 } from '../misc/sourced';
 import { type ParamsDeclaration } from '../misc/params';
 import { Query } from './type';
@@ -39,6 +40,7 @@ interface BaseJsonQueryConfigNoParams<
   HeadersSource,
   UrlSource
 > {
+  enabled?: StaticOrReactive<boolean>;
   request: RequestConfig<
     void,
     BodySource,
@@ -55,6 +57,7 @@ interface BaseJsonQueryConfigWithParams<
   HeadersSource,
   UrlSource
 > {
+  enabled?: StaticOrReactive<boolean>;
   params: ParamsDeclaration<Params>;
   request: RequestConfig<
     Params,
@@ -182,6 +185,7 @@ function createJsonQuery(config: any) {
     {
       contract: config.response.contract ?? unkownContract,
       mapData: config.response.mapData ?? identity,
+      enabled: config.enabled,
     },
     { sid: 'j' }
   );
