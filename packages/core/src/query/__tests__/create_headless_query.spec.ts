@@ -357,3 +357,39 @@ describe('core/createHeadlessQuery with contract and', () => {
     expect(scope.getState(query.$data)).toEqual(mappedData);
   });
 });
+
+describe('core/createHeadlessQuery enabled', () => {
+  test('enabled by default', () => {
+    const query = createHeadlessQuery(
+      {
+        contract: unkownContract,
+        mapData: identity,
+      },
+      { sid: '1' }
+    );
+
+    const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
+
+    expect(scope.getState(query.$enabled)).toBe(true);
+  });
+
+  test('skip execution on disabled query', async () => {
+    const query = createHeadlessQuery(
+      {
+        contract: unkownContract,
+        mapData: identity,
+        enabled: false,
+      },
+      { sid: '1' }
+    );
+
+    const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
+
+    const watcher = watchQuery(query, scope);
+
+    await allSettled(query.start, { scope, params: {} });
+
+    expect(scope.getState(query.$enabled)).toBe(false);
+    expect(watcher.listeners.onSkip).toBeCalledTimes(1);
+  });
+});

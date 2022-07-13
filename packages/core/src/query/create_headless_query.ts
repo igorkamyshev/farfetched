@@ -1,4 +1,5 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
+import { not } from 'patronum';
 import { createContractApplier } from '../contract/apply_contract';
 import { InvalidDataError } from '../contract/error';
 import { Contract } from '../contract/type';
@@ -8,6 +9,8 @@ import {
   normalizeSourced,
   TwoArgsSourcedField,
   reduceTwoArgs,
+  StaticOrReactive,
+  normalizeStaticOrReactive,
 } from '../misc/sourced';
 import { FetchingStatus } from '../status/type';
 import { Query } from './type';
@@ -31,6 +34,7 @@ function createHeadlessQuery<
   {
     contract,
     mapData,
+    enabled,
   }: {
     contract: Contract<Response, ContractData, ContractError>;
     mapData: TwoArgsSourcedField<
@@ -39,6 +43,7 @@ function createHeadlessQuery<
       MappedData,
       MapDataSource
     >;
+    enabled?: StaticOrReactive<boolean>;
   },
   config?: OptionalConfig
 ): Query<
@@ -91,9 +96,19 @@ function createHeadlessQuery<
     false,
     mergeOptionalConfig({ sid: 's', name: '$stale' }, config)
   );
+  const $enabled = normalizeStaticOrReactive(enabled ?? true).map(Boolean);
 
   // -- Execution --
-  sample({ clock: start, target: executeFx });
+  sample({ clock: start, filter: $enabled, target: executeFx });
+  sample({
+    clock: start,
+    filter: not($enabled),
+    fn() {
+      // pass
+    },
+    target: done.skip,
+  });
+
   sample({ clock: executeFx.doneData, target: applyContractFx });
   sample({ clock: executeFx.failData, target: done.error });
 
@@ -155,6 +170,7 @@ function createHeadlessQuery<
     done,
     $status,
     $pending,
+    $enabled,
     $stale,
     __: { executeFx },
   };
