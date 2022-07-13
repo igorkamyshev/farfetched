@@ -1,5 +1,5 @@
 import { Query } from '@farfetched/core';
-import { expectType } from 'tsd';
+import { expectAssignable, expectNotAssignable, expectType } from 'tsd';
 
 import { useQuery } from '../use_query';
 
@@ -8,7 +8,7 @@ function ComponentVoidStart() {
     {} as Query<void, number, string>
   );
 
-  expectType<() => void>(start);
+  expectAssignable<() => void>(start);
   expectType<number | null>(data);
   expectType<string | null>(error);
   expectType<boolean>(pending);
@@ -22,6 +22,7 @@ function ComponentStart() {
   );
 
   expectType<(params: { limit: string }) => void>(start);
+  expectNotAssignable<() => void>(start);
   expectType<number | null>(data);
   expectType<string | null>(error);
   expectType<boolean>(pending);
