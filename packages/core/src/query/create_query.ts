@@ -38,6 +38,19 @@ function createQuery<
   Error | InvalidDataError<Response> | ContractError
 >;
 
+// Overload: Effect and MapData
+function createQuery<
+  Params,
+  Response,
+  Error,
+  MappedData,
+  MapDataSource = void
+>(config: {
+  effect: Effect<Params, Response, Error>;
+  mapData: TwoArgsSourcedField<Response, Params, MappedData, MapDataSource>;
+  enabled?: StaticOrReactive<boolean>;
+}): Query<Params, MappedData, Error>;
+
 // Overload: Effect, Contract and MapData
 function createQuery<
   Params,
