@@ -23,7 +23,7 @@ specifiers:
   bytes-iec: ^3.1.1
   core-js: ^3.6.5
   effector: ^22.3.0
-  effector-react: 22.1.0
+  effector-react: 22.1.2
   eslint: ~8.15.0
   eslint-config-prettier: 8.1.0
   eslint-plugin-import: 2.26.0
@@ -49,7 +49,7 @@ specifiers:
 
 dependencies:
   core-js: 3.23.3
-  effector-react: 22.1.0_fqnc2pqlfbgfkkbezvfttjatja
+  effector-react: 22.1.2_fqnc2pqlfbgfkkbezvfttjatja
   patronum: 1.8.5_effector@22.3.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -4776,8 +4776,8 @@ packages:
     resolution: {integrity: sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=}
     dev: true
 
-  /effector-react/22.1.0_fqnc2pqlfbgfkkbezvfttjatja:
-    resolution: {integrity: sha512-Wm/4tbIVOld0nqaglH+VxlYaxvqmkoKmynNCiEmQ/ekqx2ChieGOcNHMJrOETKZEa4pB9TQf3a9qDnQG5jXPAA==}
+  /effector-react/22.1.2_fqnc2pqlfbgfkkbezvfttjatja:
+    resolution: {integrity: sha512-JPq0fyoJlWM5rKSTm1Vt5pFoWRoaNI3J3eK/5t4PJOeh4ikP0/H+AknsHXx2z0O9Zq2l3LPs86/w9ZrcbFMkPg==}
     engines: {node: '>=11.0.0'}
     peerDependencies:
       effector: ^22.0.2
