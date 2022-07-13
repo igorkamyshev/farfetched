@@ -71,7 +71,7 @@ const languagesQuery = createQuery({
  */
 ```
 
-### `createQuery({ effect, contract, mapData: Function })`
+### `createQuery({ effect, contract?, mapData: Function })`
 
 Creates [_Query_](../primitives/query.md) based on given [_Effect_](https://effector.dev/docs/api/effector/effect). Result of the effect will be validated against the [_Contract_](../primitives/contract.md). Invalid result will cause the [_Query_](../primitives/query.md) to fail.
 
@@ -96,7 +96,7 @@ const languagesQuery = createQuery({
  */
 ```
 
-### `createQuery({ effect, contract, mapData: { source, fn } })`
+### `createQuery({ effect, contract?, mapData: { source, fn } })`
 
 Creates [_Query_](../primitives/query.md) based on given [_Effect_](https://effector.dev/docs/api/effector/effect). Result of the effect will be validated against the [_Contract_](../primitives/contract.md). Invalid result will cause the query to fail.
 

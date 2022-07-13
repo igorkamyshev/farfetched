@@ -1,16 +1,15 @@
-import { createQuery, unkownContract } from '@farfetched/core';
+import { createQuery } from '@farfetched/core';
 import { useQuery } from '@farfetched/react';
 import { StrictMode, useState } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { createEffect } from 'effector';
 
 const pokemonsQuery = createQuery({
-  effect: createEffect(({ limit }: { limit: number }) =>
+  effect: createEffect<{ limit: number }, any, TypeError>(({ limit }) =>
     fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}`).then((response) =>
       response.json()
     )
   ),
-  contract: unkownContract,
   mapData: (data: any) => data.results as Array<{ name: string }>,
 });
 
