@@ -21,6 +21,7 @@
 ### Integrations
 
 - [`@farfetched/runtypes`](./runtypes/README.md) — bindings between `farfetched` and [`runtypes`](https://github.com/pelotom/runtypes), it allows using `Runtype` as a [_Contract_](./core/primitives/contract.md).
+- [`@farfetched/react`](./react/README.md) — bindings between `farfetched` and [React](https://reactjs.org), it allows rendering components based on data from the [_Query_](./core/primitives/query.md).
 
 ## Showcases
 
