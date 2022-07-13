@@ -6,17 +6,13 @@
   "targets": {
     "build": {
       "executor": "@nrwl/web:rollup",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/react",
         "tsConfig": "packages/react/tsconfig.lib.json",
         "project": "packages/react/package.json",
         "entryFile": "packages/react/src/index.ts",
-        "external": [
-          "react/jsx-runtime"
-        ],
+        "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
@@ -30,20 +26,14 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "packages/react/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["packages/react/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/packages/react"
-      ],
+      "outputs": ["coverage/packages/react"],
       "options": {
         "jestConfig": "packages/react/jest.config.ts",
         "passWithNoTests": true
@@ -51,9 +41,7 @@
     },
     "typetest": {
       "executor": "./tools/executors/tsd:tsd",
-      "inputs": [
-        "{projectRoot}/**/*.type_spec.ts"
-      ]
+      "inputs": ["{projectRoot}/**/*.type_spec.ts"]
     },
     "size": {
       "executor": "./tools/executors/size-limit:size-limit",
