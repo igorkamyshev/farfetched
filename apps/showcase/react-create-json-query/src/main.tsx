@@ -1,8 +1,6 @@
-import {
-  createJsonQuery,
-  declareParams,
-  unkownContract,
-} from '@farfetched/core';
+import { createJsonQuery, declareParams } from '@farfetched/core';
+import { runtypeContract } from '@farfetched/runtypes';
+import { Record, String, Array } from 'runtypes';
 import { useQuery } from '@farfetched/react';
 import { StrictMode, useState } from 'react';
 import * as ReactDOM from 'react-dom/client';
@@ -15,8 +13,10 @@ const pokemonsQuery = createJsonQuery({
     query: (params) => ({ limit: params.limit.toString() }),
   },
   response: {
-    contract: unkownContract,
-    mapData: (data: any) => data.results as Array<{ name: string }>,
+    contract: runtypeContract(
+      Record({ results: Array(Record({ name: String })) })
+    ),
+    mapData: (data) => data.results,
   },
 });
 
