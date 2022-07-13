@@ -54,7 +54,9 @@ effect_contract: {
   const numberWithStringQuery = createQuery({
     effect: createEffect<number, string, { effectError: boolean }>(),
     contract: {
+      // @ts-expect-error it's impossiple to infer types here for now
       data: { validate: () => null, extract: (p) => 'some string' },
+      // @ts-expect-error it's impossiple to infer types here for now
       error: { is: () => true, extract: (p) => ({ contractError: 'string' }) },
     },
   });
@@ -74,7 +76,10 @@ effect_contract: {
     contract: {
       // @ts-expect-error it's impossiple to pass invalid type to extract (expect `string`, given `number`)
       data: { validate: () => null, extract: (p: number) => 'some string' },
-      error: { is: () => true, extract: (p) => ({ contractError: 'string' }) },
+      error: {
+        is: () => true,
+        extract: (p: string) => ({ contractError: 'string' }),
+      },
     },
   });
 
@@ -82,7 +87,7 @@ effect_contract: {
   const incorrectTypesInContractDataImpossibleQuery = createQuery({
     effect: createEffect<number, string, { effectError: boolean }>(),
     contract: {
-      data: { validate: () => null, extract: (p) => 'some string' },
+      data: { validate: () => null, extract: (p: string) => 'some string' },
       error: {
         is: () => true,
         // @ts-expect-error it's impossiple to pass invalid type to extract (expect `string`, given `number`)
@@ -104,7 +109,7 @@ effect_mapData: {
     effect: createEffect(() => 12),
     mapData: {
       source: createStore(12),
-      fn: (data, params, source): string => 'string',
+      fn: (data: number, params: void, source: number) => 'string',
     },
   });
 
