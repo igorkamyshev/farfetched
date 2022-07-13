@@ -22,4 +22,23 @@ npm install @farfecthed/react effector-react
 
 ## Methods
 
-### `useQuery`
+### `useQuery(query)`
+
+Subscribes on [_Query_](../primitives/query.md) and re-render the component when the [_Query_](../primitives/query.md) changes.
+
+```tsx
+function UserProfile() {
+  const { data: user, pending } = useQuery(userQuery);
+
+  if (pending) {
+    return <Loader />;
+  }
+
+  return (
+    <section>
+      <p>{user.name}</p>
+      <p>{user.email}</p>
+    </section>
+  );
+}
+```
