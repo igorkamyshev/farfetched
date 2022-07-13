@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
-    "effector-react": "^22.0.6",
+    "effector-react": "22.1.0",
     "patronum": "^1.8.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",

@@ -1,7 +1,7 @@
 import { createQuery, unkownContract } from '@farfetched/core';
 import { StrictMode, useState } from 'react';
 import * as ReactDOM from 'react-dom/client';
-import { useStore } from 'effector-react';
+import { useUnit } from 'effector-react';
 import { createEffect } from 'effector';
 
 const pokemonsQuery = createQuery({
@@ -15,8 +15,10 @@ const pokemonsQuery = createQuery({
 });
 
 export function App() {
-  const pokemons = useStore(pokemonsQuery.$data);
-  const loading = useStore(pokemonsQuery.$pending);
+  const [pokemons, loading] = useUnit([
+    pokemonsQuery.$data,
+    pokemonsQuery.$pending,
+  ]);
 
   const [limit, setLimit] = useState(10);
 
