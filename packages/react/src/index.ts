@@ -1,1 +1,1 @@
-export * from './lib/react';
+export { useQuery } from './hooks/use_query';

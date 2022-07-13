@@ -1,7 +1,7 @@
 import { createQuery, unkownContract } from '@farfetched/core';
+import { useQuery } from '@farfetched/react';
 import { StrictMode, useState } from 'react';
 import * as ReactDOM from 'react-dom/client';
-import { useUnit } from 'effector-react';
 import { createEffect } from 'effector';
 
 const pokemonsQuery = createQuery({
@@ -15,10 +15,7 @@ const pokemonsQuery = createQuery({
 });
 
 export function App() {
-  const [pokemons, loading] = useUnit([
-    pokemonsQuery.$data,
-    pokemonsQuery.$pending,
-  ]);
+  const { data: pokemons, pending, start } = useQuery(pokemonsQuery);
 
   const [limit, setLimit] = useState(10);
 
@@ -34,10 +31,8 @@ export function App() {
           onChange={(e) => setLimit(e.target.valueAsNumber)}
         />
       </label>
-      <button onClick={() => pokemonsQuery.start({ limit })}>
-        Load pokemons
-      </button>
-      {loading && <p>Loading...</p>}
+      <button onClick={() => start({ limit })}>Load pokemons</button>
+      {pending && <p>Loading...</p>}
       {pokemons && (
         <ol>
           {pokemons.map((pokemon) => (
