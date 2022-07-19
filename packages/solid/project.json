@@ -1,0 +1,50 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/solid/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/solid",
+        "main": "packages/solid/src/index.ts",
+        "tsConfig": "packages/solid/tsconfig.lib.json",
+        "assets": ["packages/solid/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/solid/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/solid"],
+      "options": {
+        "jestConfig": "packages/solid/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "typetest": {
+      "executor": "./tools/executors/tsd:tsd",
+      "inputs": ["{projectRoot}/**/*.type_spec.ts", "{projectRoot}/**/*.ts"]
+    },
+    "size": {
+      "executor": "./tools/executors/size-limit:size-limit",
+      "options": {
+        "limit": "2 kB",
+        "outputPath": "dist/packages/solid"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    }
+  }
+}

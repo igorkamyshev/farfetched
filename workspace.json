@@ -7,6 +7,8 @@
     "runtypes": "packages/runtypes",
     "showcase-react-create-json-query": "apps/showcase/react-create-json-query",
     "showcase-react-create-query": "apps/showcase/react-create-query",
+    "showcase-solid-create-query": "apps/showcase/solid-create-query",
+    "solid": "packages/solid",
     "test-utils": "packages/test-utils"
   }
 }
