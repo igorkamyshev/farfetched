@@ -5,9 +5,6 @@ import { createEffect, sample } from "effector";
 
 function createQueryResource<Params, Data, Error>(
   query: Query<Params, Data, Error>,
-  options?: {
-    deferStream?: true
-  }
 ): {
   data: Accessor<Data | null>;
   error: Accessor<Error | null>;
@@ -15,9 +12,7 @@ function createQueryResource<Params, Data, Error>(
   start: (params: Params) => void;
 };
 
-function createQueryResource(query: Query<any, any, any>, options?: {
-  deferStream?: true
-}) {
+function createQueryResource(query: Query<any, any, any>) {
   const [track, rerun] = createSignal<[] | undefined>(undefined, { equals: false });
 
   const [data, error, pending, start] = useUnit([
@@ -38,7 +33,7 @@ function createQueryResource(query: Query<any, any, any>, options?: {
   const resolveResourceEffect = createEffect(() => defer.rs({}));
 
   // Bind to suspense
-  const [resourceData] = createResource(track, () => defer.req, options);
+  const [resourceData] = createResource(track, () => defer.req);
 
   sample({
     clock: query.done.finally,
@@ -67,7 +62,8 @@ function createDefer(): {
     result.rs = rs
     result.rj = rj
   })
-  result.req.catch(err => {})
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  result.req.catch(_ => {})
   return result
 }
 

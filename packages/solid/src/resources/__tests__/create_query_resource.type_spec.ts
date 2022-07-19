@@ -1,7 +1,7 @@
-import { Query } from '@farfetched/core';
+import type { Query } from '@farfetched/core';
 import { expectAssignable, expectNotAssignable, expectType } from 'tsd';
 
-import { createQueryResource } from '../create_query_resource';
+import { createQueryResource } from "../create_query_resource";
 
 function ComponentVoidStart() {
   const { data, error, pending, start } = createQueryResource(
