@@ -1,8 +1,8 @@
 import { createQuery } from '@farfetched/core';
 import { createQueryResource } from '@farfetched/solid';
 import { createEffect } from 'effector';
-import { createSignal, For, Show, Suspense } from "solid-js";
-import { render } from "solid-js/web";
+import { createSignal, For, Show, Suspense } from 'solid-js';
+import { render } from 'solid-js/web';
 
 const pokemonsQuery = createQuery({
   effect: createEffect<{ limit: number }, any, TypeError>(({ limit }) =>
@@ -33,15 +33,11 @@ export function App() {
       <button onClick={() => start({ limit: limit() })}>Load pokemons</button>
       <Suspense fallback={<p>Loading...</p>}>
         <ol>
-          <For each={data()}>
-            {(pokemon) => (
-              <li>{pokemon.name}</li>
-            )}
-          </For>
+          <For each={data()}>{(pokemon) => <li>{pokemon.name}</li>}</For>
         </ol>
       </Suspense>
     </>
   );
 }
 
-render(() => <App />, document.getElementById('root') as HTMLElement)
+render(() => <App />, document.getElementById('root') as HTMLElement);

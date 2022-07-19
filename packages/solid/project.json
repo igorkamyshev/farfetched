@@ -36,7 +36,7 @@
     "size": {
       "executor": "./tools/executors/size-limit:size-limit",
       "options": {
-        "limit": "1 kB",
+        "limit": "2 kB",
         "outputPath": "dist/packages/solid"
       },
       "dependsOn": [
