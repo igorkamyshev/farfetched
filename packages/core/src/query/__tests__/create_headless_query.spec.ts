@@ -5,8 +5,8 @@ import { watchQuery } from '@farfetched/test-utils';
 import { createHeadlessQuery } from '../create_headless_query';
 import { createDefer } from '../../misc/defer';
 import { unkownContract } from '../../contract/unkown_contract';
-import { InvalidDataError } from '../../contract/error';
 import { identity } from '../../misc/identity';
+import { invalidDataError } from '../../errors';
 
 describe('core/createHeadlessQuery without contract', () => {
   const query = createHeadlessQuery(
@@ -206,12 +206,12 @@ describe('core/createHeadlessQuery with contract', () => {
     await allSettled(query.start, { scope, params: 42 });
 
     expect(scope.getState(query.$error)).toEqual(
-      new InvalidDataError(null, ['got it'])
+      invalidDataError({ validationErrors: ['got it'] })
     );
 
     expect(listeners.onError).toHaveBeenCalledTimes(1);
     expect(listeners.onError).toHaveBeenCalledWith(
-      new InvalidDataError(null, ['got it'])
+      invalidDataError({ validationErrors: ['got it'] })
     );
   });
 

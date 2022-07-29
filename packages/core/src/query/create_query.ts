@@ -5,9 +5,9 @@ import { Query } from './type';
 import { InvalidConfigError } from '../misc/config';
 import { Contract } from '../contract/type';
 import { unkownContract } from '../contract/unkown_contract';
-import { InvalidDataError } from '../contract/error';
 import { identity } from '../misc/identity';
 import { StaticOrReactive, TwoArgsSourcedField } from '../misc/sourced';
+import { InvalidDataError } from '../errors';
 
 // Overload: Only handler
 function createQuery<Params, Response>(config: {
@@ -32,11 +32,7 @@ function createQuery<
   effect: Effect<Params, Response, Error>;
   contract: Contract<Response, ContractData, ContractError>;
   enabled?: StaticOrReactive<boolean>;
-}): Query<
-  Params,
-  ContractData,
-  Error | InvalidDataError<Response> | ContractError
->;
+}): Query<Params, ContractData, Error | InvalidDataError | ContractError>;
 
 // Overload: Effect and MapData
 function createQuery<
@@ -65,11 +61,7 @@ function createQuery<
   contract: Contract<Response, ContractData, ContractError>;
   mapData: TwoArgsSourcedField<ContractData, Params, MappedData, MapDataSource>;
   enabled?: StaticOrReactive<boolean>;
-}): Query<
-  Params,
-  MappedData,
-  Error | InvalidDataError<Response> | ContractError
->;
+}): Query<Params, MappedData, Error | InvalidDataError | ContractError>;
 
 // -- Implementation --
 function createQuery<
@@ -84,11 +76,7 @@ function createQuery<
   // Use any because of overloads
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config: any
-): Query<
-  Params,
-  MappedData,
-  Error | InvalidDataError<Response> | ContractError
-> {
+): Query<Params, MappedData, Error | InvalidDataError | ContractError> {
   const query = createHeadlessQuery<
     Params,
     Response,

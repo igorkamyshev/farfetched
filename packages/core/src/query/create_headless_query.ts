@@ -1,8 +1,8 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
 import { not } from 'patronum';
 import { createContractApplier } from '../contract/apply_contract';
-import { InvalidDataError } from '../contract/error';
 import { Contract } from '../contract/type';
+import { InvalidDataError } from '../errors';
 
 import { mergeOptionalConfig, OptionalConfig } from '../misc/sid';
 import {
@@ -46,11 +46,7 @@ function createHeadlessQuery<
     enabled?: StaticOrReactive<boolean>;
   },
   config?: OptionalConfig
-): Query<
-  Params,
-  MappedData,
-  Error | InvalidDataError<Response> | ContractError
-> {
+): Query<Params, MappedData, Error | InvalidDataError | ContractError> {
   // Dummy effect, it will be replaced with real in head-full query creator
   const executeFx = createEffect<Params, Response, Error>({
     handler: () => {
@@ -75,7 +71,7 @@ function createHeadlessQuery<
   // Signal-events
   const done = {
     success: createEvent<MappedData>(),
-    error: createEvent<Error | InvalidDataError<Response> | ContractError>(),
+    error: createEvent<Error | InvalidDataError | ContractError>(),
     skip: createEvent(),
     finally: createEvent(),
   };
@@ -85,9 +81,10 @@ function createHeadlessQuery<
     null,
     mergeOptionalConfig({ sid: 'd', name: '$data' }, config)
   );
-  const $error = createStore<
-    Error | InvalidDataError<Response> | ContractError | null
-  >(null, mergeOptionalConfig({ sid: 'e', name: '$error' }, config));
+  const $error = createStore<Error | InvalidDataError | ContractError | null>(
+    null,
+    mergeOptionalConfig({ sid: 'e', name: '$error' }, config)
+  );
   const $status = createStore<FetchingStatus>(
     'initial',
     mergeOptionalConfig({ sid: 's', name: '$status' }, config)
