@@ -1,18 +1,12 @@
-name: CI
+name: Changes
 
 on:
-  push:
-    branches: [master]
   pull_request:
     branches: [master]
 
 jobs:
-  checks:
+  changeset:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x]
 
     steps:
       - uses: actions/checkout@v3
@@ -23,13 +17,7 @@ jobs:
           version: 7.2.1
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.x
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm lint:format
-      - run: pnpm lint:workspace
-      - run: pnpm test
-      - run: pnpm test:types
-      - run: pnpm lint
-      - run: pnpm build
-      - run: pnpm size
+      - run: pnpm lint:changes

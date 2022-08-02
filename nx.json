@@ -29,6 +29,12 @@
     "libsDir": "packages"
   },
   "generators": {
+    "generators": {
+      "@nrwl/js:library": {
+        "publishable": true,
+        "includeBabelRc": true
+      }
+    },
     "@nrwl/react": {
       "application": {
         "style": "css",

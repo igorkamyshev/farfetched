@@ -1,38 +1,15 @@
-/**
- * This is a minimal script to publish your package to "npm".
- * This is meant to be used as-is or customize as you see fit.
- *
- * This script is executed on "dist/path/to/library" as "cwd" by default.
- *
- * You might need to authenticate with NPM before running this script.
- */
+import {
+  readCachedProjectGraph,
+  logger,
+  readJsonFile,
+  writeJsonFile,
+} from '@nrwl/devkit';
+import { spawnSync } from 'child_process';
 
-import { readCachedProjectGraph } from '@nrwl/devkit';
-import { execSync } from 'child_process';
-import { readFileSync, writeFileSync } from 'fs';
-import chalk from 'chalk';
-
-function invariant(condition, message) {
-  if (!condition) {
-    console.error(chalk.bold.red(message));
-    process.exit(1);
-  }
-}
-
-// Executing publish script: node path/to/publish.mjs {name} --version {version} --tag {tag}
-// Default "tag" to "next" so we won't publish the "latest" tag by accident.
-const [, , name, version, tag = 'next'] = process.argv;
-
-// A simple SemVer validation to validate the version
-const validVersion = /^\d+\.\d+\.\d+(-\w+\.\d+)?/;
-invariant(
-  version && validVersion.test(version),
-  `No version provided or version did not match Semantic Versioning, expected: #.#.#-tag.# or #.#.#, got ${version}.`
-);
-
+const [, , name] = process.argv;
 const graph = readCachedProjectGraph();
-const project = graph.nodes[name];
 
+const project = graph.nodes[name];
 invariant(
   project,
   `Could not find project "${name}" in the workspace. Is the project.json configured correctly?`
@@ -46,16 +23,55 @@ invariant(
 
 process.chdir(outputPath);
 
-// Updating the version in "package.json" before publishing
-try {
-  const json = JSON.parse(readFileSync(`package.json`).toString());
-  json.version = version;
-  writeFileSync(`package.json`, JSON.stringify(json, null, 2));
-} catch (e) {
-  console.error(
-    chalk.bold.red(`Error reading package.json file from library build output.`)
-  );
+const originalPackageJson = readJsonFile(`package.json`);
+
+writeJsonFile('package.json', {
+  ...originalPackageJson,
+  publishConfig: { access: 'public' },
+});
+
+const { version } = originalPackageJson;
+
+// A simple SemVer validation to validate the version
+const validVersion = /^\d+\.\d+\.\d+(-\w+\.\d+)?/;
+invariant(
+  version && validVersion.test(version),
+  `No version provided or version did not match Semantic Versioning, expected: #.#.#-tag.# or #.#.#, got ${version}.`
+);
+
+const result = spawnSync('npm', ['publish', '--json', '--access', 'public']);
+
+const errorInfo = getLastJsonObjectFromString(result.stderr.toString());
+
+if (errorInfo) {
+  logger.warn('Skip publishing\n');
+  logger.warn(errorInfo.error.summary);
+} else {
+  logger.info(result.stdout.toString());
+  logger.log('Published successfully');
 }
 
-// Execute "npm publish" to publish
-execSync(`npm publish --access public --tag ${tag}`);
+// utils
+
+function getLastJsonObjectFromString(str) {
+  str = str.replace(/[^}]*$/, '');
+
+  while (str) {
+    str = str.replace(/[^{]*/, '');
+
+    try {
+      return JSON.parse(str);
+    } catch (err) {
+      // move past the potentially leading `{` so the regexp in the loop can try to match for the next `{`
+      str = str.slice(1);
+    }
+  }
+  return null;
+}
+
+function invariant(condition, message) {
+  if (!condition) {
+    logger.error(message);
+    process.exit(1);
+  }
+}
