@@ -20,7 +20,7 @@ function invalidDataError({
 }): InvalidDataError {
   return {
     errorType: INVALID_DATA,
-    explanation: 'Invalid data',
+    explanation: 'Response was considered as invalid against a given contract',
     validationErrors,
   };
 }
@@ -28,7 +28,7 @@ function invalidDataError({
 function timeoutError({ timeout }: { timeout: number }): TimeoutError {
   return {
     errorType: TIMEOUT,
-    explanation: `Timeout after ${timeout}ms`,
+    explanation: 'Request was cancelled due to timeout',
     timeout,
   };
 }
@@ -36,7 +36,7 @@ function timeoutError({ timeout }: { timeout: number }): TimeoutError {
 function abortError(): AbortError {
   return {
     errorType: ABORT,
-    explanation: 'Request aborted',
+    explanation: 'Request was cancelled due to concurrency policy',
   };
 }
 
@@ -49,7 +49,7 @@ function preparationError({
 }): PreparationError {
   return {
     errorType: PREPARATION,
-    explanation: 'Preparation error',
+    explanation: 'Extraction of data from the response was failed',
     response,
     reason,
   };
@@ -66,7 +66,7 @@ function httpError({
 }): HttpError {
   return {
     errorType: HTTP,
-    explanation: 'HTTP error',
+    explanation: 'Request was finished with unsuccessful HTTP code',
     status,
     statusText,
     response,
@@ -76,7 +76,7 @@ function httpError({
 function networkError({ reason }: { reason: string | null }): NetworkError {
   return {
     errorType: NETWORK,
-    explanation: 'Network error',
+    explanation: 'Request was failed due to network problems',
     reason,
   };
 }
