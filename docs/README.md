@@ -2,6 +2,8 @@
 
 ## Tutorial
 
+Stay tuned...
+
 ## Handbook
 
 - [How not to use Fetch API in Farfetched](./handbook/no_fetch.md)

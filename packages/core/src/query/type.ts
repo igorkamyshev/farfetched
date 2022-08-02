@@ -2,13 +2,13 @@ import { Effect, Event, Store } from 'effector';
 
 import { FetchingStatus } from '../status/type';
 
-interface Query<Params, TransformedData, Error> {
+interface Query<Params, Data, Error> {
   /**
-   * The reactive value of the received data.
+   * The reactive value of the latest received data.
    *
    * If there was an error during fetching or there has not been a request yet, the store will be `null`.
    */
-  $data: Store<TransformedData | null>;
+  $data: Store<Data | null>;
   /**
    * The reactive value of the data retrieval error.
    *
@@ -26,16 +26,23 @@ interface Query<Params, TransformedData, Error> {
   $status: Store<FetchingStatus>;
   /** Is fetching in progress right now? */
   $pending: Store<boolean>;
-  /** Is data enabled */
+  /**
+   * Is query enabled?
+   *
+   * + false — any `start` call will be ignored, event done.skip will be fired immediately
+   * + true — query will be executed after any `start` call
+   */
   $enabled: Store<boolean>;
-  /** Is data stale */
+  /**
+   * Is data stale?
+   */
   $stale: Store<boolean>;
-  /** Event to trigger query manual */
+  /** Event to trigger query */
   start: Event<Params>;
   /** Set of events that represent end of query */
   done: {
     /** Query was successfully ended, data will be passed as a payload */
-    success: Event<TransformedData>;
+    success: Event<Data>;
     /** Query was failed, error will be passed as a payload */
     error: Event<Error>;
     /** Query execution was skipped due to `disable` field in config */
@@ -66,8 +73,6 @@ interface Query<Params, TransformedData, Error> {
      *   //...test code
      * })
      */
-    // any can be used here, because it is internal field
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     executeFx: Effect<any, any, any>;
   };
 }
