@@ -59,7 +59,7 @@ languageListQuery.start();
 
 ## Documentation
 
-Continue reading about `farfetched` in the [documentation](./docs/README.md). It covers integration with the most popular UI-frameworks (such React, Solid.js and Vue.js), error handling, dependent Queries, more advanced contracts and other great tools.
+Continue reading about Farfetched in the [documentation](./docs/README.md). It covers integration with the most popular UI-frameworks (such React, Solid.js and Vue.js), error handling, dependent Queries, more advanced contracts and other great tools.
 
 ## Maintains
 
