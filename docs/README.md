@@ -4,6 +4,8 @@
 
 ## Handbook
 
+- [How not to use Fetch API in Farfetched](./handbook/no_fetch.md)
+
 ### Primitives
 
 - [_Query_](./core/primitives/query.md)
