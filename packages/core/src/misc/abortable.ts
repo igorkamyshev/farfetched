@@ -17,11 +17,6 @@ const getId = () => {
   return count;
 };
 
-export const isAborted = (e: unknown): e is AbortError =>
-  (e as any)?.errorType === 'ABORT';
-export const isNotAborted = <T>(e: T): e is Exclude<T, AbortError> =>
-  !isAborted(e);
-
 const createAborter = () => {
   let handlers: (() => void)[] = [];
 
