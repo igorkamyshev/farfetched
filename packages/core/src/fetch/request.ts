@@ -11,21 +11,19 @@ import { fetchFx } from './fetch';
  */
 const requestFx = createEffect<Request, Response, NetworkError | HttpError>({
   handler: async (request) => {
-    try {
-      const response = await fetchFx(request);
-
-      if (isResponseFailed(response)) {
-        throw httpError({
-          status: response.status,
-          statusText: response.statusText,
-          response: (await response.text().catch(() => null)) ?? null,
-        });
-      }
-
-      return response;
-    } catch (cause: any) {
+    const response = await fetchFx(request).catch((cause) => {
       throw networkError({ reason: cause?.message ?? null });
+    });
+
+    if (isResponseFailed(response)) {
+      throw httpError({
+        status: response.status,
+        statusText: response.statusText,
+        response: (await response.text().catch(() => null)) ?? null,
+      });
     }
+
+    return response;
   },
   sid: 'r',
 });
