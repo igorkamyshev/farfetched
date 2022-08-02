@@ -1,5 +1,7 @@
 import { createEffect, Effect } from 'effector';
-import { invalidDataError, InvalidDataError } from '../errors';
+
+import { invalidDataError } from '../errors/create_error';
+import { InvalidDataError } from '../errors/type';
 import { Contract } from './type';
 
 function createContractApplier<Raw, Data, Error>(

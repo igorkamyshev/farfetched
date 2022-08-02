@@ -6,7 +6,7 @@ import { watchEffect } from '@farfetched/test-utils';
 
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
-import { preparationError } from '../../errors';
+import { preparationError } from '../../errors/create_error';
 
 describe('fetch/api.response.prepare', () => {
   // Does not matter

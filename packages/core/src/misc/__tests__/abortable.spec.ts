@@ -1,6 +1,6 @@
 import { is, createEvent, fork, allSettled, scopeBind } from 'effector';
-import { abortError } from '../../errors';
 
+import { abortError } from '../../errors/create_error';
 import { abortable } from '../abortable';
 
 describe('lib/effector-abortable', () => {

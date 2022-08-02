@@ -1,9 +1,17 @@
-type FarfetchedError<T extends string> = { errorType: T; explanation: string };
-
-const INVALID_DATA = 'INVALID_DATA';
-interface InvalidDataError extends FarfetchedError<typeof INVALID_DATA> {
-  validationErrors: string[];
-}
+import {
+  ABORT,
+  AbortError,
+  HTTP,
+  HttpError,
+  InvalidDataError,
+  INVALID_DATA,
+  NETWORK,
+  NetworkError,
+  PREPARATION,
+  PreparationError,
+  TIMEOUT,
+  TimeoutError,
+} from './type';
 
 function invalidDataError({
   validationErrors,
@@ -17,11 +25,6 @@ function invalidDataError({
   };
 }
 
-const TIMEOUT = 'TIMEOUT';
-interface TimeoutError extends FarfetchedError<typeof TIMEOUT> {
-  timeout: number;
-}
-
 function timeoutError({ timeout }: { timeout: number }): TimeoutError {
   return {
     errorType: TIMEOUT,
@@ -30,21 +33,11 @@ function timeoutError({ timeout }: { timeout: number }): TimeoutError {
   };
 }
 
-const ABORT = 'ABORT';
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface AbortError extends FarfetchedError<typeof ABORT> {}
-
 function abortError(): AbortError {
   return {
     errorType: ABORT,
     explanation: 'Request aborted',
   };
-}
-
-const PREPARATION = 'PREPARATION';
-interface PreparationError extends FarfetchedError<typeof PREPARATION> {
-  response: string;
-  reason: string | null;
 }
 
 function preparationError({
@@ -60,13 +53,6 @@ function preparationError({
     response,
     reason,
   };
-}
-
-const HTTP = 'HTTP';
-interface HttpError extends FarfetchedError<typeof HTTP> {
-  status: number;
-  statusText: string;
-  response: string | null;
 }
 
 function httpError({
@@ -87,11 +73,6 @@ function httpError({
   };
 }
 
-const NETWORK = 'NETWORK';
-interface NetworkError extends FarfetchedError<typeof NETWORK> {
-  reason: string | null;
-}
-
 function networkError({ reason }: { reason: string | null }): NetworkError {
   return {
     errorType: NETWORK,
@@ -107,13 +88,4 @@ export {
   preparationError,
   httpError,
   networkError,
-};
-
-export type {
-  InvalidDataError,
-  TimeoutError,
-  AbortError,
-  PreparationError,
-  HttpError,
-  NetworkError,
 };

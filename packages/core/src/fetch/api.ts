@@ -17,10 +17,9 @@ import {
   HttpError,
   NetworkError,
   PreparationError,
-  preparationError,
-  timeoutError,
   TimeoutError,
-} from '../errors';
+} from '../errors/type';
+import { timeoutError, preparationError } from '../errors/create_error';
 
 type HttpMethod =
   | 'HEAD'

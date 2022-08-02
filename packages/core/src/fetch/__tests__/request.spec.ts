@@ -6,7 +6,7 @@ import { watchEffect } from '@farfetched/test-utils';
 
 import { fetchFx } from '../fetch';
 import { requestFx } from '../request';
-import { httpError } from '../../errors';
+import { httpError } from '../../errors/create_error';
 
 describe('fetch/request', () => {
   describe('status codes', () => {

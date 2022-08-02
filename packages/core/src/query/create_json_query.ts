@@ -15,7 +15,7 @@ import { FetchApiRecord } from '../misc/fetch_api';
 import { createHeadlessQuery } from './create_headless_query';
 import { unkownContract } from '../contract/unkown_contract';
 import { identity } from '../misc/identity';
-import { InvalidDataError } from '../errors';
+import { InvalidDataError } from '../errors/type';
 
 // -- Shared
 

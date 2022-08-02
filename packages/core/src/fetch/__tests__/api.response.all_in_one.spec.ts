@@ -6,7 +6,7 @@ import { allSettled, fork } from 'effector';
 
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
-import { preparationError } from '../../errors';
+import { preparationError } from '../../errors/create_error';
 
 describe('fetch/api.response.all_in_one', () => {
   // Does not matter

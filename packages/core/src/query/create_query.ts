@@ -7,7 +7,7 @@ import { Contract } from '../contract/type';
 import { unkownContract } from '../contract/unkown_contract';
 import { identity } from '../misc/identity';
 import { StaticOrReactive, TwoArgsSourcedField } from '../misc/sourced';
-import { InvalidDataError } from '../errors';
+import { InvalidDataError } from '../errors/type';
 
 // Overload: Only handler
 function createQuery<Params, Response>(config: {

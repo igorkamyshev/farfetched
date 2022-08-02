@@ -1,9 +1,9 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
 import { not } from 'patronum';
+
 import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
-import { InvalidDataError } from '../errors';
-
+import { InvalidDataError } from '../errors/type';
 import { mergeOptionalConfig, OptionalConfig } from '../misc/sid';
 import {
   normalizeSourced,

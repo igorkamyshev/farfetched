@@ -6,7 +6,7 @@ import { allSettled, fork } from 'effector';
 
 import { fetchFx } from '../fetch';
 import { createJsonApiRequest } from '../json';
-import { preparationError } from '../../errors';
+import { preparationError } from '../../errors/create_error';
 
 describe('fetch/json.response.data', () => {
   // Does not matter

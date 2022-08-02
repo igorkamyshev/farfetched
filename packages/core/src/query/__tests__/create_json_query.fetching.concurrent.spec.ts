@@ -8,7 +8,7 @@ import { setTimeout } from 'timers/promises';
 import { fetchFx } from '../../fetch/fetch';
 import { createJsonQuery } from '../create_json_query';
 import { unkownContract } from '../../contract/unkown_contract';
-import { abortError } from '../../errors';
+import { abortError } from '../../errors/create_error';
 
 describe('remote_data/query/json.fetching.concurrent', () => {
   test('abort inflight requests', async () => {

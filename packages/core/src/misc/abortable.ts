@@ -7,8 +7,9 @@ import {
   createStore,
   createEffect,
 } from 'effector';
-import { abortError, AbortError } from '../errors';
 
+import { abortError } from '../errors/create_error';
+import { AbortError } from '../errors/type';
 import { createDefer, Defer } from './defer';
 
 let count = 0;

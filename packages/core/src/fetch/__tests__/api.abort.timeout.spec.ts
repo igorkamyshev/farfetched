@@ -4,10 +4,11 @@ import 'whatwg-fetch';
 import { allSettled, createStore, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 
+import { watchEffect } from '@farfetched/test-utils';
+
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
-import { watchEffect } from '@farfetched/test-utils';
-import { timeoutError } from '../../errors';
+import { timeoutError } from '../../errors/create_error';
 
 describe('fetch/api.abort.timeout', () => {
   // Does not matter

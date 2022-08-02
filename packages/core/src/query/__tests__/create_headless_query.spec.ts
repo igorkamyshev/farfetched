@@ -6,7 +6,7 @@ import { createHeadlessQuery } from '../create_headless_query';
 import { createDefer } from '../../misc/defer';
 import { unkownContract } from '../../contract/unkown_contract';
 import { identity } from '../../misc/identity';
-import { invalidDataError } from '../../errors';
+import { invalidDataError } from '../../errors/create_error';
 
 describe('core/createHeadlessQuery without contract', () => {
   const query = createHeadlessQuery(

@@ -1,8 +1,8 @@
 import { createEffect, createStore } from 'effector';
 import { expectType } from 'tsd';
-import { unkownContract } from '../../contract/unkown_contract';
-import { InvalidDataError } from '../../errors';
 
+import { unkownContract } from '../../contract/unkown_contract';
+import { InvalidDataError } from '../../errors/type';
 import { createQuery } from '../create_query';
 import { Query } from '../type';
 
