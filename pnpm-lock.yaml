@@ -1,110 +1,126 @@
 lockfileVersion: 5.4
 
-specifiers:
-  '@babel/core': ^7.18.6
-  '@babel/preset-typescript': ~7.18.6
-  '@changesets/cli': ^2.24.1
-  '@nrwl/cli': 14.4.1
-  '@nrwl/devkit': ^14.4.2
-  '@nrwl/eslint-plugin-nx': 14.4.1
-  '@nrwl/jest': 14.4.1
-  '@nrwl/js': 14.4.1
-  '@nrwl/linter': 14.4.1
-  '@nrwl/react': ^14.4.2
-  '@nrwl/web': 14.4.2
-  '@nrwl/workspace': 14.4.1
-  '@size-limit/file': ^7.0.8
-  '@testing-library/react': 13.3.0
-  '@types/jest': 27.4.1
-  '@types/node': 16.11.7
-  '@types/react': 18.0.14
-  '@types/react-dom': 18.0.5
-  '@typescript-eslint/eslint-plugin': ^5.29.0
-  '@typescript-eslint/parser': ^5.29.0
-  babel-jest: 27.5.1
-  babel-preset-solid: ~1.4.6
-  bytes-iec: ^3.1.1
-  core-js: ^3.6.5
-  effector: ^22.3.0
-  effector-react: 22.1.2
-  effector-solid: 0.22.0
-  eslint: ~8.15.0
-  eslint-config-prettier: 8.1.0
-  eslint-plugin-import: 2.26.0
-  eslint-plugin-jsx-a11y: 6.6.0
-  eslint-plugin-react: 7.30.1
-  eslint-plugin-react-hooks: 4.6.0
-  glob: ^8.0.3
-  jest: 27.5.1
-  nx: 14.4.1
-  patronum: ^1.8.5
-  prettier: ^2.6.2
-  react: 18.2.0
-  react-dom: 18.2.0
-  react-test-renderer: 18.2.0
-  regenerator-runtime: 0.13.7
-  runtypes: ^6.5.1
-  size-limit: ^7.0.8
-  solid-js: 1.4.7
-  ts-jest: 27.1.4
-  ts-node: ~10.8.0
-  tsd: ^0.22.0
-  typescript: ~4.7.2
-  whatwg-fetch: ^3.6.2
+importers:
 
-dependencies:
-  core-js: 3.23.3
-  effector-react: 22.1.2_fqnc2pqlfbgfkkbezvfttjatja
-  effector-solid: 0.22.0_gy47fnhyujeuzimuk7mxzluzxe
-  patronum: 1.8.5_effector@22.3.0
-  react: 18.2.0
-  react-dom: 18.2.0_react@18.2.0
-  regenerator-runtime: 0.13.7
-  runtypes: 6.5.1
-  solid-js: 1.4.7
+  .:
+    specifiers:
+      '@babel/core': ^7.18.6
+      '@babel/preset-typescript': ~7.18.6
+      '@changesets/cli': ^2.24.1
+      '@nrwl/cli': 14.4.1
+      '@nrwl/devkit': ^14.4.2
+      '@nrwl/eslint-plugin-nx': 14.4.1
+      '@nrwl/jest': 14.4.1
+      '@nrwl/js': 14.4.1
+      '@nrwl/linter': 14.4.1
+      '@nrwl/react': ^14.4.2
+      '@nrwl/web': 14.4.2
+      '@nrwl/workspace': 14.4.1
+      '@size-limit/file': ^7.0.8
+      '@testing-library/react': 13.3.0
+      '@types/jest': 27.4.1
+      '@types/node': 16.11.7
+      '@types/react': 18.0.14
+      '@types/react-dom': 18.0.5
+      '@typescript-eslint/eslint-plugin': ^5.29.0
+      '@typescript-eslint/parser': ^5.29.0
+      babel-jest: 27.5.1
+      babel-preset-solid: ~1.4.6
+      bytes-iec: ^3.1.1
+      core-js: ^3.6.5
+      effector: ^22.3.0
+      effector-react: 22.1.2
+      effector-solid: 0.22.0
+      eslint: ~8.15.0
+      eslint-config-prettier: 8.1.0
+      eslint-plugin-import: 2.26.0
+      eslint-plugin-jsx-a11y: 6.6.0
+      eslint-plugin-react: 7.30.1
+      eslint-plugin-react-hooks: 4.6.0
+      glob: ^8.0.3
+      jest: 27.5.1
+      nx: 14.4.1
+      patronum: ^1.8.5
+      prettier: ^2.6.2
+      react: 18.2.0
+      react-dom: 18.2.0
+      react-test-renderer: 18.2.0
+      regenerator-runtime: 0.13.7
+      runtypes: ^6.5.1
+      size-limit: ^7.0.8
+      solid-js: 1.4.7
+      ts-jest: 27.1.4
+      ts-node: ~10.8.0
+      tsd: ^0.22.0
+      typescript: ~4.7.2
+      whatwg-fetch: ^3.6.2
+    dependencies:
+      core-js: 3.23.3
+      effector-react: 22.1.2_fqnc2pqlfbgfkkbezvfttjatja
+      effector-solid: 0.22.0_gy47fnhyujeuzimuk7mxzluzxe
+      patronum: 1.8.5_effector@22.3.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      regenerator-runtime: 0.13.7
+      runtypes: 6.5.1
+      solid-js: 1.4.7
+    devDependencies:
+      '@babel/core': 7.18.6
+      '@babel/preset-typescript': 7.18.6_@babel+core@7.18.6
+      '@changesets/cli': 2.24.1
+      '@nrwl/cli': 14.4.1
+      '@nrwl/devkit': 14.4.2_nx@14.4.1
+      '@nrwl/eslint-plugin-nx': 14.4.1_6gmphncv6fc7yptzvdimmzveqm
+      '@nrwl/jest': 14.4.1_thbzhnph3b4cviluxklfrdgbym
+      '@nrwl/js': 14.4.1_dkf4uxpx27atnalg44hx6v27wm
+      '@nrwl/linter': 14.4.1_hjwsk7t4rtenhyzw3vpfwjmwy4
+      '@nrwl/react': 14.4.2_pd34rqzzsyyi22dfe46qitziz4
+      '@nrwl/web': 14.4.2_eu63zd5czomxa47fxak7rac6zm
+      '@nrwl/workspace': 14.4.1_p4mi2smrdlimk4bbxlu4b6wavm
+      '@size-limit/file': 7.0.8_size-limit@7.0.8
+      '@testing-library/react': 13.3.0_biqbaboplfbrettd7655fr4n2y
+      '@types/jest': 27.4.1
+      '@types/node': 16.11.7
+      '@types/react': 18.0.14
+      '@types/react-dom': 18.0.5
+      '@typescript-eslint/eslint-plugin': 5.30.5_4kxl66lm5rq3w3uv4rnh73m4am
+      '@typescript-eslint/parser': 5.30.5_4hx5bygx4rxgd7xwyndf6ymwce
+      babel-jest: 27.5.1_@babel+core@7.18.6
+      babel-preset-solid: 1.4.6_@babel+core@7.18.6
+      bytes-iec: 3.1.1
+      effector: 22.3.0
+      eslint: 8.15.0
+      eslint-config-prettier: 8.1.0_eslint@8.15.0
+      eslint-plugin-import: 2.26.0_tlajxtpeqqxigcfs42mrngur2y
+      eslint-plugin-jsx-a11y: 6.6.0_eslint@8.15.0
+      eslint-plugin-react: 7.30.1_eslint@8.15.0
+      eslint-plugin-react-hooks: 4.6.0_eslint@8.15.0
+      glob: 8.0.3
+      jest: 27.5.1_ts-node@10.8.2
+      nx: 14.4.1
+      prettier: 2.7.1
+      react-test-renderer: 18.2.0_react@18.2.0
+      size-limit: 7.0.8
+      ts-jest: 27.1.4_s4wf62dfowqfuo7gimvciszzye
+      ts-node: 10.8.2_t4lrjbt3sxauai4t5o275zsepa
+      tsd: 0.22.0
+      typescript: 4.7.4
+      whatwg-fetch: 3.6.2
 
-devDependencies:
-  '@babel/core': 7.18.6
-  '@babel/preset-typescript': 7.18.6_@babel+core@7.18.6
-  '@changesets/cli': 2.24.1
-  '@nrwl/cli': 14.4.1
-  '@nrwl/devkit': 14.4.2_nx@14.4.1
-  '@nrwl/eslint-plugin-nx': 14.4.1_6gmphncv6fc7yptzvdimmzveqm
-  '@nrwl/jest': 14.4.1_thbzhnph3b4cviluxklfrdgbym
-  '@nrwl/js': 14.4.1_dkf4uxpx27atnalg44hx6v27wm
-  '@nrwl/linter': 14.4.1_hjwsk7t4rtenhyzw3vpfwjmwy4
-  '@nrwl/react': 14.4.2_pd34rqzzsyyi22dfe46qitziz4
-  '@nrwl/web': 14.4.2_eu63zd5czomxa47fxak7rac6zm
-  '@nrwl/workspace': 14.4.1_p4mi2smrdlimk4bbxlu4b6wavm
-  '@size-limit/file': 7.0.8_size-limit@7.0.8
-  '@testing-library/react': 13.3.0_biqbaboplfbrettd7655fr4n2y
-  '@types/jest': 27.4.1
-  '@types/node': 16.11.7
-  '@types/react': 18.0.14
-  '@types/react-dom': 18.0.5
-  '@typescript-eslint/eslint-plugin': 5.30.5_4kxl66lm5rq3w3uv4rnh73m4am
-  '@typescript-eslint/parser': 5.30.5_4hx5bygx4rxgd7xwyndf6ymwce
-  babel-jest: 27.5.1_@babel+core@7.18.6
-  babel-preset-solid: 1.4.6_@babel+core@7.18.6
-  bytes-iec: 3.1.1
-  effector: 22.3.0
-  eslint: 8.15.0
-  eslint-config-prettier: 8.1.0_eslint@8.15.0
-  eslint-plugin-import: 2.26.0_tlajxtpeqqxigcfs42mrngur2y
-  eslint-plugin-jsx-a11y: 6.6.0_eslint@8.15.0
-  eslint-plugin-react: 7.30.1_eslint@8.15.0
-  eslint-plugin-react-hooks: 4.6.0_eslint@8.15.0
-  glob: 8.0.3
-  jest: 27.5.1_ts-node@10.8.2
-  nx: 14.4.1
-  prettier: 2.7.1
-  react-test-renderer: 18.2.0_react@18.2.0
-  size-limit: 7.0.8
-  ts-jest: 27.1.4_s4wf62dfowqfuo7gimvciszzye
-  ts-node: 10.8.2_t4lrjbt3sxauai4t5o275zsepa
-  tsd: 0.22.0
-  typescript: 4.7.4
-  whatwg-fetch: 3.6.2
+  packages/core:
+    specifiers: {}
+
+  packages/react:
+    specifiers: {}
+
+  packages/runtypes:
+    specifiers: {}
+
+  packages/solid:
+    specifiers: {}
+
+  packages/test-utils:
+    specifiers: {}
 
 packages:
 
