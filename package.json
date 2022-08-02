@@ -7,6 +7,7 @@
   "devDependencies": {
     "@babel/core": "^7.18.6",
     "@babel/preset-typescript": "~7.18.6",
+    "@changesets/cli": "^2.24.1",
     "@nrwl/cli": "14.4.1",
     "@nrwl/devkit": "^14.4.2",
     "@nrwl/eslint-plugin-nx": "14.4.1",
