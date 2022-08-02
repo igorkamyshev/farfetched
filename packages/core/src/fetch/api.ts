@@ -3,10 +3,7 @@ import { attach, createEffect, createEvent, Event, sample } from 'effector';
 import { abortable, AbortContext, AbortedError } from '../misc/abortable';
 import { anySignal } from '../misc/any_signal';
 import { normalizeStaticOrReactive, StaticOrReactive } from '../misc/sourced';
-import {
-  TimeoutController,
-  TimeoutError,
-} from '../misc/timeout_abort_controller';
+import { TimeoutController } from '../misc/timeout_abort_controller';
 import { NonOptionalKeys } from '../misc/ts';
 import {
   formatUrl,
@@ -15,6 +12,7 @@ import {
   type FetchApiRecord,
 } from '../misc/fetch_api';
 import { HttpError, requestFx } from './request';
+import { timeoutError, TimeoutError } from '../errors';
 
 type HttpMethod =
   | 'HEAD'
@@ -118,7 +116,6 @@ interface ApiConfig<B, R extends CreationRequestConfig<B>, P>
 
 type ApiRequestError =
   | AbortedError
-  | TimeoutError
   | TypeError
   | HttpError
   | TimeoutError
@@ -171,7 +168,7 @@ function createApiRequest<
 
       const response = await requestFx(request).catch((cause) => {
         if (timeoutController?.signal.aborted) {
-          throw new TimeoutError(timeoutController.timeout);
+          throw timeoutError({ timeout: timeoutController.timeout });
         }
 
         throw cause;
