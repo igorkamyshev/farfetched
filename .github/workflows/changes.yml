@@ -1,4 +1,4 @@
-name: changes
+name: Changes
 
 on:
   pull_request:

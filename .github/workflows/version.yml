@@ -2,14 +2,12 @@ name: Version
 
 on:
   push:
-    branches:
-      - changesets
+    branches: [master]
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   version:
-    name: Version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -22,9 +20,7 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
 
-      - name: Create Release Pull Request
+      - name: Create Version Pull Request
         uses: changesets/action@v1
-        with:
-          commit: Change version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
