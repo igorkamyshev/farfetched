@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - changeset-release/changesets
-    paths:
-      - '**/CHANGELOG.md'
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
