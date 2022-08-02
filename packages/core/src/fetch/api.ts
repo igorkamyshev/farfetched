@@ -1,12 +1,9 @@
 import { attach, createEffect, createEvent, Event, sample } from 'effector';
 
-import { abortable, AbortContext, AbortedError } from '../misc/abortable';
+import { abortable, AbortContext } from '../misc/abortable';
 import { anySignal } from '../misc/any_signal';
 import { normalizeStaticOrReactive, StaticOrReactive } from '../misc/sourced';
-import {
-  TimeoutController,
-  TimeoutError,
-} from '../misc/timeout_abort_controller';
+import { TimeoutController } from '../misc/timeout_abort_controller';
 import { NonOptionalKeys } from '../misc/ts';
 import {
   formatUrl,
@@ -14,7 +11,15 @@ import {
   formatHeaders,
   type FetchApiRecord,
 } from '../misc/fetch_api';
-import { HttpError, requestFx } from './request';
+import { requestFx } from './request';
+import {
+  AbortError,
+  HttpError,
+  NetworkError,
+  PreparationError,
+  TimeoutError,
+} from '../errors/type';
+import { timeoutError, preparationError } from '../errors/create_error';
 
 type HttpMethod =
   | 'HEAD'
@@ -117,12 +122,11 @@ interface ApiConfig<B, R extends CreationRequestConfig<B>, P>
 }
 
 type ApiRequestError =
-  | AbortedError
+  | AbortError
   | TimeoutError
-  | TypeError
-  | HttpError
-  | TimeoutError
-  | PreparationError;
+  | PreparationError
+  | NetworkError
+  | HttpError;
 
 function createApiRequest<
   R extends CreationRequestConfig<B>,
@@ -171,14 +175,20 @@ function createApiRequest<
 
       const response = await requestFx(request).catch((cause) => {
         if (timeoutController?.signal.aborted) {
-          throw new TimeoutError(timeoutController.timeout);
+          throw timeoutError({ timeout: timeoutController.timeout });
         }
 
         throw cause;
       });
 
-      const prepared = await prepareFx(response).catch((cause) => {
-        throw new PreparationError(response, cause);
+      // We cannot read body of the response twice (prepareFx and throw preparationError)
+      const clonedResponse = response.clone();
+
+      const prepared = await prepareFx(response).catch(async (cause) => {
+        throw preparationError({
+          response: await clonedResponse.text(),
+          reason: cause?.message ?? null,
+        });
       });
 
       return prepared;
@@ -275,22 +285,8 @@ function createApiRequest<
   return boundAbortableApiRequestFx;
 }
 
-/**
- * `prepare.extract` throws error, so preparation is impossible
- */
-class PreparationError extends Error {
-  constructor(
-    /** Original response */
-    readonly response: Response,
-    cause: Error
-  ) {
-    super(`Cannot prepare response`, { cause });
-  }
-}
-
 export {
   createApiRequest,
-  PreparationError,
   type HttpMethod,
   type RequestBody,
   type ApiConfigShared,

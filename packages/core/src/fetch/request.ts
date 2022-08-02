@@ -1,26 +1,26 @@
 import { createEffect } from 'effector';
+import { HttpError, NetworkError } from '../errors/type';
+import { httpError, networkError } from '../errors/create_error';
 
 import { fetchFx } from './fetch';
 
 /**
- * Response with code is 4XX/5XX means that request failed
- */
-class HttpError extends Error {
-  constructor(public response: Response) {
-    super(response.statusText);
-  }
-}
-
-/**
  * Basic request effect around fetchFx, with some additional features:
  * + it throws error if response status is 4XX/5XX
+ * + it throws serializable NetworkError instead of TypeError
  */
-const requestFx = createEffect<Request, Response, TypeError | HttpError>({
+const requestFx = createEffect<Request, Response, NetworkError | HttpError>({
   handler: async (request) => {
-    const response = await fetchFx(request);
+    const response = await fetchFx(request).catch((cause) => {
+      throw networkError({ reason: cause?.message ?? null });
+    });
 
     if (isResponseFailed(response)) {
-      throw new HttpError(response);
+      throw httpError({
+        status: response.status,
+        statusText: response.statusText,
+        response: (await response.text().catch(() => null)) ?? null,
+      });
     }
 
     return response;
@@ -41,7 +41,7 @@ function isResponseFailed(response: Response) {
    *  application will receive response from the of redirection chain
    *
    * + if request has `redirect: error` or `redirect: manual`,
-   *  application will receive TypeError from Fetch API on 3XX response
+   *  application will receive NetworkError based on TypeError from Fetch API on 3XX response
    */
 
   const isClientError = response.status > 399 && response.status < 500;
@@ -50,4 +50,4 @@ function isResponseFailed(response: Response) {
   return isClientError || isServerError;
 }
 
-export { HttpError, requestFx };
+export { requestFx };

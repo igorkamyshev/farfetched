@@ -6,9 +6,9 @@ import { allSettled, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 
 import { fetchFx } from '../../fetch/fetch';
-import { AbortedError } from '../../misc/abortable';
 import { createJsonQuery } from '../create_json_query';
 import { unkownContract } from '../../contract/unkown_contract';
+import { abortError } from '../../errors/create_error';
 
 describe('remote_data/query/json.fetching.concurrent', () => {
   test('abort inflight requests', async () => {
@@ -47,7 +47,7 @@ describe('remote_data/query/json.fetching.concurrent', () => {
     expect(requestMock).toHaveBeenCalledTimes(2);
     expect(watcher.listeners.onFinally).toBeCalledTimes(2);
 
-    expect(watcher.listeners.onError).toBeCalledWith(expect.any(AbortedError));
+    expect(watcher.listeners.onError).toBeCalledWith(abortError());
 
     expect(watcher.listeners.onDone).toBeCalledTimes(1);
   });

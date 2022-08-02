@@ -1,9 +1,3 @@
-class TimeoutError extends Error {
-  constructor(readonly timeout: number) {
-    super('Request was aborted due to timeout');
-  }
-}
-
 /**
  * Inlined library
  * https://github.com/jacobheun/timeout-abort-controller/
@@ -31,4 +25,4 @@ class TimeoutController extends AbortController {
   }
 }
 
-export { TimeoutController, TimeoutError };
+export { TimeoutController };

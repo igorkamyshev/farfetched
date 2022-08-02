@@ -1,8 +1,8 @@
 import { createEffect, createStore } from 'effector';
 import { expectType } from 'tsd';
-import { InvalidDataError } from '../../contract/error';
-import { unkownContract } from '../../contract/unkown_contract';
 
+import { unkownContract } from '../../contract/unkown_contract';
+import { InvalidDataError } from '../../errors/type';
 import { createQuery } from '../create_query';
 import { Query } from '../type';
 
@@ -65,7 +65,7 @@ effect_contract: {
       number,
       string,
       | { effectError: boolean } // from effect
-      | InvalidDataError<string> // from data.validate
+      | InvalidDataError // from data.validate
       | { contractError: string } // from error.extract
     >
   >(numberWithStringQuery);

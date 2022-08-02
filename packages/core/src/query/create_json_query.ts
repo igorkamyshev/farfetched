@@ -15,7 +15,7 @@ import { FetchApiRecord } from '../misc/fetch_api';
 import { createHeadlessQuery } from './create_headless_query';
 import { unkownContract } from '../contract/unkown_contract';
 import { identity } from '../misc/identity';
-import { InvalidDataError } from '../contract/error';
+import { InvalidDataError } from '../errors/type';
 
 // -- Shared
 
@@ -94,11 +94,7 @@ function createJsonQuery<
       mapData: TwoArgsSourcedField<Data, Params, TransformedData, DataSource>;
     };
   }
-): Query<
-  Params,
-  TransformedData,
-  ApiRequestError | Error | InvalidDataError<Response>
->;
+): Query<Params, TransformedData, ApiRequestError | Error | InvalidDataError>;
 
 // params + no mapData
 function createJsonQuery<
@@ -121,7 +117,7 @@ function createJsonQuery<
       contract: Contract<unknown, Data, Error>;
     };
   }
-): Query<Params, Data, ApiRequestError | Error | InvalidDataError<Response>>;
+): Query<Params, Data, ApiRequestError | Error | InvalidDataError>;
 
 // No params + mapData
 function createJsonQuery<
@@ -145,11 +141,7 @@ function createJsonQuery<
       mapData: TwoArgsSourcedField<Data, void, TransformedData, DataSource>;
     };
   }
-): Query<
-  void,
-  TransformedData,
-  ApiRequestError | Error | InvalidDataError<Response>
->;
+): Query<void, TransformedData, ApiRequestError | Error | InvalidDataError>;
 
 // No params + no mapData
 function createJsonQuery<
@@ -170,7 +162,7 @@ function createJsonQuery<
       contract: Contract<unknown, Data, Error>;
     };
   }
-): Query<void, Data, ApiRequestError | Error | InvalidDataError<Response>>;
+): Query<void, Data, ApiRequestError | Error | InvalidDataError>;
 
 // -- Implementation --
 

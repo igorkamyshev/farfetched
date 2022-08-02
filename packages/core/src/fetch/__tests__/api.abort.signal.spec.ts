@@ -5,9 +5,9 @@ import { allSettled, createEvent, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { watchEffect } from '@farfetched/test-utils';
 
-import { AbortedError } from '../../misc/abortable';
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
+import { abortError } from '../../errors/create_error';
 
 describe('remote_data/transport/api.abort.signal', () => {
   // Does not matter
@@ -50,9 +50,7 @@ describe('remote_data/transport/api.abort.signal', () => {
     await allSettled(abort, { scope, params: 'random string' });
 
     expect(watcher.listeners.onFailData).toHaveBeenCalledTimes(1);
-    expect(watcher.listeners.onFailData).toHaveBeenCalledWith(
-      new AbortedError()
-    );
+    expect(watcher.listeners.onFailData).toHaveBeenCalledWith(abortError());
 
     expect(watcher.listeners.onDone).not.toHaveBeenCalled();
     expect(fetchMock.mock.calls[0][0].signal.aborted).toBeTruthy();

@@ -1,14 +1,7 @@
-import {
-  is,
-  createEvent,
-  fork,
-  allSettled,
-  scopeBind,
-  sample,
-  Event,
-} from 'effector';
+import { is, createEvent, fork, allSettled, scopeBind } from 'effector';
 
-import { abortable, AbortedError, isAborted, isNotAborted } from '../abortable';
+import { abortError } from '../../errors/create_error';
+import { abortable } from '../abortable';
 
 describe('lib/effector-abortable', () => {
   test('returns effect', async () => {
@@ -70,7 +63,7 @@ describe('lib/effector-abortable', () => {
 
     expect(aborted).toHaveBeenCalledTimes(1);
     expect(success).toHaveBeenCalledTimes(0);
-    expect(failed.mock.calls[0][0] instanceof AbortedError).toBe(true);
+    expect(failed.mock.calls[0][0]).toEqual(abortError());
   });
 
   test('multiple abort hooks', async () => {
@@ -206,13 +199,6 @@ describe('lib/effector-abortable', () => {
     expect(aborted).toHaveBeenCalledTimes(2);
     expect(failed.mock.calls.map(([arg]) => arg)).toEqual([3, 15]);
     expect(success.mock.calls.map(([arg]) => arg)).toEqual([10, 10, 10]);
-  });
-
-  test('helpers', () => {
-    const aborted = new AbortedError();
-
-    expect(isAborted(aborted)).toBe(true);
-    expect(isNotAborted(aborted)).toBe(false);
   });
 
   test('multiple unwatch calls does not affect other hooks', async () => {

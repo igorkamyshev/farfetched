@@ -4,9 +4,9 @@ import 'whatwg-fetch';
 import { watchEffect } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
 
-import { PreparationError } from '../api';
 import { fetchFx } from '../fetch';
 import { createJsonApiRequest } from '../json';
+import { preparationError } from '../../errors/create_error';
 
 describe('fetch/json.response.data', () => {
   // Does not matter
@@ -33,7 +33,10 @@ describe('fetch/json.response.data', () => {
     });
 
     expect(watcher.listeners.onFailData).toBeCalledWith(
-      new PreparationError(new Response('It is not JSON'), new Error())
+      preparationError({
+        response: 'It is not JSON',
+        reason: 'Unexpected token I in JSON at position 0',
+      })
     );
   });
 

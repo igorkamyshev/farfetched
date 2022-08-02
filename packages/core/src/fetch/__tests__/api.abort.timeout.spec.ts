@@ -4,10 +4,11 @@ import 'whatwg-fetch';
 import { allSettled, createStore, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 
-import { TimeoutError } from '../../misc/timeout_abort_controller';
+import { watchEffect } from '@farfetched/test-utils';
+
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
-import { watchEffect } from '@farfetched/test-utils';
+import { timeoutError } from '../../errors/create_error';
 
 describe('fetch/api.abort.timeout', () => {
   // Does not matter
@@ -51,7 +52,7 @@ describe('fetch/api.abort.timeout', () => {
     expect(fetchMock.mock.calls[0][0].signal.aborted).toBeTruthy();
     expect(watcher.listeners.onFailData).toHaveBeenCalledTimes(1);
     expect(watcher.listeners.onFailData).toHaveBeenCalledWith(
-      new TimeoutError(timeout)
+      timeoutError({ timeout })
     );
 
     expect(watcher.listeners.onDone).not.toHaveBeenCalled();
@@ -85,7 +86,7 @@ describe('fetch/api.abort.timeout', () => {
     expect(fetchMock.mock.calls[0][0].signal.aborted).toBeTruthy();
     expect(watcher.listeners.onFailData).toHaveBeenCalledTimes(1);
     expect(watcher.listeners.onFailData).toHaveBeenCalledWith(
-      new TimeoutError(timeout)
+      timeoutError({ timeout })
     );
 
     expect(watcher.listeners.onDone).not.toHaveBeenCalled();
@@ -123,7 +124,7 @@ describe('fetch/api.abort.timeout', () => {
     expect(fetchMock.mock.calls[0][0].signal.aborted).toBeTruthy();
     expect(watcher.listeners.onFail).toBeCalledTimes(1);
     expect(watcher.listeners.onFailData).toBeCalledWith(
-      new TimeoutError(timeout)
+      timeoutError({ timeout })
     );
 
     // Do not cancel second fast request
