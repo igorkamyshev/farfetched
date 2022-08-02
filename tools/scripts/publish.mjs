@@ -36,4 +36,4 @@ invariant(
 
 process.chdir(outputPath);
 
-execSync(`pnpm publish`, { stdio: 'inherit' });
+execSync(`pnpm publish --access public`, { stdio: 'inherit' });
