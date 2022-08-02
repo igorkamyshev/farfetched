@@ -1,7 +1,7 @@
-class InvalidConfigError extends Error {
+class InvalidConfigException extends Error {
   constructor(message: string) {
     super(message);
   }
 }
 
-export { InvalidConfigError };
+export { InvalidConfigException };

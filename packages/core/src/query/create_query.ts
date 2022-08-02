@@ -2,7 +2,7 @@ import { createEffect, Effect, is } from 'effector';
 
 import { createHeadlessQuery } from './create_headless_query';
 import { Query } from './type';
-import { InvalidConfigError } from '../misc/config';
+import { InvalidConfigException } from '../misc/config';
 import { Contract } from '../contract/type';
 import { unkownContract } from '../contract/unkown_contract';
 import { identity } from '../misc/identity';
@@ -107,7 +107,7 @@ function resolveExecuteEffect<Params, Response, Error = unknown>(
     return createEffect<Params, Response, Error>(config.handler);
   }
 
-  throw new InvalidConfigError(
+  throw new InvalidConfigException(
     'handler or effect must be passed to createQuery'
   );
 }
