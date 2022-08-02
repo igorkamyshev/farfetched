@@ -8,10 +8,6 @@ jobs:
   changeset:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x]
-
     steps:
       - uses: actions/checkout@v3
         with:
@@ -21,7 +17,7 @@ jobs:
           version: 7.2.1
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.x
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm changeset status
