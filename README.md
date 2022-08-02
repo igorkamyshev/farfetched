@@ -74,6 +74,7 @@ Continue reading about Farfetched in the [documentation](./docs/README.md). It c
   - run linter via `pnpm nx affected:lint`
   - try to build it via `pnpm nx affected:build`
   - format code via `pnpm nx format:write`
+  - fill in changes via `pnpm changeset`
 - open a PR
 - enjoy 🎉
 
