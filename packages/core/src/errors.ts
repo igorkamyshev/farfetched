@@ -63,9 +63,37 @@ function preparationError({
 }
 
 const HTTP = 'HTTP';
-interface HttpError {}
+interface HttpError extends FarfetchedError<typeof HTTP> {
+  status: number;
+  statusText: string;
+  response: string | null;
+}
 
-export { invalidDataError, timeoutError, abortError, preparationError };
+function httpError({
+  status,
+  statusText,
+  response,
+}: {
+  status: number;
+  statusText: string;
+  response: string | null;
+}): HttpError {
+  return {
+    errorType: HTTP,
+    explanation: 'HTTP error',
+    status,
+    statusText,
+    response,
+  };
+}
+
+export {
+  invalidDataError,
+  timeoutError,
+  abortError,
+  preparationError,
+  httpError,
+};
 
 export type {
   InvalidDataError,

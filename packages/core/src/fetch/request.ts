@@ -1,15 +1,7 @@
 import { createEffect } from 'effector';
+import { httpError, HttpError } from '../errors';
 
 import { fetchFx } from './fetch';
-
-/**
- * Response with code is 4XX/5XX means that request failed
- */
-class HttpError extends Error {
-  constructor(public response: Response) {
-    super(response.statusText);
-  }
-}
 
 /**
  * Basic request effect around fetchFx, with some additional features:
@@ -20,7 +12,11 @@ const requestFx = createEffect<Request, Response, TypeError | HttpError>({
     const response = await fetchFx(request);
 
     if (isResponseFailed(response)) {
-      throw new HttpError(response);
+      throw httpError({
+        status: response.status,
+        statusText: response.statusText,
+        response: (await response.text().catch(() => null)) ?? null,
+      });
     }
 
     return response;
@@ -50,4 +46,4 @@ function isResponseFailed(response: Response) {
   return isClientError || isServerError;
 }
 
-export { HttpError, requestFx };
+export { requestFx };

@@ -5,7 +5,8 @@ import { allSettled, fork } from 'effector';
 import { watchEffect } from '@farfetched/test-utils';
 
 import { fetchFx } from '../fetch';
-import { HttpError, requestFx } from '../request';
+import { requestFx } from '../request';
+import { httpError } from '../../errors';
 
 describe('fetch/request', () => {
   describe('status codes', () => {
@@ -54,7 +55,11 @@ describe('fetch/request', () => {
       });
 
       expect(effectWatcher.listeners.onFailData).toHaveBeenCalledWith(
-        new HttpError(FAILED_RESPONSE)
+        httpError({
+          status: code,
+          statusText: 'Request cannot',
+          response: '',
+        })
       );
     });
   });

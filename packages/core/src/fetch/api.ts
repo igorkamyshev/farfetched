@@ -11,9 +11,10 @@ import {
   formatHeaders,
   type FetchApiRecord,
 } from '../misc/fetch_api';
-import { HttpError, requestFx } from './request';
+import { requestFx } from './request';
 import {
   AbortError,
+  HttpError,
   PreparationError,
   preparationError,
   timeoutError,
