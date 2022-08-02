@@ -1,14 +1,7 @@
-import {
-  is,
-  createEvent,
-  fork,
-  allSettled,
-  scopeBind,
-  sample,
-  Event,
-} from 'effector';
+import { is, createEvent, fork, allSettled, scopeBind } from 'effector';
+import { abortError } from '../../errors';
 
-import { abortable, AbortedError, isAborted, isNotAborted } from '../abortable';
+import { abortable, isAborted, isNotAborted } from '../abortable';
 
 describe('lib/effector-abortable', () => {
   test('returns effect', async () => {
@@ -70,7 +63,7 @@ describe('lib/effector-abortable', () => {
 
     expect(aborted).toHaveBeenCalledTimes(1);
     expect(success).toHaveBeenCalledTimes(0);
-    expect(failed.mock.calls[0][0] instanceof AbortedError).toBe(true);
+    expect(failed.mock.calls[0][0]).toEqual(abortError());
   });
 
   test('multiple abort hooks', async () => {
@@ -209,7 +202,7 @@ describe('lib/effector-abortable', () => {
   });
 
   test('helpers', () => {
-    const aborted = new AbortedError();
+    const aborted = abortError();
 
     expect(isAborted(aborted)).toBe(true);
     expect(isNotAborted(aborted)).toBe(false);

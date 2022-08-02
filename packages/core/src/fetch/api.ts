@@ -1,6 +1,6 @@
 import { attach, createEffect, createEvent, Event, sample } from 'effector';
 
-import { abortable, AbortContext, AbortedError } from '../misc/abortable';
+import { abortable, AbortContext } from '../misc/abortable';
 import { anySignal } from '../misc/any_signal';
 import { normalizeStaticOrReactive, StaticOrReactive } from '../misc/sourced';
 import { TimeoutController } from '../misc/timeout_abort_controller';
@@ -12,7 +12,7 @@ import {
   type FetchApiRecord,
 } from '../misc/fetch_api';
 import { HttpError, requestFx } from './request';
-import { timeoutError, TimeoutError } from '../errors';
+import { AbortError, timeoutError, TimeoutError } from '../errors';
 
 type HttpMethod =
   | 'HEAD'
@@ -115,7 +115,7 @@ interface ApiConfig<B, R extends CreationRequestConfig<B>, P>
 }
 
 type ApiRequestError =
-  | AbortedError
+  | AbortError
   | TypeError
   | HttpError
   | TimeoutError

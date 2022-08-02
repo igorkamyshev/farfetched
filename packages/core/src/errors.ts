@@ -31,7 +31,15 @@ function timeoutError({ timeout }: { timeout: number }): TimeoutError {
 }
 
 const ABORT = 'ABORT';
-interface AbortError {}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface AbortError extends FarfetchedError<typeof ABORT> {}
+
+function abortError(): AbortError {
+  return {
+    errorType: ABORT,
+    explanation: 'Request aborted',
+  };
+}
 
 const PREPARATION = 'PREPARATION';
 interface PreparationError {}
@@ -39,7 +47,7 @@ interface PreparationError {}
 const HTTP = 'HTTP';
 interface HttpError {}
 
-export { invalidDataError, timeoutError };
+export { invalidDataError, timeoutError, abortError };
 
 export type {
   InvalidDataError,

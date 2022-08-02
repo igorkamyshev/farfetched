@@ -1,7 +1,8 @@
 import { sample, Event } from 'effector';
 import { expectType } from 'tsd';
 
-import { abortable, AbortedError, isAborted, isNotAborted } from '../abortable';
+import { AbortError } from '../../errors';
+import { abortable, isAborted, isNotAborted } from '../abortable';
 
 const fFx = abortable({
   name: 'fFx',
@@ -10,12 +11,10 @@ const fFx = abortable({
   },
 });
 
-expectType<Error[]>([new Error() as Error | AbortedError].filter(isNotAborted));
-expectType<AbortedError[]>(
-  [new Error() as Error | AbortedError].filter(isAborted)
-);
+expectType<Error[]>([new Error() as Error | AbortError].filter(isNotAborted));
+expectType<AbortError[]>([new Error() as Error | AbortError].filter(isAborted));
 
-expectType<Event<AbortedError>>(
+expectType<Event<AbortError>>(
   sample({ clock: fFx.failData, filter: isAborted })
 );
 // TODO: broken due to Effector

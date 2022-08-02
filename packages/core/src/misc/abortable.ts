@@ -7,6 +7,7 @@ import {
   createStore,
   createEffect,
 } from 'effector';
+import { abortError, AbortError } from '../errors';
 
 import { createDefer, Defer } from './defer';
 
@@ -16,17 +17,9 @@ const getId = () => {
   return count;
 };
 
-export class AbortedError extends Error {
-  aborted = Symbol('aborted');
-
-  constructor() {
-    super(`Aborted effect call`);
-  }
-}
-
-export const isAborted = (e: unknown): e is AbortedError =>
-  e instanceof AbortedError;
-export const isNotAborted = <T>(e: T): e is Exclude<T, AbortedError> =>
+export const isAborted = (e: unknown): e is AbortError =>
+  (e as any)?.errorType === 'ABORT';
+export const isNotAborted = <T>(e: T): e is Exclude<T, AbortError> =>
   !isAborted(e);
 
 const createAborter = () => {
@@ -78,10 +71,10 @@ export function abortable<P = void, D = void, F = Error>(config: {
   name?: string;
   abort?: AbortConfig;
   effect(p: P, ctx: AbortContext): D | Promise<D>;
-}): Effect<P, D, F | AbortedError> {
+}): Effect<P, D, F | AbortError> {
   const { abort, effect } = config;
 
-  type CurrentCall = Call<D, F | AbortedError>;
+  type CurrentCall = Call<D, F | AbortError>;
 
   const runCallFx = createEffect(async (def: CurrentCall) => {
     const result = await def.promise;
@@ -104,7 +97,7 @@ export function abortable<P = void, D = void, F = Error>(config: {
     $calls.watch(abortTrigger, (calls) => {
       calls.forEach((c) => {
         c.context?.runAborters?.();
-        c.reject(new AbortedError());
+        c.reject(abortError());
       });
     });
   }
@@ -112,12 +105,12 @@ export function abortable<P = void, D = void, F = Error>(config: {
   // нужно, чтобы поддержать и синхронные эффекты тоже
   const handler = async (...args: Parameters<typeof effect>) => effect(...args);
 
-  const runnerFx = createEffect<P, D, F | AbortedError>({
+  const runnerFx = createEffect<P, D, F | AbortError>({
     name: config.name ?? 'runnerFx',
     sid: (config.name ?? 'runnerFx') + getId(),
     handler: async (p: P) => {
       const { runAborters, onAbort } = createAborter();
-      const call = createCall<D, F | AbortedError>({ runAborters });
+      const call = createCall<D, F | AbortError>({ runAborters });
 
       callsApi.add(call);
 

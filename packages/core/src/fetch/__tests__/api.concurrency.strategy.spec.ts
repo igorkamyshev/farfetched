@@ -5,9 +5,9 @@ import { allSettled, createEvent, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { watchEffect } from '@farfetched/test-utils';
 
-import { AbortedError } from '../../misc/abortable';
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
+import { abortError } from '../../errors';
 
 describe('fetch/api.concurrency.strategy', () => {
   // Does not matter
@@ -67,13 +67,13 @@ describe('fetch/api.concurrency.strategy', () => {
     expect(watcher.listeners.onFail).toBeCalledWith(
       expect.objectContaining({
         params: expect.objectContaining({ query: FIRST_QUERY }),
-        error: new AbortedError(),
+        error: abortError(),
       })
     );
     expect(watcher.listeners.onFail).toBeCalledWith(
       expect.objectContaining({
         params: expect.objectContaining({ query: SECOND_QUERY }),
-        error: new AbortedError(),
+        error: abortError(),
       })
     );
 
