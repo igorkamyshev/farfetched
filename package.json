@@ -28,6 +28,7 @@
     "babel-jest": "27.5.1",
     "babel-preset-solid": "~1.4.6",
     "bytes-iec": "^3.1.1",
+    "chalk": "^5.0.1",
     "effector": "^22.3.0",
     "eslint": "~8.15.0",
     "eslint-config-prettier": "8.1.0",

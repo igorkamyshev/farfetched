@@ -1,27 +1,15 @@
 name: Release
 
 on:
-  push:
-    branches: [master]
+  pull_request:
+    branches: 
+      - master
+    types:
+      - closed
 
 jobs:
-  changes:
-    runs-on: ubuntu-latest
-    outputs:
-      packages: ${{ steps.filter.outputs.packages }}
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            packages:
-              - 'packages/**/CHANGELOG.md'
   release:
-    needs: changes
-    if: ${{ needs.changes.outputs.packages == 'true' }}
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -33,4 +21,4 @@ jobs:
           node-version: 18.x
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm publish --dry-run
+      - run: pnpm nx run-many --output-style=static --target=publish --all
