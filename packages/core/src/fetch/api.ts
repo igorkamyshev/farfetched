@@ -12,7 +12,13 @@ import {
   type FetchApiRecord,
 } from '../misc/fetch_api';
 import { HttpError, requestFx } from './request';
-import { AbortError, timeoutError, TimeoutError } from '../errors';
+import {
+  AbortError,
+  PreparationError,
+  preparationError,
+  timeoutError,
+  TimeoutError,
+} from '../errors';
 
 type HttpMethod =
   | 'HEAD'
@@ -174,8 +180,14 @@ function createApiRequest<
         throw cause;
       });
 
-      const prepared = await prepareFx(response).catch((cause) => {
-        throw new PreparationError(response, cause);
+      // We cannot read body of the response twice (prepareFx and throw preparationError)
+      const clonedResponse = response.clone();
+
+      const prepared = await prepareFx(response).catch(async (cause) => {
+        throw preparationError({
+          response: await clonedResponse.text(),
+          reason: cause?.message ?? null,
+        });
       });
 
       return prepared;
@@ -272,22 +284,8 @@ function createApiRequest<
   return boundAbortableApiRequestFx;
 }
 
-/**
- * `prepare.extract` throws error, so preparation is impossible
- */
-class PreparationError extends Error {
-  constructor(
-    /** Original response */
-    readonly response: Response,
-    cause: Error
-  ) {
-    super(`Cannot prepare response`, { cause });
-  }
-}
-
 export {
   createApiRequest,
-  PreparationError,
   type HttpMethod,
   type RequestBody,
   type ApiConfigShared,

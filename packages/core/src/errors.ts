@@ -42,12 +42,30 @@ function abortError(): AbortError {
 }
 
 const PREPARATION = 'PREPARATION';
-interface PreparationError {}
+interface PreparationError extends FarfetchedError<typeof PREPARATION> {
+  response: string;
+  reason: string | null;
+}
+
+function preparationError({
+  response,
+  reason,
+}: {
+  response: string;
+  reason: string | null;
+}): PreparationError {
+  return {
+    errorType: PREPARATION,
+    explanation: 'Preparation error',
+    response,
+    reason,
+  };
+}
 
 const HTTP = 'HTTP';
 interface HttpError {}
 
-export { invalidDataError, timeoutError, abortError };
+export { invalidDataError, timeoutError, abortError, preparationError };
 
 export type {
   InvalidDataError,

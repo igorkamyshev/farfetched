@@ -4,8 +4,9 @@ import 'whatwg-fetch';
 import { allSettled, fork } from 'effector';
 import { watchEffect } from '@farfetched/test-utils';
 
-import { createApiRequest, PreparationError } from '../api';
+import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
+import { preparationError } from '../../errors';
 
 describe('fetch/api.response.prepare', () => {
   // Does not matter
@@ -83,7 +84,7 @@ describe('fetch/api.response.exceptions', () => {
       });
 
       expect(effectWatcher.listeners.onFailData).toHaveBeenCalledWith(
-        new PreparationError(ORIGINAL_RESPONSE, new Error('Oooops'))
+        preparationError({ response: 'ok', reason: 'oops' })
       );
     }
   );
