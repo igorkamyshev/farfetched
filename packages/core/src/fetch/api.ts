@@ -15,6 +15,7 @@ import { requestFx } from './request';
 import {
   AbortError,
   HttpError,
+  NetworkError,
   PreparationError,
   preparationError,
   timeoutError,
@@ -123,10 +124,10 @@ interface ApiConfig<B, R extends CreationRequestConfig<B>, P>
 
 type ApiRequestError =
   | AbortError
-  | TypeError
-  | HttpError
   | TimeoutError
-  | PreparationError;
+  | PreparationError
+  | NetworkError
+  | HttpError;
 
 function createApiRequest<
   R extends CreationRequestConfig<B>,

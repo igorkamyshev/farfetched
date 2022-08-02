@@ -87,12 +87,26 @@ function httpError({
   };
 }
 
+const NETWORK = 'NETWORK';
+interface NetworkError extends FarfetchedError<typeof NETWORK> {
+  reason: string | null;
+}
+
+function networkError({ reason }: { reason: string | null }): NetworkError {
+  return {
+    errorType: NETWORK,
+    explanation: 'Network error',
+    reason,
+  };
+}
+
 export {
   invalidDataError,
   timeoutError,
   abortError,
   preparationError,
   httpError,
+  networkError,
 };
 
 export type {
@@ -101,4 +115,5 @@ export type {
   AbortError,
   PreparationError,
   HttpError,
+  NetworkError,
 };
