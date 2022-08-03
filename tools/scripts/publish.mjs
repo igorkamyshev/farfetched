@@ -40,10 +40,11 @@ invariant(
   `No version provided or version did not match Semantic Versioning, expected: #.#.#-tag.# or #.#.#, got ${version}.`
 );
 
-const result = spawnSync('npm', ['publish', '--json']);
+const result = spawnSync('npm', ['publish', '--json', '--access', 'public']);
 
-if (result.stderr.toString()) {
-  const errorInfo = getLastJsonObjectFromString(result.stderr.toString());
+const errorInfo = getLastJsonObjectFromString(result.stderr.toString());
+
+if (errorInfo) {
   logger.warn('Skip publishing\n');
   logger.warn(errorInfo.error.summary);
 } else {
