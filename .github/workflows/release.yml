@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: 
+    branches:
       - master
 
 jobs:
@@ -19,6 +19,6 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: |
-          echo "_auth="${{secrets.NPM_TOKEN}}"" > ~/.npmrc
+          echo "//registry.npmjs.org/:_authToken="${{secrets.NPM_TOKEN}}"" > ~/.npmrc
         shell: sh
       - run: pnpm nx run-many --output-style=static --target=publish --all

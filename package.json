@@ -57,8 +57,5 @@
     "regenerator-runtime": "0.13.7",
     "runtypes": "^6.5.1",
     "solid-js": "1.4.7"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }
