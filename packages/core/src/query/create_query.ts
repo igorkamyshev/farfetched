@@ -26,8 +26,8 @@ function createQuery<
   Params,
   Response,
   Error,
-  ContractData,
-  ContractError
+  ContractData extends Response,
+  ContractError extends Response
 >(config: {
   effect: Effect<Params, Response, Error>;
   contract: Contract<Response, ContractData, ContractError>;
@@ -52,8 +52,8 @@ function createQuery<
   Params,
   Response,
   Error,
-  ContractData,
-  ContractError,
+  ContractData extends Response,
+  ContractError extends Response,
   MappedData,
   MapDataSource = void
 >(config: {
@@ -68,8 +68,8 @@ function createQuery<
   Params,
   Response,
   Error,
-  ContractData = Response,
-  ContractError = never,
+  ContractData extends Response = Response,
+  ContractError extends Response = never,
   MappedData = ContractData,
   MapDataSource = void
 >(

@@ -6,33 +6,21 @@ describe('runtypes/runtypeContract full', () => {
   test('error response', () => {
     const contract = runtypeContract({ data: String, error: Number });
 
-    expect(contract.error.is(2)).toBeTruthy();
+    expect(contract.isError(2)).toBeTruthy();
 
-    const error = contract.error.extract(2);
-    expect(error).toBe(2);
-
-    expect(contract.data.validate(2)).toMatchInlineSnapshot(`
+    expect(contract.getValidationErrors(2)).toMatchInlineSnapshot(`
       Array [
         "Expected string, but was number",
       ]
     `);
-    expect(() => contract.data.extract(2)).toThrowErrorMatchingInlineSnapshot(
-      `"Expected string, but was number"`
-    );
   });
 
   test('valid data', () => {
     const contract = runtypeContract({ data: String, error: Number });
 
-    expect(contract.data.validate('foo')).toBe(null);
+    expect(contract.getValidationErrors('foo')).toEqual([]);
 
-    const data = contract.data.extract('foo');
-    expect(data).toBe('foo');
-
-    expect(contract.error.is('bar')).toBeFalsy();
-    expect(() =>
-      contract.error.extract('bar')
-    ).toThrowErrorMatchingInlineSnapshot(`"Expected number, but was string"`);
+    expect(contract.isError('bar')).toBeFalsy();
   });
 
   test('invalid data', () => {
@@ -43,25 +31,13 @@ describe('runtypes/runtypeContract full', () => {
       error: Number,
     });
 
-    expect(contract.data.validate('HKT')).toBe(null);
-    expect(contract.data.validate('lolkek')).toMatchInlineSnapshot(`
+    expect(contract.getValidationErrors('HKT')).toEqual([]);
+    expect(contract.getValidationErrors('lolkek')).toMatchInlineSnapshot(`
       Array [
         "Failed constraint check for string",
       ]
     `);
 
-    const data = contract.data.extract('HKT');
-    expect(data).toBe('HKT');
-
-    expect(() =>
-      contract.data.extract('lolkek')
-    ).toThrowErrorMatchingInlineSnapshot(
-      `"Failed constraint check for string"`
-    );
-
-    expect(contract.error.is('lolkek')).toBeFalsy();
-    expect(() =>
-      contract.error.extract('lolkek')
-    ).toThrowErrorMatchingInlineSnapshot(`"Expected number, but was string"`);
+    expect(contract.isError('lolkek')).toBeFalsy();
   });
 });

@@ -1,8 +1,9 @@
 import { Contract } from './type';
 
 const unkownContract: Contract<unknown, unknown, unknown> = {
-  data: { validate: () => null, extract: (p) => p },
-  error: { is: () => false, extract: (p) => p },
+  isData: (raw): raw is unknown => true,
+  isError: (raw): raw is unknown => false,
+  getValidationErrors: () => [],
 };
 
 export { unkownContract };

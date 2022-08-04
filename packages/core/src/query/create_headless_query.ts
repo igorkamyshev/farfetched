@@ -26,8 +26,8 @@ function createHeadlessQuery<
   Params,
   Response,
   Error,
-  ContractData,
-  ContractError,
+  ContractData extends Response,
+  ContractError extends Response,
   MappedData,
   MapDataSource
 >(

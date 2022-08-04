@@ -36,20 +36,16 @@ function createRuntypeContractFull<D, E>({
   error: Runtype<E>;
 }): Contract<unknown, D, E> {
   return {
-    data: {
-      validate: (raw) => {
-        const validation = data.validate(raw);
-        if (validation.success) {
-          return null;
-        }
+    isData: data.guard,
+    isError: error.guard,
+    getValidationErrors(raw) {
+      const validation = data.validate(raw);
 
-        return [validation.message];
-      },
-      extract: (raw) => data.check(raw),
-    },
-    error: {
-      is: (raw) => error.guard(raw),
-      extract: (raw) => error.check(raw),
+      if (validation.success) {
+        return [];
+      }
+
+      return [validation.message];
     },
   };
 }
@@ -57,29 +53,17 @@ function createRuntypeContractFull<D, E>({
 function createRuntypeContractShort<D>(
   data: Runtype<D>
 ): Contract<unknown, D, unknown> {
+  const isData = data.guard;
   return {
-    data: {
-      validate: (raw) => {
-        const validation = data.validate(raw);
-        if (validation.success) {
-          return null;
-        }
+    isData,
+    isError: (raw): raw is unknown => !isData(raw),
+    getValidationErrors(raw) {
+      const validation = data.validate(raw);
+      if (validation.success) {
+        return [];
+      }
 
-        return [validation.message];
-      },
-      extract: (raw) => data.check(raw),
-    },
-    error: {
-      is: (raw) => !data.guard(raw),
-      extract: (raw) => {
-        if (data.guard(raw)) {
-          throw new Error(
-            'Logic exception! You are trying to extract error from valid response'
-          );
-        }
-
-        return raw;
-      },
+      return [validation.message];
     },
   };
 }

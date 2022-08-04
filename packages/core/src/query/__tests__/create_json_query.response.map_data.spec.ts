@@ -4,15 +4,14 @@ import { expectType } from 'tsd';
 import { unkownContract } from '../../contract/unkown_contract';
 import { createJsonQuery } from '../create_json_query';
 import { declareParams } from '../../misc/params';
+import { Contract } from '../../contract/type';
 
 describe('remote_data/query/json.response.map_data', () => {
   // Does not matter
-  const validStringContract = {
-    data: {
-      validate: () => null,
-      extract: <T>(v: T) => v as any as string,
-    },
-    error: { is: () => false, extract: <T>(v: T) => v },
+  const validStringContract: Contract<unknown, string, unknown> = {
+    isData: (raw): raw is string => true,
+    isError: (raw): raw is unknown => false,
+    getValidationErrors: () => [],
   };
 
   // Does not matter

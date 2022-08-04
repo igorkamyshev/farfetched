@@ -25,6 +25,7 @@ Stay tuned...
 ### Statements
 
 - [Releases policy](./handbook/releases.md)
+- [Do not trust remote data](./handbook/never_trust.md)
 - [Effector in Farfetched](./handbook/effector.md)
 - [Server side rendering (SSR)](./handbook/ssr.md)
 - [How not to use Fetch API in Farfetched](./handbook/no_fetch.md)
