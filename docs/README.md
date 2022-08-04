@@ -25,6 +25,7 @@ Stay tuned...
 ### Statements
 
 - [Releases policy](./handbook/releases.md)
+- [Effector in Farfetched](./handbook/effector.md)
 - [How not to use Fetch API in Farfetched](./handbook/no_fetch.md)
 
 ### Integrations
