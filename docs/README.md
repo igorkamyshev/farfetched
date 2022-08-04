@@ -27,6 +27,7 @@ Stay tuned...
 - [Releases policy](./handbook/releases.md)
 - [Effector in Farfetched](./handbook/effector.md)
 - [How not to use Fetch API in Farfetched](./handbook/no_fetch.md)
+- [Custom _Query_ creation](./handbook/custom_query.md)
 
 ### Integrations
 
