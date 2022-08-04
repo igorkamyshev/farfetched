@@ -27,9 +27,12 @@ Stay tuned...
 - [Releases policy](./handbook/releases.md)
 - [Do not trust remote data](./handbook/never_trust.md)
 - [Effector in Farfetched](./handbook/effector.md)
-- [Server side rendering (SSR)](./handbook/ssr.md)
-- [How not to use Fetch API in Farfetched](./handbook/no_fetch.md)
-- [Custom _Query_ creation](./handbook/custom_query.md)
+
+### How to
+
+- [Server side rendering (SSR)](./how_to/ssr.md)
+- [How not to use Fetch API in Farfetched](./how_to/no_fetch.md)
+- [Custom _Query_ creation](./how_to/custom_query.md)
 
 ### Integrations
 
