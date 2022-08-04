@@ -14,3 +14,5 @@ const someAxiosQuery = createQuery({
 ```
 
 That is it, `someAxiosQuery` is a regular [_Query_](../core/primitives/query.md) that can be used in any function from Farfetched. Of course, you can use any other library to make HTTP calls the same way.
+
+Furthermore, you can consider [creating a custom _Query_ factory](./custom_query.md) to simplify [_Query_](../core/primitives/query.md) creation across the application.

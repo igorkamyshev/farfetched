@@ -6,9 +6,6 @@ Stay tuned...
 
 ## Handbook
 
-- [Releases policy](./handbook/releases.md)
-- [How not to use Fetch API in Farfetched](./handbook/no_fetch.md)
-
 ### Primitives
 
 - [_Query_](./core/primitives/query.md)
@@ -24,6 +21,14 @@ Stay tuned...
 ### Operators
 
 - [`connectQuery`](./core/operators/connect_query.md) — connects child [_Query_](./core/primitives/query.md) to its parents, child starts execution after all parents successful end with data from them.
+
+### Statements
+
+- [Releases policy](./handbook/releases.md)
+- [Effector in Farfetched](./handbook/effector.md)
+- [Server side rendering (SSR)](./handbook/ssr.md)
+- [How not to use Fetch API in Farfetched](./handbook/no_fetch.md)
+- [Custom _Query_ creation](./handbook/custom_query.md)
 
 ### Integrations
 
