@@ -1,27 +1,25 @@
 import { createStore } from 'effector';
 import { expectType } from 'tsd';
+import { Contract } from '../../contract/type';
 import { unkownContract } from '../../contract/unkown_contract';
-import { identity } from '../../misc/identity';
 
 import { createHeadlessQuery } from '../create_headless_query';
 import { Query } from '../type';
 
 contract: {
+  const numberContract = {} as Contract<unknown, number, number>;
+
   const numberQuery = createHeadlessQuery({
-    contract: {
-      data: { validate: () => null, extract: () => 1 },
-      error: { is: () => false, extract: () => 1 },
-    },
+    contract: numberContract,
     mapData: (v) => v,
   });
 
   expectType<Query<unknown, number, unknown | number>>(numberQuery);
 
+  const stringContract = {} as Contract<unknown, string, number>;
+
   const stringQuery = createHeadlessQuery({
-    contract: {
-      data: { validate: () => null, extract: () => 'some string' },
-      error: { is: () => false, extract: () => 1 },
-    },
+    contract: stringContract,
     mapData: (v) => v,
   });
 

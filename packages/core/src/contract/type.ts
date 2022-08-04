@@ -1,41 +1,19 @@
-interface Contract<Raw, Data, Error> {
+interface Contract<Raw, Data extends Raw, Error extends Raw> {
   /**
-   * It transforms prepared Response for doneData
+   * Checks if Response is some Data
    */
-  data: {
-    /**
-     * It validates prepared Response
-     *
-     * - return `null` or empty array for valid response
-     * - return array of string with validation erorrs for InvalidDataError in failData
-     */
-    validate: (prepared: Raw) => string[] | null;
-    /**
-     * Transforms **valid** prepared Response for doneData
-     */
-    extract: (prepared: Raw) => Data;
-  };
+  isData: (prepared: Raw) => prepared is Data;
   /**
-   * It transforms prapared Response for failData
+   * Validates Response
+   *
+   * - return `null` or empty array for valid response
+   * - return array of string with validation erorrs for InvalidDataError in failData
    */
-  error: {
-    /**
-     * It checks if prepared Response is some ApiError
-     *
-     * @example
-     *
-     * const callApiFx = createApiRequest({
-     *   error: {
-     *     is: async (preapred) => prepared.error === true,
-     *   },
-     * })
-     */
-    is: (prepared: Raw) => boolean;
-    /**
-     * Transforms **failed** prepared Response for ApiError in failData
-     */
-    extract: (prepared: Raw) => Error;
-  };
+  getValidationErrors: (prepared: Raw) => string[];
+  /**
+   * Checks if Response is Error
+   */
+  isError: (prepared: Raw) => prepared is Error;
 }
 
 export { type Contract };

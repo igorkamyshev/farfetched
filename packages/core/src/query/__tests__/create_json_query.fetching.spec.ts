@@ -6,8 +6,9 @@ describe('remote_data/query/json.fetching', () => {
   // Does not matter
   const response = {
     contract: {
-      data: { validate: () => null, extract: <T>(v: T) => v },
-      error: { is: () => false, extract: <T>(v: T) => v },
+      isData: (raw: unknown): raw is unknown => true,
+      isError: (raw: unknown): raw is unknown => false,
+      getValidationErrors: () => [],
     },
     mapData: <T>(v: T) => v,
   };

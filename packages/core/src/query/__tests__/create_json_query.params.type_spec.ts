@@ -3,13 +3,11 @@ import { expectType } from 'tsd';
 
 import { createJsonQuery } from '../create_json_query';
 import { declareParams } from '../../misc/params';
+import { Contract } from '../../contract/type';
 
 // Does not matter
 const response = {
-  contract: {
-    data: { validate: () => null, extract: <T>(v: T) => v },
-    error: { is: () => false, extract: <T>(v: T) => v },
-  },
+  contract: {} as Contract<unknown, unknown, unknown>,
   mapData: <T>(v: T) => v,
 };
 

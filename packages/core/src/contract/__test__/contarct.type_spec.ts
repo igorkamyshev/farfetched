@@ -4,5 +4,12 @@ import { Contract } from '../type';
 
 const contract: Contract<unknown, string, number> = {} as any;
 
-expectType<string>(contract.data.extract({}));
-expectType<number>(contract.error.extract({}));
+const value = {};
+
+if (contract.isData(value)) {
+  expectType<string>(value);
+}
+
+if (contract.isError(value)) {
+  expectType<number>(value);
+}

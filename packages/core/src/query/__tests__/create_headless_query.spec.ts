@@ -167,15 +167,20 @@ describe('core/createHeadlessQuery with contract', () => {
     const query = createHeadlessQuery(
       {
         contract: {
-          data: { validate: () => null, extract: () => null },
-          error: { is: () => true, extract: () => extractedError },
+          isError: (raw): raw is unknown => true,
+          isData: (raw): raw is unknown => false,
+          getValidationErrors: () => [],
         },
         mapData: identity,
       },
       { sid: 'any_string' }
     );
 
-    const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
+    const scope = fork({
+      handlers: [
+        [query.__.executeFx, jest.fn().mockResolvedValue(extractedError)],
+      ],
+    });
 
     const { listeners } = watchQuery(query, scope);
 
@@ -191,8 +196,9 @@ describe('core/createHeadlessQuery with contract', () => {
     const query = createHeadlessQuery(
       {
         contract: {
-          data: { validate: () => ['got it'], extract: () => null },
-          error: { is: () => false, extract: () => null },
+          isData: (raw): raw is unknown => false,
+          isError: (raw): raw is unknown => false,
+          getValidationErrors: () => ['got it'],
         },
         mapData: identity,
       },
@@ -221,15 +227,20 @@ describe('core/createHeadlessQuery with contract', () => {
     const query = createHeadlessQuery(
       {
         contract: {
-          data: { validate: () => null, extract: () => extractedData },
-          error: { is: () => false, extract: () => null },
+          isData: (raw): raw is unknown => true,
+          isError: (raw): raw is unknown => false,
+          getValidationErrors: () => [],
         },
         mapData: identity,
       },
       { sid: 'any_string' }
     );
 
-    const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
+    const scope = fork({
+      handlers: [
+        [query.__.executeFx, jest.fn().mockResolvedValue(extractedData)],
+      ],
+    });
 
     const { listeners } = watchQuery(query, scope);
 
@@ -244,14 +255,14 @@ describe('core/createHeadlessQuery with contract', () => {
   test('contract receives response (for data)', async () => {
     const response = Symbol('response');
 
-    const validate = jest.fn().mockReturnValue(null);
-    const extract = jest.fn().mockReturnValue(null);
+    const validate = jest.fn().mockReturnValue([]);
 
     const query = createHeadlessQuery(
       {
         contract: {
-          data: { validate, extract },
-          error: { is: () => false, extract: () => null },
+          isData: (raw): raw is unknown => false,
+          isError: (raw): raw is unknown => false,
+          getValidationErrors: validate,
         },
         mapData: identity,
       },
@@ -266,22 +277,19 @@ describe('core/createHeadlessQuery with contract', () => {
 
     expect(validate).toHaveBeenCalledTimes(1);
     expect(validate).toHaveBeenCalledWith(response);
-
-    expect(extract).toHaveBeenCalledTimes(1);
-    expect(extract).toHaveBeenCalledWith(response);
   });
 
   test('contract receives response (for error)', async () => {
     const response = Symbol('response');
 
     const is = jest.fn().mockReturnValue(true);
-    const extract = jest.fn().mockReturnValue(null);
 
     const query = createHeadlessQuery(
       {
         contract: {
-          data: { validate: () => null, extract: () => null },
-          error: { is, extract },
+          isData: (raw): raw is unknown => false,
+          isError: (raw): raw is unknown => is(raw),
+          getValidationErrors: () => [],
         },
         mapData: identity,
       },
@@ -296,9 +304,6 @@ describe('core/createHeadlessQuery with contract', () => {
 
     expect(is).toHaveBeenCalledTimes(1);
     expect(is).toHaveBeenCalledWith(response);
-
-    expect(extract).toHaveBeenCalledTimes(1);
-    expect(extract).toHaveBeenCalledWith(response);
   });
 });
 
