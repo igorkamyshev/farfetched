@@ -126,3 +126,8 @@ const languagesQuery = createQuery({
  * }>
  */
 ```
+
+## Showcases
+
+- [React + `createQuery`](../../../apps/showcase/react-create-query/)
+- [SolidJS + `createQuery`](../../../apps/showcase/solid-create-query/)

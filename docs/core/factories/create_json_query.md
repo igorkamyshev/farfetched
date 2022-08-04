@@ -24,3 +24,7 @@ Config fields:
   - `mapData?`: optional mapper for the response data, available overloads:
     - `(data, params) => mapped`
     - `{ source: Store, fn: (data, params, source) => mapped }`
+
+## Showcases
+
+- [React + `createJsonQuery`](../../../apps/showcase/react-create-json-query/)
