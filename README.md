@@ -1,5 +1,7 @@
 # Farfetched
 
+The advanced data fetching tool for web applications
+
 ## Quick Features
 
 - Transport/protocol/backend agnostic (REST, GraphQL, promises, whatever!)
