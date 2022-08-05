@@ -21,8 +21,9 @@ interface PreparationError extends FarfetchedError<typeof PREPARATION> {
 }
 
 const HTTP = 'HTTP';
-interface HttpError extends FarfetchedError<typeof HTTP> {
-  status: number;
+interface HttpError<Status extends number = number>
+  extends FarfetchedError<typeof HTTP> {
+  status: Status;
   statusText: string;
   response: string | null;
 }
