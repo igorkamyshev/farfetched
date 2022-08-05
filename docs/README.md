@@ -35,6 +35,7 @@ Any factory in any overload accepts these fields in top level of config.
 
 ### How to
 
+- [How to deal with errors](./how_to/errors.md)
 - [Server side rendering (SSR)](./how_to/ssr.md)
 - [How not to use Fetch API](./how_to/no_fetch.md)
 - [Custom _Query_ creation](./how_to/custom_query.md)
