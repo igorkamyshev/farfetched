@@ -47,3 +47,4 @@ function UserProfile() {
 
 - [React + `createQuery`](../../apps/showcase/react-create-query/)
 - [React + `createJsonQuery`](../../apps/showcase/react-create-json-query/)
+- [React + `connectQuery`](../../apps/showcase/react-connect-query/)
