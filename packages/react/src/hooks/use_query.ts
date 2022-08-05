@@ -6,19 +6,21 @@ function useQuery<Params, Data, Error>(
 ): {
   data: Data | null;
   error: Error | null;
+  stale: boolean;
   pending: boolean;
   start: (params: Params) => void;
 };
 
 function useQuery(query: Query<any, any, any>) {
-  const [data, error, pending, start] = useUnit([
+  const [data, stale, error, pending, start] = useUnit([
     query.$data,
+    query.$stale,
     query.$error,
     query.$pending,
     query.start,
   ]);
 
-  return { data, error, pending, start };
+  return { data, stale, error, pending, start };
 }
 
 export { useQuery };
