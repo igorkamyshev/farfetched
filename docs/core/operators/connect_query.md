@@ -38,3 +38,7 @@ connectQuery({
   target: contentQuery,
 });
 ```
+
+## Showcases
+
+- [React + `connectQuery`](../../../apps/showcase/react-connect-query/)
