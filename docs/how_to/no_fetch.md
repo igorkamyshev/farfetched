@@ -1,4 +1,4 @@
-# How not to use Fetch API in Farfetched
+# How not to use Fetch API
 
 Since Fetch API is [supported in any modern browser and current version of Node.js](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) Farfetched uses it to make HTTP calls. It adds zero overhead to client bundle and pretty fast on server side. However, in some cases you may want to switch to XMLHttpRequest or some wrappers about it (e.g. [axios](https://axios-http.com)). Let us see how it can be done.
 

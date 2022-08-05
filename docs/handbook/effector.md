@@ -1,4 +1,4 @@
-# Effector in Farfetched
+# Effector
 
 Farfetched uses [Effector](https://effector.dev) under the hood to handle reactive states and its relations. Even if you use Farfetched without Effector, you can enjoy by its all features.
 
