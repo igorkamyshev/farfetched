@@ -7,7 +7,6 @@ import {
   TwoArgsSourcedField,
   SourcedField,
   normalizeSourced,
-  StaticOrReactive,
 } from '../misc/sourced';
 import { type ParamsDeclaration } from '../misc/params';
 import { Query } from './type';
@@ -179,6 +178,7 @@ function createJsonQuery(config: any) {
       contract: config.response.contract ?? unkownContract,
       mapData: config.response.mapData ?? identity,
       enabled: config.enabled,
+      name: config.name,
     },
     { sid: 'j' }
   );

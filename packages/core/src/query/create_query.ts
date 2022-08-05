@@ -96,6 +96,7 @@ function createQuery<
     contract: config.contract ?? unkownContract,
     mapData: config.mapData ?? identity,
     enabled: config.enabled,
+    name: config.name,
   });
 
   query.__.executeFx.use(resolveExecuteEffect<Params, Response, Error>(config));
