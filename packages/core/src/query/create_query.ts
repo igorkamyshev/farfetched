@@ -1,25 +1,30 @@
 import { createEffect, Effect, is } from 'effector';
 
-import { createHeadlessQuery } from './create_headless_query';
+import {
+  createHeadlessQuery,
+  SharedQueryFactoryConfig,
+} from './create_headless_query';
 import { Query } from './type';
 import { InvalidConfigException } from '../misc/config';
 import { Contract } from '../contract/type';
 import { unkownContract } from '../contract/unkown_contract';
 import { identity } from '../misc/identity';
-import { StaticOrReactive, TwoArgsSourcedField } from '../misc/sourced';
+import { TwoArgsSourcedField } from '../misc/sourced';
 import { InvalidDataError } from '../errors/type';
 
 // Overload: Only handler
-function createQuery<Params, Response>(config: {
-  handler: (p: Params) => Promise<Response>;
-  enabled?: StaticOrReactive<boolean>;
-}): Query<Params, Response, unknown>;
+function createQuery<Params, Response>(
+  config: {
+    handler: (p: Params) => Promise<Response>;
+  } & SharedQueryFactoryConfig
+): Query<Params, Response, unknown>;
 
 // Overload: Only effect
-function createQuery<Params, Response, Error>(config: {
-  effect: Effect<Params, Response, Error>;
-  enabled?: StaticOrReactive<boolean>;
-}): Query<Params, Response, Error>;
+function createQuery<Params, Response, Error>(
+  config: {
+    effect: Effect<Params, Response, Error>;
+  } & SharedQueryFactoryConfig
+): Query<Params, Response, Error>;
 
 // Overload: Effect and Contract
 function createQuery<
@@ -28,24 +33,20 @@ function createQuery<
   Error,
   ContractData extends Response,
   ContractError extends Response
->(config: {
-  effect: Effect<Params, Response, Error>;
-  contract: Contract<Response, ContractData, ContractError>;
-  enabled?: StaticOrReactive<boolean>;
-}): Query<Params, ContractData, Error | InvalidDataError | ContractError>;
+>(
+  config: {
+    effect: Effect<Params, Response, Error>;
+    contract: Contract<Response, ContractData, ContractError>;
+  } & SharedQueryFactoryConfig
+): Query<Params, ContractData, Error | InvalidDataError | ContractError>;
 
 // Overload: Effect and MapData
-function createQuery<
-  Params,
-  Response,
-  Error,
-  MappedData,
-  MapDataSource = void
->(config: {
-  effect: Effect<Params, Response, Error>;
-  mapData: TwoArgsSourcedField<Response, Params, MappedData, MapDataSource>;
-  enabled?: StaticOrReactive<boolean>;
-}): Query<Params, MappedData, Error>;
+function createQuery<Params, Response, Error, MappedData, MapDataSource = void>(
+  config: {
+    effect: Effect<Params, Response, Error>;
+    mapData: TwoArgsSourcedField<Response, Params, MappedData, MapDataSource>;
+  } & SharedQueryFactoryConfig
+): Query<Params, MappedData, Error>;
 
 // Overload: Effect, Contract and MapData
 function createQuery<
@@ -56,12 +57,18 @@ function createQuery<
   ContractError extends Response,
   MappedData,
   MapDataSource = void
->(config: {
-  effect: Effect<Params, Response, Error>;
-  contract: Contract<Response, ContractData, ContractError>;
-  mapData: TwoArgsSourcedField<ContractData, Params, MappedData, MapDataSource>;
-  enabled?: StaticOrReactive<boolean>;
-}): Query<Params, MappedData, Error | InvalidDataError | ContractError>;
+>(
+  config: {
+    effect: Effect<Params, Response, Error>;
+    contract: Contract<Response, ContractData, ContractError>;
+    mapData: TwoArgsSourcedField<
+      ContractData,
+      Params,
+      MappedData,
+      MapDataSource
+    >;
+  } & SharedQueryFactoryConfig
+): Query<Params, MappedData, Error | InvalidDataError | ContractError>;
 
 // -- Implementation --
 function createQuery<

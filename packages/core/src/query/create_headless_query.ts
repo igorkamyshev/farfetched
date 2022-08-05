@@ -15,6 +15,10 @@ import {
 import { FetchingStatus } from '../status/type';
 import { Query } from './type';
 
+interface SharedQueryFactoryConfig {
+  enabled?: StaticOrReactive<boolean>;
+}
+
 /**
  * Creates Query without any executor, it cannot be used as-is.
  *
@@ -43,8 +47,7 @@ function createHeadlessQuery<
       MappedData,
       MapDataSource
     >;
-    enabled?: StaticOrReactive<boolean>;
-  },
+  } & SharedQueryFactoryConfig,
   config?: OptionalConfig
 ): Query<Params, MappedData, Error | InvalidDataError | ContractError> {
   // Dummy effect, it will be replaced with real in head-full query creator
@@ -174,3 +177,4 @@ function createHeadlessQuery<
 }
 
 export { createHeadlessQuery };
+export type { SharedQueryFactoryConfig };

@@ -12,7 +12,10 @@ import {
 import { type ParamsDeclaration } from '../misc/params';
 import { Query } from './type';
 import { FetchApiRecord } from '../misc/fetch_api';
-import { createHeadlessQuery } from './create_headless_query';
+import {
+  createHeadlessQuery,
+  SharedQueryFactoryConfig,
+} from './create_headless_query';
 import { unkownContract } from '../contract/unkown_contract';
 import { identity } from '../misc/identity';
 import { InvalidDataError } from '../errors/type';
@@ -39,8 +42,7 @@ interface BaseJsonQueryConfigNoParams<
   QuerySource,
   HeadersSource,
   UrlSource
-> {
-  enabled?: StaticOrReactive<boolean>;
+> extends SharedQueryFactoryConfig {
   request: RequestConfig<
     void,
     BodySource,
@@ -56,8 +58,7 @@ interface BaseJsonQueryConfigWithParams<
   QuerySource,
   HeadersSource,
   UrlSource
-> {
-  enabled?: StaticOrReactive<boolean>;
+> extends SharedQueryFactoryConfig {
   params: ParamsDeclaration<Params>;
   request: RequestConfig<
     Params,
