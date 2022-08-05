@@ -15,6 +15,11 @@ import {
 import { FetchingStatus } from '../status/type';
 import { Query } from './type';
 
+interface SharedQueryFactoryConfig {
+  name?: string;
+  enabled?: StaticOrReactive<boolean>;
+}
+
 /**
  * Creates Query without any executor, it cannot be used as-is.
  *
@@ -35,6 +40,7 @@ function createHeadlessQuery<
     contract,
     mapData,
     enabled,
+    name,
   }: {
     contract: Contract<Response, ContractData, ContractError>;
     mapData: TwoArgsSourcedField<
@@ -43,16 +49,20 @@ function createHeadlessQuery<
       MappedData,
       MapDataSource
     >;
-    enabled?: StaticOrReactive<boolean>;
-  },
+  } & SharedQueryFactoryConfig,
   config?: OptionalConfig
 ): Query<Params, MappedData, Error | InvalidDataError | ContractError> {
+  const queryName = name ?? 'unnamed';
+
   // Dummy effect, it will be replaced with real in head-full query creator
   const executeFx = createEffect<Params, Response, Error>({
     handler: () => {
       throw new Error('Not implemented');
     },
-    ...mergeOptionalConfig({ sid: 'e', name: 'executeFx' }, config),
+    ...mergeOptionalConfig(
+      { sid: 'e', name: `${queryName}.executeFx` },
+      config
+    ),
   });
 
   const applyContractFx = createContractApplier(contract);
@@ -79,19 +89,19 @@ function createHeadlessQuery<
   // -- Main stores --
   const $data = createStore<MappedData | null>(
     null,
-    mergeOptionalConfig({ sid: 'd', name: '$data' }, config)
+    mergeOptionalConfig({ sid: 'd', name: `${queryName}.$data` }, config)
   );
   const $error = createStore<Error | InvalidDataError | ContractError | null>(
     null,
-    mergeOptionalConfig({ sid: 'e', name: '$error' }, config)
+    mergeOptionalConfig({ sid: 'e', name: `${queryName}.$error` }, config)
   );
   const $status = createStore<FetchingStatus>(
     'initial',
-    mergeOptionalConfig({ sid: 's', name: '$status' }, config)
+    mergeOptionalConfig({ sid: 's', name: `${queryName}.$status` }, config)
   );
   const $stale = createStore<boolean>(
     false,
-    mergeOptionalConfig({ sid: 's', name: '$stale' }, config)
+    mergeOptionalConfig({ sid: 's', name: `${queryName}.$stale` }, config)
   );
   const $enabled = normalizeStaticOrReactive(enabled ?? true).map(Boolean);
 
@@ -174,3 +184,4 @@ function createHeadlessQuery<
 }
 
 export { createHeadlessQuery };
+export type { SharedQueryFactoryConfig };

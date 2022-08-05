@@ -16,7 +16,12 @@ Stay tuned...
 - [`createQuery`](./core/factories/create_query.md) — a basic factory to create a [_Query_](./core/primitives/query.md) based on function or [_Effect_](https://effector.dev/docs/api/effector/effect).
 - [`createJsonQuery`](./core/factories/create_json_query.md) — creates a [_Query_](./core/primitives/query.md) based on declarative config for any JSON API.
 
-> Note. All factories accept `enabled` field on top level of config. You can disable query by passing `false` or [_Store_](https://effector.dev/docs/api/effector/store) with `false`.
+#### Common config
+
+Any factory in any overload accepts these fields in top level of config.
+
+- `enabled` — you can disable [_Query_](./core/primitives/query.md) by passing `false` or [_Store_](https://effector.dev/docs/api/effector/store) with `false`
+- `name` — it is used to distinguish [_Query_](./core/primitives/query.md) while debugging.
 
 ### Operators
 

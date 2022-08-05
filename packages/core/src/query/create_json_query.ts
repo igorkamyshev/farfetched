@@ -7,12 +7,14 @@ import {
   TwoArgsSourcedField,
   SourcedField,
   normalizeSourced,
-  StaticOrReactive,
 } from '../misc/sourced';
 import { type ParamsDeclaration } from '../misc/params';
 import { Query } from './type';
 import { FetchApiRecord } from '../misc/fetch_api';
-import { createHeadlessQuery } from './create_headless_query';
+import {
+  createHeadlessQuery,
+  SharedQueryFactoryConfig,
+} from './create_headless_query';
 import { unkownContract } from '../contract/unkown_contract';
 import { identity } from '../misc/identity';
 import { InvalidDataError } from '../errors/type';
@@ -39,8 +41,7 @@ interface BaseJsonQueryConfigNoParams<
   QuerySource,
   HeadersSource,
   UrlSource
-> {
-  enabled?: StaticOrReactive<boolean>;
+> extends SharedQueryFactoryConfig {
   request: RequestConfig<
     void,
     BodySource,
@@ -56,8 +57,7 @@ interface BaseJsonQueryConfigWithParams<
   QuerySource,
   HeadersSource,
   UrlSource
-> {
-  enabled?: StaticOrReactive<boolean>;
+> extends SharedQueryFactoryConfig {
   params: ParamsDeclaration<Params>;
   request: RequestConfig<
     Params,
@@ -178,6 +178,7 @@ function createJsonQuery(config: any) {
       contract: config.response.contract ?? unkownContract,
       mapData: config.response.mapData ?? identity,
       enabled: config.enabled,
+      name: config.name,
     },
     { sid: 'j' }
   );
