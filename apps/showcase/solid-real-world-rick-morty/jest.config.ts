@@ -7,5 +7,6 @@ export default {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../../coverage/apps/showcase/solid-real-world-rick-morty',
+  coverageDirectory:
+    '../../../coverage/apps/showcase/solid-real-world-rick-morty',
 };
