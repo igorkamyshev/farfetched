@@ -10,7 +10,7 @@ const characterListQuery = createJsonQuery({
   params: declareParams<{ page: number }>(),
   request: {
     url: 'https://rickandmortyapi.com/api/character/',
-    query: ({ page }) => ({ page: page.toString() }),
+    query: ({ page }) => ({ page }),
     method: 'GET',
   },
   response: {
