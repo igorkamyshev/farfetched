@@ -56,7 +56,7 @@ function createRuntypeContractShort<D>(
   const isData = data.guard;
   return {
     isData,
-    isError: (raw): raw is unknown => !isData(raw),
+    isError: (raw): raw is unknown => false,
     getValidationErrors(raw) {
       const validation = data.validate(raw);
       if (validation.success) {

@@ -6,7 +6,7 @@ describe('runtypes/runtypeContract short', () => {
   test('interprets invalid response as error', () => {
     const contract = runtypeContract(String);
 
-    expect(contract.isError(2)).toBeTruthy();
+    expect(contract.isError(2)).toBeFalsy();
 
     expect(contract.getValidationErrors(2)).toMatchInlineSnapshot(`
       Array [
