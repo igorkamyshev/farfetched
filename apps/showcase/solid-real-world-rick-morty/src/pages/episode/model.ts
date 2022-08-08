@@ -4,19 +4,19 @@ import { sample } from 'effector';
 import { Array } from 'runtypes';
 
 import { Character } from '../../entities/character';
-import { Location, locationRoute } from '../../entities/location';
+import { Episode, episodeRoute } from '../../entities/episode';
 import { urlToId } from '../../shared/id';
 
-const locationQuery = createJsonQuery({
+const episodeQuery = createJsonQuery({
   params: declareParams<{ id: number }>(),
   request: {
-    url: ({ id }) => `https://rickandmortyapi.com/api/location/${id}`,
+    url: ({ id }) => `https://rickandmortyapi.com/api/episode/${id}`,
     method: 'GET',
   },
-  response: { contract: runtypeContract(Location) },
+  response: { contract: runtypeContract(Episode) },
 });
 
-const residentsQuery = createJsonQuery({
+const charactersInEpisodeQuery = createJsonQuery({
   params: declareParams<{ ids: number[] }>(),
   request: {
     url: ({ ids }) =>
@@ -26,20 +26,20 @@ const residentsQuery = createJsonQuery({
   response: { contract: runtypeContract(Array(Character)) },
 });
 
-sample({
-  clock: locationRoute.opened,
-  fn({ params }) {
-    return { id: params.locationId };
-  },
-  target: locationQuery.start,
-});
-
 connectQuery({
-  source: { location: locationQuery },
-  fn({ location }) {
-    return { ids: location.residents.map(urlToId) };
+  source: { episode: episodeQuery },
+  fn({ episode }) {
+    return { ids: episode.characters.map(urlToId) };
   },
-  target: residentsQuery,
+  target: charactersInEpisodeQuery,
 });
 
-export { locationQuery, residentsQuery };
+sample({
+  clock: episodeRoute.opened,
+  fn({ params }) {
+    return { id: params.episodeId };
+  },
+  target: episodeQuery.start,
+});
+
+export { episodeRoute, episodeQuery, charactersInEpisodeQuery };

@@ -3,10 +3,9 @@ import { Link } from 'atomic-router-solid';
 import { useUnit } from 'effector-solid';
 import { For, Show } from 'solid-js';
 
-import { characterRoute } from '../character';
-import { characterListQuery } from '../../entities/character';
+import { characterRoute, characterListRoute } from '../../entities/character';
 import { Pagination } from '../../shared/pagination';
-import { $currentPage, mainRoute } from './model';
+import { $currentPage, characterListQuery } from './model';
 
 function MainPage() {
   const { data, pending } = createQueryResource(characterListQuery);
@@ -35,7 +34,7 @@ function MainPage() {
           totalPages={data()?.info.pages ?? 1}
           hasPrevious={data()?.info.prev !== null}
           hasNext={data()?.info.next !== null}
-          route={mainRoute}
+          route={characterListRoute}
         />
       </Show>
     </>

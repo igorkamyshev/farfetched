@@ -2,16 +2,24 @@ import { RouterProvider, Route } from 'atomic-router-solid';
 import { createHistoryRouter } from 'atomic-router';
 import { createBrowserHistory } from 'history';
 
-import { mainRoute, MainPage } from './pages/main';
-import { characterRoute, CharacterPage } from './pages/character';
-import { LocationPage, locationRoute } from './pages/location';
+import { MainPage } from './pages/main';
+import { CharacterPage } from './pages/character';
+import { LocationPage } from './pages/location';
+import { EpisodePage } from './pages/episode';
+
+import { Menu } from './features/layout';
+
+import { characterRoute, characterListRoute } from './entities/character';
+import { locationRoute } from './entities/location';
+import { episodeRoute } from './entities/episode';
 
 const router = createHistoryRouter({
   routes: [
-    { path: '/', route: mainRoute },
-    { path: '/:page', route: mainRoute },
+    { path: '/', route: characterListRoute },
+    { path: '/:page', route: characterListRoute },
     { path: '/character/:characterId', route: characterRoute },
     { path: '/location/:locationId', route: locationRoute },
+    { path: '/episode/:episodeId', route: episodeRoute },
   ],
 });
 
@@ -21,9 +29,11 @@ router.setHistory(history);
 function App() {
   return (
     <RouterProvider router={router}>
-      <Route route={mainRoute} view={MainPage} />
+      <Menu />
+      <Route route={characterListRoute} view={MainPage} />
       <Route route={characterRoute} view={CharacterPage} />
       <Route route={locationRoute} view={LocationPage} />
+      <Route route={episodeRoute} view={EpisodePage} />
     </RouterProvider>
   );
 }

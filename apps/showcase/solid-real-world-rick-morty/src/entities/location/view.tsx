@@ -1,14 +1,13 @@
-import { RouteInstance } from 'atomic-router';
 import { Link } from 'atomic-router-solid';
 import { Static } from 'runtypes';
 import { Match, Switch } from 'solid-js';
 
-import { Location } from './model';
+import { Location } from './contract';
+import { locationRoute } from './model';
 
 function LocationDetails(props: {
   pending: boolean;
   location: Static<typeof Location> | null;
-  route: RouteInstance<{ locationId: number }>;
 }) {
   return (
     <Switch>
@@ -26,7 +25,7 @@ function LocationDetails(props: {
             </tr>
           </tbody>
         </table>
-        <Link to={props.route} params={{ locationId: props.location?.id ?? 1 }}>
+        <Link to={locationRoute} params={{ locationId: props.location!.id }}>
           Open
         </Link>
       </Match>

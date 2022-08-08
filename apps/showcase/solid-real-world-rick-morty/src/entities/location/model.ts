@@ -1,11 +1,8 @@
-import { Array, Number, Record, String } from 'runtypes';
+import { createRoute } from 'atomic-router';
+import { Static } from 'runtypes';
 
-const Location = Record({
-  id: Number,
-  name: String,
-  type: String,
-  dimension: String,
-  residents: Array(String),
-});
+import { Id } from '../../shared/id';
 
-export { Location };
+const locationRoute = createRoute<{ locationId: Static<typeof Id> }>();
+
+export { locationRoute };

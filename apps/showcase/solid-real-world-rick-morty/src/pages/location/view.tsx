@@ -1,13 +1,37 @@
 import { createQueryResource } from '@farfetched/solid';
-import { Show } from 'solid-js';
+import { Link } from 'atomic-router-solid';
+import { For, Show } from 'solid-js';
 
-import { locationQuery } from '../../entities/location';
+import { characterRoute } from '../../entities/character';
+import { locationQuery, residentsQuery } from './model';
 
 function LocationPage() {
-  const { data, pending } = createQueryResource(locationQuery);
+  const { data: location, pending: locationPending } =
+    createQueryResource(locationQuery);
+
+  const { data: residents, pending: residentsPending } =
+    createQueryResource(residentsQuery);
+
   return (
-    <Show when={!pending()} fallback={'Loading ...'}>
-      <h1>{data()?.name}</h1>
+    <Show when={!locationPending()} fallback={'Loading ...'}>
+      <h1>{location()?.name}</h1>
+      <p>Type: {location()?.type}</p>
+      <p>Dimension: {location()?.dimension}</p>
+
+      <Show when={!residentsPending()}>
+        <h2>Residents</h2>
+        <ul>
+          <For each={residents()}>
+            {(resident) => (
+              <li>
+                <Link to={characterRoute} params={{ characterId: resident.id }}>
+                  {resident.name}
+                </Link>
+              </li>
+            )}
+          </For>
+        </ul>
+      </Show>
     </Show>
   );
 }

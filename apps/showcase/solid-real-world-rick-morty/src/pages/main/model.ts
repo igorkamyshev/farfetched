@@ -1,14 +1,31 @@
-import { createRoute } from 'atomic-router';
+import { createJsonQuery, declareParams } from '@farfetched/core';
+import { runtypeContract } from '@farfetched/runtypes';
 import { sample } from 'effector';
+import { Array, Record } from 'runtypes';
 
-import { characterListQuery } from '../../entities/character';
+import { Character, characterListRoute } from '../../entities/character';
+import { Info } from '../../shared/info';
 
-const mainRoute = createRoute<{ page?: number }>();
+const characterListQuery = createJsonQuery({
+  params: declareParams<{ page: number }>(),
+  request: {
+    url: 'https://rickandmortyapi.com/api/character/',
+    query: ({ page }) => ({ page: page.toString() }),
+    method: 'GET',
+  },
+  response: {
+    contract: runtypeContract(
+      Record({ info: Info, results: Array(Character) })
+    ),
+  },
+});
 
-const $currentPage = mainRoute.$params.map((params) => params.page ?? 1);
+const $currentPage = characterListRoute.$params.map(
+  (params) => params.page ?? 1
+);
 
 sample({
-  clock: [mainRoute.opened, mainRoute.updated],
+  clock: [characterListRoute.opened, characterListRoute.updated],
   source: $currentPage,
   fn(currentPage) {
     return { page: currentPage };
@@ -16,4 +33,4 @@ sample({
   target: characterListQuery.start,
 });
 
-export { mainRoute, $currentPage };
+export { $currentPage, characterListQuery };

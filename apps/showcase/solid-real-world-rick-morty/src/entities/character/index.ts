@@ -1,6 +1,2 @@
-export {
-  characterListQuery,
-  characterQuery,
-  currentLocationQuery,
-  originQuery,
-} from './api';
+export { Character } from './contract';
+export { characterRoute, characterListRoute } from './model';

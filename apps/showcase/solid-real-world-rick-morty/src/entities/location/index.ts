@@ -1,3 +1,3 @@
-export { Location } from './model';
+export { Location } from './contract';
 export { LocationDetails } from './view';
-export { locationQuery } from './api';
+export { locationRoute } from './model';
