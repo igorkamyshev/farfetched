@@ -11,14 +11,17 @@ import { Menu } from './features/layout';
 
 import { characterRoute, characterListRoute } from './entities/character';
 import { locationRoute } from './entities/location';
-import { episodeRoute } from './entities/episode';
+import { episodeRoute, episodeListRoute } from './entities/episode';
+import { EpisodesListPage } from './pages/episodes_list';
 
 const router = createHistoryRouter({
   routes: [
     { path: '/', route: characterListRoute },
-    { path: '/:page', route: characterListRoute },
+    { path: '/characters/:page', route: characterListRoute },
     { path: '/character/:characterId', route: characterRoute },
     { path: '/location/:locationId', route: locationRoute },
+    { path: '/episodes', route: episodeListRoute },
+    { path: '/episodes/:page', route: episodeListRoute },
     { path: '/episode/:episodeId', route: episodeRoute },
   ],
 });
@@ -33,6 +36,7 @@ function App() {
       <Route route={characterListRoute} view={MainPage} />
       <Route route={characterRoute} view={CharacterPage} />
       <Route route={locationRoute} view={LocationPage} />
+      <Route route={episodeListRoute} view={EpisodesListPage} />
       <Route route={episodeRoute} view={EpisodePage} />
     </RouterProvider>
   );

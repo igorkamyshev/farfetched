@@ -1,2 +1,2 @@
 export { Episode } from './contract';
-export { episodeRoute } from './model';
+export { episodeRoute, episodeListRoute } from './model';
