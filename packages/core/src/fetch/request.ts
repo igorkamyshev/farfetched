@@ -25,7 +25,7 @@ const requestFx = createEffect<Request, Response, NetworkError | HttpError>({
 
     return response;
   },
-  sid: 'r',
+  sid: 'ff.requestFx',
 });
 
 function isResponseFailed(response: Response) {

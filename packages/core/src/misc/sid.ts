@@ -1,29 +1,20 @@
-// TODO: add serializable
-interface OptionalConfig {
+// @ts-expect-error effector does not have public types of withFactory
+import { withFactory as withFastoryRow } from 'effector';
+
+type WithFactory = <R>({
+  sid,
+  name,
+  loc,
+  method,
+  fn,
+}: {
+  sid: string;
   name?: string;
-  sid?: string;
-}
+  loc?: any;
+  method?: string;
+  fn: () => R;
+}) => R;
 
-function mergeOptionalConfig(
-  internal: OptionalConfig,
-  external?: OptionalConfig
-): OptionalConfig {
-  if (!external) {
-    return {};
-  }
+const withFactory = withFastoryRow as WithFactory;
 
-  return {
-    name: mergeField(internal.name, external.name),
-    sid: mergeField(internal.name, external.sid),
-  };
-}
-
-export { type OptionalConfig, mergeOptionalConfig };
-
-function mergeField(internal?: string, external?: string): string | undefined {
-  if (!external || !internal) {
-    return undefined;
-  }
-
-  return `${external}|${internal}`;
-}
+export { withFactory };
