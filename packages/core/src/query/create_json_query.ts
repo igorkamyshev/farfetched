@@ -173,15 +173,12 @@ function createJsonQuery(config: any) {
     concurrency: { strategy: 'TAKE_LATEST' },
   });
 
-  const headlessQuery = createHeadlessQuery<any, any, any, any, any, any, any>(
-    {
-      contract: config.response.contract ?? unkownContract,
-      mapData: config.response.mapData ?? identity,
-      enabled: config.enabled,
-      name: config.name,
-    },
-    { sid: 'j' }
-  );
+  const headlessQuery = createHeadlessQuery<any, any, any, any, any, any, any>({
+    contract: config.response.contract ?? unkownContract,
+    mapData: config.response.mapData ?? identity,
+    enabled: config.enabled,
+    name: config.name,
+  });
 
   // Connections
   const internalStart = createEvent<any>();

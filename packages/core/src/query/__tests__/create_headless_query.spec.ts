@@ -9,10 +9,10 @@ import { identity } from '../../misc/identity';
 import { invalidDataError } from '../../errors/create_error';
 
 describe('core/createHeadlessQuery without contract', () => {
-  const query = createHeadlessQuery(
-    { contract: unkownContract, mapData: identity },
-    { sid: 'any_string' }
-  );
+  const query = createHeadlessQuery({
+    contract: unkownContract,
+    mapData: identity,
+  });
 
   test('start triggers executeFx', async () => {
     const mockFn = jest.fn();
@@ -164,17 +164,14 @@ describe('core/createHeadlessQuery with contract', () => {
   test('contract find error', async () => {
     const extractedError = Symbol('extractedError');
 
-    const query = createHeadlessQuery(
-      {
-        contract: {
-          isError: (raw): raw is unknown => true,
-          isData: (raw): raw is unknown => false,
-          getValidationErrors: () => [],
-        },
-        mapData: identity,
+    const query = createHeadlessQuery({
+      contract: {
+        isError: (raw): raw is unknown => true,
+        isData: (raw): raw is unknown => false,
+        getValidationErrors: () => [],
       },
-      { sid: 'any_string' }
-    );
+      mapData: identity,
+    });
 
     const scope = fork({
       handlers: [
@@ -193,17 +190,14 @@ describe('core/createHeadlessQuery with contract', () => {
   });
 
   test('contract find invalid data', async () => {
-    const query = createHeadlessQuery(
-      {
-        contract: {
-          isData: (raw): raw is unknown => false,
-          isError: (raw): raw is unknown => false,
-          getValidationErrors: () => ['got it'],
-        },
-        mapData: identity,
+    const query = createHeadlessQuery({
+      contract: {
+        isData: (raw): raw is unknown => false,
+        isError: (raw): raw is unknown => false,
+        getValidationErrors: () => ['got it'],
       },
-      { sid: 'any_string' }
-    );
+      mapData: identity,
+    });
 
     const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
 
@@ -224,17 +218,14 @@ describe('core/createHeadlessQuery with contract', () => {
   test('contract transforms data', async () => {
     const extractedData = Symbol('extractedData');
 
-    const query = createHeadlessQuery(
-      {
-        contract: {
-          isData: (raw): raw is unknown => true,
-          isError: (raw): raw is unknown => false,
-          getValidationErrors: () => [],
-        },
-        mapData: identity,
+    const query = createHeadlessQuery({
+      contract: {
+        isData: (raw): raw is unknown => true,
+        isError: (raw): raw is unknown => false,
+        getValidationErrors: () => [],
       },
-      { sid: 'any_string' }
-    );
+      mapData: identity,
+    });
 
     const scope = fork({
       handlers: [
@@ -257,17 +248,14 @@ describe('core/createHeadlessQuery with contract', () => {
 
     const validate = jest.fn().mockReturnValue([]);
 
-    const query = createHeadlessQuery(
-      {
-        contract: {
-          isData: (raw): raw is unknown => false,
-          isError: (raw): raw is unknown => false,
-          getValidationErrors: validate,
-        },
-        mapData: identity,
+    const query = createHeadlessQuery({
+      contract: {
+        isData: (raw): raw is unknown => false,
+        isError: (raw): raw is unknown => false,
+        getValidationErrors: validate,
       },
-      { sid: 'any_string' }
-    );
+      mapData: identity,
+    });
 
     const scope = fork({
       handlers: [[query.__.executeFx, jest.fn(() => response)]],
@@ -284,17 +272,14 @@ describe('core/createHeadlessQuery with contract', () => {
 
     const is = jest.fn().mockReturnValue(true);
 
-    const query = createHeadlessQuery(
-      {
-        contract: {
-          isData: (raw): raw is unknown => false,
-          isError: (raw): raw is unknown => is(raw),
-          getValidationErrors: () => [],
-        },
-        mapData: identity,
+    const query = createHeadlessQuery({
+      contract: {
+        isData: (raw): raw is unknown => false,
+        isError: (raw): raw is unknown => is(raw),
+        getValidationErrors: () => [],
       },
-      { sid: 'any_string' }
-    );
+      mapData: identity,
+    });
 
     const scope = fork({
       handlers: [[query.__.executeFx, jest.fn(() => response)]],
@@ -313,17 +298,14 @@ describe('core/createHeadlessQuery with contract and', () => {
     const passedParams = Symbol('passedParams');
     const mappedData = Symbol('mappedData');
 
-    const query = createHeadlessQuery(
-      {
-        contract: unkownContract,
-        mapData(data, params) {
-          expect(data).toBe(rawRata);
-          expect(params).toBe(passedParams);
-          return mappedData;
-        },
+    const query = createHeadlessQuery({
+      contract: unkownContract,
+      mapData(data, params) {
+        expect(data).toBe(rawRata);
+        expect(params).toBe(passedParams);
+        return mappedData;
       },
-      { sid: 'random_sid' }
-    );
+    });
 
     const scope = fork({
       handlers: [[query.__.executeFx, jest.fn(() => rawRata)]],
@@ -339,19 +321,16 @@ describe('core/createHeadlessQuery with contract and', () => {
 
     const mappedData = Symbol('mappedData');
 
-    const query = createHeadlessQuery(
-      {
-        contract: unkownContract,
-        mapData: {
-          source: $source,
-          fn: (data, params, source) => {
-            expect(source).toBe('first');
-            return mappedData;
-          },
+    const query = createHeadlessQuery({
+      contract: unkownContract,
+      mapData: {
+        source: $source,
+        fn: (data, params, source) => {
+          expect(source).toBe('first');
+          return mappedData;
         },
       },
-      { sid: 'random_sid' }
-    );
+    });
 
     const scope = fork({
       handlers: [[query.__.executeFx, jest.fn()]],
@@ -365,13 +344,10 @@ describe('core/createHeadlessQuery with contract and', () => {
 
 describe('core/createHeadlessQuery enabled', () => {
   test('enabled by default', () => {
-    const query = createHeadlessQuery(
-      {
-        contract: unkownContract,
-        mapData: identity,
-      },
-      { sid: '1' }
-    );
+    const query = createHeadlessQuery({
+      contract: unkownContract,
+      mapData: identity,
+    });
 
     const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
 
@@ -379,14 +355,11 @@ describe('core/createHeadlessQuery enabled', () => {
   });
 
   test('skip execution on disabled query', async () => {
-    const query = createHeadlessQuery(
-      {
-        contract: unkownContract,
-        mapData: identity,
-        enabled: false,
-      },
-      { sid: '1' }
-    );
+    const query = createHeadlessQuery({
+      contract: unkownContract,
+      mapData: identity,
+      enabled: false,
+    });
 
     const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
 
