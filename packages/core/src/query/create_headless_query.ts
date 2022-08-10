@@ -4,7 +4,6 @@ import { not } from 'patronum';
 import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
-import { mergeOptionalConfig, OptionalConfig } from '../misc/sid';
 import {
   normalizeSourced,
   TwoArgsSourcedField,
@@ -35,23 +34,19 @@ function createHeadlessQuery<
   ContractError extends Response,
   MappedData,
   MapDataSource
->(
-  {
-    contract,
-    mapData,
-    enabled,
-    name,
-  }: {
-    contract: Contract<Response, ContractData, ContractError>;
-    mapData: TwoArgsSourcedField<
-      ContractData,
-      Params,
-      MappedData,
-      MapDataSource
-    >;
-  } & SharedQueryFactoryConfig,
-  config?: OptionalConfig
-): Query<Params, MappedData, Error | InvalidDataError | ContractError> {
+>({
+  contract,
+  mapData,
+  enabled,
+  name,
+}: {
+  contract: Contract<Response, ContractData, ContractError>;
+  mapData: TwoArgsSourcedField<ContractData, Params, MappedData, MapDataSource>;
+} & SharedQueryFactoryConfig): Query<
+  Params,
+  MappedData,
+  Error | InvalidDataError | ContractError
+> {
   const queryName = name ?? 'unnamed';
 
   // Dummy effect, it will be replaced with real in head-full query creator
@@ -59,10 +54,8 @@ function createHeadlessQuery<
     handler: () => {
       throw new Error('Not implemented');
     },
-    ...mergeOptionalConfig(
-      { sid: 'e', name: `${queryName}.executeFx` },
-      config
-    ),
+    sid: `ff.${queryName}.executeFx`,
+    name: `${queryName}.executeFx`,
   });
 
   const applyContractFx = createContractApplier(contract);
@@ -87,22 +80,22 @@ function createHeadlessQuery<
   };
 
   // -- Main stores --
-  const $data = createStore<MappedData | null>(
-    null,
-    mergeOptionalConfig({ sid: 'd', name: `${queryName}.$data` }, config)
-  );
+  const $data = createStore<MappedData | null>(null, {
+    sid: `ff.${queryName}.$data`,
+    name: `${queryName}.$data`,
+  });
   const $error = createStore<Error | InvalidDataError | ContractError | null>(
     null,
-    mergeOptionalConfig({ sid: 'e', name: `${queryName}.$error` }, config)
+    { sid: 'ff.$error', name: `${queryName}.$error` }
   );
-  const $status = createStore<FetchingStatus>(
-    'initial',
-    mergeOptionalConfig({ sid: 's', name: `${queryName}.$status` }, config)
-  );
-  const $stale = createStore<boolean>(
-    false,
-    mergeOptionalConfig({ sid: 's', name: `${queryName}.$stale` }, config)
-  );
+  const $status = createStore<FetchingStatus>('initial', {
+    sid: `ff.${queryName}.$status`,
+    name: `${queryName}.$status`,
+  });
+  const $stale = createStore<boolean>(false, {
+    sid: `ff.${queryName}.$stale`,
+    name: `${queryName}.$stale`,
+  });
   const $enabled = normalizeStaticOrReactive(enabled ?? true).map(Boolean);
 
   // -- Execution --

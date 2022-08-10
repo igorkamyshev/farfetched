@@ -9,7 +9,7 @@ import { Query } from '../query/type';
 function connectQuery<
   Sources extends Record<string, Query<any, any, any>>,
   Target extends Query<void, any, any>
->(config: { source: Sources; target: Target }): void;
+>(config: { source: Sources; target: Target | Target[] }): void;
 
 /**
  * Target query will be executed after all sources queries successful end.
@@ -21,10 +21,10 @@ function connectQuery<
   Target extends Query<any, any, any>
 >(_config: {
   source: Sources;
-  target: Target;
   fn: (sources: {
     [index in keyof Sources]: EventPayload<Sources[index]['done']['success']>;
   }) => EventPayload<Target['start']>;
+  target: Target | Target[];
 }): void;
 
 function connectQuery<
@@ -36,11 +36,13 @@ function connectQuery<
   fn,
 }: {
   source: Sources;
-  target: Target;
+  target: Target | Target[];
   fn?: (sources: {
     [index in keyof Sources]: EventPayload<Sources[index]['done']['success']>;
   }) => EventPayload<Target['start']>;
 }): void {
+  const targets = Array.isArray(target) ? target : [target];
+
   const $normalizedSource = combine(
     Object.entries(source).reduce(
       (prev, [key, query]) => ({ ...prev, [key]: query.$data }),
@@ -57,7 +59,7 @@ function connectQuery<
     fn() {
       return true;
     },
-    target: target.$stale,
+    target: targets.map((t) => t.$stale),
   });
 
   const allLoadSuccess = combineEvents({
@@ -70,7 +72,7 @@ function connectQuery<
     fn(data: any) {
       return fn?.(data) ?? null;
     },
-    target: target.start,
+    target: targets.map((t) => t.start),
   });
 }
 

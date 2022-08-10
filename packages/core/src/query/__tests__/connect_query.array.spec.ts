@@ -30,8 +30,25 @@ describe('remote_data/connect_query', () => {
       }),
   });
 
-  const contentQ = withFactory({
+  const firstContentQ = withFactory({
     sid: '3',
+    fn: () =>
+      createHeadlessQuery<
+        { language: string; ids: string[] },
+        unknown,
+        unknown,
+        unknown,
+        unknown,
+        unknown,
+        unknown
+      >({
+        contract: unkownContract,
+        mapData: identity,
+      }),
+  });
+
+  const secondContentQ = withFactory({
+    sid: '4',
     fn: () =>
       createHeadlessQuery<
         { language: string; ids: string[] },
@@ -52,7 +69,7 @@ describe('remote_data/connect_query', () => {
     fn({ language, blocks }) {
       return { language, ids: blocks };
     },
-    target: contentQ,
+    target: [firstContentQ, secondContentQ],
   });
 
   test('execute child with daat from parents', async () => {
@@ -63,19 +80,25 @@ describe('remote_data/connect_query', () => {
       handlers: [
         [blocksQ.__.executeFx, jest.fn(() => ['one', 'two'])],
         [languagesQ.__.executeFx, jest.fn(() => 'RU')],
-        [contentQ.__.executeFx, fetchContentMock],
+        [firstContentQ.__.executeFx, fetchContentMock],
+        [secondContentQ.__.executeFx, fetchContentMock],
       ],
     });
 
-    const childWatcher = watchQuery(contentQ, scope);
+    const firstWatcher = watchQuery(firstContentQ, scope);
+    const secondWatcher = watchQuery(firstContentQ, scope);
 
     await Promise.all([
       allSettled(languagesQ.start, { scope, params: {} }),
       allSettled(blocksQ.start, { scope, params: {} }),
     ]);
 
-    expect(childWatcher.listeners.onDone).toBeCalledTimes(1);
-    expect(childWatcher.listeners.onDone).toBeCalledWith(childResposne);
+    expect(firstWatcher.listeners.onDone).toBeCalledTimes(1);
+    expect(firstWatcher.listeners.onDone).toBeCalledWith(childResposne);
+
+    expect(secondWatcher.listeners.onDone).toBeCalledTimes(1);
+    expect(secondWatcher.listeners.onDone).toBeCalledWith(childResposne);
+
     expect(fetchContentMock).toHaveBeenCalledWith(
       expect.objectContaining({ language: 'RU', ids: ['one', 'two'] })
     );
