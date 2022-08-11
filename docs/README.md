@@ -32,6 +32,7 @@ Any factory in any overload accepts these fields in top level of config.
 - [Releases policy](./handbook/releases.md)
 - [Do not trust remote data](./handbook/never_trust.md)
 - [Effector](./handbook/effector.md)
+- [Render as you fetch](./handbook/render_as_you_fetch.md)
 
 ### How to
 
