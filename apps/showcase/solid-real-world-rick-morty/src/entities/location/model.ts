@@ -1,8 +1,7 @@
 import { createRoute } from 'atomic-router';
-import { Static } from 'runtypes';
 
-import { Id } from '../../shared/id';
+import { TId } from '../../shared/id';
 
-const locationRoute = createRoute<{ locationId: Static<typeof Id> }>();
+const locationRoute = createRoute<{ locationId: TId }>();
 
 export { locationRoute };

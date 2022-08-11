@@ -3,38 +3,42 @@ import { runtypeContract } from '@farfetched/runtypes';
 import { sample } from 'effector';
 import { Array } from 'runtypes';
 
-import { Character, characterRoute } from '../../entities/character';
-import { Episode } from '../../entities/episode';
-import { Location } from '../../entities/location';
-import { urlToId } from '../../shared/id';
+import {
+  Character,
+  characterRoute,
+  characterUrl,
+} from '../../entities/character';
+import { Episode, episodeUrl } from '../../entities/episode';
+import { Location, locationUrl } from '../../entities/location';
+import { TId, urlToId } from '../../shared/id';
 
 const characterQuery = createJsonQuery({
-  params: declareParams<{ id: number }>(),
+  params: declareParams<{ id: TId }>(),
   request: {
-    url: ({ id }) => `https://rickandmortyapi.com/api/character/${id}`,
+    url: ({ id }) => characterUrl({ id }),
     method: 'GET',
   },
   response: { contract: runtypeContract(Character) },
 });
 
 const originQuery = createJsonQuery({
-  params: declareParams<{ url: string }>(),
-  request: { url: ({ url }) => url, method: 'GET' },
+  params: declareParams<{ id: TId }>(),
+  request: { url: ({ id }) => locationUrl({ id }), method: 'GET' },
   response: { contract: runtypeContract(Location) },
 });
 
 connectQuery({
   source: { character: characterQuery },
   fn({ character }) {
-    return { url: character.origin.url };
+    return { id: urlToId(character.origin.url) };
   },
   target: originQuery,
 });
 
 const currentLocationQuery = createJsonQuery({
-  params: declareParams<{ locationUrl: string }>(),
+  params: declareParams<{ id: TId }>(),
   request: {
-    url: ({ locationUrl }) => locationUrl,
+    url: ({ id }) => locationUrl({ id }),
     method: 'GET',
   },
   response: { contract: runtypeContract(Location) },
@@ -43,16 +47,15 @@ const currentLocationQuery = createJsonQuery({
 connectQuery({
   source: { character: characterQuery },
   fn({ character }) {
-    return { locationUrl: character.location.url };
+    return { id: urlToId(character.location.url) };
   },
   target: currentLocationQuery,
 });
 
 const characterEpisodesQuery = createJsonQuery({
-  params: declareParams<{ ids: number[] }>(),
+  params: declareParams<{ ids: TId[] }>(),
   request: {
-    url: ({ ids }) =>
-      `https://rickandmortyapi.com/api/episode/[${ids.join(',')}]`,
+    url: ({ ids }) => episodeUrl({ ids }),
     method: 'GET',
   },
   response: { contract: runtypeContract(Array(Episode)) },

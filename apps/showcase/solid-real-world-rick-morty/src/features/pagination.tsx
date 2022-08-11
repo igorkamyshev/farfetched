@@ -2,11 +2,11 @@ import { RouteInstance } from 'atomic-router';
 import { Link } from 'atomic-router-solid';
 import { For, Show } from 'solid-js';
 
+import { TInfo } from '../shared/info';
+
 function Pagination(props: {
-  hasPrevious: boolean;
-  hasNext: boolean;
   currentPage: number;
-  totalPages: number;
+  info?: TInfo;
   route: RouteInstance<{ page?: number }>;
 }) {
   function toParams(page: number) {
@@ -16,22 +16,22 @@ function Pagination(props: {
     return { page };
   }
 
+  const hasNext = () => props.info?.next !== null;
+  const hasPrevious = () => props.info?.prev !== null;
+  const totalPages = () => props.info?.pages ?? 1;
+
   return (
     <>
-      <Show when={props.hasPrevious}>
+      <Show when={hasPrevious()}>
         <Link to={props.route} params={toParams(props.currentPage - 1)}>
           prev
         </Link>
       </Show>
-      <For each={allInRange(1, props.totalPages)}>
+      <For each={allInRange(1, totalPages())}>
         {(item) => (
           <>
             <Show when={item !== props.currentPage}>
-              <Link
-                to={props.route}
-                params={toParams(item)}
-                activeClass="SOOOO"
-              >
+              <Link to={props.route} params={toParams(item)}>
                 {item}
               </Link>
             </Show>
@@ -39,7 +39,7 @@ function Pagination(props: {
           </>
         )}
       </For>
-      <Show when={props.hasNext}>
+      <Show when={hasNext()}>
         <Link to={props.route} params={toParams(props.currentPage + 1)}>
           next
         </Link>

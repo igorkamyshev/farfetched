@@ -1,4 +1,4 @@
-import { Number, Record } from 'runtypes';
+import { Number, Record, Static } from 'runtypes';
 
 import { Url } from './url';
 
@@ -9,4 +9,6 @@ const Info = Record({
   prev: Url.nullable(),
 });
 
-export { Info };
+type TInfo = Static<typeof Info>;
+
+export { Info, type TInfo };

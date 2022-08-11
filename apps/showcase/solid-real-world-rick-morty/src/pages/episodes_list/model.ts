@@ -3,13 +3,13 @@ import { runtypeContract } from '@farfetched/runtypes';
 import { sample } from 'effector';
 import { Array, Record } from 'runtypes';
 
-import { Episode, episodeListRoute } from '../../entities/episode';
+import { Episode, episodeListRoute, episodeUrl } from '../../entities/episode';
 import { Info } from '../../shared/info';
 
 const episodesQuery = createJsonQuery({
   params: declareParams<{ page: number }>(),
   request: {
-    url: 'https://rickandmortyapi.com/api/episode',
+    url: episodeUrl(),
     query: ({ page }) => ({ page }),
     method: 'GET',
   },
@@ -22,10 +22,7 @@ const $currentPage = episodeListRoute.$params.map((params) => params.page ?? 1);
 
 sample({
   clock: [episodeListRoute.opened, episodeListRoute.updated],
-  source: $currentPage,
-  fn(page) {
-    return { page };
-  },
+  source: { page: $currentPage },
   target: episodesQuery.start,
 });
 

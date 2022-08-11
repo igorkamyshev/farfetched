@@ -1,5 +1,7 @@
-import { String } from 'runtypes';
+import { Static, String } from 'runtypes';
 
 const Url = String.withBrand('URL');
 
-export { Url };
+type TUrl = Static<typeof Url>;
+
+export { Url, type TUrl };

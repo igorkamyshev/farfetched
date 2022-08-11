@@ -3,24 +3,23 @@ import { runtypeContract } from '@farfetched/runtypes';
 import { sample } from 'effector';
 import { Array } from 'runtypes';
 
-import { Character } from '../../entities/character';
-import { Location, locationRoute } from '../../entities/location';
-import { urlToId } from '../../shared/id';
+import { Character, characterUrl } from '../../entities/character';
+import { Location, locationRoute, locationUrl } from '../../entities/location';
+import { TId, urlToId } from '../../shared/id';
 
 const locationQuery = createJsonQuery({
-  params: declareParams<{ id: number }>(),
+  params: declareParams<{ id: TId }>(),
   request: {
-    url: ({ id }) => `https://rickandmortyapi.com/api/location/${id}`,
+    url: ({ id }) => locationUrl({ id }),
     method: 'GET',
   },
   response: { contract: runtypeContract(Location) },
 });
 
 const residentsQuery = createJsonQuery({
-  params: declareParams<{ ids: number[] }>(),
+  params: declareParams<{ ids: TId[] }>(),
   request: {
-    url: ({ ids }) =>
-      `https://rickandmortyapi.com/api/character/${ids.join(',')}`,
+    url: ({ ids }) => characterUrl({ ids }),
     method: 'GET',
   },
   response: { contract: runtypeContract(Array(Character)) },

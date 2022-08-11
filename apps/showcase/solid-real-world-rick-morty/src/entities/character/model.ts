@@ -1,9 +1,8 @@
 import { createRoute } from 'atomic-router';
-import { Static } from 'runtypes';
 
-import { Id } from '../../shared/id';
+import { TId } from '../../shared/id';
 
-const characterRoute = createRoute<{ characterId: Static<typeof Id> }>();
+const characterRoute = createRoute<{ characterId: TId }>();
 const characterListRoute = createRoute<{ page?: number }>();
 
 export { characterRoute, characterListRoute };

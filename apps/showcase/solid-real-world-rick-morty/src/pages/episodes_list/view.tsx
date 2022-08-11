@@ -3,9 +3,8 @@ import { Link } from 'atomic-router-solid';
 import { useUnit } from 'effector-solid';
 import { For, Show } from 'solid-js';
 
-import { episodeListRoute } from '../../entities/episode';
-import { Pagination } from '../../shared/pagination';
-import { episodeRoute } from '../episode/model';
+import { episodeListRoute, episodeRoute } from '../../entities/episode';
+import { Pagination } from '../../features/pagination';
 import { $currentPage, episodesQuery } from './model';
 
 function EpisodesListPage() {
@@ -30,9 +29,7 @@ function EpisodesListPage() {
         </ol>
         <Pagination
           currentPage={currentPage()}
-          totalPages={data()?.info.pages ?? 1}
-          hasPrevious={data()?.info.prev !== null}
-          hasNext={data()?.info.next !== null}
+          info={data()?.info}
           route={episodeListRoute}
         />
       </Show>

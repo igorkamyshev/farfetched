@@ -1,10 +1,12 @@
 import { Number, Static } from 'runtypes';
 
-import { Url } from './url';
+import { TUrl } from './url';
 
 const Id = Number.withBrand('Id');
 
-function urlToId(url: Static<typeof Url>): Static<typeof Id> {
-  return parseInt(url.split('/').at(-1) ?? '', 10) as Static<typeof Id>;
+type TId = Static<typeof Id>;
+
+function urlToId(url: TUrl): TId {
+  return parseInt(url.split('/').at(-1) ?? '', 10) as TId;
 }
-export { urlToId, Id };
+export { urlToId, Id, type TId };

@@ -4,7 +4,7 @@ import { useUnit } from 'effector-solid';
 import { For, Show } from 'solid-js';
 
 import { characterRoute, characterListRoute } from '../../entities/character';
-import { Pagination } from '../../shared/pagination';
+import { Pagination } from '../../features/pagination';
 import { $currentPage, characterListQuery } from './model';
 
 function MainPage() {
@@ -33,10 +33,8 @@ function MainPage() {
         </ol>
         <Pagination
           currentPage={currentPage()}
-          totalPages={data()?.info.pages ?? 1}
-          hasPrevious={data()?.info.prev !== null}
-          hasNext={data()?.info.next !== null}
           route={characterListRoute}
+          info={data()?.info}
         />
       </Show>
     </>
