@@ -1,4 +1,4 @@
-# Query
+# Сontract
 
 A set of constraints that validates received data.
 
