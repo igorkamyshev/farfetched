@@ -3,7 +3,8 @@
 # and commit this file to your remote git repository to share the goodness with others.
 
 tasks:
-  - init: pnpm install && pnpm run build
+  - name: Build
+    init: pnpm install && pnpm run build
   - name: Solid showcase
-    init: pnpm nx serve showcase-solid-create-query
+    init: pnpm install && pnpm nx serve showcase-solid-create-query
 
