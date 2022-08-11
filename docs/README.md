@@ -52,3 +52,4 @@ Any factory in any overload accepts these fields in top level of config.
 - [React + `createJsonQuery`](../apps/showcase/react-create-json-query/)
 - [SolidJS + `createQuery`](../apps/showcase/solid-create-query/)
 - [React + `connectQuery`](../apps/showcase/react-connect-query/)
+- [Real-world showcase with SolidJS around JSON API](../apps/showcase/solid-real-world-rick-morty/)
