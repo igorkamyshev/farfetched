@@ -44,3 +44,4 @@ function UserProfile() {
 ## Showcases
 
 - [SolidJS + `createQuery`](../../apps/showcase/solid-create-query/)
+- [Real-world showcase with SolidJS around JSON API](../../apps/showcase/solid-real-world-rick-morty/)

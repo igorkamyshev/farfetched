@@ -42,3 +42,4 @@ connectQuery({
 ## Showcases
 
 - [React + `connectQuery`](../../../apps/showcase/react-connect-query/)
+- [Real-world showcase with SolidJS around JSON API](../../../apps/showcase/solid-real-world-rick-morty/)

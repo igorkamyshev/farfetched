@@ -28,3 +28,4 @@ Config fields:
 ## Showcases
 
 - [React + `createJsonQuery`](../../../apps/showcase/react-create-json-query/)
+- [Real-world showcase with SolidJS around JSON API](../../../apps/showcase/solid-real-world-rick-morty/)

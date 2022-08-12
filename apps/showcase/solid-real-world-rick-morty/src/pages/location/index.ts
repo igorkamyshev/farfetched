@@ -1,0 +1,1 @@
+export { LocationPage } from './view';

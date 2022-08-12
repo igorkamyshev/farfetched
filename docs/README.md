@@ -32,6 +32,7 @@ Any factory in any overload accepts these fields in top level of config.
 - [Releases policy](./handbook/releases.md)
 - [Do not trust remote data](./handbook/never_trust.md)
 - [Effector](./handbook/effector.md)
+- [Render as you fetch](./handbook/render_as_you_fetch.md)
 
 ### How to
 
@@ -52,3 +53,4 @@ Any factory in any overload accepts these fields in top level of config.
 - [React + `createJsonQuery`](../apps/showcase/react-create-json-query/)
 - [SolidJS + `createQuery`](../apps/showcase/solid-create-query/)
 - [React + `connectQuery`](../apps/showcase/react-connect-query/)
+- [Real-world showcase with SolidJS around JSON API](../apps/showcase/solid-real-world-rick-morty/)
