@@ -69,4 +69,4 @@ function createDefer(): {
   return result;
 }
 
-export { createQueryResource };
+export { createQueryResource, createDefer };
