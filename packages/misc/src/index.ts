@@ -1,1 +1,1 @@
-export { createDefer } from './lib/defer';
+export { createDefer, type Defer } from './lib/defer';
