@@ -29,30 +29,25 @@ function createQueryResource(query: Query<any, any, any>) {
     query.start,
   ]);
 
+  let dataDefer = createDefer();
+
   // Start Resource after Query state changes
   createSolidEffect(() => {
     const isPending = pending();
 
     if (isPending) {
+      dataDefer = createDefer();
       rerun([]);
     }
   });
 
-  let defer = createDefer();
-
-  function startResource(args: any) {
-    defer = createDefer();
-    rerun([]);
-    start(args);
-  }
-
-  const resolveResourceEffect = createEffectorEffect(() => defer.rs({}));
+  const resolveResourceEffect = createEffectorEffect(() => dataDefer.rs({}));
 
   // Bind to suspense
-  const [resourceData] = createResource(track, () => defer.req);
+  const [resourceData] = createResource(track, () => dataDefer.req);
 
   sample({
-    clock: query.done.finally,
+    clock: query.done.success,
     target: resolveResourceEffect,
   });
 
@@ -61,7 +56,7 @@ function createQueryResource(query: Query<any, any, any>) {
     return data();
   };
 
-  return { data: returnedData, error, pending, start: startResource };
+  return { data: returnedData, error, pending, start };
 }
 
 function createDefer(): {
