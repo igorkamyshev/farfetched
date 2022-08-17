@@ -1,4 +1,10 @@
 {
   "name": "@farfetched/solid",
-  "version": "0.0.2"
+  "version": "0.0.2",
+  "dependencies": {
+    "effector-solid": "^0.22.2"
+  },
+  "peerDependencies": {
+    "solid-js": "^1.4.7"
+  }
 }

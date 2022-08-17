@@ -1,23 +1,23 @@
 # `@farfetched/react`
 
-> It is a separate package `@farfetched/react`, you have to install it and its peer dependencies before usage
+> It is a separate package `@farfetched/react`, you have to install it before usage
 
 with `pnpm`
 
 ```sh
-pnpm install @farfecthed/react effector-react
+pnpm install @farfecthed/react
 ```
 
 with `yarn`
 
 ```sh
-yarn add @farfecthed/react effector-react
+yarn add @farfecthed/react
 ```
 
 with `npm`
 
 ```sh
-npm install @farfecthed/react effector-react
+npm install @farfecthed/react
 ```
 
 ## Methods
