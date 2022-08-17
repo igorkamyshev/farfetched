@@ -160,4 +160,36 @@ describe('createQueryResource', () => {
     const errorText = await screen.findByText('Error: __SKIPPED__');
     expect(errorText).toBeInTheDocument();
   });
+
+  test('show Suspense-fallback while pending and nested data', async () => {
+    const defer = createDefer();
+    const controlledQuery = createQuery<void, { name: string }>({
+      handler: () => defer.req,
+    });
+
+    const scope = fork();
+
+    const boundStart = scopeBind(controlledQuery.start, { scope });
+
+    function App() {
+      const [user] = createQueryResource(controlledQuery);
+
+      return (
+        <Suspense fallback="Loading">
+          <p>{user()?.name}</p>
+        </Suspense>
+      );
+    }
+
+    render(() => (
+      <Provider value={scope}>
+        <App />
+      </Provider>
+    ));
+
+    boundStart();
+
+    const loadingText = await screen.findByText('Loading');
+    expect(loadingText).toBeInTheDocument();
+  });
 });

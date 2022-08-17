@@ -1,7 +1,6 @@
 import { type Query } from '@farfetched/core';
 import { useUnit } from 'effector-solid';
 import {
-  Accessor,
   createResource,
   createSignal,
   createEffect as createSolidEffect,
@@ -12,17 +11,12 @@ const skippedMark = '__SKIPPED__' as const;
 
 function createQueryResource<Params, Data, Error>(
   query: Query<Params, Data, Error>
-): [data: Accessor<Data>, controls: { refetch: (params: Params) => void }] {
+) {
   const [track, rerun] = createSignal<[] | undefined>(undefined, {
     equals: false,
   });
 
-  const [data, error, pending, start] = useUnit([
-    query.$data,
-    query.$error,
-    query.$pending,
-    query.start,
-  ]);
+  const [pending, start] = useUnit([query.$pending, query.start]);
 
   let dataDefer = createDefer();
 
@@ -46,7 +40,10 @@ function createQueryResource<Params, Data, Error>(
   );
 
   // Bind to suspense
-  const [resourceData] = createResource(track, () => dataDefer.req);
+  const [resourceData] = createResource<Data, Params>(
+    track as any,
+    (_params: Params) => dataDefer.req
+  );
 
   sample({ clock: query.done.success, target: resolveResourceFx });
   sample({ clock: query.done.error, target: rejectResourceFx });
@@ -56,12 +53,7 @@ function createQueryResource<Params, Data, Error>(
     target: rejectResourceFx,
   });
 
-  const returnedData = () => {
-    resourceData();
-    return data()!;
-  };
-
-  return [returnedData, { refetch: start }];
+  return [resourceData, { refetch: start }] as const;
 }
 
 function createDefer(): {

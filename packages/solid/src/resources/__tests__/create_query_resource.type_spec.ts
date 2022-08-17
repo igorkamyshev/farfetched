@@ -9,7 +9,7 @@ function ComponentVoidStart() {
   );
 
   expectAssignable<() => void>(start);
-  expectType<number>(data());
+  expectType<number | undefined>(data());
 
   return null;
 }
@@ -21,7 +21,7 @@ function ComponentStart() {
 
   expectType<(params: { limit: string }) => void>(start);
   expectNotAssignable<() => void>(start);
-  expectType<number>(data());
+  expectType<number | undefined>(data());
 
   return null;
 }
