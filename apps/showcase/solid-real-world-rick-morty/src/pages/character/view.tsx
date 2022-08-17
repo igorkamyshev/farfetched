@@ -1,5 +1,5 @@
 import { createQueryResource } from '@farfetched/solid';
-import { For, Suspense } from 'solid-js';
+import { For, Suspense, Show, ErrorBoundary } from 'solid-js';
 import { Link } from 'atomic-router-solid';
 
 import { LocationDetails } from '../../entities/location';
@@ -20,19 +20,28 @@ function CharacterPage() {
   return (
     <Suspense fallback={'Loading ...'}>
       <article>
-        <h1>{character().name}</h1>
-
-        <img src={character().image} alt={character()?.name} />
+        <Show when={character()}>
+          {(data) => (
+            <>
+              <h1>{data.name}</h1>
+              <img src={data.image} alt={data.name} />
+            </>
+          )}
+        </Show>
 
         <Suspense fallback="Loading ...">
-          <LocationDetails title="Origin" location={origin()} />
+          <ErrorBoundary fallback={<p>Origin could not be shown</p>}>
+            <LocationDetails title="Origin" location={origin()} />
+          </ErrorBoundary>
         </Suspense>
 
         <Suspense fallback="Loading ...">
-          <LocationDetails
-            title="Current location"
-            location={currentLocation()}
-          />
+          <ErrorBoundary fallback={<p>Current location could not be shown</p>}>
+            <LocationDetails
+              title="Current location"
+              location={currentLocation()}
+            />
+          </ErrorBoundary>
         </Suspense>
 
         <Suspense fallback="Loading ...">

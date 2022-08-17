@@ -1,6 +1,6 @@
 import { createQueryResource } from '@farfetched/solid';
 import { Link } from 'atomic-router-solid';
-import { For, Suspense } from 'solid-js';
+import { For, Show, Suspense } from 'solid-js';
 
 import { characterRoute } from '../../entities/character';
 import { charactersInEpisodeQuery, episodeQuery } from './model';
@@ -11,10 +11,17 @@ function EpisodePage() {
 
   return (
     <Suspense fallback={'Loading...'}>
-      <h1>{episode().name}</h1>
-      <p>
-        {episode().episode}, {episode().air_date}
-      </p>
+      <Show when={episode()}>
+        {(data) => (
+          <>
+            <h1>{data.name}</h1>
+            <p>
+              {data.episode}, {data.air_date}
+            </p>
+          </>
+        )}
+      </Show>
+
       <Suspense fallback={'Loading...'}>
         <h2>Characters in episode:</h2>
         <ul>
