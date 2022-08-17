@@ -4,6 +4,7 @@ import {
   createResource,
   createSignal,
   createEffect as createSolidEffect,
+  Resource,
 } from 'solid-js';
 import { createEffect as createEffectorEffect, sample } from 'effector';
 
@@ -11,7 +12,7 @@ const skippedMark = '__SKIPPED__' as const;
 
 function createQueryResource<Params, Data, Error>(
   query: Query<Params, Data, Error>
-) {
+): [Resource<Data | undefined>, { refetch: (params: Params) => void }] {
   const [track, rerun] = createSignal<[] | undefined>(undefined, {
     equals: false,
   });
@@ -53,7 +54,7 @@ function createQueryResource<Params, Data, Error>(
     target: rejectResourceFx,
   });
 
-  return [resourceData, { refetch: start }] as const;
+  return [resourceData, { refetch: start }];
 }
 
 function createDefer(): {
