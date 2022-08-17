@@ -3,6 +3,7 @@
   "version": 2,
   "projects": {
     "core": "packages/core",
+    "misc": "packages/misc",
     "react": "packages/react",
     "runtypes": "packages/runtypes",
     "showcase-react-connect-query": "apps/showcase/react-connect-query",

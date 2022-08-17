@@ -1,9 +1,9 @@
 import { allSettled, fork } from 'effector';
-import { watchQuery } from '@farfetched/test-utils';
 import { setTimeout } from 'timers/promises';
+import { watchQuery } from '@farfetched/test-utils';
+import { createDefer } from '@farfetched/misc';
 
 import { unkownContract } from '../../contract/unkown_contract';
-import { createDefer } from '../../misc/defer';
 import { createJsonQuery } from '../create_json_query';
 
 describe('remote_data/query/json.response.success', () => {

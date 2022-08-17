@@ -8,16 +8,17 @@ import { render, cleanup, screen } from 'solid-testing-library';
 import { Provider } from 'effector-solid/scope';
 import { createQuery } from '@farfetched/core';
 import { allPrevSettled } from '@farfetched/test-utils';
+import { createDefer } from '@farfetched/misc';
 import { setTimeout } from 'timers/promises';
 
-import { createDefer, createQueryResource } from '../create_query_resource';
+import { createQueryResource } from '../create_query_resource';
 
 describe('createQueryResource', () => {
   afterEach(cleanup);
 
   test('show fallback while pending', async () => {
-    const defer = createDefer();
-    const controlledQuery = createQuery({ handler: () => defer.req });
+    const defer = createDefer<any, unknown>();
+    const controlledQuery = createQuery({ handler: () => defer.promise });
 
     const scope = fork();
 
@@ -44,7 +45,7 @@ describe('createQueryResource', () => {
     const loadingText = await screen.findByText('Loading');
     expect(loadingText).toBeInTheDocument();
 
-    defer.rs('Hello');
+    defer.resolve('Hello');
     await allPrevSettled(scope);
 
     const helloText = await screen.findByText('Hello');
@@ -94,8 +95,8 @@ describe('createQueryResource', () => {
   });
 
   test('show error boundry when query failed', async () => {
-    const defer = createDefer();
-    const controlledQuery = createQuery({ handler: () => defer.req });
+    const defer = createDefer<any, unknown>();
+    const controlledQuery = createQuery({ handler: () => defer.promise });
 
     const scope = fork();
 
@@ -121,7 +122,7 @@ describe('createQueryResource', () => {
 
     boundStart({});
 
-    defer.rj('WOW');
+    defer.reject('WOW');
     await allPrevSettled(scope);
 
     const errorText = await screen.findByText('Error: WOW');
@@ -161,9 +162,9 @@ describe('createQueryResource', () => {
   });
 
   test('show Suspense-fallback while pending and nested data', async () => {
-    const defer = createDefer();
+    const defer = createDefer<any, unknown>();
     const controlledQuery = createQuery<void, { name: string }>({
-      handler: () => defer.req,
+      handler: () => defer.promise,
     });
 
     const scope = fork();

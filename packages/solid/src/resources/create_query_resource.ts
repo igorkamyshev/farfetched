@@ -1,4 +1,5 @@
 import { type Query } from '@farfetched/core';
+import { createDefer } from '@farfetched/misc';
 import { useUnit } from 'effector-solid';
 import {
   createResource,
@@ -19,7 +20,7 @@ function createQueryResource<Params, Data, Error>(
 
   const [pending, start] = useUnit([query.$pending, query.start]);
 
-  let dataDefer = createDefer();
+  let dataDefer = createDefer<Data, Error | typeof skippedMark>();
 
   // Start Resource after Query state changes
   createSolidEffect(() => {
@@ -32,16 +33,16 @@ function createQueryResource<Params, Data, Error>(
   });
 
   const resolveResourceFx = createEffectorEffect((data: Data) => {
-    dataDefer.rs(data);
+    dataDefer.resolve(data);
   });
   const rejectResourceFx = createEffectorEffect(
     (error: Error | typeof skippedMark) => {
-      dataDefer.rj(error);
+      dataDefer.reject(error);
     }
   );
 
   // Bind to suspense
-  const [resourceData] = createResource(track, () => dataDefer.req);
+  const [resourceData] = createResource(track, () => dataDefer.promise);
 
   sample({ clock: query.done.success, target: resolveResourceFx });
   sample({ clock: query.done.error, target: rejectResourceFx });
@@ -54,23 +55,4 @@ function createQueryResource<Params, Data, Error>(
   return [resourceData, { refetch: start }];
 }
 
-function createDefer(): {
-  rs: (value: any) => any;
-  rj: (value: any) => any;
-  req: Promise<any>;
-} {
-  const result = {} as {
-    rs: (value: any) => any;
-    rj: (value: any) => any;
-    req: Promise<any>;
-  };
-  result.req = new Promise((rs, rj) => {
-    result.rs = rs;
-    result.rj = rj;
-  });
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  result.req.catch((_) => {});
-  return result;
-}
-
-export { createQueryResource, createDefer };
+export { createQueryResource };

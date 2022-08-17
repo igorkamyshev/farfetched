@@ -1,4 +1,5 @@
-import { createDefer } from '../defer';
+import { createDefer } from '@farfetched/misc';
+
 import { anySignal } from '../any_signal';
 
 describe('anySignal', () => {

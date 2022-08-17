@@ -1,8 +1,8 @@
 import { watchQuery } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
+import { createDefer } from '@farfetched/misc';
 
 import { unkownContract } from '../../contract/unkown_contract';
-import { createDefer } from '../../misc/defer';
 import { createJsonQuery } from '../create_json_query';
 
 describe('remote_data/query/json.response.error', () => {

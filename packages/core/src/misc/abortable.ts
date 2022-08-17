@@ -7,10 +7,10 @@ import {
   createStore,
   createEffect,
 } from 'effector';
+import { createDefer, Defer } from '@farfetched/misc';
 
 import { abortError } from '../errors/create_error';
 import { AbortError } from '../errors/type';
-import { createDefer, Defer } from './defer';
 
 let count = 0;
 const getId = () => {
