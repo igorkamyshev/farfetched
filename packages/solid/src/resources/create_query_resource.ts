@@ -12,12 +12,7 @@ const skippedMark = '__SKIPPED__' as const;
 
 function createQueryResource<Params, Data, Error>(
   query: Query<Params, Data, Error>
-): {
-  data: Accessor<Data | null>;
-  error: Accessor<Error | null>;
-  pending: Accessor<boolean>;
-  start: (params: Params) => void;
-} {
+): [data: Accessor<Data>, controls: { refetch: (params: Params) => void }] {
   const [track, rerun] = createSignal<[] | undefined>(undefined, {
     equals: false,
   });
@@ -63,10 +58,10 @@ function createQueryResource<Params, Data, Error>(
 
   const returnedData = () => {
     resourceData();
-    return data();
+    return data()!;
   };
 
-  return { data: returnedData, error, pending, start };
+  return [returnedData, { refetch: start }];
 }
 
 function createDefer(): {

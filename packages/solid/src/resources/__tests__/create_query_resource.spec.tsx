@@ -24,7 +24,7 @@ describe('createQueryResource', () => {
     const boundStart = scopeBind(controlledQuery.start, { scope });
 
     function App() {
-      const { data } = createQueryResource(controlledQuery);
+      const [data] = createQueryResource(controlledQuery);
 
       return (
         <Suspense fallback="Loading">
@@ -61,7 +61,7 @@ describe('createQueryResource', () => {
     const boundStart = scopeBind(controlledQuery.start, { scope });
 
     function App() {
-      const { data } = createQueryResource(controlledQuery);
+      const [data] = createQueryResource(controlledQuery);
 
       return (
         <Suspense fallback="Loading">
@@ -102,7 +102,7 @@ describe('createQueryResource', () => {
     const boundStart = scopeBind(controlledQuery.start, { scope });
 
     function App() {
-      const { data } = createQueryResource(controlledQuery);
+      const [data] = createQueryResource(controlledQuery);
 
       return (
         <Suspense fallback="Loading">
@@ -137,7 +137,7 @@ describe('createQueryResource', () => {
     const scope = fork();
 
     function App() {
-      const { data } = createQueryResource(controlledQuery);
+      const [data] = createQueryResource(controlledQuery);
 
       return (
         <Suspense fallback="Loading">
