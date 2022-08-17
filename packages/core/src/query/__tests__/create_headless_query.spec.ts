@@ -1,9 +1,9 @@
 import { allSettled, createStore, fork } from 'effector';
 
 import { watchQuery } from '@farfetched/test-utils';
+import { createDefer } from '@farfetched/misc';
 
 import { createHeadlessQuery } from '../create_headless_query';
-import { createDefer } from '../../misc/defer';
 import { unkownContract } from '../../contract/unkown_contract';
 import { identity } from '../../misc/identity';
 import { invalidDataError } from '../../errors/create_error';
