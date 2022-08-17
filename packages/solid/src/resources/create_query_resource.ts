@@ -41,10 +41,7 @@ function createQueryResource<Params, Data, Error>(
   );
 
   // Bind to suspense
-  const [resourceData] = createResource<Data, Params>(
-    track as any,
-    (_params: Params) => dataDefer.req
-  );
+  const [resourceData] = createResource(track, () => dataDefer.req);
 
   sample({ clock: query.done.success, target: resolveResourceFx });
   sample({ clock: query.done.error, target: rejectResourceFx });
