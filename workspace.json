@@ -3,6 +3,7 @@
   "version": 2,
   "projects": {
     "core": "packages/core",
+    "dev-tools": "packages/dev-tools",
     "misc": "packages/misc",
     "react": "packages/react",
     "runtypes": "packages/runtypes",

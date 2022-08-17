@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@farfetched/core": ["packages/core/src/index.ts"],
+      "@farfetched/dev-tools": ["packages/dev-tools/src/index.ts"],
       "@farfetched/misc": ["packages/misc/src/index.ts"],
       "@farfetched/react": ["packages/react/src/index.ts"],
       "@farfetched/runtypes": ["packages/runtypes/src/index.ts"],
