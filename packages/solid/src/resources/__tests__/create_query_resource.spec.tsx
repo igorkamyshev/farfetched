@@ -142,7 +142,6 @@ describe('createQueryResource', () => {
       return (
         <Suspense fallback="Loading">
           <ErrorBoundary fallback={(error) => `Error: ${error}`}>
-            {/* <ErrorBoundary fallback={'Error'}> */}
             <p>{data()}</p>
           </ErrorBoundary>
         </Suspense>
