@@ -12,6 +12,7 @@ export default {
   moduleNameMapper: {
     'solid-js/web': 'node_modules/solid-js/web/dist/web.cjs',
     'solid-js': 'node_modules/solid-js/dist/solid.cjs',
+    'effector-solid': 'effector-solid/scope',
   },
   setupFilesAfterEnv: ['./jest.setup.ts'],
 };

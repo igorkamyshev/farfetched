@@ -1,7 +1,12 @@
 import { type Query } from '@farfetched/core';
 import { useUnit } from 'effector-solid';
-import { Accessor, createResource, createSignal } from 'solid-js';
-import { createEffect, sample } from 'effector';
+import {
+  Accessor,
+  createResource,
+  createSignal,
+  createEffect as createSolidEffect,
+} from 'solid-js';
+import { createEffect as createEffectorEffect, sample } from 'effector';
 
 function createQueryResource<Params, Data, Error>(
   query: Query<Params, Data, Error>
@@ -24,6 +29,15 @@ function createQueryResource(query: Query<any, any, any>) {
     query.start,
   ]);
 
+  // Start Resource after Query state changes
+  createSolidEffect(() => {
+    const isPending = pending();
+
+    if (isPending) {
+      rerun([]);
+    }
+  });
+
   let defer = createDefer();
 
   function startResource(args: any) {
@@ -32,7 +46,7 @@ function createQueryResource(query: Query<any, any, any>) {
     start(args);
   }
 
-  const resolveResourceEffect = createEffect(() => defer.rs({}));
+  const resolveResourceEffect = createEffectorEffect(() => defer.rs({}));
 
   // Bind to suspense
   const [resourceData] = createResource(track, () => defer.req);
