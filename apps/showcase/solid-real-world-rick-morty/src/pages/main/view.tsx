@@ -1,14 +1,14 @@
 import { createQueryResource } from '@farfetched/solid';
 import { Link } from 'atomic-router-solid';
 import { useUnit } from 'effector-solid';
-import { For, Show } from 'solid-js';
+import { For, Suspense } from 'solid-js';
 
 import { characterRoute, characterListRoute } from '../../entities/character';
 import { Pagination } from '../../features/pagination';
 import { $currentPage, characterListQuery } from './model';
 
 function MainPage() {
-  const { data, pending } = createQueryResource(characterListQuery);
+  const [data] = createQueryResource(characterListQuery);
   const { currentPage } = useUnit({
     currentPage: $currentPage,
   });
@@ -16,9 +16,9 @@ function MainPage() {
   return (
     <>
       <h1>Main page</h1>
-      <Show when={!pending()} fallback={'Loading...'}>
+      <Suspense fallback={'Loading...'}>
         <ol>
-          <For each={data()?.results}>
+          <For each={data().results}>
             {(character) => (
               <li value={character.id}>
                 <Link
@@ -34,9 +34,9 @@ function MainPage() {
         <Pagination
           currentPage={currentPage()}
           route={characterListRoute}
-          info={data()?.info}
+          info={data().info}
         />
-      </Show>
+      </Suspense>
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { createQueryResource } from '@farfetched/solid';
-import { For, Show } from 'solid-js';
+import { For, Suspense } from 'solid-js';
 import { Link } from 'atomic-router-solid';
 
 import { LocationDetails } from '../../entities/location';
@@ -12,40 +12,30 @@ import {
 import { episodeRoute } from '../episode/model';
 
 function CharacterPage() {
-  const { data: character, pending: characterPending } =
-    createQueryResource(characterQuery);
-
-  const { data: origin, pending: originPending } =
-    createQueryResource(originQuery);
-
-  const { data: currentLocation, pending: currentLocationPending } =
-    createQueryResource(currentLocationQuery);
-
-  const { data: episodes, pending: episodesPending } = createQueryResource(
-    characterEpisodesQuery
-  );
+  const [character] = createQueryResource(characterQuery);
+  const [origin] = createQueryResource(originQuery);
+  const [currentLocation] = createQueryResource(currentLocationQuery);
+  const [episodes] = createQueryResource(characterEpisodesQuery);
 
   return (
-    <Show when={!characterPending()} fallback={'Loading ...'}>
+    <Suspense fallback={'Loading ...'}>
       <article>
-        <h1>{character()?.name}</h1>
+        <h1>{character().name}</h1>
 
-        <img src={character()?.image} alt={character()?.name} />
+        <img src={character().image} alt={character()?.name} />
 
-        <section>
-          <h2>Origin: {character()?.origin.name}</h2>
-          <LocationDetails pending={originPending()} location={origin()} />
-        </section>
+        <Suspense fallback="Loading ...">
+          <LocationDetails title="Origin" location={origin()} />
+        </Suspense>
 
-        <section>
-          <h2>Current location: {character()?.location.name}</h2>
+        <Suspense fallback="Loading ...">
           <LocationDetails
-            pending={currentLocationPending()}
+            title="Current location"
             location={currentLocation()}
           />
-        </section>
+        </Suspense>
 
-        <Show when={!episodesPending()}>
+        <Suspense fallback="Loading ...">
           <section>
             <h2>Espisodes</h2>
             <ul>
@@ -60,9 +50,9 @@ function CharacterPage() {
               </For>
             </ul>
           </section>
-        </Show>
+        </Suspense>
       </article>
-    </Show>
+    </Suspense>
   );
 }
 

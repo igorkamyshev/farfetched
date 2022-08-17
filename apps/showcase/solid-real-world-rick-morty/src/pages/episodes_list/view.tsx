@@ -1,7 +1,7 @@
 import { createQueryResource } from '@farfetched/solid';
 import { Link } from 'atomic-router-solid';
 import { useUnit } from 'effector-solid';
-import { For, Show } from 'solid-js';
+import { For, Suspense } from 'solid-js';
 
 import { episodeListRoute, episodeRoute } from '../../entities/episode';
 import { Pagination } from '../../features/pagination';
@@ -9,15 +9,15 @@ import { $currentPage, episodesQuery } from './model';
 
 function EpisodesListPage() {
   const { currentPage } = useUnit({ currentPage: $currentPage });
-  const { data, pending } = createQueryResource(episodesQuery);
+  const [data] = createQueryResource(episodesQuery);
 
   return (
     <>
       <h1>Episodes</h1>
 
-      <Show when={!pending()} fallback={'Loading...'}>
+      <Suspense fallback={'Loading...'}>
         <ol>
-          <For each={data()?.results}>
+          <For each={data().results}>
             {(episode) => (
               <li value={episode.id}>
                 <Link to={episodeRoute} params={{ episodeId: episode.id }}>
@@ -29,10 +29,10 @@ function EpisodesListPage() {
         </ol>
         <Pagination
           currentPage={currentPage()}
-          info={data()?.info}
+          info={data().info}
           route={episodeListRoute}
         />
-      </Show>
+      </Suspense>
     </>
   );
 }

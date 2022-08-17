@@ -1,23 +1,23 @@
 # `@farfetched/solid`
 
-> It is a separate package `@farfetched/solid`, you have to install it and its peer dependencies before usage
+> It is a separate package `@farfetched/solid`, you have to install it before usage
 
 with `pnpm`
 
 ```sh
-pnpm install @farfecthed/solid effector-solid
+pnpm install @farfecthed/solid
 ```
 
 with `yarn`
 
 ```sh
-yarn add @farfecthed/solid effector-solid
+yarn add @farfecthed/solid
 ```
 
 with `npm`
 
 ```sh
-npm install @farfecthed/solid effector-solid
+npm install @farfecthed/solid
 ```
 
 ## Methods
@@ -28,7 +28,7 @@ It is analogue of SoildJS [`createResource`](https://www.solidjs.com/docs/latest
 
 ```tsx
 function UserProfile() {
-  const { data: user } = createQueryResource(userQuery);
+  const [user] = createQueryResource(userQuery);
 
   return (
     <Suspense fallback={<Loader />}>

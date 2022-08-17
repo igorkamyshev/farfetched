@@ -6,7 +6,7 @@ import { TInfo } from '../shared/info';
 
 function Pagination(props: {
   currentPage: number;
-  info?: TInfo;
+  info: TInfo;
   route: RouteInstance<{ page?: number }>;
 }) {
   function toParams(page: number) {
@@ -16,9 +16,9 @@ function Pagination(props: {
     return { page };
   }
 
-  const hasNext = () => props.info?.next !== null;
-  const hasPrevious = () => props.info?.prev !== null;
-  const totalPages = () => props.info?.pages ?? 1;
+  const hasNext = () => props.info.next !== null;
+  const hasPrevious = () => props.info.prev !== null;
+  const totalPages = () => props.info.pages ?? 1;
 
   return (
     <>
