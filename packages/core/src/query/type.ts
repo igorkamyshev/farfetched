@@ -45,7 +45,7 @@ interface Query<Params, Data, Error> {
     success: Event<Data>;
     /** Query was failed, error will be passed as a payload */
     error: Event<Error>;
-    /** Query execution was skipped due to `disable` field in config */
+    /** Query execution was skipped due to `enabled` field in config */
     skip: Event<void>;
     /** Query was ended, it merges `success`, `error` and `skip` */
     finally: Event<void>;

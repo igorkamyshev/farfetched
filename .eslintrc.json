@@ -22,6 +22,10 @@
       }
     },
     {
+      "files": ["*.spec.ts", "*.spec.tsx"],
+      "rules": { "@nrwl/nx/enforce-module-boundaries": "off" }
+    },
+    {
       "files": ["*.ts", "*.tsx"],
       "extends": ["plugin:@nrwl/nx/typescript"],
       "rules": {}

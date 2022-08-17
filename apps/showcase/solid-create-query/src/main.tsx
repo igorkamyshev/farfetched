@@ -1,7 +1,7 @@
 import { createQuery } from '@farfetched/core';
 import { createQueryResource } from '@farfetched/solid';
 import { createEffect } from 'effector';
-import { createSignal, For, Show, Suspense } from 'solid-js';
+import { createSignal, For, Suspense } from 'solid-js';
 import { render } from 'solid-js/web';
 
 const pokemonsQuery = createQuery({
@@ -14,7 +14,7 @@ const pokemonsQuery = createQuery({
 });
 
 export function App() {
-  const { data, start } = createQueryResource(pokemonsQuery);
+  const [data, { refetch: start }] = createQueryResource(pokemonsQuery);
 
   const [limit, setLimit] = createSignal(10);
 

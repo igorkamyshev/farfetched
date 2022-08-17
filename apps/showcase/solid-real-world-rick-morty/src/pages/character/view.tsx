@@ -1,5 +1,5 @@
 import { createQueryResource } from '@farfetched/solid';
-import { For, Show } from 'solid-js';
+import { For, Suspense, Show, ErrorBoundary } from 'solid-js';
 import { Link } from 'atomic-router-solid';
 
 import { LocationDetails } from '../../entities/location';
@@ -12,40 +12,39 @@ import {
 import { episodeRoute } from '../episode/model';
 
 function CharacterPage() {
-  const { data: character, pending: characterPending } =
-    createQueryResource(characterQuery);
-
-  const { data: origin, pending: originPending } =
-    createQueryResource(originQuery);
-
-  const { data: currentLocation, pending: currentLocationPending } =
-    createQueryResource(currentLocationQuery);
-
-  const { data: episodes, pending: episodesPending } = createQueryResource(
-    characterEpisodesQuery
-  );
+  const [character] = createQueryResource(characterQuery);
+  const [origin] = createQueryResource(originQuery);
+  const [currentLocation] = createQueryResource(currentLocationQuery);
+  const [episodes] = createQueryResource(characterEpisodesQuery);
 
   return (
-    <Show when={!characterPending()} fallback={'Loading ...'}>
+    <Suspense fallback={'Loading ...'}>
       <article>
-        <h1>{character()?.name}</h1>
+        <Show when={character()}>
+          {(data) => (
+            <>
+              <h1>{data.name}</h1>
+              <img src={data.image} alt={data.name} />
+            </>
+          )}
+        </Show>
 
-        <img src={character()?.image} alt={character()?.name} />
+        <Suspense fallback="Loading ...">
+          <ErrorBoundary fallback={<p>Origin could not be shown</p>}>
+            <LocationDetails title="Origin" location={origin()} />
+          </ErrorBoundary>
+        </Suspense>
 
-        <section>
-          <h2>Origin: {character()?.origin.name}</h2>
-          <LocationDetails pending={originPending()} location={origin()} />
-        </section>
+        <Suspense fallback="Loading ...">
+          <ErrorBoundary fallback={<p>Current location could not be shown</p>}>
+            <LocationDetails
+              title="Current location"
+              location={currentLocation()}
+            />
+          </ErrorBoundary>
+        </Suspense>
 
-        <section>
-          <h2>Current location: {character()?.location.name}</h2>
-          <LocationDetails
-            pending={currentLocationPending()}
-            location={currentLocation()}
-          />
-        </section>
-
-        <Show when={!episodesPending()}>
+        <Suspense fallback="Loading ...">
           <section>
             <h2>Espisodes</h2>
             <ul>
@@ -60,9 +59,9 @@ function CharacterPage() {
               </For>
             </ul>
           </section>
-        </Show>
+        </Suspense>
       </article>
-    </Show>
+    </Suspense>
   );
 }
 

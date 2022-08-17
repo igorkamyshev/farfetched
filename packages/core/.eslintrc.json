@@ -15,10 +15,6 @@
       "rules": {}
     },
     {
-      "files": ["*.spec.ts"],
-      "rules": { "@nrwl/nx/enforce-module-boundaries": "off" }
-    },
-    {
       "files": ["*.type_spec.ts"],
       "rules": {
         "no-unused-labels": "off",
