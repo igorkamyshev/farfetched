@@ -1,4 +1,4 @@
-import { Effect, Event, Store } from 'effector';
+import { Effect, Event, Node, Store } from 'effector';
 
 import { FetchingStatus } from '../status/type';
 
@@ -74,6 +74,10 @@ interface Query<Params, Data, Error> {
      * })
      */
     executeFx: Effect<any, any, any>;
+    /**
+     * Internal node, which is used to store meta information about the query.
+     */
+    node: Node;
   };
 }
 

@@ -1,4 +1,10 @@
-import { createEffect, createEvent, createStore, sample } from 'effector';
+import {
+  createEffect,
+  createEvent,
+  createStore,
+  Domain,
+  sample,
+} from 'effector';
 import { not } from 'patronum';
 
 import { createContractApplier } from '../contract/apply_contract';
@@ -11,12 +17,15 @@ import {
   StaticOrReactive,
   normalizeStaticOrReactive,
 } from '../misc/sourced';
+import { triggerQuery } from '../domain/query_domain';
 import { FetchingStatus } from '../status/type';
 import { Query } from './type';
+import { createQueryNode } from '../node/query_node';
 
 interface SharedQueryFactoryConfig {
   name?: string;
   enabled?: StaticOrReactive<boolean>;
+  domain?: Domain;
 }
 
 /**
@@ -39,6 +48,7 @@ function createHeadlessQuery<
   mapData,
   enabled,
   name,
+  domain,
 }: {
   contract: Contract<Response, ContractData, ContractError>;
   mapData: TwoArgsSourcedField<ContractData, Params, MappedData, MapDataSource>;
@@ -163,7 +173,12 @@ function createHeadlessQuery<
   // -- Derived stores --
   const $pending = $status.map((status) => status === 'pending');
 
-  return {
+  // -- Meta information --
+
+  const node = createQueryNode();
+
+  // -- Final Query --
+  const query = {
     start,
     $data,
     $error,
@@ -172,8 +187,15 @@ function createHeadlessQuery<
     $pending,
     $enabled,
     $stale,
-    __: { executeFx },
+    __: { executeFx, node },
   };
+
+  // -- Domain connection --
+  if (domain) {
+    triggerQuery({ query, domain });
+  }
+
+  return query;
 }
 
 export { createHeadlessQuery };
