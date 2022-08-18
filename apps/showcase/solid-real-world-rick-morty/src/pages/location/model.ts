@@ -6,8 +6,11 @@ import { Array } from 'runtypes';
 import { Character, characterUrl } from '../../entities/character';
 import { Location, locationRoute, locationUrl } from '../../entities/location';
 import { TId, urlToId } from '../../shared/id';
+import { domain } from '../../shared/domain';
 
 const locationQuery = createJsonQuery({
+  domain,
+  name: 'Location',
   params: declareParams<{ id: TId }>(),
   request: {
     url: ({ id }) => locationUrl({ id }),
@@ -17,6 +20,8 @@ const locationQuery = createJsonQuery({
 });
 
 const residentsQuery = createJsonQuery({
+  domain,
+  name: 'Residents',
   params: declareParams<{ ids: TId[] }>(),
   request: {
     url: ({ ids }) => characterUrl({ ids }),

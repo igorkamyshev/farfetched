@@ -9,8 +9,11 @@ import {
   characterUrl,
 } from '../../entities/character';
 import { Info } from '../../shared/info';
+import { domain } from '../../shared/domain';
 
 const characterListQuery = createJsonQuery({
+  domain,
+  name: 'Character List',
   params: declareParams<{ page: number }>(),
   request: {
     url: characterUrl(),

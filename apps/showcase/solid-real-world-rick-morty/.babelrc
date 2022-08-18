@@ -1,7 +1,4 @@
 {
-  "presets": [
-    "@babel/preset-typescript",
-    "solid"
-  ],
-  "plugins": []
+  "presets": ["@babel/preset-typescript", "solid"],
+  "plugins": ["effector/babel-plugin"]
 }
