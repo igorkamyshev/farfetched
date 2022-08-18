@@ -5,7 +5,7 @@ import { css } from '@emotion/css';
 import { Menu } from './features/menu';
 import { Modal } from './features/modal';
 import { Canvas } from './features/canvas';
-import { $activeQueries, QueriesList, QuerySearch } from './entities/query';
+import { QueriesList, QuerySearch } from './entities/query';
 import { Graph } from './features/graph';
 
 const containerStyle = css`
@@ -35,7 +35,7 @@ function DevTools({ handleCloseClick }: { handleCloseClick: Event<void> }) {
         fn() {
           spec({ classList: [canvasStyle] });
 
-          Graph({ items: $activeQueries });
+          Graph();
         },
       });
     },

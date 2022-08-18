@@ -9,12 +9,10 @@ $querySearch.on(querySearchChanged, (_, newValue) => newValue);
 
 // -- List
 
-const $allQueries = createStore<Array<{ name: string; type: 'query' }>>([]);
+const $allQueries = createStore<Array<{ name: string }>>([]);
 export const declareQueries = createEvent<Array<{ name: string }>>();
 
-$allQueries.on(declareQueries, (_, newQueries) =>
-  newQueries.map((q) => ({ ...q, type: 'query' }))
-);
+$allQueries.on(declareQueries, (_, newQueries) => newQueries);
 
 export const $queries = combine(
   { all: $allQueries, search: $querySearch },
