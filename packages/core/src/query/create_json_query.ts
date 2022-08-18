@@ -178,6 +178,7 @@ function createJsonQuery(config: any) {
     mapData: config.response.mapData ?? identity,
     enabled: config.enabled,
     name: config.name,
+    domain: config.domain,
   });
 
   // Connections

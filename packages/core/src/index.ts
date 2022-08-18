@@ -11,6 +11,8 @@ export { declareParams } from './misc/params';
 
 export { type Json } from './fetch/json';
 
+export { allQueries } from './domain/query_domain';
+
 export {
   type FarfetchedError,
   type InvalidDataError,

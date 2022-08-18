@@ -175,7 +175,7 @@ function createHeadlessQuery<
 
   // -- Meta information --
 
-  const node = createQueryNode();
+  const node = createQueryNode({ name: queryName });
 
   // -- Final Query --
   const query = {

@@ -97,6 +97,7 @@ function createQuery<
     mapData: config.mapData ?? identity,
     enabled: config.enabled,
     name: config.name,
+    domain: config.domain,
   });
 
   query.__.executeFx.use(resolveExecuteEffect<Params, Response, Error>(config));
