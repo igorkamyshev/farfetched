@@ -68,7 +68,12 @@ function createHeadlessQuery<
     name: `${queryName}.executeFx`,
   });
 
-  const applyContractFx = createContractApplier(contract);
+  const applyContractFx = createContractApplier<
+    Params,
+    Response,
+    ContractData,
+    ContractError
+  >(contract);
 
   /*
    * Start event, it's used as it or to pipe it in head-full query creator
@@ -82,11 +87,14 @@ function createHeadlessQuery<
   const start = createEvent<Params>();
 
   // Signal-events
-  const done = {
-    success: createEvent<MappedData>(),
-    error: createEvent<Error | InvalidDataError | ContractError>(),
-    skip: createEvent(),
-    finally: createEvent(),
+  const finished = {
+    success: createEvent<{ params: Params; data: MappedData }>(),
+    failure: createEvent<{
+      params: Params;
+      error: Error | InvalidDataError | ContractError;
+    }>(),
+    skip: createEvent<{ params: Params }>(),
+    finally: createEvent<{ params: Params }>(),
   };
 
   // -- Main stores --
@@ -113,57 +121,71 @@ function createHeadlessQuery<
   sample({
     clock: start,
     filter: not($enabled),
-    fn() {
-      // pass
+    fn(params) {
+      return { params };
     },
-    target: done.skip,
+    target: finished.skip,
   });
 
-  sample({ clock: executeFx.doneData, target: applyContractFx });
-  sample({ clock: executeFx.failData, target: done.error });
+  sample({ clock: executeFx.done, target: applyContractFx });
+  sample({ clock: executeFx.fail, target: finished.failure });
 
   sample({
-    clock: applyContractFx.doneData,
+    clock: applyContractFx.done,
     source: normalizeSourced(
       reduceTwoArgs({
         field: mapData,
         clock: {
           data: applyContractFx.doneData,
-          params: start,
+          // Extract original params, it is params of params
+          params: applyContractFx.done.map(({ params }) => params.params),
         },
       })
     ),
-    target: done.success,
+    fn: (mappedData, { params }) => ({
+      data: mappedData,
+      // Extract original params, it is params of params
+      params: params.params,
+    }),
+    target: finished.success,
   });
-  sample({ clock: applyContractFx.failData, target: done.error });
+  sample({
+    clock: applyContractFx.fail,
+    fn: ({ error, params }) => ({
+      error,
+      // Extract original params, it is params of params
+      params: params.params,
+    }),
+    target: finished.failure,
+  });
 
-  sample({ clock: done.success, fn: () => null, target: $error });
-  sample({ clock: done.success, target: $data });
+  sample({ clock: finished.success, fn: () => null, target: $error });
+  sample({ clock: finished.success, fn: ({ data }) => data, target: $data });
 
-  sample({ clock: done.error, fn: () => null, target: $data });
-  sample({ clock: done.error, target: $error });
+  sample({ clock: finished.failure, fn: () => null, target: $data });
+  sample({ clock: finished.failure, fn: ({ error }) => error, target: $error });
 
   sample({
-    clock: [done.success, done.error, done.skip],
-    fn() {
-      // do not pass any payload to done.finally
+    clock: [finished.success, finished.failure, finished.skip],
+    fn({ params }) {
+      return { params };
     },
-    target: done.finally,
+    target: finished.finally,
   });
 
   // -- Indicate status --
   sample({
     clock: [
       start.map(() => 'pending' as const),
-      done.success.map(() => 'done' as const),
-      done.error.map(() => 'fail' as const),
+      finished.success.map(() => 'done' as const),
+      finished.failure.map(() => 'fail' as const),
     ],
     target: $status,
   });
 
   // -- Handle stale
   sample({
-    clock: done.finally,
+    clock: finished.finally,
     fn() {
       return false;
     },
@@ -182,7 +204,7 @@ function createHeadlessQuery<
     start,
     $data,
     $error,
-    done,
+    finished,
     $status,
     $pending,
     $enabled,

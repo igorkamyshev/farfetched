@@ -22,7 +22,9 @@ connectQuery({
 
 ### `connectQuery({ source, fn, target })`
 
-This form is used for `target` [_Query_](../primitives/query.md) with parameters. It gets data from `source`, transforms it through `fn` and passes to `target` as parameters.
+This form is used for `target` [_Query_](../primitives/query.md) with parameters. It gets data from `source`, transforms it through `fn` and uses it for `target` [_Query_](../primitives/query.md), allowed fields:
+
+- `params` — data that is used to start `target` [_Query_](../primitives/query.md)
 
 ```ts
 const blocksQuery: Query<unkown, string, unkown>;
@@ -33,7 +35,7 @@ const contentQuery: Query<{ language: string; ids: string[] }, unkown, unkown>;
 connectQuery({
   source: { language: languagesQuery, blocks: blocksQuery },
   fn({ language, blocks }) {
-    return { language, ids: blocks };
+    return { params: { language, ids: blocks } };
   },
   target: contentQuery,
 });

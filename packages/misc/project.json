@@ -27,6 +27,19 @@
         "jestConfig": "packages/misc/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "size": {
+      "executor": "./tools/executors/size-limit:size-limit",
+      "options": {
+        "limit": "1 kB",
+        "outputPath": "dist/packages/misc"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
     }
   },
   "tags": []

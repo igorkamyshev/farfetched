@@ -10,6 +10,8 @@ The advanced data fetching tool for web applications
 - Transport/protocol/backend agnostic (REST, GraphQL, promises, whatever!)
 - Framework-agnostic (React, Solid, Vue, Svelte, Angular, whatever!)
 - Declarative — expresses the logic of a computation without describing its control flow
+- First class TypeScript support out of the box
+- Focused to improve both developer and user experiences
 
 ## How To
 

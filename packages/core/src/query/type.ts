@@ -40,15 +40,15 @@ interface Query<Params, Data, Error> {
   /** Event to trigger query */
   start: Event<Params>;
   /** Set of events that represent end of query */
-  done: {
+  finished: {
     /** Query was successfully ended, data will be passed as a payload */
-    success: Event<Data>;
+    success: Event<{ params: Params; data: Data }>;
     /** Query was failed, error will be passed as a payload */
-    error: Event<Error>;
+    failure: Event<{ params: Params; error: Error }>;
     /** Query execution was skipped due to `enabled` field in config */
-    skip: Event<void>;
+    skip: Event<{ params: Params }>;
     /** Query was ended, it merges `success`, `error` and `skip` */
-    finally: Event<void>;
+    finally: Event<{ params: Params }>;
   };
   /**
    * DO NOT USE THIS FIELD IN PRODUCTION

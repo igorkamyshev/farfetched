@@ -129,7 +129,7 @@ describe('createQueryResource', () => {
     expect(errorText).toBeInTheDocument();
   });
 
-  test('show error boundry when query skipped', async () => {
+  test('show loading when query skipped', async () => {
     const controlledQuery = createQuery({
       enabled: false,
       handler: async () => 'Hello',
@@ -157,8 +157,8 @@ describe('createQueryResource', () => {
 
     await allSettled(controlledQuery.start, { scope, params: {} });
 
-    const errorText = await screen.findByText('Error: __SKIPPED__');
-    expect(errorText).toBeInTheDocument();
+    const loadingText = await screen.findByText('Loading');
+    expect(loadingText).toBeInTheDocument();
   });
 
   test('show Suspense-fallback while pending and nested data', async () => {
@@ -191,5 +191,57 @@ describe('createQueryResource', () => {
 
     const loadingText = await screen.findByText('Loading');
     expect(loadingText).toBeInTheDocument();
+  });
+
+  test('should work with two scopes', async () => {
+    const controlledQuery = createQuery({
+      handler: async ({ timeout, text }: { timeout: number; text: string }) =>
+        setTimeout(timeout).then(() => text),
+    });
+
+    const correctScope = fork();
+    const wrongScope = fork();
+
+    function App() {
+      const [data] = createQueryResource(controlledQuery);
+
+      return (
+        <Suspense fallback="Loading">
+          <p>{data()}</p>
+        </Suspense>
+      );
+    }
+
+    render(() => (
+      <Provider value={correctScope}>
+        <App />
+      </Provider>
+    ));
+
+    // Start long Query in correct scope
+    allSettled(controlledQuery.start, {
+      scope: correctScope,
+      params: { timeout: 1000, text: 'Corrent' },
+    });
+
+    // Start short Query in wrong scope
+    allSettled(controlledQuery.start, {
+      scope: wrongScope,
+      params: { timeout: 0, text: 'Wrong' },
+    });
+
+    // Wait for shortQuery done
+    await setTimeout(10);
+
+    // Query finished in wrong scope, correct scoped query still in progress
+    expect(correctScope.getState(controlledQuery.$pending)).toBeTruthy();
+    expect(wrongScope.getState(controlledQuery.$pending)).toBeFalsy();
+
+    // Conponent bound to the correct scope
+    const loadingText = await screen.findByText('Loading');
+    expect(loadingText).toBeInTheDocument();
+
+    await allPrevSettled(correctScope);
+    await allPrevSettled(wrongScope);
   });
 });

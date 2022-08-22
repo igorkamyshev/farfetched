@@ -19,10 +19,10 @@ query.$stale; // Store<boolean>;
 query.start; // Event<Params>;
 
 // Events
-query.done.success; // Event<Data>;
-query.done.error; // Event<Error>;
-query.done.skip; // Event<void>;
-query.done.finally; // Event<void>;
+query.finished.success; // Event<Data>;
+query.finished.failure; // Event<Error>;
+query.finished.skip; // Event<void>;
+query.finished.finally; // Event<void>;
 
 // Note: Store and Event are imported from 'effector' package
 ```

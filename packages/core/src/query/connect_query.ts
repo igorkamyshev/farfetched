@@ -22,8 +22,10 @@ function connectQuery<
 >(_config: {
   source: Sources;
   fn: (sources: {
-    [index in keyof Sources]: EventPayload<Sources[index]['done']['success']>;
-  }) => EventPayload<Target['start']>;
+    [index in keyof Sources]: EventPayload<
+      Sources[index]['finished']['success']
+    >['data'];
+  }) => { params: EventPayload<Target['start']> };
   target: Target | Target[];
 }): void;
 
@@ -38,7 +40,9 @@ function connectQuery<
   source: Sources;
   target: Target | Target[];
   fn?: (sources: {
-    [index in keyof Sources]: EventPayload<Sources[index]['done']['success']>;
+    [index in keyof Sources]: EventPayload<
+      Sources[index]['finished']['success']
+    >['data'];
   }) => EventPayload<Target['start']>;
 }): void {
   const targets = Array.isArray(target) ? target : [target];
@@ -63,14 +67,14 @@ function connectQuery<
   });
 
   const allLoadSuccess = combineEvents({
-    events: Object.values(source).map((query) => query.done.success),
+    events: Object.values(source).map((query) => query.finished.success),
   });
 
   sample({
     clock: allLoadSuccess,
     source: $normalizedSource,
     fn(data: any) {
-      return fn?.(data) ?? null;
+      return fn?.(data)?.params ?? null;
     },
     target: targets.map((t) => t.start),
   });

@@ -3,15 +3,15 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "test": "nx affected:test",
-    "test:types": "nx affected --target=typetest",
-    "lint": "nx affected:lint",
+    "test": "nx run-many --target=test --all",
+    "test:types": "nx run-many --target=typetest --all",
+    "lint": "nx run-many --target=lint --all",
     "lint:format": "nx format:check",
     "lint:workspace": "nx workspace-lint",
     "lint:changes": "changeset status",
-    "build": "nx affected:build",
+    "build": "nx run-many --target=build --all",
     "format": "nx format:write",
-    "size": "nx affected --target=size",
+    "size": "nx run-many --target=size --all",
     "changes": "changeset"
   },
   "devDependencies": {
