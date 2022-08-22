@@ -95,11 +95,19 @@ describe('remote_data/connect_query', () => {
 
     expect(firstWatcher.listeners.onDone).toBeCalledTimes(1);
     expect(firstWatcher.listeners.onDone).toBeCalledWith({
+      params: {
+        ids: ['one', 'two'],
+        language: 'RU',
+      },
       data: childResposne,
     });
 
     expect(secondWatcher.listeners.onDone).toBeCalledTimes(1);
     expect(secondWatcher.listeners.onDone).toBeCalledWith({
+      params: {
+        ids: ['one', 'two'],
+        language: 'RU',
+      },
       data: childResposne,
     });
 

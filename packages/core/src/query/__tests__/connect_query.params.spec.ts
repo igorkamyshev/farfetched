@@ -76,6 +76,10 @@ describe('remote_data/connect_query', () => {
 
     expect(childWatcher.listeners.onDone).toBeCalledTimes(1);
     expect(childWatcher.listeners.onDone).toBeCalledWith({
+      params: {
+        ids: ['one', 'two'],
+        language: 'RU',
+      },
       data: childResposne,
     });
     expect(fetchContentMock).toHaveBeenCalledWith(

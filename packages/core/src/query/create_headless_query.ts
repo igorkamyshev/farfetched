@@ -58,7 +58,12 @@ function createHeadlessQuery<
     name: `${queryName}.executeFx`,
   });
 
-  const applyContractFx = createContractApplier(contract);
+  const applyContractFx = createContractApplier<
+    Params,
+    Response,
+    ContractData,
+    ContractError
+  >(contract);
 
   /*
    * Start event, it's used as it or to pipe it in head-full query creator
@@ -73,10 +78,13 @@ function createHeadlessQuery<
 
   // Signal-events
   const done = {
-    success: createEvent<{ data: MappedData }>(),
-    error: createEvent<{ error: Error | InvalidDataError | ContractError }>(),
-    skip: createEvent<{}>(),
-    finally: createEvent<{}>(),
+    success: createEvent<{ params: Params; data: MappedData }>(),
+    error: createEvent<{
+      params: Params;
+      error: Error | InvalidDataError | ContractError;
+    }>(),
+    skip: createEvent<{ params: Params }>(),
+    finally: createEvent<{ params: Params }>(),
   };
 
   // -- Main stores --
@@ -103,36 +111,41 @@ function createHeadlessQuery<
   sample({
     clock: start,
     filter: not($enabled),
-    fn() {
-      return {};
+    fn(params) {
+      return { params };
     },
     target: done.skip,
   });
 
-  sample({ clock: executeFx.doneData, target: applyContractFx });
-  sample({
-    clock: executeFx.fail,
-    fn: ({ error }) => ({ error }),
-    target: done.error,
-  });
+  sample({ clock: executeFx.done, target: applyContractFx });
+  sample({ clock: executeFx.fail, target: done.error });
 
   sample({
-    clock: applyContractFx.doneData,
+    clock: applyContractFx.done,
     source: normalizeSourced(
       reduceTwoArgs({
         field: mapData,
         clock: {
           data: applyContractFx.doneData,
-          params: start,
+          // Extract original params, it is params of params
+          params: applyContractFx.done.map(({ params }) => params.params),
         },
       })
     ),
-    fn: (mappedData) => ({ data: mappedData }),
+    fn: (mappedData, { params }) => ({
+      data: mappedData,
+      // Extract original params, it is params of params
+      params: params.params,
+    }),
     target: done.success,
   });
   sample({
-    clock: applyContractFx.failData,
-    fn: (error) => ({ error }),
+    clock: applyContractFx.fail,
+    fn: ({ error, params }) => ({
+      error,
+      // Extract original params, it is params of params
+      params: params.params,
+    }),
     target: done.error,
   });
 
@@ -144,8 +157,8 @@ function createHeadlessQuery<
 
   sample({
     clock: [done.success, done.error, done.skip],
-    fn() {
-      return {};
+    fn({ params }) {
+      return { params };
     },
     target: done.finally,
   });
