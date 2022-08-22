@@ -1,15 +1,7 @@
 import { type Query } from '@farfetched/core';
 import { createDefer } from '@farfetched/misc';
 import { useUnit } from 'effector-solid';
-import {
-  createResource,
-  createSignal,
-  createEffect as createSolidEffect,
-  Resource,
-} from 'solid-js';
-import { createEffect as createEffectorEffect, sample } from 'effector';
-
-const skippedMark = '__SKIPPED__' as const;
+import { createResource, createSignal, createEffect, Resource } from 'solid-js';
 
 function createQueryResource<Params, Data, Error>(
   query: Query<Params, Data, Error>
@@ -18,47 +10,37 @@ function createQueryResource<Params, Data, Error>(
     equals: false,
   });
 
-  const [pending, start] = useUnit([query.$pending, query.start]);
+  const { data, error, pending, start } = useUnit({
+    data: query.$data,
+    error: query.$error,
+    pending: query.$pending,
+    start: query.start,
+  });
 
-  let dataDefer = createDefer<Data, Error | typeof skippedMark>();
+  let dataDefer = createDefer<Data, Error>();
 
-  // Start Resource after Query state changes
-  createSolidEffect(() => {
-    const isPending = pending();
-
-    if (isPending) {
+  createEffect(() => {
+    // Start Resource after Query state changes
+    if (pending()) {
       dataDefer = createDefer();
       rerun([]);
     }
-  });
 
-  const resolveResourceFx = createEffectorEffect((data: Data) => {
-    dataDefer.resolve(data);
-  });
-  const rejectResourceFx = createEffectorEffect(
-    (error: Error | typeof skippedMark) => {
-      dataDefer.reject(error);
+    // Resolve Resource after Query returns data
+    const currentData = data();
+    if (currentData !== null) {
+      dataDefer.resolve(currentData);
     }
-  );
+
+    // Reject Resource after Query returns error
+    const currentError = error();
+    if (currentError !== null) {
+      dataDefer.reject(currentError);
+    }
+  });
 
   // Bind to suspense
   const [resourceData] = createResource(track, () => dataDefer.promise);
-
-  sample({
-    clock: query.finished.success,
-    fn: ({ data }) => data,
-    target: resolveResourceFx,
-  });
-  sample({
-    clock: query.finished.failure,
-    fn: ({ error }) => error,
-    target: rejectResourceFx,
-  });
-  sample({
-    clock: query.finished.skip,
-    fn: () => skippedMark,
-    target: rejectResourceFx,
-  });
 
   return [resourceData, { refetch: start }];
 }
