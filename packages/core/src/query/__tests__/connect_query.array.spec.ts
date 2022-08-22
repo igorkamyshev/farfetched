@@ -93,8 +93,8 @@ describe('remote_data/connect_query', () => {
       allSettled(blocksQ.start, { scope, params: {} }),
     ]);
 
-    expect(firstWatcher.listeners.onDone).toBeCalledTimes(1);
-    expect(firstWatcher.listeners.onDone).toBeCalledWith({
+    expect(firstWatcher.listeners.onSuccess).toBeCalledTimes(1);
+    expect(firstWatcher.listeners.onSuccess).toBeCalledWith({
       params: {
         ids: ['one', 'two'],
         language: 'RU',
@@ -102,8 +102,8 @@ describe('remote_data/connect_query', () => {
       data: childResposne,
     });
 
-    expect(secondWatcher.listeners.onDone).toBeCalledTimes(1);
-    expect(secondWatcher.listeners.onDone).toBeCalledWith({
+    expect(secondWatcher.listeners.onSuccess).toBeCalledTimes(1);
+    expect(secondWatcher.listeners.onSuccess).toBeCalledWith({
       params: {
         ids: ['one', 'two'],
         language: 'RU',

@@ -77,9 +77,9 @@ function createHeadlessQuery<
   const start = createEvent<Params>();
 
   // Signal-events
-  const done = {
+  const finished = {
     success: createEvent<{ params: Params; data: MappedData }>(),
-    error: createEvent<{
+    failure: createEvent<{
       params: Params;
       error: Error | InvalidDataError | ContractError;
     }>(),
@@ -114,11 +114,11 @@ function createHeadlessQuery<
     fn(params) {
       return { params };
     },
-    target: done.skip,
+    target: finished.skip,
   });
 
   sample({ clock: executeFx.done, target: applyContractFx });
-  sample({ clock: executeFx.fail, target: done.error });
+  sample({ clock: executeFx.fail, target: finished.failure });
 
   sample({
     clock: applyContractFx.done,
@@ -137,7 +137,7 @@ function createHeadlessQuery<
       // Extract original params, it is params of params
       params: params.params,
     }),
-    target: done.success,
+    target: finished.success,
   });
   sample({
     clock: applyContractFx.fail,
@@ -146,36 +146,36 @@ function createHeadlessQuery<
       // Extract original params, it is params of params
       params: params.params,
     }),
-    target: done.error,
+    target: finished.failure,
   });
 
-  sample({ clock: done.success, fn: () => null, target: $error });
-  sample({ clock: done.success, fn: ({ data }) => data, target: $data });
+  sample({ clock: finished.success, fn: () => null, target: $error });
+  sample({ clock: finished.success, fn: ({ data }) => data, target: $data });
 
-  sample({ clock: done.error, fn: () => null, target: $data });
-  sample({ clock: done.error, fn: ({ error }) => error, target: $error });
+  sample({ clock: finished.failure, fn: () => null, target: $data });
+  sample({ clock: finished.failure, fn: ({ error }) => error, target: $error });
 
   sample({
-    clock: [done.success, done.error, done.skip],
+    clock: [finished.success, finished.failure, finished.skip],
     fn({ params }) {
       return { params };
     },
-    target: done.finally,
+    target: finished.finally,
   });
 
   // -- Indicate status --
   sample({
     clock: [
       start.map(() => 'pending' as const),
-      done.success.map(() => 'done' as const),
-      done.error.map(() => 'fail' as const),
+      finished.success.map(() => 'done' as const),
+      finished.failure.map(() => 'fail' as const),
     ],
     target: $status,
   });
 
   // -- Handle stale
   sample({
-    clock: done.finally,
+    clock: finished.finally,
     fn() {
       return false;
     },
@@ -189,7 +189,7 @@ function createHeadlessQuery<
     start,
     $data,
     $error,
-    done,
+    finished,
     $status,
     $pending,
     $enabled,

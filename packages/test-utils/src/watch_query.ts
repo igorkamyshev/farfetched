@@ -2,9 +2,9 @@ import { createWatch, Event, Scope } from 'effector';
 
 interface QueryLike {
   start: Event<any>;
-  done: {
+  finished: {
     success: Event<any>;
-    error: Event<any>;
+    failure: Event<any>;
     skip: Event<any>;
     finally: Event<any>;
   };
@@ -13,32 +13,36 @@ interface QueryLike {
 function watchQuery(query: QueryLike, scope: Scope) {
   const onStart = jest.fn();
 
-  const onDone = jest.fn();
+  const onSuccess = jest.fn();
   const onSkip = jest.fn();
-  const onError = jest.fn();
+  const onFailure = jest.fn();
   const onFinally = jest.fn();
 
   const startUnwatch = createWatch({ unit: query.start, fn: onStart, scope });
 
   const doneUnwatch = createWatch({
-    unit: query.done.success,
-    fn: onDone,
+    unit: query.finished.success,
+    fn: onSuccess,
     scope,
   });
-  const skipUnwatch = createWatch({ unit: query.done.skip, fn: onSkip, scope });
+  const skipUnwatch = createWatch({
+    unit: query.finished.skip,
+    fn: onSkip,
+    scope,
+  });
   const errorUnwatch = createWatch({
-    unit: query.done.error,
-    fn: onError,
+    unit: query.finished.failure,
+    fn: onFailure,
     scope,
   });
   const finallyUnwatch = createWatch({
-    unit: query.done.finally,
+    unit: query.finished.finally,
     fn: onFinally,
     scope,
   });
 
   return {
-    listeners: { onDone, onSkip, onError, onFinally, onStart },
+    listeners: { onSuccess, onSkip, onFailure, onFinally, onStart },
     unwatch: () => {
       startUnwatch();
       doneUnwatch();

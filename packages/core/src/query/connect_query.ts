@@ -23,7 +23,7 @@ function connectQuery<
   source: Sources;
   fn: (sources: {
     [index in keyof Sources]: EventPayload<
-      Sources[index]['done']['success']
+      Sources[index]['finished']['success']
     >['data'];
   }) => { params: EventPayload<Target['start']> };
   target: Target | Target[];
@@ -41,7 +41,7 @@ function connectQuery<
   target: Target | Target[];
   fn?: (sources: {
     [index in keyof Sources]: EventPayload<
-      Sources[index]['done']['success']
+      Sources[index]['finished']['success']
     >['data'];
   }) => EventPayload<Target['start']>;
 }): void {
@@ -67,7 +67,7 @@ function connectQuery<
   });
 
   const allLoadSuccess = combineEvents({
-    events: Object.values(source).map((query) => query.done.success),
+    events: Object.values(source).map((query) => query.finished.success),
   });
 
   sample({

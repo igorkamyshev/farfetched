@@ -25,7 +25,7 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(mockFn).toHaveBeenCalledWith(42);
   });
 
-  test('done.success triggers after executeFx.done', async () => {
+  test('finished.success triggers after executeFx.done', async () => {
     const scope = fork({ handlers: [[query.__.executeFx, jest.fn((p) => p)]] });
 
     const { listeners } = watchQuery(query, scope);
@@ -34,17 +34,17 @@ describe('core/createHeadlessQuery without contract', () => {
 
     expect(scope.getState(query.$data)).toBe(42);
     expect(scope.getState(query.$error)).toBeNull();
-    expect(listeners.onDone).toHaveBeenCalledTimes(1);
-    expect(listeners.onDone).toHaveBeenCalledWith({ params: 42, data: 42 });
+    expect(listeners.onSuccess).toHaveBeenCalledTimes(1);
+    expect(listeners.onSuccess).toHaveBeenCalledWith({ params: 42, data: 42 });
 
     expect(listeners.onSkip).not.toHaveBeenCalled();
-    expect(listeners.onError).not.toHaveBeenCalled();
+    expect(listeners.onFailure).not.toHaveBeenCalled();
 
     expect(listeners.onFinally).toHaveBeenCalledTimes(1);
     expect(listeners.onFinally).toHaveBeenCalledWith({ params: 42 });
   });
 
-  test('done.error triggers after executeFx.fail', async () => {
+  test('finished.failure triggers after executeFx.fail', async () => {
     const scope = fork({
       handlers: [
         [
@@ -63,13 +63,13 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(scope.getState(query.$error)).toEqual(new Error('from mock'));
     expect(scope.getState(query.$data)).toBeNull();
 
-    expect(listeners.onError).toHaveBeenCalledTimes(1);
-    expect(listeners.onError).toHaveBeenCalledWith({
+    expect(listeners.onFailure).toHaveBeenCalledTimes(1);
+    expect(listeners.onFailure).toHaveBeenCalledWith({
       params: 42,
       error: new Error('from mock'),
     });
 
-    expect(listeners.onDone).not.toHaveBeenCalled();
+    expect(listeners.onSuccess).not.toHaveBeenCalled();
     expect(listeners.onSkip).not.toHaveBeenCalled();
 
     expect(listeners.onFinally).toHaveBeenCalledTimes(1);
@@ -188,8 +188,8 @@ describe('core/createHeadlessQuery with contract', () => {
 
     expect(scope.getState(query.$error)).toEqual(extractedError);
 
-    expect(listeners.onError).toHaveBeenCalledTimes(1);
-    expect(listeners.onError).toHaveBeenCalledWith({
+    expect(listeners.onFailure).toHaveBeenCalledTimes(1);
+    expect(listeners.onFailure).toHaveBeenCalledWith({
       params: 42,
       error: extractedError,
     });
@@ -215,8 +215,8 @@ describe('core/createHeadlessQuery with contract', () => {
       invalidDataError({ validationErrors: ['got it'] })
     );
 
-    expect(listeners.onError).toHaveBeenCalledTimes(1);
-    expect(listeners.onError).toHaveBeenCalledWith({
+    expect(listeners.onFailure).toHaveBeenCalledTimes(1);
+    expect(listeners.onFailure).toHaveBeenCalledWith({
       params: 42,
       error: invalidDataError({ validationErrors: ['got it'] }),
     });
@@ -246,8 +246,8 @@ describe('core/createHeadlessQuery with contract', () => {
 
     expect(scope.getState(query.$data)).toEqual(extractedData);
 
-    expect(listeners.onDone).toHaveBeenCalledTimes(1);
-    expect(listeners.onDone).toHaveBeenCalledWith({
+    expect(listeners.onSuccess).toHaveBeenCalledTimes(1);
+    expect(listeners.onSuccess).toHaveBeenCalledWith({
       params: 42,
       data: extractedData,
     });

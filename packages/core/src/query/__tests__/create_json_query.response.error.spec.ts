@@ -43,8 +43,8 @@ describe('remote_data/query/json.response.error', () => {
     expect(scope.getState(query.$data)).toBeNull();
     expect(scope.getState(query.$error)).toBe(error);
 
-    expect(watcher.listeners.onError).toHaveBeenCalledWith({ error });
-    expect(watcher.listeners.onError).toHaveBeenCalledTimes(1);
+    expect(watcher.listeners.onFailure).toHaveBeenCalledWith({ error });
+    expect(watcher.listeners.onFailure).toHaveBeenCalledTimes(1);
   });
 
   test('save data from error response after success', async () => {

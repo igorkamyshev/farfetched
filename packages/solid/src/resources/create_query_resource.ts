@@ -45,17 +45,17 @@ function createQueryResource<Params, Data, Error>(
   const [resourceData] = createResource(track, () => dataDefer.promise);
 
   sample({
-    clock: query.done.success,
+    clock: query.finished.success,
     fn: ({ data }) => data,
     target: resolveResourceFx,
   });
   sample({
-    clock: query.done.error,
+    clock: query.finished.failure,
     fn: ({ error }) => error,
     target: rejectResourceFx,
   });
   sample({
-    clock: query.done.skip,
+    clock: query.finished.skip,
     fn: () => skippedMark,
     target: rejectResourceFx,
   });

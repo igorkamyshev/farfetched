@@ -82,7 +82,7 @@ describe('remote_data/connect_query', () => {
       allSettled(blocksQ.start, { scope }),
     ]);
 
-    expect(childWatcher.listeners.onDone).toHaveBeenCalledTimes(1);
+    expect(childWatcher.listeners.onSuccess).toHaveBeenCalledTimes(1);
   });
 
   test('does not execute child after one parent', async () => {

@@ -41,7 +41,7 @@ const privateDataQuery = createJsonQuery({
 
 sample({
   // when error in query occurred
-  clock: privateDataQuery.done.error,
+  clock: privateDataQuery.finished.failure,
   // check if it is HTTP error 401
   filter: isHttpErrorCode(401),
   // and require login
