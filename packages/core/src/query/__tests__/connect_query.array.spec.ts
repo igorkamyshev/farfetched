@@ -67,7 +67,7 @@ describe('remote_data/connect_query', () => {
   connectQuery({
     source: { language: languagesQ, blocks: blocksQ },
     fn({ language, blocks }) {
-      return { language, ids: blocks };
+      return { params: { language, ids: blocks } };
     },
     target: [firstContentQ, secondContentQ],
   });

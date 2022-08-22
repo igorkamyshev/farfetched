@@ -41,7 +41,7 @@ connectQuery({
   source: { character: characterQuery },
   // get location URL from it
   fn({ character }) {
-    return { locationUrl: character.location.url };
+    return { params: { locationUrl: character.location.url } };
   },
   // and start locationQuery with it
   target: locationQuery,

@@ -23,7 +23,7 @@ function connectQuery<
   source: Sources;
   fn: (sources: {
     [index in keyof Sources]: EventPayload<Sources[index]['done']['success']>;
-  }) => EventPayload<Target['start']>;
+  }) => { params: EventPayload<Target['start']> };
   target: Target | Target[];
 }): void;
 
@@ -70,7 +70,7 @@ function connectQuery<
     clock: allLoadSuccess,
     source: $normalizedSource,
     fn(data: any) {
-      return fn?.(data) ?? null;
+      return fn?.(data)?.params ?? null;
     },
     target: targets.map((t) => t.start),
   });
