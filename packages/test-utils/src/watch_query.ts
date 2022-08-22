@@ -5,8 +5,8 @@ interface QueryLike {
   done: {
     success: Event<any>;
     error: Event<any>;
-    skip: Event<void>;
-    finally: Event<void>;
+    skip: Event<any>;
+    finally: Event<any>;
   };
 }
 

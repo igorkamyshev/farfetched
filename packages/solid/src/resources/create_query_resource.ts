@@ -44,8 +44,16 @@ function createQueryResource<Params, Data, Error>(
   // Bind to suspense
   const [resourceData] = createResource(track, () => dataDefer.promise);
 
-  sample({ clock: query.done.success, target: resolveResourceFx });
-  sample({ clock: query.done.error, target: rejectResourceFx });
+  sample({
+    clock: query.done.success,
+    fn: ({ data }) => data,
+    target: resolveResourceFx,
+  });
+  sample({
+    clock: query.done.error,
+    fn: ({ error }) => error,
+    target: rejectResourceFx,
+  });
   sample({
     clock: query.done.skip,
     fn: () => skippedMark,
