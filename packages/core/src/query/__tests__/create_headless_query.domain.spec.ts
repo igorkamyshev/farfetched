@@ -41,4 +41,21 @@ describe('core/createHeadlessQuery domain', () => {
     expect(listener).toBeCalledTimes(0);
     expect(allQueries({ domain: otherDomain })).toEqual([]);
   });
+
+  test('call hook even if query was created before set up', async () => {
+    const testDomain = createDomain('TEST DOMAIN');
+
+    const testQuery = createHeadlessQuery({
+      contract: unkownContract,
+      mapData: identity,
+      domain: testDomain,
+      name: 'some test query',
+    });
+
+    const listener = jest.fn();
+    onQueryCreated({ domain: testDomain, fn: listener });
+
+    expect(listener).toBeCalledTimes(1);
+    expect(listener).toBeCalledWith(testQuery);
+  });
 });

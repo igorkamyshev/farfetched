@@ -18,6 +18,10 @@ function onQueryCreated({
   domain: Domain;
   fn: (query: AnyQuery) => void;
 }) {
+  for (const oldQuery of allQueries({ domain })) {
+    fn(oldQuery);
+  }
+
   const correctDomain = ensureDomain(domain);
 
   return correctDomain.graphite.meta[
