@@ -73,10 +73,10 @@ function createHeadlessQuery<
 
   // Signal-events
   const done = {
-    success: createEvent<MappedData>(),
-    error: createEvent<Error | InvalidDataError | ContractError>(),
-    skip: createEvent(),
-    finally: createEvent(),
+    success: createEvent<{ data: MappedData }>(),
+    error: createEvent<{ error: Error | InvalidDataError | ContractError }>(),
+    skip: createEvent<{}>(),
+    finally: createEvent<{}>(),
   };
 
   // -- Main stores --
@@ -104,13 +104,17 @@ function createHeadlessQuery<
     clock: start,
     filter: not($enabled),
     fn() {
-      // pass
+      return {};
     },
     target: done.skip,
   });
 
   sample({ clock: executeFx.doneData, target: applyContractFx });
-  sample({ clock: executeFx.failData, target: done.error });
+  sample({
+    clock: executeFx.fail,
+    fn: ({ error }) => ({ error }),
+    target: done.error,
+  });
 
   sample({
     clock: applyContractFx.doneData,
@@ -123,20 +127,25 @@ function createHeadlessQuery<
         },
       })
     ),
+    fn: (mappedData) => ({ data: mappedData }),
     target: done.success,
   });
-  sample({ clock: applyContractFx.failData, target: done.error });
+  sample({
+    clock: applyContractFx.failData,
+    fn: (error) => ({ error }),
+    target: done.error,
+  });
 
   sample({ clock: done.success, fn: () => null, target: $error });
-  sample({ clock: done.success, target: $data });
+  sample({ clock: done.success, fn: ({ data }) => data, target: $data });
 
   sample({ clock: done.error, fn: () => null, target: $data });
-  sample({ clock: done.error, target: $error });
+  sample({ clock: done.error, fn: ({ error }) => error, target: $error });
 
   sample({
     clock: [done.success, done.error, done.skip],
     fn() {
-      // do not pass any payload to done.finally
+      return {};
     },
     target: done.finally,
   });

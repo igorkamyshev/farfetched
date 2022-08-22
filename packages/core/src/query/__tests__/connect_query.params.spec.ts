@@ -75,7 +75,9 @@ describe('remote_data/connect_query', () => {
     ]);
 
     expect(childWatcher.listeners.onDone).toBeCalledTimes(1);
-    expect(childWatcher.listeners.onDone).toBeCalledWith(childResposne);
+    expect(childWatcher.listeners.onDone).toBeCalledWith({
+      data: childResposne,
+    });
     expect(fetchContentMock).toHaveBeenCalledWith(
       expect.objectContaining({ language: 'RU', ids: ['one', 'two'] })
     );

@@ -22,7 +22,9 @@ function connectQuery<
 >(_config: {
   source: Sources;
   fn: (sources: {
-    [index in keyof Sources]: EventPayload<Sources[index]['done']['success']>;
+    [index in keyof Sources]: EventPayload<
+      Sources[index]['done']['success']
+    >['data'];
   }) => { params: EventPayload<Target['start']> };
   target: Target | Target[];
 }): void;
@@ -38,7 +40,9 @@ function connectQuery<
   source: Sources;
   target: Target | Target[];
   fn?: (sources: {
-    [index in keyof Sources]: EventPayload<Sources[index]['done']['success']>;
+    [index in keyof Sources]: EventPayload<
+      Sources[index]['done']['success']
+    >['data'];
   }) => EventPayload<Target['start']>;
 }): void {
   const targets = Array.isArray(target) ? target : [target];

@@ -47,7 +47,7 @@ describe('remote_data/query/json.fetching.concurrent', () => {
     expect(requestMock).toHaveBeenCalledTimes(2);
     expect(watcher.listeners.onFinally).toBeCalledTimes(2);
 
-    expect(watcher.listeners.onError).toBeCalledWith(abortError());
+    expect(watcher.listeners.onError).toBeCalledWith({ error: abortError() });
 
     expect(watcher.listeners.onDone).toBeCalledTimes(1);
   });
