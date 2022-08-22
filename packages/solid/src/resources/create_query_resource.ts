@@ -9,8 +9,6 @@ import {
 } from 'solid-js';
 import { createEffect as createEffectorEffect, sample } from 'effector';
 
-const skippedMark = '__SKIPPED__' as const;
-
 function createQueryResource<Params, Data, Error>(
   query: Query<Params, Data, Error>
 ): [Resource<Data | undefined>, { refetch: (params: Params) => void }] {
@@ -20,7 +18,7 @@ function createQueryResource<Params, Data, Error>(
 
   const [pending, start] = useUnit([query.$pending, query.start]);
 
-  let dataDefer = createDefer<Data, Error | typeof skippedMark>();
+  let dataDefer = createDefer<Data, Error>();
 
   // Start Resource after Query state changes
   createSolidEffect(() => {
@@ -35,11 +33,9 @@ function createQueryResource<Params, Data, Error>(
   const resolveResourceFx = createEffectorEffect((data: Data) => {
     dataDefer.resolve(data);
   });
-  const rejectResourceFx = createEffectorEffect(
-    (error: Error | typeof skippedMark) => {
-      dataDefer.reject(error);
-    }
-  );
+  const rejectResourceFx = createEffectorEffect((error: Error) => {
+    dataDefer.reject(error);
+  });
 
   // Bind to suspense
   const [resourceData] = createResource(track, () => dataDefer.promise);
@@ -52,11 +48,6 @@ function createQueryResource<Params, Data, Error>(
   sample({
     clock: query.finished.failure,
     fn: ({ error }) => error,
-    target: rejectResourceFx,
-  });
-  sample({
-    clock: query.finished.skip,
-    fn: () => skippedMark,
     target: rejectResourceFx,
   });
 

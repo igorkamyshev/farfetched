@@ -129,7 +129,7 @@ describe('createQueryResource', () => {
     expect(errorText).toBeInTheDocument();
   });
 
-  test('show error boundry when query skipped', async () => {
+  test('show loading when query skipped', async () => {
     const controlledQuery = createQuery({
       enabled: false,
       handler: async () => 'Hello',
@@ -157,8 +157,8 @@ describe('createQueryResource', () => {
 
     await allSettled(controlledQuery.start, { scope, params: {} });
 
-    const errorText = await screen.findByText('Error: __SKIPPED__');
-    expect(errorText).toBeInTheDocument();
+    const loadingText = await screen.findByText('Loading');
+    expect(loadingText).toBeInTheDocument();
   });
 
   test('show Suspense-fallback while pending and nested data', async () => {
