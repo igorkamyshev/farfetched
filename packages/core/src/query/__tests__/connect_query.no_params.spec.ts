@@ -18,6 +18,7 @@ describe('remote_data/connect_query', () => {
         unknown,
         unknown,
         unknown,
+        unknown,
         unknown
       >({
         contract: unkownContract,
@@ -35,6 +36,7 @@ describe('remote_data/connect_query', () => {
         unknown,
         unknown,
         unknown,
+        unknown,
         unknown
       >({
         contract: unkownContract,
@@ -47,6 +49,7 @@ describe('remote_data/connect_query', () => {
     fn: () =>
       createHeadlessQuery<
         void,
+        unknown,
         unknown,
         unknown,
         unknown,

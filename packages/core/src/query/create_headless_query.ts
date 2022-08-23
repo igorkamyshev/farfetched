@@ -19,6 +19,13 @@ interface SharedQueryFactoryConfig {
   enabled?: StaticOrReactive<boolean>;
 }
 
+type ValidaionField<Data, Params, ValidationSource> = TwoArgsSourcedField<
+  Data,
+  Params,
+  boolean,
+  ValidationSource
+>;
+
 /**
  * Creates Query without any executor, it cannot be used as-is.
  *
@@ -33,7 +40,8 @@ function createHeadlessQuery<
   ContractData extends Response,
   ContractError extends Response,
   MappedData,
-  MapDataSource
+  MapDataSource,
+  ValidationSource
 >({
   contract,
   mapData,
@@ -42,6 +50,7 @@ function createHeadlessQuery<
 }: {
   contract: Contract<Response, ContractData, ContractError>;
   mapData: TwoArgsSourcedField<ContractData, Params, MappedData, MapDataSource>;
+  validate?: ValidaionField<ContractData, Params, ValidationSource>;
 } & SharedQueryFactoryConfig): Query<
   Params,
   MappedData,
@@ -199,4 +208,4 @@ function createHeadlessQuery<
 }
 
 export { createHeadlessQuery };
-export type { SharedQueryFactoryConfig };
+export type { SharedQueryFactoryConfig, ValidaionField };
