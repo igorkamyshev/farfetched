@@ -8,7 +8,7 @@ describe('runtypes/runtypeContract short', () => {
 
     expect(contract.isError(2)).toBeFalsy();
 
-    expect(contract.getValidationErrors(2)).toMatchInlineSnapshot(`
+    expect(contract.getErrorMessages(2)).toMatchInlineSnapshot(`
       Array [
         "Expected string, but was number",
       ]
@@ -18,7 +18,7 @@ describe('runtypes/runtypeContract short', () => {
   test('passes valid data', () => {
     const contract = runtypeContract(String);
 
-    expect(contract.getValidationErrors('foo')).toEqual([]);
+    expect(contract.getErrorMessages('foo')).toEqual([]);
 
     expect(contract.isError('bar')).toBeFalsy();
   });

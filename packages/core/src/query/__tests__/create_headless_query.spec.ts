@@ -171,7 +171,7 @@ describe('core/createHeadlessQuery with contract', () => {
       contract: {
         isError: (raw): raw is unknown => true,
         isData: (raw): raw is unknown => false,
-        getValidationErrors: () => [],
+        getErrorMessages: () => [],
       },
       mapData: identity,
     });
@@ -200,7 +200,7 @@ describe('core/createHeadlessQuery with contract', () => {
       contract: {
         isData: (raw): raw is unknown => false,
         isError: (raw): raw is unknown => false,
-        getValidationErrors: () => ['got it'],
+        getErrorMessages: () => ['got it'],
       },
       mapData: identity,
     });
@@ -229,7 +229,7 @@ describe('core/createHeadlessQuery with contract', () => {
       contract: {
         isData: (raw): raw is unknown => true,
         isError: (raw): raw is unknown => false,
-        getValidationErrors: () => [],
+        getErrorMessages: () => [],
       },
       mapData: identity,
     });
@@ -262,7 +262,7 @@ describe('core/createHeadlessQuery with contract', () => {
       contract: {
         isData: (raw): raw is unknown => false,
         isError: (raw): raw is unknown => false,
-        getValidationErrors: validate,
+        getErrorMessages: validate,
       },
       mapData: identity,
     });
@@ -286,7 +286,7 @@ describe('core/createHeadlessQuery with contract', () => {
       contract: {
         isData: (raw): raw is unknown => false,
         isError: (raw): raw is unknown => is(raw),
-        getValidationErrors: () => [],
+        getErrorMessages: () => [],
       },
       mapData: identity,
     });

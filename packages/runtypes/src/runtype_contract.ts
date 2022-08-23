@@ -38,7 +38,7 @@ function createRuntypeContractFull<D, E>({
   return {
     isData: data.guard,
     isError: error.guard,
-    getValidationErrors(raw) {
+    getErrorMessages(raw) {
       const validation = data.validate(raw);
 
       if (validation.success) {
@@ -57,7 +57,7 @@ function createRuntypeContractShort<D>(
   return {
     isData,
     isError: (raw): raw is unknown => false,
-    getValidationErrors(raw) {
+    getErrorMessages(raw) {
       const validation = data.validate(raw);
       if (validation.success) {
         return [];
