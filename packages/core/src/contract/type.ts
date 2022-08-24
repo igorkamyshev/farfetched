@@ -4,12 +4,10 @@ interface Contract<Raw, Data extends Raw, Error extends Raw> {
    */
   isData: (prepared: Raw) => prepared is Data;
   /**
-   * Validates Response
-   *
-   * - return `null` or empty array for valid response
-   * - return array of string with validation erorrs for InvalidDataError in failData
+   * - `null` or empty array is dedicated for valid response
+   * - array of string with validation erorrs for invalidDataError
    */
-  getValidationErrors: (prepared: Raw) => string[];
+  getErrorMessages: (prepared: Raw) => string[];
   /**
    * Checks if Response is Error
    */

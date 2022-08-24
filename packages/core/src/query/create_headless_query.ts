@@ -1,8 +1,15 @@
-import { createEffect, createEvent, createStore, sample } from 'effector';
+import {
+  createEffect,
+  createEvent,
+  createStore,
+  sample,
+  split,
+} from 'effector';
 import { not } from 'patronum';
 
 import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
+import { invalidDataError } from '../errors/create_error';
 import { InvalidDataError } from '../errors/type';
 import {
   normalizeSourced,
@@ -12,6 +19,10 @@ import {
   normalizeStaticOrReactive,
 } from '../misc/sourced';
 import { FetchingStatus } from '../status/type';
+import { checkValidationResult } from '../validation/check_validation_result';
+import { Validator } from '../validation/type';
+import { unwrapValidationResult } from '../validation/unwrap_validation_result';
+import { validValidator } from '../validation/valid_validator';
 import { Query } from './type';
 
 interface SharedQueryFactoryConfig {
@@ -33,15 +44,18 @@ function createHeadlessQuery<
   ContractData extends Response,
   ContractError extends Response,
   MappedData,
-  MapDataSource
+  MapDataSource,
+  ValidationSource
 >({
   contract,
   mapData,
   enabled,
+  validate,
   name,
 }: {
   contract: Contract<Response, ContractData, ContractError>;
   mapData: TwoArgsSourcedField<ContractData, Params, MappedData, MapDataSource>;
+  validate?: Validator<ContractData, Params, ValidationSource>;
 } & SharedQueryFactoryConfig): Query<
   Params,
   MappedData,
@@ -120,31 +134,66 @@ function createHeadlessQuery<
   sample({ clock: executeFx.done, target: applyContractFx });
   sample({ clock: executeFx.fail, target: finished.failure });
 
+  const { validDataRecieved, __: invalidDataRecieved } = split(
+    sample({
+      clock: applyContractFx.done,
+      source: normalizeSourced(
+        reduceTwoArgs({
+          field: validate ?? validValidator,
+          clock: {
+            data: applyContractFx.doneData,
+            // Extract original params, it is params of params
+            params: applyContractFx.done.map(({ params }) => params.params),
+          },
+        })
+      ),
+      fn: (validation, { params, result: data }) => ({
+        data,
+        // Extract original params, it is params of params
+        params: params.params,
+        validation,
+      }),
+    }),
+    {
+      validDataRecieved: ({ validation }) => checkValidationResult(validation),
+    }
+  );
+
   sample({
-    clock: applyContractFx.done,
+    clock: validDataRecieved,
     source: normalizeSourced(
       reduceTwoArgs({
         field: mapData,
         clock: {
-          data: applyContractFx.doneData,
-          // Extract original params, it is params of params
-          params: applyContractFx.done.map(({ params }) => params.params),
+          data: validDataRecieved.map(({ data }) => data),
+          params: validDataRecieved.map(({ params }) => params),
         },
       })
     ),
-    fn: (mappedData, { params }) => ({
-      data: mappedData,
-      // Extract original params, it is params of params
-      params: params.params,
+    fn: (data, { params }) => ({
+      data,
+      params,
     }),
     target: finished.success,
   });
+
   sample({
     clock: applyContractFx.fail,
     fn: ({ error, params }) => ({
       error,
       // Extract original params, it is params of params
       params: params.params,
+    }),
+    target: finished.failure,
+  });
+
+  sample({
+    clock: invalidDataRecieved,
+    fn: ({ params, validation }) => ({
+      params,
+      error: invalidDataError({
+        validationErrors: unwrapValidationResult(validation),
+      }),
     }),
     target: finished.failure,
   });

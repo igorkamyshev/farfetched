@@ -8,7 +8,7 @@ describe('runtypes/runtypeContract full', () => {
 
     expect(contract.isError(2)).toBeTruthy();
 
-    expect(contract.getValidationErrors(2)).toMatchInlineSnapshot(`
+    expect(contract.getErrorMessages(2)).toMatchInlineSnapshot(`
       Array [
         "Expected string, but was number",
       ]
@@ -18,7 +18,7 @@ describe('runtypes/runtypeContract full', () => {
   test('valid data', () => {
     const contract = runtypeContract({ data: String, error: Number });
 
-    expect(contract.getValidationErrors('foo')).toEqual([]);
+    expect(contract.getErrorMessages('foo')).toEqual([]);
 
     expect(contract.isError('bar')).toBeFalsy();
   });
@@ -31,8 +31,8 @@ describe('runtypes/runtypeContract full', () => {
       error: Number,
     });
 
-    expect(contract.getValidationErrors('HKT')).toEqual([]);
-    expect(contract.getValidationErrors('lolkek')).toMatchInlineSnapshot(`
+    expect(contract.getErrorMessages('HKT')).toEqual([]);
+    expect(contract.getErrorMessages('lolkek')).toMatchInlineSnapshot(`
       Array [
         "Failed constraint check for string",
       ]
