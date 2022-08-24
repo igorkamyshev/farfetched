@@ -14,11 +14,11 @@ import { FetchApiRecord } from '../misc/fetch_api';
 import {
   createHeadlessQuery,
   SharedQueryFactoryConfig,
-  ValidaionField,
 } from './create_headless_query';
 import { unkownContract } from '../contract/unkown_contract';
 import { identity } from '../misc/identity';
 import { InvalidDataError } from '../errors/type';
+import { Validator } from '../validation/type';
 
 // -- Shared
 
@@ -94,7 +94,7 @@ function createJsonQuery<
     response: {
       contract: Contract<unknown, Data, Error>;
       mapData: TwoArgsSourcedField<Data, Params, TransformedData, DataSource>;
-      validate?: ValidaionField<TransformedData, Params, ValidationSource>;
+      validate?: Validator<TransformedData, Params, ValidationSource>;
     };
   }
 ): Query<Params, TransformedData, ApiRequestError | Error | InvalidDataError>;
@@ -119,7 +119,7 @@ function createJsonQuery<
   > & {
     response: {
       contract: Contract<unknown, Data, Error>;
-      validate?: ValidaionField<Data, Params, ValidationSource>;
+      validate?: Validator<Data, Params, ValidationSource>;
     };
   }
 ): Query<Params, Data, ApiRequestError | Error | InvalidDataError>;
@@ -145,7 +145,7 @@ function createJsonQuery<
     response: {
       contract: Contract<unknown, Data, Error>;
       mapData: TwoArgsSourcedField<Data, void, TransformedData, DataSource>;
-      validate?: ValidaionField<TransformedData, void, ValidationSource>;
+      validate?: Validator<TransformedData, void, ValidationSource>;
     };
   }
 ): Query<void, TransformedData, ApiRequestError | Error | InvalidDataError>;
@@ -168,7 +168,7 @@ function createJsonQuery<
   > & {
     response: {
       contract: Contract<unknown, Data, Error>;
-      validate?: ValidaionField<Data, void, ValidationSource>;
+      validate?: Validator<Data, void, ValidationSource>;
     };
   }
 ): Query<void, Data, ApiRequestError | Error | InvalidDataError>;

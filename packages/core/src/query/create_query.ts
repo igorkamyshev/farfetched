@@ -3,7 +3,6 @@ import { createEffect, Effect, is } from 'effector';
 import {
   createHeadlessQuery,
   SharedQueryFactoryConfig,
-  ValidaionField,
 } from './create_headless_query';
 import { Query } from './type';
 import { InvalidConfigException } from '../misc/config';
@@ -12,6 +11,7 @@ import { unkownContract } from '../contract/unkown_contract';
 import { identity } from '../misc/identity';
 import { TwoArgsSourcedField } from '../misc/sourced';
 import { InvalidDataError } from '../errors/type';
+import { Validator } from '../validation/type';
 
 // Overload: Only handler
 function createQuery<Params, Response>(
@@ -39,7 +39,7 @@ function createQuery<
   config: {
     effect: Effect<Params, Response, Error>;
     contract: Contract<Response, ContractData, ContractError>;
-    validate?: ValidaionField<ContractData, Params, ValidationSource>;
+    validate?: Validator<ContractData, Params, ValidationSource>;
   } & SharedQueryFactoryConfig
 ): Query<Params, ContractData, Error | InvalidDataError | ContractError>;
 
@@ -55,7 +55,7 @@ function createQuery<
   config: {
     effect: Effect<Params, Response, Error>;
     mapData: TwoArgsSourcedField<Response, Params, MappedData, MapDataSource>;
-    validate?: ValidaionField<MappedData, Params, ValidationSource>;
+    validate?: Validator<MappedData, Params, ValidationSource>;
   } & SharedQueryFactoryConfig
 ): Query<Params, MappedData, Error>;
 
@@ -79,7 +79,7 @@ function createQuery<
       MappedData,
       MapDataSource
     >;
-    validate?: ValidaionField<ContractData, Params, ValidationSource>;
+    validate?: Validator<ContractData, Params, ValidationSource>;
   } & SharedQueryFactoryConfig
 ): Query<Params, MappedData, Error | InvalidDataError | ContractError>;
 
