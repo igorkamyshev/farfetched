@@ -1,6 +1,6 @@
-# Сontract
+# Contract
 
-A set of constraints that validates received data.
+A rule to statically validate received data.
 
 ## API reference
 

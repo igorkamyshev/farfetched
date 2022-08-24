@@ -16,11 +16,13 @@ const languagesQuery = createQuery({
 });
 ```
 
-### `createQuery({ effect })`
+### `createQuery({ effect, validate? })`
 
 Creates [_Query_](../primitives/query.md) based on given [_Effect_](https://effector.dev/docs/api/effector/effect).
 
 Usage of [_Effect_](https://effector.dev/docs/api/effector/effect) instead of simple asynchronous function allows you to declare types of possible errors statically that will be passed to [_Query_](../primitives/query.md).
+
+This form allows you to dynamically validate received data using [_Validator_](../primitives/validator.md) in the optional `validate` field.
 
 ```ts
 const languagesQuery = createQuery({
@@ -40,11 +42,11 @@ const languagesQuery = createQuery({
 // typeof languagesQuery.$error === Store<EmptyLanguagesError | null>
 ```
 
-### `createQuery({ effect, contract })`
+### `createQuery({ effect, contract, validate? })`
 
 Creates [_Query_](../primitives/query.md) based on given [_Effect_](https://effector.dev/docs/api/effector/effect).
 
-[_Contract_](../primitives/contract.md) allows you to validate the response and decide how your application should treat it — as a success response or as a failed one.
+[_Contract_](../primitives/contract.md) allows you to validate the response and decide how your application should treat it — as a success response or as a failed one. Furthermore, this form allows you to dynamically validate received data using [_Validator_](../primitives/validator.md) in the optional `validate` field.
 
 ```ts
 const languagesQuery = createQuery({
@@ -71,9 +73,9 @@ const languagesQuery = createQuery({
  */
 ```
 
-### `createQuery({ effect, contract?, mapData: Function })`
+### `createQuery({ effect, contract?, validate?, mapData: Function })`
 
-Creates [_Query_](../primitives/query.md) based on given [_Effect_](https://effector.dev/docs/api/effector/effect). Result of the effect will be validated against the [_Contract_](../primitives/contract.md). Invalid result will cause the [_Query_](../primitives/query.md) to fail.
+Creates [_Query_](../primitives/query.md) based on given [_Effect_](https://effector.dev/docs/api/effector/effect). Result of the effect will be validated against the [_Contract_](../primitives/contract.md) and the optional [_Validator_](../primitives/validator.md). Invalid result will cause the [_Query_](../primitives/query.md) to fail.
 
 A valid data is passed to `mapData` callback as well as original parameters of the [_Query_](../primitives/query.md), result of the callback will be treated as a result of the [_Query_](../primitives/query.md).
 
@@ -96,9 +98,9 @@ const languagesQuery = createQuery({
  */
 ```
 
-### `createQuery({ effect, contract?, mapData: { source, fn } })`
+### `createQuery({ effect, contract?, validate?, mapData: { source, fn } })`
 
-Creates [_Query_](../primitives/query.md) based on given [_Effect_](https://effector.dev/docs/api/effector/effect). Result of the effect will be validated against the [_Contract_](../primitives/contract.md). Invalid result will cause the query to fail.
+Creates [_Query_](../primitives/query.md) based on given [_Effect_](https://effector.dev/docs/api/effector/effect). Result of the effect will be validated against the [_Contract_](../primitives/contract.md) and the optional [_Validator_](../primitives/validator.md). Invalid result will cause the query to fail.
 
 A valid data is passed to `mapData.fn` callback as well as original parameters of the [_Query_](../primitives/query.md) and current value of `mapData.source` [_Store_](https://effector.dev/docs/api/effector/store), result of the callback will be treated as a result of the [_Query_](../primitives/query.md).
 
