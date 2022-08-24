@@ -90,14 +90,6 @@ function createHeadlessQuery<
    */
   const start = createEvent<Params>();
 
-  const performValidation = createEvent<{
-    params: {
-      params: Params;
-      result: Response;
-    };
-    result: ContractData;
-  }>();
-
   // Signal-events
   const finished = {
     success: createEvent<{ params: Params; data: MappedData }>(),
