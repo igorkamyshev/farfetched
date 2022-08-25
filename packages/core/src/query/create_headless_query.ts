@@ -28,7 +28,6 @@ import { Validator } from '../validation/type';
 import { unwrapValidationResult } from '../validation/unwrap_validation_result';
 import { validValidator } from '../validation/valid_validator';
 import { Query } from './type';
-import { createQueryNode } from '../node/query_node';
 
 interface SharedQueryFactoryConfig<Data> {
   name?: string;
@@ -252,7 +251,7 @@ function createHeadlessQuery<
 
   // -- Meta information --
 
-  const node = createQueryNode({ name: queryName });
+  const meta = { serialize, name: queryName };
 
   // -- Final Query --
   const query = {
@@ -264,7 +263,7 @@ function createHeadlessQuery<
     $pending,
     $enabled,
     $stale,
-    __: { executeFx, meta: { serialize }, node },
+    __: { executeFx, meta },
   };
 
   // -- Domain connection --

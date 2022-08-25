@@ -20,7 +20,7 @@ function App({ domain }: { domain?: Domain }) {
     .on(closeDevTools, () => 'openTag');
 
   if (domain) {
-    declareQueries(allQueries({ domain }).map((q) => q.__.node.meta as any));
+    declareQueries(allQueries({ domain }).map((q) => q.__.meta));
   }
 
   variant({

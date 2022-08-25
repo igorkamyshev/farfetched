@@ -76,10 +76,6 @@ interface Query<Params, Data, Error> {
      */
     executeFx: Effect<any, any, any>;
     /**
-     * Internal node, which is used to store meta information about the query.
-     */
-    node: Node;
-    /**
      * Meta information about Query and its configuration.
      */
     meta: {
@@ -89,6 +85,7 @@ interface Query<Params, Data, Error> {
        * - save state to persistent storage during caching
        */
       serialize: Serialize<Data>;
+      name: string;
     };
   };
 }
