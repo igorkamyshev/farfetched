@@ -1,4 +1,5 @@
 import { Effect, Event, Node, Store } from 'effector';
+import { Serialize } from '../serialization/type';
 
 import { FetchingStatus } from '../status/type';
 
@@ -78,6 +79,17 @@ interface Query<Params, Data, Error> {
      * Internal node, which is used to store meta information about the query.
      */
     node: Node;
+    /**
+     * Meta information about Query and its configuration.
+     */
+    meta: {
+      /**
+       * This field is used to determine how to serialize data in various cases:
+       * - transfer state from server to client during SSR
+       * - save state to persistent storage during caching
+       */
+      serialize: Serialize<Data>;
+    };
   };
 }
 

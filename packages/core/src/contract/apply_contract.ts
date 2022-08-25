@@ -26,7 +26,7 @@ function createContractApplier<
       const isData = contract.isData(data);
       if (!isData) {
         throw invalidDataError({
-          validationErrors: contract.getValidationErrors(data),
+          validationErrors: contract.getErrorMessages(data),
         });
       }
 

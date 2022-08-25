@@ -1,6 +1,6 @@
-# Сontract
+# Contract
 
-A set of constraints that validates received data.
+A rule to statically validate received data.
 
 ## API reference
 
@@ -12,7 +12,7 @@ contract.isData; // (raw: unkown) => raw is Data
 contract.isError; // (raw: unkown) => raw is Error
 
 // Validators
-contract.getValidationErrors; // (raw: Data) => string[]
+contract.getErrorMessages; // (raw: Data) => string[]
 ```
 
 More information about API can be found in [the source code](../../../packages/core/src/contract/type.ts).

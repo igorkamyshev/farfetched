@@ -11,7 +11,7 @@ describe('remote_data/query/json.response.map_data', () => {
   const validStringContract: Contract<unknown, string, unknown> = {
     isData: (raw): raw is string => true,
     isError: (raw): raw is unknown => false,
-    getValidationErrors: () => [],
+    getErrorMessages: () => [],
   };
 
   // Does not matter

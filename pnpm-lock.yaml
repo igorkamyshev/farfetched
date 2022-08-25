@@ -47,7 +47,7 @@ importers:
       history: ^5.3.0
       jest: 27.5.1
       nx: 14.4.1
-      patronum: ^1.8.5
+      patronum: ^1.10.2
       prettier: ^2.6.2
       react: 18.2.0
       react-dom: 18.2.0
@@ -71,7 +71,7 @@ importers:
       effector-solid: 0.22.1_gy47fnhyujeuzimuk7mxzluzxe
       forest: 0.21.1_effector@22.3.0
       history: 5.3.0
-      patronum: 1.8.5_effector@22.3.0
+      patronum: 1.10.2_effector@22.3.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       regenerator-runtime: 0.13.7
@@ -125,9 +125,9 @@ importers:
 
   packages/core:
     specifiers:
-      patronum: ^1.8.5
+      patronum: ^1.10.2
     dependencies:
-      patronum: 1.8.5
+      patronum: 1.10.2
 
   packages/dev-tools:
     specifiers: {}
@@ -8589,14 +8589,14 @@ packages:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
     engines: {node: '>=8'}
 
-  /patronum/1.8.5:
-    resolution: {integrity: sha512-XI38LyqbzAn+S+1dFNNmxGeTPM+0UAxyqWnFEedjYPcveopMmir3vmShgatOUxP3NcnUk1oo6YdJxt6MS118XQ==}
+  /patronum/1.10.2:
+    resolution: {integrity: sha512-GjongQq5EaaLdBZlVNn3jj3nJB3qGjsMM01dp6i3iWjf+ULVn8B/Op9riRSODvGoGGiI3JV09Z7A0k92QXiMvg==}
     peerDependencies:
       effector: ^22.1.2
     dev: false
 
-  /patronum/1.8.5_effector@22.3.0:
-    resolution: {integrity: sha512-XI38LyqbzAn+S+1dFNNmxGeTPM+0UAxyqWnFEedjYPcveopMmir3vmShgatOUxP3NcnUk1oo6YdJxt6MS118XQ==}
+  /patronum/1.10.2_effector@22.3.0:
+    resolution: {integrity: sha512-GjongQq5EaaLdBZlVNn3jj3nJB3qGjsMM01dp6i3iWjf+ULVn8B/Op9riRSODvGoGGiI3JV09Z7A0k92QXiMvg==}
     peerDependencies:
       effector: ^22.1.2
     dependencies:

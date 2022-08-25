@@ -18,6 +18,7 @@ import {
 import { unkownContract } from '../contract/unkown_contract';
 import { identity } from '../misc/identity';
 import { InvalidDataError } from '../errors/type';
+import { Validator } from '../validation/type';
 
 // -- Shared
 
@@ -37,11 +38,12 @@ type RequestConfig<Params, BodySource, QuerySource, HeadersSource, UrlSource> =
   );
 
 interface BaseJsonQueryConfigNoParams<
+  Data,
   BodySource,
   QuerySource,
   HeadersSource,
   UrlSource
-> extends SharedQueryFactoryConfig {
+> extends SharedQueryFactoryConfig<Data> {
   request: RequestConfig<
     void,
     BodySource,
@@ -53,11 +55,12 @@ interface BaseJsonQueryConfigNoParams<
 
 interface BaseJsonQueryConfigWithParams<
   Params,
+  Data,
   BodySource,
   QuerySource,
   HeadersSource,
   UrlSource
-> extends SharedQueryFactoryConfig {
+> extends SharedQueryFactoryConfig<Data> {
   params: ParamsDeclaration<Params>;
   request: RequestConfig<
     Params,
@@ -80,10 +83,12 @@ function createJsonQuery<
   QuerySource = void,
   HeadersSource = void,
   UrlSource = void,
-  DataSource = void
+  DataSource = void,
+  ValidationSource = void
 >(
   config: BaseJsonQueryConfigWithParams<
     Params,
+    TransformedData,
     BodySource,
     QuerySource,
     HeadersSource,
@@ -92,6 +97,7 @@ function createJsonQuery<
     response: {
       contract: Contract<unknown, Data, Error>;
       mapData: TwoArgsSourcedField<Data, Params, TransformedData, DataSource>;
+      validate?: Validator<TransformedData, Params, ValidationSource>;
     };
   }
 ): Query<Params, TransformedData, ApiRequestError | Error | InvalidDataError>;
@@ -104,10 +110,12 @@ function createJsonQuery<
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
-  UrlSource = void
+  UrlSource = void,
+  ValidationSource = void
 >(
   config: BaseJsonQueryConfigWithParams<
     Params,
+    Data,
     BodySource,
     QuerySource,
     HeadersSource,
@@ -115,6 +123,7 @@ function createJsonQuery<
   > & {
     response: {
       contract: Contract<unknown, Data, Error>;
+      validate?: Validator<Data, Params, ValidationSource>;
     };
   }
 ): Query<Params, Data, ApiRequestError | Error | InvalidDataError>;
@@ -128,9 +137,11 @@ function createJsonQuery<
   QuerySource = void,
   HeadersSource = void,
   UrlSource = void,
-  DataSource = void
+  DataSource = void,
+  ValidationSource = void
 >(
   config: BaseJsonQueryConfigNoParams<
+    TransformedData,
     BodySource,
     QuerySource,
     HeadersSource,
@@ -139,6 +150,7 @@ function createJsonQuery<
     response: {
       contract: Contract<unknown, Data, Error>;
       mapData: TwoArgsSourcedField<Data, void, TransformedData, DataSource>;
+      validate?: Validator<TransformedData, void, ValidationSource>;
     };
   }
 ): Query<void, TransformedData, ApiRequestError | Error | InvalidDataError>;
@@ -150,9 +162,11 @@ function createJsonQuery<
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
-  UrlSource = void
+  UrlSource = void,
+  ValidationSource = void
 >(
   config: BaseJsonQueryConfigNoParams<
+    Data,
     BodySource,
     QuerySource,
     HeadersSource,
@@ -160,6 +174,7 @@ function createJsonQuery<
   > & {
     response: {
       contract: Contract<unknown, Data, Error>;
+      validate?: Validator<Data, void, ValidationSource>;
     };
   }
 ): Query<void, Data, ApiRequestError | Error | InvalidDataError>;
@@ -173,11 +188,22 @@ function createJsonQuery(config: any) {
     concurrency: { strategy: 'TAKE_LATEST' },
   });
 
-  const headlessQuery = createHeadlessQuery<any, any, any, any, any, any, any>({
+  const headlessQuery = createHeadlessQuery<
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >({
     contract: config.response.contract ?? unkownContract,
     mapData: config.response.mapData ?? identity,
+    validate: config.response.validate,
     enabled: config.enabled,
     name: config.name,
+    serialize: config.serialize,
     domain: config.domain,
   });
 

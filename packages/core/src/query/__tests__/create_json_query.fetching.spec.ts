@@ -8,7 +8,7 @@ describe('remote_data/query/json.fetching', () => {
     contract: {
       isData: (raw: unknown): raw is unknown => true,
       isError: (raw: unknown): raw is unknown => false,
-      getValidationErrors: () => [],
+      getErrorMessages: () => [],
     },
     mapData: <T>(v: T) => v,
   };

@@ -3,12 +3,14 @@ import {
   createEvent,
   createStore,
   Domain,
+  split,
   sample,
 } from 'effector';
 import { not } from 'patronum';
 
 import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
+import { invalidDataError } from '../errors/create_error';
 import { InvalidDataError } from '../errors/type';
 import {
   normalizeSourced,
@@ -17,15 +19,22 @@ import {
   StaticOrReactive,
   normalizeStaticOrReactive,
 } from '../misc/sourced';
+import { serializationForSideStore } from '../serialization/serizalize_for_side_store';
+import { Serialize } from '../serialization/type';
 import { triggerQuery } from '../domain/query_domain';
 import { FetchingStatus } from '../status/type';
+import { checkValidationResult } from '../validation/check_validation_result';
+import { Validator } from '../validation/type';
+import { unwrapValidationResult } from '../validation/unwrap_validation_result';
+import { validValidator } from '../validation/valid_validator';
 import { Query } from './type';
 import { createQueryNode } from '../node/query_node';
 
-interface SharedQueryFactoryConfig {
+interface SharedQueryFactoryConfig<Data> {
   name?: string;
   enabled?: StaticOrReactive<boolean>;
   domain?: Domain;
+  serialize?: Serialize<Data>;
 }
 
 /**
@@ -42,17 +51,21 @@ function createHeadlessQuery<
   ContractData extends Response,
   ContractError extends Response,
   MappedData,
-  MapDataSource
+  MapDataSource,
+  ValidationSource
 >({
   contract,
   mapData,
   enabled,
+  validate,
   name,
+  serialize,
   domain,
 }: {
   contract: Contract<Response, ContractData, ContractError>;
   mapData: TwoArgsSourcedField<ContractData, Params, MappedData, MapDataSource>;
-} & SharedQueryFactoryConfig): Query<
+  validate?: Validator<ContractData, Params, ValidationSource>;
+} & SharedQueryFactoryConfig<MappedData>): Query<
   Params,
   MappedData,
   Error | InvalidDataError | ContractError
@@ -101,18 +114,25 @@ function createHeadlessQuery<
   const $data = createStore<MappedData | null>(null, {
     sid: `ff.${queryName}.$data`,
     name: `${queryName}.$data`,
+    serialize,
   });
   const $error = createStore<Error | InvalidDataError | ContractError | null>(
     null,
-    { sid: 'ff.$error', name: `${queryName}.$error` }
+    {
+      sid: `ff.${queryName}.$error`,
+      name: `${queryName}.$error`,
+      serialize: serializationForSideStore(serialize),
+    }
   );
   const $status = createStore<FetchingStatus>('initial', {
     sid: `ff.${queryName}.$status`,
     name: `${queryName}.$status`,
+    serialize: serializationForSideStore(serialize),
   });
   const $stale = createStore<boolean>(false, {
     sid: `ff.${queryName}.$stale`,
     name: `${queryName}.$stale`,
+    serialize: serializationForSideStore(serialize),
   });
   const $enabled = normalizeStaticOrReactive(enabled ?? true).map(Boolean);
 
@@ -130,31 +150,66 @@ function createHeadlessQuery<
   sample({ clock: executeFx.done, target: applyContractFx });
   sample({ clock: executeFx.fail, target: finished.failure });
 
+  const { validDataRecieved, __: invalidDataRecieved } = split(
+    sample({
+      clock: applyContractFx.done,
+      source: normalizeSourced(
+        reduceTwoArgs({
+          field: validate ?? validValidator,
+          clock: {
+            data: applyContractFx.doneData,
+            // Extract original params, it is params of params
+            params: applyContractFx.done.map(({ params }) => params.params),
+          },
+        })
+      ),
+      fn: (validation, { params, result: data }) => ({
+        data,
+        // Extract original params, it is params of params
+        params: params.params,
+        validation,
+      }),
+    }),
+    {
+      validDataRecieved: ({ validation }) => checkValidationResult(validation),
+    }
+  );
+
   sample({
-    clock: applyContractFx.done,
+    clock: validDataRecieved,
     source: normalizeSourced(
       reduceTwoArgs({
         field: mapData,
         clock: {
-          data: applyContractFx.doneData,
-          // Extract original params, it is params of params
-          params: applyContractFx.done.map(({ params }) => params.params),
+          data: validDataRecieved.map(({ data }) => data),
+          params: validDataRecieved.map(({ params }) => params),
         },
       })
     ),
-    fn: (mappedData, { params }) => ({
-      data: mappedData,
-      // Extract original params, it is params of params
-      params: params.params,
+    fn: (data, { params }) => ({
+      data,
+      params,
     }),
     target: finished.success,
   });
+
   sample({
     clock: applyContractFx.fail,
     fn: ({ error, params }) => ({
       error,
       // Extract original params, it is params of params
       params: params.params,
+    }),
+    target: finished.failure,
+  });
+
+  sample({
+    clock: invalidDataRecieved,
+    fn: ({ params, validation }) => ({
+      params,
+      error: invalidDataError({
+        validationErrors: unwrapValidationResult(validation),
+      }),
     }),
     target: finished.failure,
   });
@@ -209,7 +264,7 @@ function createHeadlessQuery<
     $pending,
     $enabled,
     $stale,
-    __: { executeFx, node },
+    __: { executeFx, meta: { serialize }, node },
   };
 
   // -- Domain connection --
@@ -221,4 +276,4 @@ function createHeadlessQuery<
 }
 
 export { createHeadlessQuery };
-export type { SharedQueryFactoryConfig };
+export type { SharedQueryFactoryConfig, Serialize };

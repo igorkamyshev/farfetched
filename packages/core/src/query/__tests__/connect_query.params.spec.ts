@@ -40,6 +40,7 @@ describe('remote_data/connect_query', () => {
         unknown,
         unknown,
         unknown,
+        unknown,
         unknown
       >({
         contract: unkownContract,
