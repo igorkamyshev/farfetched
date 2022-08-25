@@ -20,7 +20,8 @@ Stay tuned...
 
 Any factory in any overload accepts these fields in top level of config.
 
-- `enabled` — you can disable [_Query_](./core/primitives/query.md) by passing `false` or [_Store_](https://effector.dev/docs/api/effector/store) with `false`
+- `enabled` — disable [_Query_](./core/primitives/query.md) by passing `false` or [_Store_](https://effector.dev/docs/api/effector/store) with `false`
+- `serialize` — disable serialization of [_Query_](./core/primitives/query.md) by passing `"ignore"`
 - `name` — it is used to distinguish [_Query_](./core/primitives/query.md) while debugging.
 
 ### Operators

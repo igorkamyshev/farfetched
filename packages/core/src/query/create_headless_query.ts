@@ -18,6 +18,8 @@ import {
   StaticOrReactive,
   normalizeStaticOrReactive,
 } from '../misc/sourced';
+import { serializationForSideStore } from '../serialization/serizalize_for_side_store';
+import { Serialize } from '../serialization/type';
 import { FetchingStatus } from '../status/type';
 import { checkValidationResult } from '../validation/check_validation_result';
 import { Validator } from '../validation/type';
@@ -25,9 +27,10 @@ import { unwrapValidationResult } from '../validation/unwrap_validation_result';
 import { validValidator } from '../validation/valid_validator';
 import { Query } from './type';
 
-interface SharedQueryFactoryConfig {
+interface SharedQueryFactoryConfig<Data> {
   name?: string;
   enabled?: StaticOrReactive<boolean>;
+  serialize?: Serialize<Data>;
 }
 
 /**
@@ -52,11 +55,12 @@ function createHeadlessQuery<
   enabled,
   validate,
   name,
+  serialize,
 }: {
   contract: Contract<Response, ContractData, ContractError>;
   mapData: TwoArgsSourcedField<ContractData, Params, MappedData, MapDataSource>;
   validate?: Validator<ContractData, Params, ValidationSource>;
-} & SharedQueryFactoryConfig): Query<
+} & SharedQueryFactoryConfig<MappedData>): Query<
   Params,
   MappedData,
   Error | InvalidDataError | ContractError
@@ -105,18 +109,25 @@ function createHeadlessQuery<
   const $data = createStore<MappedData | null>(null, {
     sid: `ff.${queryName}.$data`,
     name: `${queryName}.$data`,
+    serialize,
   });
   const $error = createStore<Error | InvalidDataError | ContractError | null>(
     null,
-    { sid: 'ff.$error', name: `${queryName}.$error` }
+    {
+      sid: `ff.${queryName}.$error`,
+      name: `${queryName}.$error`,
+      serialize: serializationForSideStore(serialize),
+    }
   );
   const $status = createStore<FetchingStatus>('initial', {
     sid: `ff.${queryName}.$status`,
     name: `${queryName}.$status`,
+    serialize: serializationForSideStore(serialize),
   });
   const $stale = createStore<boolean>(false, {
     sid: `ff.${queryName}.$stale`,
     name: `${queryName}.$stale`,
+    serialize: serializationForSideStore(serialize),
   });
   const $enabled = normalizeStaticOrReactive(enabled ?? true).map(Boolean);
 
@@ -243,9 +254,9 @@ function createHeadlessQuery<
     $pending,
     $enabled,
     $stale,
-    __: { executeFx },
+    __: { executeFx, meta: { serialize } },
   };
 }
 
 export { createHeadlessQuery };
-export type { SharedQueryFactoryConfig };
+export type { SharedQueryFactoryConfig, Serialize };
