@@ -17,14 +17,14 @@ import { Validator } from '../validation/type';
 function createQuery<Params, Response>(
   config: {
     handler: (p: Params) => Promise<Response>;
-  } & SharedQueryFactoryConfig
+  } & SharedQueryFactoryConfig<Response>
 ): Query<Params, Response, unknown>;
 
 // Overload: Only effect
 function createQuery<Params, Response, Error>(
   config: {
     effect: Effect<Params, Response, Error>;
-  } & SharedQueryFactoryConfig
+  } & SharedQueryFactoryConfig<Response>
 ): Query<Params, Response, Error>;
 
 // Overload: Effect and Contract
@@ -40,7 +40,7 @@ function createQuery<
     effect: Effect<Params, Response, Error>;
     contract: Contract<Response, ContractData, ContractError>;
     validate?: Validator<ContractData, Params, ValidationSource>;
-  } & SharedQueryFactoryConfig
+  } & SharedQueryFactoryConfig<ContractData>
 ): Query<Params, ContractData, Error | InvalidDataError | ContractError>;
 
 // Overload: Effect and MapData
@@ -56,7 +56,7 @@ function createQuery<
     effect: Effect<Params, Response, Error>;
     mapData: TwoArgsSourcedField<Response, Params, MappedData, MapDataSource>;
     validate?: Validator<MappedData, Params, ValidationSource>;
-  } & SharedQueryFactoryConfig
+  } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error>;
 
 // Overload: Effect, Contract and MapData
@@ -80,7 +80,7 @@ function createQuery<
       MapDataSource
     >;
     validate?: Validator<ContractData, Params, ValidationSource>;
-  } & SharedQueryFactoryConfig
+  } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error | InvalidDataError | ContractError>;
 
 // -- Implementation --
@@ -113,6 +113,7 @@ function createQuery<
     enabled: config.enabled,
     validate: config.validate,
     name: config.name,
+    serialize: config.serialize,
   });
 
   query.__.executeFx.use(resolveExecuteEffect<Params, Response, Error>(config));

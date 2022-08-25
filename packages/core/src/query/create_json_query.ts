@@ -38,11 +38,12 @@ type RequestConfig<Params, BodySource, QuerySource, HeadersSource, UrlSource> =
   );
 
 interface BaseJsonQueryConfigNoParams<
+  Data,
   BodySource,
   QuerySource,
   HeadersSource,
   UrlSource
-> extends SharedQueryFactoryConfig {
+> extends SharedQueryFactoryConfig<Data> {
   request: RequestConfig<
     void,
     BodySource,
@@ -54,11 +55,12 @@ interface BaseJsonQueryConfigNoParams<
 
 interface BaseJsonQueryConfigWithParams<
   Params,
+  Data,
   BodySource,
   QuerySource,
   HeadersSource,
   UrlSource
-> extends SharedQueryFactoryConfig {
+> extends SharedQueryFactoryConfig<Data> {
   params: ParamsDeclaration<Params>;
   request: RequestConfig<
     Params,
@@ -86,6 +88,7 @@ function createJsonQuery<
 >(
   config: BaseJsonQueryConfigWithParams<
     Params,
+    TransformedData,
     BodySource,
     QuerySource,
     HeadersSource,
@@ -112,6 +115,7 @@ function createJsonQuery<
 >(
   config: BaseJsonQueryConfigWithParams<
     Params,
+    Data,
     BodySource,
     QuerySource,
     HeadersSource,
@@ -137,6 +141,7 @@ function createJsonQuery<
   ValidationSource = void
 >(
   config: BaseJsonQueryConfigNoParams<
+    TransformedData,
     BodySource,
     QuerySource,
     HeadersSource,
@@ -161,6 +166,7 @@ function createJsonQuery<
   ValidationSource = void
 >(
   config: BaseJsonQueryConfigNoParams<
+    Data,
     BodySource,
     QuerySource,
     HeadersSource,
@@ -197,6 +203,7 @@ function createJsonQuery(config: any) {
     validate: config.response.validate,
     enabled: config.enabled,
     name: config.name,
+    serialize: config.serialize,
   });
 
   // Connections

@@ -1,4 +1,5 @@
 import { Effect, Event, Store } from 'effector';
+import { Serialize } from '../serialization/type';
 
 import { FetchingStatus } from '../status/type';
 
@@ -74,6 +75,7 @@ interface Query<Params, Data, Error> {
      * })
      */
     executeFx: Effect<any, any, any>;
+    meta: { serialize: Serialize<Data> };
   };
 }
 
