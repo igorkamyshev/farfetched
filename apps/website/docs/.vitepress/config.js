@@ -4,6 +4,8 @@ export default {
   description: 'The advanced data fetching tool for web applications.',
   lastUpdated: true,
   outDir: '../../../dist/apps/website',
+  // TODO: disable
+  ignoreDeadLinks: true,
   themeConfig: {
     siteTitle: 'Farfetched',
     logo: '/logo.svg',
@@ -16,7 +18,6 @@ export default {
       { icon: 'twitter', link: 'https://twitter.com/farfetched_dev' },
     ],
     // TODO: use my own search
-    // t
     algolia: {
       appId: '8J64VVRP8K',
       apiKey: 'a18e2f4cc5665f6602c5631fd868adfd',
