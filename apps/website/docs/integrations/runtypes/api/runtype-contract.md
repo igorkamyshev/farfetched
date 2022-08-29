@@ -1,30 +1,6 @@
-# `@farfetched/runtypes`
+## `runtypeContract(runtype)`
 
-> It is a separate package `@farfetched/runtypes`, you have to install it and its peer dependencies before usage
-
-with `pnpm`
-
-```sh
-pnpm install runtypes @farfecthed/runtypes
-```
-
-with `yarn`
-
-```sh
-yarn add runtypes @farfecthed/runtypes
-```
-
-with `npm`
-
-```sh
-npm install runtypes @farfecthed/runtypes
-```
-
-### Formulae
-
-#### `runtypeContract(runtype)`
-
-Creates a [_Contract_](./core/primitives/contract.md) based on given `Runtype`.
+Creates a [Contract](/api/primitives/contract) based on given `Runtype`.
 
 ```ts
 import { Record, Literal, Number, Vector } from 'runtypes';
@@ -45,9 +21,9 @@ const asteriodContarct = runtypeContract(Asteroid);
  */
 ```
 
-#### `runtypeContract({ data, error })`
+## `runtypeContract({ data, error })`
 
-Creates a [_Contract_](./core/primitives/contract.md) based on given data-`Runtype` and error-`Runtype`.
+Creates a [Contract](/api/primitives/contract) based on given data-`Runtype` and error-`Runtype`.
 
 ```ts
 import { Record, Null, Array, String } from 'runtypes';

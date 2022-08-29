@@ -2,7 +2,7 @@
 
 Farfetched uses [Effector](https://effector.dev) under the hood to handle reactive states and its relations. Even if you use Farfetched without Effector, you can enjoy by its all features.
 
-Farfetched is designed to be suitable to use with any other technology, it is not opinionated. Its public API is easily combinable with everything, the whole API based on [_Event_](https://effector.dev/docs/api/effector/event) and [_Store_](https://effector.dev/docs/api/effector/store) and:
+Farfetched is designed to be suitable to use with any other technology, it is not opinionated. Its public API is easily combinable with everything, the whole API based on [_Event_](https://effector.dev/docs/api/effector/event) and [_Store_](https://effector.dev/docs/api/effector/store):
 
 - [_Event_](https://effector.dev/docs/api/effector/event) can be considered as callable function, so just call it.
 - [_Store_](https://effector.dev/docs/api/effector/store) can be considered as simple observable object, so just watch it.

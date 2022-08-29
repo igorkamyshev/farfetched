@@ -8,4 +8,4 @@ Until API would be stabilized, we are going to release versions 0.x.x as pre-rel
 
 ## Stable releases
 
-After the first stable release, we will maintain backward compatibility for 2 years. Of course, Farfetched can introduce some breaking changes. We are committing that any breaking change will be prepended by deprecation warning at least for one year.
+After the first stable release, we will maintain **backward compatibility for 2 years**. Of course, Farfetched can introduce some breaking changes. We are committing that any breaking change will be prepended by deprecation warning at least for one year.
