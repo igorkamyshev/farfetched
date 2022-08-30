@@ -4,8 +4,6 @@ export default {
   description: 'The advanced data fetching tool for web applications.',
   lastUpdated: true,
   outDir: '../../../dist/apps/website',
-  // TODO: disable
-  ignoreDeadLinks: true,
   themeConfig: {
     siteTitle: 'Farfetched',
     logo: '/logo.svg',
@@ -76,6 +74,7 @@ export default {
           items: [
             { text: 'Query', link: '/api/primitives/query' },
             { text: 'Contract', link: '/api/primitives/contract' },
+            { text: 'Validator', link: '/api/primitives/validator' },
           ],
         },
       ],

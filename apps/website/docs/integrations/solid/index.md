@@ -22,5 +22,5 @@ npm install @farfecthed/solid
 
 ## Showcases
 
-- [SolidJS + `createQuery`](../../apps/showcase/solid-create-query/)
-- [Real-world showcase with SolidJS around JSON API](../../apps/showcase/solid-real-world-rick-morty/)
+- [SolidJS + `createQuery`](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/solid-create-query/)
+- [Real-world showcase with SolidJS around JSON API](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/solid-real-world-rick-morty/)

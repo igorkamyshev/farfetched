@@ -22,6 +22,6 @@ npm install runtypes @farfecthed/runtypes
 
 ## Showcases
 
-- [React + `createJsonQuery`](../../apps/showcase/react-create-json-query/)
-- [React + `connectQuery`](../../apps/showcase/react-connect-query/)
-- [Real-world showcase with SolidJS around JSON API](../../apps/showcase/solid-real-world-rick-morty/)
+- [React + `createJsonQuery`](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/react-create-json-query/)
+- [React + `connectQuery`](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/react-connect-query/)
+- [Real-world showcase with SolidJS around JSON API](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/solid-real-world-rick-morty/)

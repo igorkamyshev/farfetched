@@ -22,6 +22,6 @@ npm install @farfecthed/react
 
 ## Showcases
 
-- [React + `createQuery`](../../apps/showcase/react-create-query/)
-- [React + `createJsonQuery`](../../apps/showcase/react-create-json-query/)
-- [React + `connectQuery`](../../apps/showcase/react-connect-query/)
+- [React + `createQuery`](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/react-create-query/)
+- [React + `createJsonQuery`](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/react-create-json-query/)
+- [React + `connectQuery`](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/react-connect-query/)
