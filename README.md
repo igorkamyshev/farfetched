@@ -13,61 +13,9 @@ The advanced data fetching tool for web applications
 - First class TypeScript support out of the box
 - Focused to improve both developer and user experiences
 
-## How To
-
-1. Install `farfethed` and its peer dependencies
-
-with `pnpm`
-
-```sh
-pnpm install @farfecthed/core effector
-```
-
-with `yarn`
-
-```sh
-yarn add @farfecthed/core effector
-```
-
-with `npm`
-
-```sh
-npm install @farfecthed/core effector
-```
-
-2. Create a _Query_
-
-```ts
-const languageListQuery = createQuery({
-  handler: async () =>
-    fetch('https://api.salo.com/languages.json').then((res) => res.json()),
-});
-```
-
-3. Use _Query_ in the application
-
-```ts
-// view.ts
-
-// Subscribe on the received data
-languageListQuery.$data.watch((languages) => {
-  renderLanguageList(languages);
-});
-
-// Subscribe on the received error
-languageListQuery.$error.watch((error) => {
-  renderErrorScreen(error);
-});
-
-// Start execution
-languageListQuery.start();
-```
-
-4. You are gorgeous! A Query starts right after `start` call, when it has done, callback in `watch` will be executed with received data.
-
 ### Documentation
 
-Continue reading about Farfetched in the [documentation](./docs/README.md). It covers integration with the most popular UI-frameworks (such React, Solid.js and Vue.js), error handling, dependent Queries, more advanced contracts and other great tools.
+Continue reading about Farfetched in the [documentation](https://farfetched.pages.dev). It covers integration with the most popular UI-frameworks (such React and Solid), error handling, dependent queries, advanced contracts and other great tools.
 
 ## Maintains
 
