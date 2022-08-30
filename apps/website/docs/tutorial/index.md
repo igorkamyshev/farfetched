@@ -1,5 +1,9 @@
 # Tutorial
 
+:::warning
+Current version of Farfetched is not stable yet. Please, read [Releases policy](/statements/releases) before using it.
+:::
+
 ## Install
 
 Install `farfethed` and its peer dependencies
