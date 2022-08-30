@@ -18,11 +18,11 @@ export default {
       { icon: 'twitter', link: 'https://twitter.com/farfetched_dev' },
     ],
     // TODO: use my own search
-    algolia: {
-      appId: '8J64VVRP8K',
-      apiKey: 'a18e2f4cc5665f6602c5631fd868adfd',
-      indexName: 'vitepress',
-    },
+    // algolia: {
+    //   appId: '8J64VVRP8K',
+    //   apiKey: 'a18e2f4cc5665f6602c5631fd868adfd',
+    //   indexName: 'vitepress',
+    // },
     nav: [
       {
         text: 'Tutorial',
