@@ -13,6 +13,9 @@ hero:
       text: Get Started
       link: /tutorial/
     - theme: alt
+      text: Roadmap
+      link: /roadmap
+    - theme: alt
       text: View on GitHub
       link: https://github.com/igorkamyshev/farfetched
 
