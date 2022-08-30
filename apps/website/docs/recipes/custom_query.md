@@ -1,6 +1,6 @@
 # Custom Query creation
 
-[Query](/api/primitives/query.md) is a simple object with that stores some reactive primitives — [Event](https://effector.dev/docs/api/effector/event), [Effect](https://effector.dev/docs/api/effector/effect), and [Store](https://effector.dev/docs/api/effector/store). It means you can create Query not only by built-in factories but by your own. E.g. 👇
+[_Query_](/api/primitives/query.md) is a simple object with that stores some reactive primitives — [_Event_](https://effector.dev/docs/api/effector/event), [_Effect_](https://effector.dev/docs/api/effector/effect), and [_Store_](https://effector.dev/docs/api/effector/store). It means you can create Query not only by built-in factories but by your own. E.g. 👇
 
 ```ts
 function createAsyncStorageQuery({ storageKey }) {
@@ -19,9 +19,9 @@ function createAsyncStorageQuery({ storageKey }) {
 }
 ```
 
-> In this example, some [Effector](https://effector.dev) APIs were used to create [Query](/api/primitives/query) — `createEvent`, `createEffect`, `createStore`, `sample`.
+> In this example, some [Effector](https://effector.dev) APIs were used to create [_Query_](/api/primitives/query) — `createEvent`, `createEffect`, `createStore`, `sample`.
 
-Of course, it looks pretty hard, so Farfetched provides a special helper that aims to simplify creation of custom [Query](/api/primitives/query) factories — `createHeadlessQuery`. Let us rewrite provided example with this helper 👇
+Of course, it looks pretty hard, so Farfetched provides a special helper that aims to simplify creation of custom [_Query_](/api/primitives/query) factories — `createHeadlessQuery`. Let us rewrite provided example with this helper 👇
 
 ```ts
 function createAsyncStorageQuery({ storageKey }) {

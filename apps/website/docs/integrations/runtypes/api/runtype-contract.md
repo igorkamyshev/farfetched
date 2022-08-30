@@ -1,6 +1,6 @@
 ## `runtypeContract(runtype)`
 
-Creates a [Contract](/api/primitives/contract) based on given `Runtype`.
+Creates a [_Contract_](/api/primitives/contract) based on given `Runtype`.
 
 ```ts
 import { Record, Literal, Number, Vector } from 'runtypes';
@@ -23,7 +23,7 @@ const asteriodContarct = runtypeContract(Asteroid);
 
 ## `runtypeContract({ data, error })`
 
-Creates a [Contract](/api/primitives/contract) based on given data-`Runtype` and error-`Runtype`.
+Creates a [_Contract_](/api/primitives/contract) based on given data-`Runtype` and error-`Runtype`.
 
 ```ts
 import { Record, Null, Array, String } from 'runtypes';

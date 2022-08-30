@@ -1,6 +1,6 @@
 # useQuery
 
-Subscribes on [Query](/api/primitives/query), returns its state and re-render the component when the [Query](/api/primitives/query) changes.
+Subscribes on [_Query_](/api/primitives/query), returns its state and re-render the component when the [_Query_](/api/primitives/query) changes.
 
 ```tsx
 function UserProfile() {
