@@ -139,9 +139,21 @@ export default {
           text: 'How to',
           items: [
             { text: 'Server side rendering', link: '/recipes/ssr' },
-            { text: 'How not to use Fetch API', link: '/recipes/no_fetch' },
-            { text: 'Custom Query creation', link: '/recipes/custom_query' },
             { text: 'Testing', link: '/recipes/testing' },
+            {
+              text: 'Custom Query',
+              items: [
+                { text: 'How not to use Fetch API', link: '/recipes/no_fetch' },
+                {
+                  text: 'Custom Query creation',
+                  link: '/recipes/custom_query',
+                },
+                {
+                  text: 'Your own GraphQL Query',
+                  link: '/recipes/graphql_query',
+                },
+              ],
+            },
           ],
         },
       ],
