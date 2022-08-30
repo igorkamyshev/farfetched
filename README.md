@@ -1,7 +1,7 @@
 # Farfetched
 
 <img align="right" width="174" height="180" title="Farfetched logotype"
-     src="./docs/assets/Farfetched.svg">
+     src="./apps/website/docs/public/logo.svg">
 
 The advanced data fetching tool for web applications
 
