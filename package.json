@@ -15,10 +15,12 @@
     "changes": "changeset"
   },
   "devDependencies": {
+    "@algolia/client-search": "^4.14.2",
     "@babel/core": "^7.18.6",
     "@babel/preset-typescript": "~7.18.6",
     "@changesets/cli": "^2.24.1",
     "@nrwl/cli": "14.4.1",
+    "@nrwl/cypress": "14.4.2",
     "@nrwl/devkit": "^14.4.2",
     "@nrwl/eslint-plugin-nx": "14.4.1",
     "@nrwl/jest": "14.4.1",
@@ -58,6 +60,8 @@
     "ts-node": "~10.8.0",
     "tsd": "^0.22.0",
     "typescript": "~4.7.2",
+    "vitepress": "1.0.0-alpha.10",
+    "vue": "^3.2.37",
     "whatwg-fetch": "^3.6.2"
   },
   "dependencies": {
