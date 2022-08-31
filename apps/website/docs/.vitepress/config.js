@@ -87,6 +87,7 @@ export default {
               text: 'Get started',
               link: '/integrations/react/',
             },
+            { text: 'Suspense', link: '/integrations/react/suspense' },
             {
               text: 'API',
               items: [
