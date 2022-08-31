@@ -9,9 +9,10 @@ function UserProfile() {
   return (
     <Suspense fallback={<p>Loading...</p>}>
       <ErrorBoundary fallback={<p>User could not be shown</p>}>
-      <section>
-        <p>{user()?.name}</p>
-        <p>{user()?.email}</p>
+        <section>
+          <p>{user()?.name}</p>
+          <p>{user()?.email}</p>
+        </section>
       </ErrorBoundary>
     </Suspense>
   );
