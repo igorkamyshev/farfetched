@@ -60,7 +60,3 @@ Farfetched is under development now, before the first stable release we are goin
 
 - Add-on `@farfetched/rest`
   - `createREST` — return set of Queries and Mutations for typical REST API
-
-### v.0.11
-
-- Add Suspense support to `@farfetched/react`
