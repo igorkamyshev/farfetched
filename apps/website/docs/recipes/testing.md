@@ -1,6 +1,8 @@
 # Unit tests
 
-> For the best developer experience, it is better to install [babel-plugin](https://effector.dev/docs/api/effector/babel-plugin) in your test environment.
+::: info
+For better testing experience, we recommend reading article about [SIDs](/recipes/sids)
+:::
 
 Farfetched offers a couple of features to simplify writing unit tests.
 
