@@ -51,7 +51,7 @@ export default {
     sidebar: {
       '/tutorial': [
         {
-          text: 'Basic tutorial',
+          text: 'Thorough Tutorial',
           collapsible: true,
           items: [
             { text: 'Get started', link: '/tutorial/' },
