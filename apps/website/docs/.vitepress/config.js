@@ -49,6 +49,17 @@ export default {
       },
     ],
     sidebar: {
+      '/tutorial': [
+        {
+          text: 'Basic tutorial',
+          collapsible: true,
+          items: [
+            { text: 'Get started', link: '/tutorial/' },
+            { text: 'Installation', link: '/tutorial/install' },
+            { text: 'Query', link: '/tutorial/query' },
+          ],
+        },
+      ],
       '/api': [
         {
           text: 'Factories',
