@@ -102,7 +102,7 @@ Now just modify your `.swcrc` config to enable installed plugin:
 ```
 
 :::info
-Read more about `@effector/babel-plugin` configuration in the [plugin documentation](https://github.com/effector/swc-plugin).
+Read more about `@effector/swc-plugin` configuration in the [plugin documentation](https://github.com/effector/swc-plugin).
 :::
 
 ### Deep dive
