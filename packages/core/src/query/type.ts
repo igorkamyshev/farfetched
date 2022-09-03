@@ -1,4 +1,4 @@
-import { Effect, Event, Store } from 'effector';
+import { Effect, Event, EventPayload, Store } from 'effector';
 import { Serialize } from '../serialization/type';
 
 import { FetchingStatus } from '../status/type';
@@ -92,8 +92,23 @@ interface Query<Params, Data, Error> {
   };
 }
 
+type QueryData<Q extends Query<any, any, any>> = EventPayload<
+  Q['finished']['success']
+>['data'];
+type QueryError<Q extends Query<any, any, any>> = EventPayload<
+  Q['finished']['failure']
+>['error'];
+type QueryParams<Q extends Query<any, any, any>> = EventPayload<Q['start']>;
+
 function isQuery(value: any): value is Query<any, any, any> {
   return value?.__?.query === QuerySymbol;
 }
 
-export { type Query, QuerySymbol, isQuery };
+export {
+  type Query,
+  QuerySymbol,
+  isQuery,
+  type QueryData,
+  type QueryError,
+  type QueryParams,
+};
