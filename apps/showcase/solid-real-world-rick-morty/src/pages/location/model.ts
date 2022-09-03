@@ -34,8 +34,8 @@ sample({
 });
 
 connectQuery({
-  source: { location: locationQuery },
-  fn({ location }) {
+  source: locationQuery,
+  fn(location) {
     return { params: { ids: location.residents.map(urlToId) } };
   },
   target: residentsQuery,
