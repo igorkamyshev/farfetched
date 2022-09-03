@@ -188,7 +188,7 @@ personOne.$name.sid; // gre24f|ffds2
 personTwo.$name.sid; // lpefgd|ffds2
 ```
 
-## How `withFactory` works
+### How `withFactory` works
 
 `withFactory` is a helper that allows to create unique `sid`-s for inner units. It is a function that accepts an object with `sid` and `fn` properties. `sid` is a unique identifier of the factory, and `fn` is a function that creates units.
 
