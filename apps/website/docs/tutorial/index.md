@@ -6,10 +6,6 @@ Current version of Farfetched is not stable yet. Please, read [Releases policy](
 
 Farfetched is a **missing data-fetching library for frontend**, in more technical terms, it makes fetching, caching, synchronizing and updating server state in your web applications a breeze.
 
-## Motivation
-
-## Showcase
-
 ## What's next?
 
 - Learn Farfetched at your own pace with our amazingly [Thorough Tutorial](/tutorial/install)
