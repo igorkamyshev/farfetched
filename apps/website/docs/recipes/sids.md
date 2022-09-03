@@ -140,9 +140,7 @@ So, the second point is about custom factories. For example, we have a custom fa
 function nameStore() {
   const $name = createStore(null);
 
-  const $hasName = $name.map(Boolean);
-
-  return { $name, $hasName };
+  return { $name };
 }
 
 const personOne = nameStore();
