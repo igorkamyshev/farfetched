@@ -1,6 +1,7 @@
 import { combine, EventPayload, merge, sample } from 'effector';
-import { combineEvents } from 'patronum';
+import { every } from 'patronum';
 
+import { postpone } from '../misc/postpone';
 import { Query } from '../query/type';
 
 /**
@@ -43,12 +44,26 @@ function connectQuery<
     [index in keyof Sources]: EventPayload<
       Sources[index]['finished']['success']
     >['data'];
-  }) => EventPayload<Target['start']>;
+  }) => { params: EventPayload<Target['start']> };
 }): void {
-  const targets = Array.isArray(target) ? target : [target];
+  // Normalize
+  const children = Array.isArray(target) ? target : [target];
+  const parents = Object.values(source);
+  const parentsEntries = Object.entries(source);
 
-  const $normalizedSource = combine(
-    Object.entries(source).reduce(
+  // Helper untis
+  const anyParentStarted = merge(parents.map((query) => query.start));
+  const anyParentSuccessfullyFinished = merge(
+    parents.map((query) => query.finished.success)
+  );
+
+  const $allParentsHaveData = every({
+    stores: parents.map((query) => query.$data),
+    predicate: (data) => data !== null,
+  });
+
+  const $allParentDataDictionary = combine(
+    parentsEntries.reduce(
       (prev, [key, query]) => ({ ...prev, [key]: query.$data }),
       {} as {
         [index in keyof Sources]: Sources[index]['$data'];
@@ -56,27 +71,25 @@ function connectQuery<
     )
   );
 
-  const anyStart = merge(Object.values(source).map((query) => query.start));
-
+  // Relations
   sample({
-    clock: anyStart,
+    clock: anyParentStarted,
     fn() {
       return true;
     },
-    target: targets.map((t) => t.$stale),
-  });
-
-  const allLoadSuccess = combineEvents({
-    events: Object.values(source).map((query) => query.finished.success),
+    target: children.map((t) => t.$stale),
   });
 
   sample({
-    clock: allLoadSuccess,
-    source: $normalizedSource,
-    fn(data: any) {
+    clock: postpone({
+      clock: anyParentSuccessfullyFinished,
+      until: $allParentsHaveData,
+    }),
+    source: $allParentDataDictionary,
+    fn(data) {
       return fn?.(data)?.params ?? null;
     },
-    target: targets.map((t) => t.start),
+    target: children.map((t) => t.start),
   });
 }
 

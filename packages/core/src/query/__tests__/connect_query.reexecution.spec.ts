@@ -99,7 +99,7 @@ describe('remote_data/connect_query', () => {
     await Promise.all([allSettled(languagesQ.start, { scope, params: 2 })]);
 
     expect(childWatcher.listeners.onSuccess).toHaveBeenCalledTimes(2);
-    expect(childWatcher.listeners.onSuccess).toHaveBeenCalledWith({
+    expect(childWatcher.listeners.onSuccess).toHaveBeenNthCalledWith(2, {
       data: 'content_2',
       params: { ids: 'block_1', language: 'language_2' },
     });
