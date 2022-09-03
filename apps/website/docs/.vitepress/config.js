@@ -4,6 +4,12 @@ export default {
   description: 'The advanced data fetching tool for web applications.',
   lastUpdated: true,
   outDir: '../../../dist/apps/website',
+  head: [
+    ['link', { rel: 'icon', href: '/favicon.ico', sizes: 'any' }],
+    ['link', { rel: 'icon', href: '/icon.svg', type: 'image/svg+xml' }],
+    ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
+    ['link', { rel: 'manifest', href: '/manifest.webmanifest' }],
+  ],
   themeConfig: {
     siteTitle: 'Farfetched',
     logo: '/logo.svg',
