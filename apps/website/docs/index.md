@@ -15,9 +15,6 @@ hero:
     - theme: alt
       text: Roadmap
       link: /roadmap
-    - theme: alt
-      text: View on GitHub
-      link: https://github.com/igorkamyshev/farfetched
 
 features:
   - icon: ☄️
