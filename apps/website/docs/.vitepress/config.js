@@ -56,7 +56,16 @@ export default {
           items: [
             { text: 'Get started', link: '/tutorial/' },
             { text: 'Installation', link: '/tutorial/install' },
-            { text: 'Query', link: '/tutorial/query' },
+            {
+              text: 'Query',
+              items: [
+                { text: 'Intro to Queries', link: '/tutorial/query' },
+                {
+                  text: 'Dependent Queries',
+                  link: '/tutorial/dependent_queries',
+                },
+              ],
+            },
           ],
         },
       ],
