@@ -10,7 +10,7 @@ Let's discuss how this problem solved by other state managers.
 
 ### Single store
 
-In the state manager with single store (e.g. Redux), this problem does not exist at all. It is a single store, which can be serialized and deserialized without any additional information. Some tools offer single store like solutions (MobX), some does not try to solve this issue at all (Recoil, Zustand).
+In the state manager with single store (e.g. Redux), this problem does not exist at all. It is a single store, which can be serialized and deserialized without any additional information.
 
 :::info
 Actually, single store forces you to create unique names of each part of it implicitly. In any object you won't be able to create duplicate keys, so the path to store slice is a unique identifier of this slice.
@@ -49,7 +49,7 @@ It's great that you do not need any additional tools for serialization and deser
 
 ### Multi stores
 
-Unfortunately, state managers that built around idea of multi stores do not solve this problem good.
+Unfortunately, state managers that built around idea of multi stores do not solve this problem good. Some tools offer single store like solutions (MobX), some does not try to solve this issue at all (Recoil, Zustand).
 
 :::info
 E.g., the common pattern to solve serialization problem in MobX is [Root Store Pattern](https://dev.to/ivandotv/mobx-root-store-pattern-with-react-hooks-318d) which is destroying the whole idea of multi stores.
