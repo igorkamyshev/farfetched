@@ -16,10 +16,6 @@ Read more about `effector/babel-plugin` configuration in the [Effector's documen
 
 [SWC](https://swc.rs) is a blazing fast alternative to Babel. If you are using it, you can install `@effector/swc-plugin` to get the same DX as with Babel.
 
-:::tip
-[Vite](https://vitejs.dev) uses SWC under the hood, if you use Vite consider using SWC plugin instead of Babel plugin.
-:::
-
 with `pnpm`
 
 ```sh
