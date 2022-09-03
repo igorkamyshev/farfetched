@@ -42,8 +42,8 @@ Now, we have to connect these [Queries](/api/primitives/query) to establish stat
 
 ```ts
 connectQuery({
-  source: { character: characterQuery },
-  fn({ character }) {
+  source: characterQuery,
+  fn(character) {
     return { params: { originUrl: character.origin.url } };
   },
   target: originQuery,
@@ -104,8 +104,8 @@ To determine that data in the [Query](/api/primitives/query) is outdated (e.g. b
 
 ```ts
 connectQuery({
-  source: { character: characterQuery },
-  fn({ character }) {
+  source: characterQuery,
+  fn(character) {
     return { params: { originUrl: character.origin.url } };
   },
   target: [originQuery, originDetailsQuery],
@@ -118,7 +118,7 @@ All children [Queries](/api/primitives/query) have to have the same parameters i
 
 ## Multiple parents
 
-`connectQuery` accepts an object with any amount named parents as well.
+`connectQuery` accepts an object with any amount of named parents as well.
 
 ```ts
 connectQuery({
@@ -138,7 +138,7 @@ Sometimes, children [Queries](/api/primitives/query) don't need any parameters. 
 
 ```ts
 connectQuery({
-  source: { character: characterQuery },
+  source: characterQuery,
   target: originQuery,
 });
 ```

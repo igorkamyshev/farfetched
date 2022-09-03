@@ -38,9 +38,9 @@ const locationQuery = createJsonQuery({
 
 connectQuery({
   // Right after characterQuery is successfully finished
-  source: { character: characterQuery },
+  source: characterQuery,
   // get location URL from it
-  fn({ character }) {
+  fn(character) {
     return { params: { locationUrl: character.location.url } };
   },
   // and start locationQuery with it

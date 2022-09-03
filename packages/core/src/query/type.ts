@@ -3,6 +3,8 @@ import { Serialize } from '../serialization/type';
 
 import { FetchingStatus } from '../status/type';
 
+const QuerySymbol = Symbol('Query');
+
 interface Query<Params, Data, Error> {
   /**
    * The reactive value of the latest received data.
@@ -86,7 +88,12 @@ interface Query<Params, Data, Error> {
        */
       serialize: Serialize<Data>;
     };
+    query: typeof QuerySymbol;
   };
 }
 
-export { type Query };
+function isQuery(value: any): value is Query<any, any, any> {
+  return value?.__?.query === QuerySymbol;
+}
+
+export { type Query, QuerySymbol, isQuery };

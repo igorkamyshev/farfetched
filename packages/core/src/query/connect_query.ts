@@ -2,7 +2,7 @@ import { combine, EventPayload, merge, sample } from 'effector';
 import { every } from 'patronum';
 
 import { postpone } from '../misc/postpone';
-import { Query } from '../query/type';
+import { isQuery, Query } from '../query/type';
 
 /**
  * Target query will be executed after all sources queries successful end.
@@ -11,6 +11,30 @@ function connectQuery<
   Sources extends Record<string, Query<any, any, any>>,
   Target extends Query<void, any, any>
 >(config: { source: Sources; target: Target | Target[] }): void;
+
+/**
+ * Target query will be executed after source query successful end.
+ */
+function connectQuery<
+  Source extends Query<void, any, any>,
+  Target extends Query<void, any, any>
+>(config: { source: Source; target: Target | Target[] }): void;
+
+/**
+ * Target query will be executed after all sources queries successful end.
+ *
+ * Data of source queries transforms by `fn` and passes to target query as a params.
+ */
+function connectQuery<
+  Source extends Query<any, any, any>,
+  Target extends Query<any, any, any>
+>(_config: {
+  source: Source;
+  fn: (sources: EventPayload<Source['finished']['success']>['data']) => {
+    params: EventPayload<Target['start']>;
+  };
+  target: Target | Target[];
+}): void;
 
 /**
  * Target query will be executed after all sources queries successful end.
@@ -46,10 +70,15 @@ function connectQuery<
     >['data'];
   }) => { params: EventPayload<Target['start']> };
 }): void {
-  // Normalize
+  // Settings
+  const singleParentMode = isQuery(source);
+
+  // Participants
   const children = Array.isArray(target) ? target : [target];
-  const parents = Object.values(source);
-  const parentsEntries = Object.entries(source);
+  const parents = singleParentMode ? [source] : Object.values(source);
+  const parentsEntries: [string, Query<any, any, any>][] = singleParentMode
+    ? [['singleParent', source as Query<any, any, any>]]
+    : Object.entries(source);
 
   // Helper untis
   const anyParentStarted = merge(parents.map((query) => query.start));
@@ -62,14 +91,16 @@ function connectQuery<
     predicate: (data) => data !== null,
   });
 
-  const $allParentDataDictionary = combine(
-    parentsEntries.reduce(
-      (prev, [key, query]) => ({ ...prev, [key]: query.$data }),
-      {} as {
-        [index in keyof Sources]: Sources[index]['$data'];
-      }
-    )
-  );
+  const $allParentDataDictionary = singleParentMode
+    ? source.$data
+    : combine(
+        parentsEntries.reduce(
+          (prev, [key, query]) => ({ ...prev, [key]: query.$data }),
+          {} as {
+            [index in keyof Sources]: Sources[index]['$data'];
+          }
+        )
+      );
 
   // Relations
   sample({
@@ -86,7 +117,7 @@ function connectQuery<
       until: $allParentsHaveData,
     }),
     source: $allParentDataDictionary,
-    fn(data) {
+    fn(data: any) {
       return fn?.(data)?.params ?? null;
     },
     target: children.map((t) => t.start),

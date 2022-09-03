@@ -28,8 +28,8 @@ const originQuery = createJsonQuery({
 });
 
 connectQuery({
-  source: { character: characterQuery },
-  fn({ character }) {
+  source: characterQuery,
+  fn(character) {
     return { params: { id: urlToId(character.origin.url) } };
   },
   target: originQuery,
@@ -45,8 +45,8 @@ const currentLocationQuery = createJsonQuery({
 });
 
 connectQuery({
-  source: { character: characterQuery },
-  fn({ character }) {
+  source: characterQuery,
+  fn(character) {
     return { params: { id: urlToId(character.location.url) } };
   },
   target: currentLocationQuery,
@@ -62,8 +62,8 @@ const characterEpisodesQuery = createJsonQuery({
 });
 
 connectQuery({
-  source: { character: characterQuery },
-  fn({ character }) {
+  source: characterQuery,
+  fn(character) {
     return { params: { ids: character.episode.map(urlToId) } };
   },
   target: characterEpisodesQuery,
