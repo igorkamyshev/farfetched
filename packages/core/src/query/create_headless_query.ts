@@ -25,7 +25,7 @@ import { checkValidationResult } from '../validation/check_validation_result';
 import { Validator } from '../validation/type';
 import { unwrapValidationResult } from '../validation/unwrap_validation_result';
 import { validValidator } from '../validation/valid_validator';
-import { Query } from './type';
+import { Query, QuerySymbol } from './type';
 
 interface SharedQueryFactoryConfig<Data> {
   name?: string;
@@ -254,7 +254,7 @@ function createHeadlessQuery<
     $pending,
     $enabled,
     $stale,
-    __: { executeFx, meta: { serialize } },
+    __: { executeFx, meta: { serialize }, query: QuerySymbol },
   };
 }
 
