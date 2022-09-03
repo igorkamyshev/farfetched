@@ -26,8 +26,8 @@ const charactersInEpisodeQuery = createJsonQuery({
 });
 
 connectQuery({
-  source: { episode: episodeQuery },
-  fn({ episode }) {
+  source: episodeQuery,
+  fn(episode) {
     return { params: { ids: episode.characters.map(urlToId) } };
   },
   target: charactersInEpisodeQuery,
