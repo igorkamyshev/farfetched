@@ -43,68 +43,8 @@ Actually, that is all what you need to start, but consider installing one of the
 
 For some advanced usage, like [writing tests](/recipes/testing) and [server-side rendering](/recipes/ssr), Farfetched requires a few code transformations. You can write it by hands, but it is a boring job that you can forward to a machine. Effector's ecosystem provides a few tools to help you with that.
 
-### Babel plugin
-
-If your project already uses [Babel](https://babeljs.io/), you do not have to install any additional packages, just modify your Babel config with the following plugin:
-
-```json
-{
-  "plugins": [["effector/babel-plugin", { "factories": "@farfetched/core" }]]
-}
-```
-
-:::info
-Read more about `effector/babel-plugin` configuration in the [Effector's documentation](https://effector.now.sh/docs/api/effector/babel-plugin).
-:::
-
-### SWC plugin
-
-[SWC](https://swc.rs) is a blazing fast alternative to Babel. If you are using it, you can install `@effector/swc-plugin` to get the same DX as with Babel.
-
-:::tip
-[Vite](https://vitejs.dev) uses SWC under the hood, so you use Vite consider using SWC plugin instead of Babel plugin.
-:::
-
-with `pnpm`
-
-```sh
-pnpm install @effector/swc-plugin @swc/core
-```
-
-with `yarn`
-
-```sh
-yarn add @effector/swc-plugin @swc/core
-```
-
-with `npm`
-
-```sh
-npm install @effector/swc-plugin @swc/core
-```
-
-Now just modify your `.swcrc` config to enable installed plugin:
-
-```json
-{
-  "$schema": "https://json.schemastore.org/swcrc",
-  "jsc": {
-    "experimental": {
-      "plugins": [
-        "@effector/swc-plugin",
-        {
-          "factories": ["@farfetched/core"]
-        }
-      ]
-    }
-  }
-}
-```
-
-:::info
-Read more about `@effector/swc-plugin` configuration in the [plugin documentation](https://github.com/effector/swc-plugin).
-:::
+<!--@include: ../shared/sids_plugins.md-->
 
 ### Deep dive
 
-If you are interested in how code transformations works under the hood and why they are required for some usecases, you can dive into [advanced article about SIDs](/recipes/sids).
+If you are interested in how code transformations works under the hood and why they are required for some use cases, you can dive into [advanced article about SIDs](/recipes/sids).
