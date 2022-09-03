@@ -197,6 +197,7 @@ export default {
               text: 'Render as you fetch',
               link: '/statements/render_as_you_fetch',
             },
+            { text: 'Testing', link: '/statements/tests' },
             { text: 'Effector', link: '/statements/effector' },
           ],
         },
