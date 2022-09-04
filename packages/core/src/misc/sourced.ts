@@ -1,4 +1,4 @@
-import { createStore, Event, is, sample, Store } from 'effector';
+import { combine, createStore, Event, is, sample, Store } from 'effector';
 import { combineEvents } from 'patronum';
 
 // -- Main case --
@@ -21,38 +21,70 @@ function normalizeSourced<Data, Result, Source>(config: {
   clock: Event<Data>;
 }): Store<Result>;
 
+function normalizeSourced<Data, Result, Source>(config: {
+  field: SourcedField<Data, Result, Source>;
+  source: Store<Data>;
+}): Store<Result>;
+
 function normalizeSourced<Data, Result, Source>({
   field,
   clock,
+  source,
 }: {
   field: any;
-  clock: Event<Data>;
+  clock?: Event<Data>;
+  source?: Store<Data>;
 }): Store<Result | null> {
-  const $target = createStore<any>(null, { serialize: 'ignore' });
+  let $target = createStore<any>(null, { serialize: 'ignore' });
 
-  if (!field) {
-    // do nothing
-  } else if (is.store(field)) {
-    const $storeField = field as Store<Result>;
+  if (clock) {
+    if (!field) {
+      // do nothing
+    } else if (is.store(field)) {
+      const $storeField = field as Store<Result>;
 
     sample({ clock, source: $storeField, target: $target });
   } else if (field.source && field.fn) {
     const callbackField = field as CallbackWithSource<Data, Result, Source>;
 
-    sample({
-      clock,
-      source: callbackField.source,
-      fn: (source, params) => callbackField.fn(params, source),
-      target: $target,
-    });
-  } else if (typeof field === 'function') {
-    const callbackField = field as Callback<Data, Result>;
+      sample({
+        clock,
+        source: callbackField.source,
+        fn: (source, params) => callbackField.fn(params, source),
+        target: $target,
+      });
+    } else if (typeof field === 'function') {
+      const callbackField = field as Callback<Data, Result>;
 
-    sample({ clock, fn: callbackField, target: $target });
-  } else {
-    const valueField = field as Result;
+      sample({ clock, fn: callbackField, target: $target });
+    } else {
+      const valueField = field as Result;
 
-    sample({ clock, fn: () => valueField, target: $target });
+      sample({ clock, fn: () => valueField, target: $target });
+    }
+  }
+
+  if (source) {
+    const $source = source as Store<Data>;
+    if (!field) {
+      // do nothing
+    } else if (is.store(field)) {
+      const $storeField = field as Store<Result>;
+
+      $target = $storeField;
+    } else if (field.source && field.fn) {
+      const callbackField = field as CallbackWithSource<Data, Result, Source>;
+
+      $target = combine($source, callbackField.source, callbackField.fn);
+    } else if (typeof field === 'function') {
+      const callbackField = field as Callback<Data, Result>;
+
+      $target = $source.map(callbackField);
+    } else {
+      const valueField = field as Result;
+
+      $target = createStore(valueField, { serialize: 'ignore' });
+    }
   }
 
   return $target;
@@ -119,6 +151,11 @@ function reduceTwoArgs<Data, Params, Result, Source = void>({
 // -- Static ot reactive case
 
 type StaticOrReactive<T> = T | Store<Exclude<T, undefined>>;
+
+function normalizeStaticOrReactive<T>(v: StaticOrReactive<T>): Store<T>;
+function normalizeStaticOrReactive<T>(
+  v?: StaticOrReactive<T>
+): Store<Exclude<T, undefined> | null>;
 
 function normalizeStaticOrReactive<T>(
   v?: StaticOrReactive<T>
