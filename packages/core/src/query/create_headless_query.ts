@@ -13,7 +13,7 @@ import { invalidDataError } from '../errors/create_error';
 import { InvalidDataError } from '../errors/type';
 import {
   normalizeSourced,
-  TwoArgsSourcedField,
+  TwoArgsDynamicallySourcedField,
   reduceTwoArgs,
   StaticOrReactive,
   normalizeStaticOrReactive,
@@ -58,7 +58,7 @@ function createHeadlessQuery<
   serialize,
 }: {
   contract: Contract<Response, ContractData, ContractError>;
-  mapData: TwoArgsSourcedField<ContractData, Params, MappedData, MapDataSource>;
+  mapData: TwoArgsDynamicallySourcedField<ContractData, Params, MappedData, MapDataSource>;
   validate?: Validator<ContractData, Params, ValidationSource>;
 } & SharedQueryFactoryConfig<MappedData>): Query<
   Params,

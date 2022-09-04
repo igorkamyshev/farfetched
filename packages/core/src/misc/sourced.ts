@@ -70,7 +70,7 @@ type CallbackTwoArgsWithSource<Data, Params, Result, Source> = {
   fn: (data: Data, params: Params, source: Source) => Result;
 };
 
-type TwoArgsSourcedField<Data, Params, Result, Source> =
+type TwoArgsDynamicallySourcedField<Data, Params, Result, Source> =
   | CallbackTwoArgs<Data, Params, Result>
   | CallbackTwoArgsWithSource<Data, Params, Result, Source>;
 
@@ -80,7 +80,7 @@ type ReducedField<Data, Params, Result, Source> = {
 };
 
 function reduceTwoArgs<Data, Params, Result, Source = void>(config: {
-  field: TwoArgsSourcedField<Data, Params, Result, Source>;
+  field: TwoArgsDynamicallySourcedField<Data, Params, Result, Source>;
   clock: { data: Event<Data>; params: Event<Params> };
 }): ReducedField<Data, Params, Result, Source>;
 
@@ -143,7 +143,7 @@ function normalizeStaticOrReactive<T>(
 export {
   type SourcedField,
   normalizeSourced,
-  type TwoArgsSourcedField,
+  type TwoArgsDynamicallySourcedField,
   reduceTwoArgs,
   type StaticOrReactive,
   normalizeStaticOrReactive,

@@ -4,7 +4,7 @@ import { Contract } from '../contract/type';
 import { createJsonApiRequest, Json } from '../fetch/json';
 import { ApiRequestError, HttpMethod } from '../fetch/api';
 import {
-  TwoArgsSourcedField,
+  TwoArgsDynamicallySourcedField,
   SourcedField,
   normalizeSourced,
 } from '../misc/sourced';
@@ -96,7 +96,7 @@ function createJsonQuery<
   > & {
     response: {
       contract: Contract<unknown, Data, Error>;
-      mapData: TwoArgsSourcedField<Data, Params, TransformedData, DataSource>;
+      mapData: TwoArgsDynamicallySourcedField<Data, Params, TransformedData, DataSource>;
       validate?: Validator<TransformedData, Params, ValidationSource>;
     };
   }
@@ -149,7 +149,7 @@ function createJsonQuery<
   > & {
     response: {
       contract: Contract<unknown, Data, Error>;
-      mapData: TwoArgsSourcedField<Data, void, TransformedData, DataSource>;
+      mapData: TwoArgsDynamicallySourcedField<Data, void, TransformedData, DataSource>;
       validate?: Validator<TransformedData, void, ValidationSource>;
     };
   }

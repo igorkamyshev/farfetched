@@ -1,8 +1,8 @@
-import { TwoArgsSourcedField } from '../misc/sourced';
+import { TwoArgsDynamicallySourcedField } from '../misc/sourced';
 
 type ValidationResult = boolean | string | string[];
 
-type Validator<Data, Params, ValidationSource> = TwoArgsSourcedField<
+type Validator<Data, Params, ValidationSource> = TwoArgsDynamicallySourcedField<
   Data,
   Params,
   ValidationResult,

@@ -9,7 +9,7 @@ import { InvalidConfigException } from '../misc/config';
 import { Contract } from '../contract/type';
 import { unkownContract } from '../contract/unkown_contract';
 import { identity } from '../misc/identity';
-import { TwoArgsSourcedField } from '../misc/sourced';
+import { TwoArgsDynamicallySourcedField } from '../misc/sourced';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
 
@@ -54,7 +54,7 @@ function createQuery<
 >(
   config: {
     effect: Effect<Params, Response, Error>;
-    mapData: TwoArgsSourcedField<Response, Params, MappedData, MapDataSource>;
+    mapData: TwoArgsDynamicallySourcedField<Response, Params, MappedData, MapDataSource>;
     validate?: Validator<MappedData, Params, ValidationSource>;
   } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error>;
@@ -73,7 +73,7 @@ function createQuery<
   config: {
     effect: Effect<Params, Response, Error>;
     contract: Contract<Response, ContractData, ContractError>;
-    mapData: TwoArgsSourcedField<
+    mapData: TwoArgsDynamicallySourcedField<
       ContractData,
       Params,
       MappedData,
