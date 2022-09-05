@@ -43,9 +43,9 @@ function normalizeSourced<Data, Result, Source>({
     } else if (is.store(field)) {
       const $storeField = field as Store<Result>;
 
-    sample({ clock, source: $storeField, target: $target });
-  } else if (field.source && field.fn) {
-    const callbackField = field as CallbackWithSource<Data, Result, Source>;
+      sample({ clock, source: $storeField, target: $target });
+    } else if (field.source && field.fn) {
+      const callbackField = field as CallbackWithSource<Data, Result, Source>;
 
       sample({
         clock,
