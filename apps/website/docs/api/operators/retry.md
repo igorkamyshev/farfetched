@@ -20,8 +20,12 @@ Config fields:
 
 You can use the following delays:
 
-- `lineralDelay(base)`
-- `exponentialDelay(base)`
+- `lineralDelay(base, opts)`
+- `exponentialDelay(base, opts)`
+
+Options:
+
+- `randomize.spread`: _number_ with a randomization spread, defaults to `0`
 
 ## Showcases
 
