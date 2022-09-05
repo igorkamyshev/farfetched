@@ -74,10 +74,7 @@ function retry<
         source: normalizeSourced(
           reduceTwoArgs({
             field: mapParams ?? identity<QueryParams<Q>>,
-            clock: {
-              data: planNextAttempt.map(({ params }) => params),
-              params: planNextAttempt.map(({ meta }) => meta),
-            },
+            clock: planNextAttempt.map(({ params, meta }) => [params, meta]),
           })
         ),
       }) as Event<any>, // TODO: why types is not inferred correctly?

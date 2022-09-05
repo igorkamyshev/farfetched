@@ -164,38 +164,29 @@ describe('normalizeSourced (with source)', () => {
 
 describe('reduceTwoArgs', () => {
   test('handle callback', async () => {
-    const clockData = createEvent<string>();
-    const clockParams = createEvent<string>();
+    const clock = createEvent<[string, string]>();
 
     const $normalized = normalizeSourced(
       reduceTwoArgs({
         field: (data, params) => data + params,
-        clock: { data: clockData, params: clockParams },
+        clock,
       })
     );
 
     const scope = fork();
 
-    await allSettled(clockData, { scope, params: 'FIRST' });
-
-    // Before clockParams call
     expect(scope.getState($normalized)).toBeNull();
-
-    await allSettled(clockParams, { scope, params: 'params' });
-
-    // After all clocks called
+    await allSettled(clock, { scope, params: ['FIRST', 'params'] });
     expect(scope.getState($normalized)).toBe('FIRSTparams');
 
-    await allSettled(clockData, { scope, params: 'SECOND' });
-    await allSettled(clockParams, { scope, params: 'other' });
+    await allSettled(clock, { scope, params: ['SECOND', 'other'] });
     expect(scope.getState($normalized)).toBe('SECONDother');
   });
 
   test('handle callback with source', async () => {
     const $source = createStore('source');
 
-    const clockData = createEvent<string>();
-    const clockParams = createEvent<string>();
+    const clock = createEvent<[string, string]>();
 
     const $normalized = normalizeSourced(
       reduceTwoArgs({
@@ -203,19 +194,17 @@ describe('reduceTwoArgs', () => {
           source: $source,
           fn: (data, params, source) => data + params + source,
         },
-        clock: { data: clockData, params: clockParams },
+        clock,
       })
     );
 
     const scope = fork();
 
-    await allSettled(clockData, { scope, params: 'FIRST' });
-    await allSettled(clockParams, { scope, params: 'params' });
+    await allSettled(clock, { scope, params: ['FIRST', 'params'] });
     expect(scope.getState($normalized)).toBe('FIRSTparamssource');
 
     await allSettled($source, { scope, params: 'new source' });
-    await allSettled(clockData, { scope, params: 'SECOND' });
-    await allSettled(clockParams, { scope, params: 'other' });
+    await allSettled(clock, { scope, params: ['SECOND', 'other'] });
     expect(scope.getState($normalized)).toBe('SECONDothernew source');
   });
 });

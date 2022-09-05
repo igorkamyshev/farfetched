@@ -1,5 +1,4 @@
 import { combine, createStore, Event, is, sample, Store } from 'effector';
-import { combineEvents } from 'patronum';
 
 // -- Main case --
 
@@ -92,58 +91,62 @@ function normalizeSourced<Data, Result, Source>({
 
 // -- Extended case --
 
-type CallbackTwoArgs<Data, Params, Result> = (
-  data: Data,
-  prams: Params
+type CallbackTwoArgs<FirstData, SecondData, Result> = (
+  arg1: FirstData,
+  arg2: SecondData
 ) => Result;
 
-type CallbackTwoArgsWithSource<Data, Params, Result, Source> = {
+type CallbackTwoArgsWithSource<FirstData, SecondData, Result, Source> = {
   source: Store<Source>;
-  fn: (data: Data, params: Params, source: Source) => Result;
+  fn: (arg1: FirstData, arg2: SecondData, source: Source) => Result;
 };
 
-type TwoArgsDynamicallySourcedField<Data, Params, Result, Source> =
-  | CallbackTwoArgs<Data, Params, Result>
-  | CallbackTwoArgsWithSource<Data, Params, Result, Source>;
+type TwoArgsDynamicallySourcedField<FirstData, SecondData, Result, Source> =
+  | CallbackTwoArgs<FirstData, SecondData, Result>
+  | CallbackTwoArgsWithSource<FirstData, SecondData, Result, Source>;
 
-type ReducedField<Data, Params, Result, Source> = {
-  field: SourcedField<{ data: Data; params: Params }, Result, Source>;
-  clock: Event<{ data: Data; params: Params }>;
+type ReducedField<FirstData, SecondData, Result, Source> = {
+  field: SourcedField<[FirstData, SecondData], Result, Source>;
+  clock: Event<[FirstData, SecondData]>;
 };
 
-function reduceTwoArgs<Data, Params, Result, Source = void>(config: {
-  field: TwoArgsDynamicallySourcedField<Data, Params, Result, Source>;
-  clock: { data: Event<Data>; params: Event<Params> };
-}): ReducedField<Data, Params, Result, Source>;
+function reduceTwoArgs<FirstData, SecondData, Result, Source = void>(config: {
+  field: TwoArgsDynamicallySourcedField<FirstData, SecondData, Result, Source>;
+  clock: Event<[FirstData, SecondData]>;
+}): ReducedField<FirstData, SecondData, Result, Source>;
 
-function reduceTwoArgs<Data, Params, Result, Source = void>({
+function reduceTwoArgs<FirstData, SecondData, Result, Source = void>({
   field,
   clock,
 }: {
   field: any;
-  clock: { data: Event<Data>; params: Event<Params> };
-}): ReducedField<Data, Params, Result, Source> {
+  clock: Event<[FirstData, SecondData]>;
+}): ReducedField<FirstData, SecondData, Result, Source> {
   if (typeof field === 'function') {
-    const callbackField = field as CallbackTwoArgs<Data, Params, Result>;
+    const callbackField = field as CallbackTwoArgs<
+      FirstData,
+      SecondData,
+      Result
+    >;
 
     return {
-      clock: combineEvents({ events: clock }),
-      field: ({ data, params }) => callbackField(data, params),
+      field: ([data, params]) => callbackField(data, params),
+      clock,
     };
   }
 
   const callbackField = field as CallbackTwoArgsWithSource<
-    Data,
-    Params,
+    FirstData,
+    SecondData,
     Result,
     Source
   >;
 
   return {
-    clock: combineEvents({ events: clock }),
+    clock,
     field: {
       source: callbackField.source,
-      fn: ({ data, params }, source) => callbackField.fn(data, params, source),
+      fn: ([data, params], source) => callbackField.fn(data, params, source),
     },
   };
 }
