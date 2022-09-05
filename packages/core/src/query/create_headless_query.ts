@@ -58,7 +58,12 @@ function createHeadlessQuery<
   serialize,
 }: {
   contract: Contract<Response, ContractData, ContractError>;
-  mapData: TwoArgsDynamicallySourcedField<ContractData, Params, MappedData, MapDataSource>;
+  mapData: TwoArgsDynamicallySourcedField<
+    ContractData,
+    Params,
+    MappedData,
+    MapDataSource
+  >;
   validate?: Validator<ContractData, Params, ValidationSource>;
 } & SharedQueryFactoryConfig<MappedData>): Query<
   Params,
@@ -151,11 +156,10 @@ function createHeadlessQuery<
       source: normalizeSourced(
         reduceTwoArgs({
           field: validate ?? validValidator,
-          clock: {
-            data: applyContractFx.doneData,
-            // Extract original params, it is params of params
-            params: applyContractFx.done.map(({ params }) => params.params),
-          },
+          clock: applyContractFx.done.map(({ result, params }) => [
+            result,
+            params.params, // Extract original params, it is params of params
+          ]),
         })
       ),
       fn: (validation, { params, result: data }) => ({
@@ -175,10 +179,7 @@ function createHeadlessQuery<
     source: normalizeSourced(
       reduceTwoArgs({
         field: mapData,
-        clock: {
-          data: validDataRecieved.map(({ data }) => data),
-          params: validDataRecieved.map(({ params }) => params),
-        },
+        clock: validDataRecieved.map(({ data, params }) => [data, params]),
       })
     ),
     fn: (data, { params }) => ({

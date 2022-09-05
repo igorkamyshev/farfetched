@@ -65,10 +65,18 @@ export default {
             {
               text: 'Query',
               items: [
-                { text: 'Intro to Queries', link: '/tutorial/query' },
+                { text: 'Intro to Queries', link: '/tutorial/basic_query' },
                 {
                   text: 'Dependent Queries',
                   link: '/tutorial/dependent_queries',
+                },
+                {
+                  text: 'Built-in factories',
+                  link: '/tutorial/built_in_query_factories',
+                },
+                {
+                  text: 'Enhancers',
+                  items: [{ text: 'Retries', link: '/tutorial/query_retry' }],
                 },
               ],
             },
@@ -92,6 +100,7 @@ export default {
           collapsible: true,
           items: [
             { text: 'connectQuery', link: '/api/operators/connect_query' },
+            { text: 'retry', link: '/api/operators/retry' },
           ],
         },
         {

@@ -1,5 +1,4 @@
-import { createStore, Event, is, sample, Store } from 'effector';
-import { combineEvents } from 'patronum';
+import { combine, createStore, Event, is, sample, Store } from 'effector';
 
 // -- Main case --
 
@@ -21,38 +20,70 @@ function normalizeSourced<Data, Result, Source>(config: {
   clock: Event<Data>;
 }): Store<Result>;
 
+function normalizeSourced<Data, Result, Source>(config: {
+  field: SourcedField<Data, Result, Source>;
+  source: Store<Data>;
+}): Store<Result>;
+
 function normalizeSourced<Data, Result, Source>({
   field,
   clock,
+  source,
 }: {
   field: any;
-  clock: Event<Data>;
+  clock?: Event<Data>;
+  source?: Store<Data>;
 }): Store<Result | null> {
-  const $target = createStore<any>(null, { serialize: 'ignore' });
+  let $target = createStore<any>(null, { serialize: 'ignore' });
 
-  if (!field) {
-    // do nothing
-  } else if (is.store(field)) {
-    const $storeField = field as Store<Result>;
+  if (clock) {
+    if (!field) {
+      // do nothing
+    } else if (is.store(field)) {
+      const $storeField = field as Store<Result>;
 
-    sample({ clock, source: $storeField, target: $target });
-  } else if (field.source && field.fn) {
-    const callbackField = field as CallbackWithSource<Data, Result, Source>;
+      sample({ clock, source: $storeField, target: $target });
+    } else if (field.source && field.fn) {
+      const callbackField = field as CallbackWithSource<Data, Result, Source>;
 
-    sample({
-      clock,
-      source: callbackField.source,
-      fn: (source, params) => callbackField.fn(params, source),
-      target: $target,
-    });
-  } else if (typeof field === 'function') {
-    const callbackField = field as Callback<Data, Result>;
+      sample({
+        clock,
+        source: callbackField.source,
+        fn: (source, params) => callbackField.fn(params, source),
+        target: $target,
+      });
+    } else if (typeof field === 'function') {
+      const callbackField = field as Callback<Data, Result>;
 
-    sample({ clock, fn: callbackField, target: $target });
-  } else {
-    const valueField = field as Result;
+      sample({ clock, fn: (data) => callbackField(data), target: $target });
+    } else {
+      const valueField = field as Result;
 
-    sample({ clock, fn: () => valueField, target: $target });
+      sample({ clock, fn: () => valueField, target: $target });
+    }
+  }
+
+  if (source) {
+    const $source = source as Store<Data>;
+    if (!field) {
+      // do nothing
+    } else if (is.store(field)) {
+      const $storeField = field as Store<Result>;
+
+      $target = $storeField;
+    } else if (field.source && field.fn) {
+      const callbackField = field as CallbackWithSource<Data, Result, Source>;
+
+      $target = combine($source, callbackField.source, callbackField.fn);
+    } else if (typeof field === 'function') {
+      const callbackField = field as Callback<Data, Result>;
+
+      $target = $source.map(callbackField);
+    } else {
+      const valueField = field as Result;
+
+      $target = createStore(valueField, { serialize: 'ignore' });
+    }
   }
 
   return $target;
@@ -60,58 +91,62 @@ function normalizeSourced<Data, Result, Source>({
 
 // -- Extended case --
 
-type CallbackTwoArgs<Data, Params, Result> = (
-  data: Data,
-  prams: Params
+type CallbackTwoArgs<FirstData, SecondData, Result> = (
+  arg1: FirstData,
+  arg2: SecondData
 ) => Result;
 
-type CallbackTwoArgsWithSource<Data, Params, Result, Source> = {
+type CallbackTwoArgsWithSource<FirstData, SecondData, Result, Source> = {
   source: Store<Source>;
-  fn: (data: Data, params: Params, source: Source) => Result;
+  fn: (arg1: FirstData, arg2: SecondData, source: Source) => Result;
 };
 
-type TwoArgsDynamicallySourcedField<Data, Params, Result, Source> =
-  | CallbackTwoArgs<Data, Params, Result>
-  | CallbackTwoArgsWithSource<Data, Params, Result, Source>;
+type TwoArgsDynamicallySourcedField<FirstData, SecondData, Result, Source> =
+  | CallbackTwoArgs<FirstData, SecondData, Result>
+  | CallbackTwoArgsWithSource<FirstData, SecondData, Result, Source>;
 
-type ReducedField<Data, Params, Result, Source> = {
-  field: SourcedField<{ data: Data; params: Params }, Result, Source>;
-  clock: Event<{ data: Data; params: Params }>;
+type ReducedField<FirstData, SecondData, Result, Source> = {
+  field: SourcedField<[FirstData, SecondData], Result, Source>;
+  clock: Event<[FirstData, SecondData]>;
 };
 
-function reduceTwoArgs<Data, Params, Result, Source = void>(config: {
-  field: TwoArgsDynamicallySourcedField<Data, Params, Result, Source>;
-  clock: { data: Event<Data>; params: Event<Params> };
-}): ReducedField<Data, Params, Result, Source>;
+function reduceTwoArgs<FirstData, SecondData, Result, Source = void>(config: {
+  field: TwoArgsDynamicallySourcedField<FirstData, SecondData, Result, Source>;
+  clock: Event<[FirstData, SecondData]>;
+}): ReducedField<FirstData, SecondData, Result, Source>;
 
-function reduceTwoArgs<Data, Params, Result, Source = void>({
+function reduceTwoArgs<FirstData, SecondData, Result, Source = void>({
   field,
   clock,
 }: {
   field: any;
-  clock: { data: Event<Data>; params: Event<Params> };
-}): ReducedField<Data, Params, Result, Source> {
+  clock: Event<[FirstData, SecondData]>;
+}): ReducedField<FirstData, SecondData, Result, Source> {
   if (typeof field === 'function') {
-    const callbackField = field as CallbackTwoArgs<Data, Params, Result>;
+    const callbackField = field as CallbackTwoArgs<
+      FirstData,
+      SecondData,
+      Result
+    >;
 
     return {
-      clock: combineEvents({ events: clock }),
-      field: ({ data, params }) => callbackField(data, params),
+      field: ([data, params]) => callbackField(data, params),
+      clock,
     };
   }
 
   const callbackField = field as CallbackTwoArgsWithSource<
-    Data,
-    Params,
+    FirstData,
+    SecondData,
     Result,
     Source
   >;
 
   return {
-    clock: combineEvents({ events: clock }),
+    clock,
     field: {
       source: callbackField.source,
-      fn: ({ data, params }, source) => callbackField.fn(data, params, source),
+      fn: ([data, params], source) => callbackField.fn(data, params, source),
     },
   };
 }
@@ -119,6 +154,11 @@ function reduceTwoArgs<Data, Params, Result, Source = void>({
 // -- Static ot reactive case
 
 type StaticOrReactive<T> = T | Store<Exclude<T, undefined>>;
+
+function normalizeStaticOrReactive<T>(v: StaticOrReactive<T>): Store<T>;
+function normalizeStaticOrReactive<T>(
+  v?: StaticOrReactive<T>
+): Store<Exclude<T, undefined> | null>;
 
 function normalizeStaticOrReactive<T>(
   v?: StaticOrReactive<T>

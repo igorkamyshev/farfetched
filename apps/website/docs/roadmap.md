@@ -12,7 +12,6 @@ Farfetched is under development now, before the first stable release we are goin
   - `stale` state of Query after mutation
   - optimistic and pessimistic updates
   - postpone mutation (analogue of `connectQuery`)
-- Retry API
 - Initial value for Query
 
 ## Future releases
