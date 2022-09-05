@@ -138,14 +138,14 @@ retry({
   query: characterQuery,
   times: 5,
   delay: 500,
-  mapParams: (params, { attempt }) => ({
+  mapParams: ({ params, error }, { attempt }) => ({
     ...params,
     attempt: attempt,
   }),
 });
 ```
 
-`mapParams` accepts a function that takes current parameters and attempt number and returns new parameters. In this example, we just add `attempt` parameter to the current parameters.
+`mapParams` accepts a function that takes current parameters, occurred error and attempt number and returns new parameters. In this example, we just add `attempt` parameter to the current parameters.
 
 ## API reference
 

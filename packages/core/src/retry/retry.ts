@@ -1,7 +1,6 @@
 import { combine, createEvent, createStore, Event, sample } from 'effector';
 import { delay } from 'patronum';
 
-import { identity } from '../misc/identity';
 import {
   normalizeSourced,
   normalizeStaticOrReactive,
@@ -12,6 +11,11 @@ import {
 } from '../misc/sourced';
 import { Query, QueryError, QueryParams } from '../query/type';
 import { RetryMeta } from './type';
+
+type FailInfo<Q extends Query<any, any, any>> = {
+  params: QueryParams<Q>;
+  error: QueryError<Q>;
+};
 
 function retry<
   Q extends Query<any, any, any>,
@@ -28,13 +32,9 @@ function retry<
   query: Q;
   times: StaticOrReactive<number>;
   delay: SourcedField<RetryMeta, number, DelaySource>;
-  filter?: SourcedField<
-    { params: QueryParams<Q>; error: QueryError<Q> },
-    boolean,
-    FilterSource
-  >;
+  filter?: SourcedField<FailInfo<Q>, boolean, FilterSource>;
   mapParams?: TwoArgsDynamicallySourcedField<
-    QueryParams<Q>,
+    FailInfo<Q>,
     RetryMeta,
     QueryParams<Q>,
     MapParamsSource
@@ -50,10 +50,11 @@ function retry<
   });
 
   const newAttempt = createEvent();
-  const planNextAttempt = createEvent<{
-    params: QueryParams<Q>;
-    meta: RetryMeta;
-  }>();
+  const planNextAttempt = createEvent<
+    FailInfo<Q> & {
+      meta: RetryMeta;
+    }
+  >();
 
   sample({
     clock: query.finished.failure,
@@ -67,7 +68,11 @@ function retry<
     },
     filter: ({ maxAttempts, attempt, shouldPlanRetry }) =>
       shouldPlanRetry && attempt <= maxAttempts,
-    fn: ({ attempt }, { params }) => ({ params, meta: { attempt } }),
+    fn: ({ attempt }, { params, error }) => ({
+      params,
+      error,
+      meta: { attempt },
+    }),
     target: planNextAttempt,
   });
 
@@ -77,8 +82,11 @@ function retry<
         clock: planNextAttempt,
         source: normalizeSourced(
           reduceTwoArgs({
-            field: mapParams ?? identity<QueryParams<Q>>,
-            clock: planNextAttempt.map(({ params, meta }) => [params, meta]),
+            field: mapParams ?? (({ params }: FailInfo<Q>) => params),
+            clock: planNextAttempt.map(({ params, error, meta }) => [
+              { params, error },
+              meta,
+            ]),
           })
         ),
       }) as Event<any>, // TODO: why types is not inferred correctly?

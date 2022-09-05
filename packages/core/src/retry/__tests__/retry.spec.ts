@@ -82,11 +82,15 @@ describe('retry', () => {
       handler,
     });
 
+    const mapParams = jest.fn(
+      ({ params }, { attempt }) => `${params} ${attempt}`
+    );
+
     retry({
       query,
       times: 3,
       delay: 0,
-      mapParams: (oldParams, { attempt }) => `${oldParams} ${attempt}`,
+      mapParams,
     });
 
     const scope = fork();
@@ -98,6 +102,38 @@ describe('retry', () => {
     expect(handler).toHaveBeenNthCalledWith(2, 'Initial 1');
     expect(handler).toHaveBeenNthCalledWith(3, 'Initial 1 2');
     expect(handler).toHaveBeenNthCalledWith(4, 'Initial 1 2 3');
+
+    expect(mapParams.mock.calls).toMatchInlineSnapshot(`
+      Array [
+        Array [
+          Object {
+            "error": [Error: Sorry],
+            "params": "Initial",
+          },
+          Object {
+            "attempt": 1,
+          },
+        ],
+        Array [
+          Object {
+            "error": [Error: Sorry],
+            "params": "Initial 1",
+          },
+          Object {
+            "attempt": 2,
+          },
+        ],
+        Array [
+          Object {
+            "error": [Error: Sorry],
+            "params": "Initial 1 2",
+          },
+          Object {
+            "attempt": 3,
+          },
+        ],
+      ]
+    `);
   });
 
   test('respects after success', async () => {
