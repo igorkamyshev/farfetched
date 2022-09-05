@@ -7,6 +7,8 @@ export { connectQuery } from './query/connect_query';
 export { createHeadlessQuery } from './query/create_headless_query';
 export { createJsonQuery } from './query/create_json_query';
 
+export { retry } from './retry/retry';
+
 export { declareParams } from './misc/params';
 
 export { type Json } from './fetch/json';

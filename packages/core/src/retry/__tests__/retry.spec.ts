@@ -1,4 +1,4 @@
-import { allSettled, fork } from 'effector';
+import { allSettled, createStore, fork } from 'effector';
 
 import { createQuery } from '../../query/create_query';
 import { retry } from '../retry';
@@ -100,7 +100,7 @@ describe('retry', () => {
     expect(handler).toHaveBeenNthCalledWith(4, 'Initial 1 2 3');
   });
 
-  test('resets after success', async () => {
+  test('respects after success', async () => {
     const handler = jest
       .fn()
       .mockRejectedValueOnce(new Error('Sorry'))
@@ -126,5 +126,72 @@ describe('retry', () => {
 
     expect(scope.getState(query.$data)).toEqual('Success');
     expect(handler).toBeCalledTimes(6);
+  });
+
+  test('respects filter option (static)', async () => {
+    const handler = jest.fn().mockRejectedValue(new Error('Sorry'));
+
+    const query = createQuery({
+      handler,
+    });
+
+    retry({
+      query,
+      times: 10,
+      delay: 0,
+      filter: false,
+    });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope });
+
+    expect(handler).toBeCalledTimes(1);
+  });
+
+  test('respects filter option (store)', async () => {
+    const handler = jest.fn().mockRejectedValue(new Error('Sorry'));
+
+    const query = createQuery({
+      handler,
+    });
+
+    retry({
+      query,
+      times: 10,
+      delay: 0,
+      filter: createStore(false),
+    });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope });
+
+    expect(handler).toBeCalledTimes(1);
+  });
+
+  test('respects filter option (function)', async () => {
+    const queryError = new Error('Sorry');
+    const handler = jest.fn().mockRejectedValue(queryError);
+
+    const query = createQuery({
+      handler,
+    });
+
+    retry({
+      query,
+      times: 10,
+      delay: 0,
+      filter: (e) => {
+        expect(e).toBe(queryError);
+        return false;
+      },
+    });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope });
+
+    expect(handler).toBeCalledTimes(1);
   });
 });

@@ -10,26 +10,25 @@ import {
   StaticOrReactive,
   TwoArgsDynamicallySourcedField,
 } from '../misc/sourced';
-import { Query, QueryParams } from '../query/type';
+import { Query, QueryError, QueryParams } from '../query/type';
+import { RetryMeta } from './type';
 
-interface RetryMeta {
-  attempt: number;
-}
-
-// TODO: add filter option
 function retry<
   Q extends Query<any, any, any>,
   DelaySource = unknown,
+  FilterSource = unknown,
   MapParamsSource = unknown
 >({
   times,
   query,
   delay: timeout,
   mapParams,
+  filter,
 }: {
   query: Q;
   times: StaticOrReactive<number>;
   delay: SourcedField<RetryMeta, number, DelaySource>;
+  filter?: SourcedField<QueryError<Q>, boolean, FilterSource>;
   mapParams?: TwoArgsDynamicallySourcedField<
     QueryParams<Q>,
     RetryMeta,
@@ -52,33 +51,36 @@ function retry<
     meta: RetryMeta;
   }>();
 
-  $attempt.on(newAttempt, (attempt) => attempt + 1);
-
   sample({
     clock: query.finished.failure,
-    source: { maxAttempts: $maxAttempts, attempt: $attempt },
-    filter: ({ maxAttempts, attempt }) => attempt <= maxAttempts,
+    source: {
+      maxAttempts: $maxAttempts,
+      attempt: $attempt,
+      shouldPlanRetry: normalizeSourced({
+        field: filter ?? true,
+        clock: query.finished.failure.map(({ error }) => error),
+      }),
+    },
+    filter: ({ maxAttempts, attempt, shouldPlanRetry }) =>
+      shouldPlanRetry && attempt <= maxAttempts,
     fn: ({ attempt }, { params }) => ({ params, meta: { attempt } }),
     target: planNextAttempt,
   });
 
-  // TODO: why types is not inferred correctly?
-  const nextAttemptWithNewParams: Event<any> = sample({
-    clock: planNextAttempt,
-    source: normalizeSourced(
-      reduceTwoArgs({
-        field: mapParams ?? identity<QueryParams<Q>>,
-        clock: {
-          data: planNextAttempt.map(({ params }) => params),
-          params: planNextAttempt.map(({ meta }) => meta),
-        },
-      })
-    ),
-  });
-
   sample({
     clock: delay({
-      source: nextAttemptWithNewParams,
+      source: sample({
+        clock: planNextAttempt,
+        source: normalizeSourced(
+          reduceTwoArgs({
+            field: mapParams ?? identity<QueryParams<Q>>,
+            clock: {
+              data: planNextAttempt.map(({ params }) => params),
+              params: planNextAttempt.map(({ meta }) => meta),
+            },
+          })
+        ),
+      }) as Event<any>, // TODO: why types is not inferred correctly?
       timeout: normalizeSourced({
         field: timeout,
         source: $meta,
@@ -87,7 +89,9 @@ function retry<
     target: [newAttempt, query.start],
   });
 
-  $attempt.reset(query.finished.success);
+  $attempt
+    .on(newAttempt, (attempt) => attempt + 1)
+    .reset(query.finished.success);
 }
 
 export { retry };
