@@ -13,38 +13,46 @@ import {
   TimeoutError,
 } from './type';
 
-function isInvalidDataError(error: any): error is InvalidDataError {
-  return error?.errorType === INVALID_DATA;
+type WithError<T = any, P = Record<string, never>> = P & { error: T };
+
+function isInvalidDataError(
+  args: WithError
+): args is WithError<InvalidDataError> {
+  return args.error?.errorType === INVALID_DATA;
 }
 
-function isTimeoutError(error: any): error is TimeoutError {
-  return error?.errorType === TIMEOUT;
+function isTimeoutError(args: WithError): args is WithError<TimeoutError> {
+  return args.error?.errorType === TIMEOUT;
 }
 
-function isAbortError(error: any): error is AbortError {
-  return error?.errorType === ABORT;
+function isAbortError(args: WithError): args is WithError<AbortError> {
+  return args.error?.errorType === ABORT;
 }
 
-function isPreparationError(error: any): error is PreparationError {
-  return error.errorType === PREPARATION;
+function isPreparationError(
+  args: WithError
+): args is WithError<PreparationError> {
+  return args.error?.errorType === PREPARATION;
 }
 
-function isHttpError(error: any): error is HttpError {
-  return error.errorType === HTTP;
+function isHttpError(args: WithError): args is WithError<HttpError> {
+  return args.error?.errorType === HTTP;
 }
 
 function isHttpErrorCode<Code extends number>(code: Code) {
-  return function isExactHttpError(error: any): error is HttpError<Code> {
-    if (!isHttpError(error)) {
+  return function isExactHttpError(
+    args: WithError
+  ): args is WithError<HttpError<Code>> {
+    if (!isHttpError(args)) {
       return false;
     }
 
-    return error.status === code;
+    return args.error.status === code;
   };
 }
 
-function isNetworkError(error: any): error is NetworkError {
-  return error.errorType === NETWORK;
+function isNetworkError(args: WithError): args is WithError<NetworkError> {
+  return args.error?.errorType === NETWORK;
 }
 
 export {

@@ -55,7 +55,7 @@ function normalizeSourced<Data, Result, Source>({
     } else if (typeof field === 'function') {
       const callbackField = field as Callback<Data, Result>;
 
-      sample({ clock, fn: callbackField, target: $target });
+      sample({ clock, fn: (data) => callbackField(data), target: $target });
     } else {
       const valueField = field as Result;
 

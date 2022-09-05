@@ -76,8 +76,8 @@ retry({
   delay: 500,
   filter: {
     source: characterRoute.$isOpened,
-    fn: (error, isCharacterRouteOpened) =>
-      isCharacterRouteOpened && isHttpErrorCode(500)(error),
+    fn: ({ error, params }, isCharacterRouteOpened) =>
+      isCharacterRouteOpened && isHttpErrorCode(500)({ error }),
   },
 });
 ```

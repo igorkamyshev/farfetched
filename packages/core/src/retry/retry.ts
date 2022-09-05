@@ -28,7 +28,11 @@ function retry<
   query: Q;
   times: StaticOrReactive<number>;
   delay: SourcedField<RetryMeta, number, DelaySource>;
-  filter?: SourcedField<QueryError<Q>, boolean, FilterSource>;
+  filter?: SourcedField<
+    { params: QueryParams<Q>; error: QueryError<Q> },
+    boolean,
+    FilterSource
+  >;
   mapParams?: TwoArgsDynamicallySourcedField<
     QueryParams<Q>,
     RetryMeta,
@@ -58,7 +62,7 @@ function retry<
       attempt: $attempt,
       shouldPlanRetry: normalizeSourced({
         field: filter ?? true,
-        clock: query.finished.failure.map(({ error }) => error),
+        clock: query.finished.failure,
       }),
     },
     filter: ({ maxAttempts, attempt, shouldPlanRetry }) =>

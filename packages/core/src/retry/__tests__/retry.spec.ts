@@ -178,14 +178,13 @@ describe('retry', () => {
       handler,
     });
 
+    const filter = jest.fn().mockReturnValue(false);
+
     retry({
       query,
       times: 10,
       delay: 0,
-      filter: (e) => {
-        expect(e).toBe(queryError);
-        return false;
-      },
+      filter,
     });
 
     const scope = fork();
@@ -193,5 +192,6 @@ describe('retry', () => {
     await allSettled(query.start, { scope });
 
     expect(handler).toBeCalledTimes(1);
+    expect(filter).toBeCalledWith({ params: undefined, error: queryError });
   });
 });
