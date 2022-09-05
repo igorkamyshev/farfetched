@@ -19,11 +19,11 @@ function retry<
   FilterSource = unknown,
   MapParamsSource = unknown
 >({
-  times,
   query,
+  times,
   delay: timeout,
-  mapParams,
   filter,
+  mapParams,
 }: {
   query: Q;
   times: StaticOrReactive<number>;

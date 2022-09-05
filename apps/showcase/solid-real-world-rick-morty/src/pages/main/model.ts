@@ -1,4 +1,9 @@
-import { createJsonQuery, declareParams } from '@farfetched/core';
+import {
+  createJsonQuery,
+  declareParams,
+  exponentialDelay,
+  retry,
+} from '@farfetched/core';
 import { runtypeContract } from '@farfetched/runtypes';
 import { sample } from 'effector';
 import { Array, Record } from 'runtypes';
@@ -23,6 +28,8 @@ const characterListQuery = createJsonQuery({
     ),
   },
 });
+
+retry({ query: characterListQuery, times: 3, delay: exponentialDelay(50) });
 
 const $currentPage = characterListRoute.$params.map(
   (params) => params.page ?? 1

@@ -92,6 +92,7 @@ export default {
           collapsible: true,
           items: [
             { text: 'connectQuery', link: '/api/operators/connect_query' },
+            { text: 'retry', link: '/api/operators/retry' },
           ],
         },
         {
