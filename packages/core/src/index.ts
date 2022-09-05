@@ -8,6 +8,7 @@ export { createHeadlessQuery } from './query/create_headless_query';
 export { createJsonQuery } from './query/create_json_query';
 
 export { retry } from './retry/retry';
+export { exponentialDelay, linearDelay } from './retry/delay';
 
 export { declareParams } from './misc/params';
 
