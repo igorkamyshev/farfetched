@@ -27,9 +27,9 @@ This form allows you to dynamically validate received data using [_Validator_](/
 ```ts
 const languagesQuery = createQuery({
   effect: createEffect<Response, void, EmptyLanguagesError>(async () => {
-    const response = fetch('https://api.salo.com/languages.json');
+    const response = await fetch('https://api.salo.com/languages.json');
 
-    const data = response.json();
+    const data = await response.json();
 
     if (!data.languages) {
       throw new EmptyLanguagesError();
