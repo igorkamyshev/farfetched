@@ -94,7 +94,7 @@ const characterQuery = createJsonQuery({
     url: ({ id }) => `https://rickandmortyapi.com/api/character/${id}`,
   },
   response: {
-    contract: runtypeContract(Character),[_]
+    contract: runtypeContract(Character),
   },
 });
 ```
