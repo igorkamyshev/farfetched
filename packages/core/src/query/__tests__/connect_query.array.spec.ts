@@ -40,7 +40,6 @@ describe('remote_data/connect_query', () => {
         unknown,
         unknown,
         unknown,
-        unknown,
         unknown
       >({
         contract: unknownContract,
@@ -53,7 +52,6 @@ describe('remote_data/connect_query', () => {
     fn: () =>
       createHeadlessQuery<
         { language: string; ids: string[] },
-        unknown,
         unknown,
         unknown,
         unknown,

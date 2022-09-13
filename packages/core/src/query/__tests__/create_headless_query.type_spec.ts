@@ -7,7 +7,7 @@ import { createHeadlessQuery } from '../create_headless_query';
 import { Query } from '../type';
 
 contract: {
-  const numberContract = {} as Contract<unknown, number, number>;
+  const numberContract = {} as Contract<unknown, number>;
 
   const numberQuery = createHeadlessQuery({
     contract: numberContract,
@@ -16,7 +16,7 @@ contract: {
 
   expectType<Query<unknown, number, unknown | number>>(numberQuery);
 
-  const stringContract = {} as Contract<unknown, string, number>;
+  const stringContract = {} as Contract<unknown, string>;
 
   const stringQuery = createHeadlessQuery({
     contract: stringContract,

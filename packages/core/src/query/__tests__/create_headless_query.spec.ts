@@ -164,36 +164,6 @@ describe('core/createHeadlessQuery without contract', () => {
 });
 
 describe('core/createHeadlessQuery with contract', () => {
-  test('contract find error', async () => {
-    const extractedError = Symbol('extractedError');
-
-    const query = createHeadlessQuery({
-      contract: {
-        isData: (raw): raw is unknown => false,
-        getErrorMessages: () => [],
-      },
-      mapData: identity,
-    });
-
-    const scope = fork({
-      handlers: [
-        [query.__.executeFx, jest.fn().mockResolvedValue(extractedError)],
-      ],
-    });
-
-    const { listeners } = watchQuery(query, scope);
-
-    await allSettled(query.start, { scope, params: 42 });
-
-    expect(scope.getState(query.$error)).toEqual(extractedError);
-
-    expect(listeners.onFailure).toHaveBeenCalledTimes(1);
-    expect(listeners.onFailure).toHaveBeenCalledWith({
-      params: 42,
-      error: extractedError,
-    });
-  });
-
   test('contract find invalid data', async () => {
     const query = createHeadlessQuery({
       contract: {
@@ -258,7 +228,6 @@ describe('core/createHeadlessQuery with contract', () => {
     const query = createHeadlessQuery({
       contract: {
         isData: (raw): raw is unknown => false,
-
         getErrorMessages: validate,
       },
       mapData: identity,
@@ -272,29 +241,6 @@ describe('core/createHeadlessQuery with contract', () => {
 
     expect(validate).toHaveBeenCalledTimes(1);
     expect(validate).toHaveBeenCalledWith(response);
-  });
-
-  test('contract receives response (for error)', async () => {
-    const response = Symbol('response');
-
-    const is = jest.fn().mockReturnValue(true);
-
-    const query = createHeadlessQuery({
-      contract: {
-        isData: (raw): raw is unknown => false,
-        getErrorMessages: () => [],
-      },
-      mapData: identity,
-    });
-
-    const scope = fork({
-      handlers: [[query.__.executeFx, jest.fn(() => response)]],
-    });
-
-    await allSettled(query.start, { scope, params: 42 });
-
-    expect(is).toHaveBeenCalledTimes(1);
-    expect(is).toHaveBeenCalledWith(response);
   });
 });
 

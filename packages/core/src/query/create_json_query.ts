@@ -95,8 +95,13 @@ function createJsonQuery<
     UrlSource
   > & {
     response: {
-      contract: Contract<unknown, Data, Error>;
-      mapData: TwoArgsDynamicallySourcedField<Data, Params, TransformedData, DataSource>;
+      contract: Contract<unknown, Data>;
+      mapData: TwoArgsDynamicallySourcedField<
+        Data,
+        Params,
+        TransformedData,
+        DataSource
+      >;
       validate?: Validator<TransformedData, Params, ValidationSource>;
     };
   }
@@ -122,7 +127,7 @@ function createJsonQuery<
     UrlSource
   > & {
     response: {
-      contract: Contract<unknown, Data, Error>;
+      contract: Contract<unknown, Data>;
       validate?: Validator<Data, Params, ValidationSource>;
     };
   }
@@ -148,8 +153,13 @@ function createJsonQuery<
     UrlSource
   > & {
     response: {
-      contract: Contract<unknown, Data, Error>;
-      mapData: TwoArgsDynamicallySourcedField<Data, void, TransformedData, DataSource>;
+      contract: Contract<unknown, Data>;
+      mapData: TwoArgsDynamicallySourcedField<
+        Data,
+        void,
+        TransformedData,
+        DataSource
+      >;
       validate?: Validator<TransformedData, void, ValidationSource>;
     };
   }
@@ -173,7 +183,7 @@ function createJsonQuery<
     UrlSource
   > & {
     response: {
-      contract: Contract<unknown, Data, Error>;
+      contract: Contract<unknown, Data>;
       validate?: Validator<Data, void, ValidationSource>;
     };
   }
@@ -188,16 +198,7 @@ function createJsonQuery(config: any) {
     concurrency: { strategy: 'TAKE_LATEST' },
   });
 
-  const headlessQuery = createHeadlessQuery<
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any
-  >({
+  const headlessQuery = createHeadlessQuery<any, any, any, any, any, any, any>({
     contract: config.response.contract ?? unknownContract,
     mapData: config.response.mapData ?? identity,
     validate: config.response.validate,

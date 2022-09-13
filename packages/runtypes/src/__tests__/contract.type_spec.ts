@@ -6,4 +6,4 @@ import { runtypeContract } from '../runtype_contract';
 
 const contract = runtypeContract(String);
 
-expectType<Contract<unknown, string, unknown>>(contract);
+expectType<Contract<unknown, string>>(contract);

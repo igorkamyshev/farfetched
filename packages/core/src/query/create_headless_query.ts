@@ -45,7 +45,6 @@ function createHeadlessQuery<
   Response,
   Error,
   ContractData extends Response,
-  ContractError extends Response,
   MappedData,
   MapDataSource,
   ValidationSource
@@ -57,7 +56,7 @@ function createHeadlessQuery<
   name,
   serialize,
 }: {
-  contract: Contract<Response, ContractData, ContractError>;
+  contract: Contract<Response, ContractData>;
   mapData: TwoArgsDynamicallySourcedField<
     ContractData,
     Params,
@@ -68,7 +67,7 @@ function createHeadlessQuery<
 } & SharedQueryFactoryConfig<MappedData>): Query<
   Params,
   MappedData,
-  Error | InvalidDataError | ContractError
+  Error | InvalidDataError
 > {
   const queryName = name ?? 'unnamed';
 
@@ -81,12 +80,9 @@ function createHeadlessQuery<
     name: `${queryName}.executeFx`,
   });
 
-  const applyContractFx = createContractApplier<
-    Params,
-    Response,
-    ContractData,
-    ContractError
-  >(contract);
+  const applyContractFx = createContractApplier<Params, Response, ContractData>(
+    contract
+  );
 
   /*
    * Start event, it's used as it or to pipe it in head-full query creator
@@ -104,7 +100,7 @@ function createHeadlessQuery<
     success: createEvent<{ params: Params; data: MappedData }>(),
     failure: createEvent<{
       params: Params;
-      error: Error | InvalidDataError | ContractError;
+      error: Error | InvalidDataError;
     }>(),
     skip: createEvent<{ params: Params }>(),
     finally: createEvent<{ params: Params }>(),
@@ -116,14 +112,11 @@ function createHeadlessQuery<
     name: `${queryName}.$data`,
     serialize,
   });
-  const $error = createStore<Error | InvalidDataError | ContractError | null>(
-    null,
-    {
-      sid: `ff.${queryName}.$error`,
-      name: `${queryName}.$error`,
-      serialize: serializationForSideStore(serialize),
-    }
-  );
+  const $error = createStore<Error | InvalidDataError | null>(null, {
+    sid: `ff.${queryName}.$error`,
+    name: `${queryName}.$error`,
+    serialize: serializationForSideStore(serialize),
+  });
   const $status = createStore<FetchingStatus>('initial', {
     sid: `ff.${queryName}.$status`,
     name: `${queryName}.$status`,
