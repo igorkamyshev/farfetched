@@ -1,8 +1,7 @@
 import { Contract } from './type';
 
-const unkownContract: Contract<unknown, unknown, unknown> = {
+const unkownContract: Contract<unknown, unknown> = {
   isData: (raw): raw is unknown => true,
-  isError: (raw): raw is unknown => false,
   getErrorMessages: () => [],
 };
 

@@ -9,7 +9,6 @@ const contract: Contract<unkown, Data, Error>;
 
 // Guards
 contract.isData; // (raw: unkown) => raw is Data
-contract.isError; // (raw: unkown) => raw is Error
 
 // Validators
 contract.getErrorMessages; // (raw: Data) => string[]

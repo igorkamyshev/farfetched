@@ -169,7 +169,6 @@ describe('core/createHeadlessQuery with contract', () => {
 
     const query = createHeadlessQuery({
       contract: {
-        isError: (raw): raw is unknown => true,
         isData: (raw): raw is unknown => false,
         getErrorMessages: () => [],
       },
@@ -199,7 +198,6 @@ describe('core/createHeadlessQuery with contract', () => {
     const query = createHeadlessQuery({
       contract: {
         isData: (raw): raw is unknown => false,
-        isError: (raw): raw is unknown => false,
         getErrorMessages: () => ['got it'],
       },
       mapData: identity,
@@ -228,7 +226,6 @@ describe('core/createHeadlessQuery with contract', () => {
     const query = createHeadlessQuery({
       contract: {
         isData: (raw): raw is unknown => true,
-        isError: (raw): raw is unknown => false,
         getErrorMessages: () => [],
       },
       mapData: identity,
@@ -261,7 +258,7 @@ describe('core/createHeadlessQuery with contract', () => {
     const query = createHeadlessQuery({
       contract: {
         isData: (raw): raw is unknown => false,
-        isError: (raw): raw is unknown => false,
+
         getErrorMessages: validate,
       },
       mapData: identity,
@@ -285,7 +282,6 @@ describe('core/createHeadlessQuery with contract', () => {
     const query = createHeadlessQuery({
       contract: {
         isData: (raw): raw is unknown => false,
-        isError: (raw): raw is unknown => is(raw),
         getErrorMessages: () => [],
       },
       mapData: identity,

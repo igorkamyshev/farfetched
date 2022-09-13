@@ -58,8 +58,6 @@ const languagesQuery = createQuery({
     getErrorMessages: (response) => [
       'Expected array with at least one language, but got empty array',
     ],
-    // Our API can return array on internal errors, we consider it as an error
-    isError: (response) => response.errors?.length > 0,
   },
 });
 

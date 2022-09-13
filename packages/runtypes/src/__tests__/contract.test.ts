@@ -6,8 +6,6 @@ describe('runtypes/runtypeContract short', () => {
   test('interprets invalid response as error', () => {
     const contract = runtypeContract(String);
 
-    expect(contract.isError(2)).toBeFalsy();
-
     expect(contract.getErrorMessages(2)).toMatchInlineSnapshot(`
       Array [
         "Expected string, but was number",
@@ -19,7 +17,5 @@ describe('runtypes/runtypeContract short', () => {
     const contract = runtypeContract(String);
 
     expect(contract.getErrorMessages('foo')).toEqual([]);
-
-    expect(contract.isError('bar')).toBeFalsy();
   });
 });

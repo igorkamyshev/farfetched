@@ -1,4 +1,4 @@
-interface Contract<Raw, Data extends Raw, Error extends Raw> {
+interface Contract<Raw, Data extends Raw> {
   /**
    * Checks if Response is some Data
    */
@@ -8,10 +8,6 @@ interface Contract<Raw, Data extends Raw, Error extends Raw> {
    * - array of string with validation erorrs for invalidDataError
    */
   getErrorMessages: (prepared: Raw) => string[];
-  /**
-   * Checks if Response is Error
-   */
-  isError: (prepared: Raw) => prepared is Error;
 }
 
 export { type Contract };

@@ -18,11 +18,6 @@ function createContractApplier<
     Error | InvalidDataError
   >({
     handler: ({ result: data }) => {
-      const isError = contract.isError(data);
-      if (isError) {
-        throw data;
-      }
-
       const isData = contract.isData(data);
       if (!isData) {
         throw invalidDataError({

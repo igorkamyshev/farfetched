@@ -8,9 +8,9 @@ import { Contract } from '../../contract/type';
 
 describe('remote_data/query/json.response.map_data', () => {
   // Does not matter
-  const validStringContract: Contract<unknown, string, unknown> = {
+  const validStringContract: Contract<unknown, string> = {
     isData: (raw): raw is string => true,
-    isError: (raw): raw is unknown => false,
+
     getErrorMessages: () => [],
   };
 
