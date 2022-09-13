@@ -1,6 +1,6 @@
 import { allSettled, fork } from 'effector';
 
-import { unkownContract } from '../../contract/unkown_contract';
+import { unknownContract } from '../../contract/unknown_contract';
 import { identity } from '../../misc/identity';
 import { withFactory } from '../../misc/sid';
 import { connectQuery } from '../connect_query';
@@ -17,10 +17,9 @@ describe('remote_data/connect_query stale', () => {
         unknown,
         unknown,
         unknown,
-        unknown,
         unknown
       >({
-        contract: unkownContract,
+        contract: unknownContract,
         mapData: identity,
       }),
   });
@@ -35,10 +34,9 @@ describe('remote_data/connect_query stale', () => {
         unknown,
         unknown,
         unknown,
-        unknown,
         unknown
       >({
-        contract: unkownContract,
+        contract: unknownContract,
         mapData: identity,
       }),
   });
@@ -53,10 +51,9 @@ describe('remote_data/connect_query stale', () => {
         unknown,
         unknown,
         unknown,
-        unknown,
         unknown
       >({
-        contract: unkownContract,
+        contract: unknownContract,
         mapData: identity,
       }),
   });

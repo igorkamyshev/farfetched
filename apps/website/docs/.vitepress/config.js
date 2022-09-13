@@ -71,6 +71,10 @@ export default {
                   link: '/tutorial/dependent_queries',
                 },
                 {
+                  text: 'Contracts',
+                  link: '/tutorial/contracts',
+                },
+                {
                   text: 'Built-in factories',
                   link: '/tutorial/built_in_query_factories',
                 },

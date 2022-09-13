@@ -1,7 +1,7 @@
 import { watchQuery } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
 
-import { unkownContract } from '../../contract/unkown_contract';
+import { unknownContract } from '../../contract/unknown_contract';
 import { identity } from '../../misc/identity';
 import { withFactory } from '../../misc/sid';
 import { connectQuery } from '../connect_query';
@@ -12,7 +12,7 @@ describe('remote_data/connect_query', () => {
     sid: '1',
     fn: () =>
       createHeadlessQuery({
-        contract: unkownContract,
+        contract: unknownContract,
         mapData(data) {
           return data as string;
         },
@@ -29,10 +29,9 @@ describe('remote_data/connect_query', () => {
         unknown,
         unknown,
         unknown,
-        unknown,
         unknown
       >({
-        contract: unkownContract,
+        contract: unknownContract,
         mapData: identity,
       }),
   });

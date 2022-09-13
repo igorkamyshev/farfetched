@@ -7,7 +7,7 @@ import { Contract } from '../../contract/type';
 
 // Does not matter
 const response = {
-  contract: {} as Contract<unknown, unknown, unknown>,
+  contract: {} as Contract<unknown, unknown>,
   mapData: <T>(v: T) => v,
 };
 

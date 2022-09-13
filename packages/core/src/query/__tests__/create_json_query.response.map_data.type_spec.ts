@@ -1,7 +1,7 @@
 import { createStore } from 'effector';
 import { expectType } from 'tsd';
 
-import { unkownContract } from '../../contract/unkown_contract';
+import { unknownContract } from '../../contract/unknown_contract';
 import { declareParams } from '../../misc/params';
 import { createJsonQuery } from '../create_json_query';
 
@@ -9,7 +9,7 @@ import { createJsonQuery } from '../create_json_query';
 createJsonQuery({
   request: { url: 'http://api.salo.com', method: 'GET' as const },
   response: {
-    contract: unkownContract,
+    contract: unknownContract,
     mapData: (data, params) => {
       expectType<unknown>(data);
       expectType<string>(params);
@@ -23,7 +23,7 @@ createJsonQuery({
 createJsonQuery({
   request: { url: 'http://api.salo.com', method: 'GET' as const },
   response: {
-    contract: unkownContract,
+    contract: unknownContract,
     mapData: {
       source: createStore(12),
       fn: (data, params, source) => {
