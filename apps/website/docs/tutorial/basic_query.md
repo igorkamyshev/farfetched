@@ -89,8 +89,8 @@ const Character = () => {
 
   return (
     <Suspense fallback="Loading...">
-      <h1>{character.name}</h1>
-      <img src={character.image} />
+      <h1>{character()?.name}</h1>
+      <img src={character()?.image} />
     </Suspense>
   );
 };
