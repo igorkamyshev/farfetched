@@ -9,10 +9,10 @@ Creates static connection between [_Queries_](../primitives/query.md). Every tim
 This form is used for `target` [_Query_](../primitives/query.md) without parameters. It does not pass any data to `target`.
 
 ```ts
-const languagesQuery: Query<unkown, unkown, unkown>;
-const blocksQuery: Query<unkown, unkown, unkown>;
+const languagesQuery: Query<unknown, unknown, unknown>;
+const blocksQuery: Query<unknown, unknown, unknown>;
 
-const contentQuery: Query<void, unkown, unkown>;
+const contentQuery: Query<void, unknown, unknown>;
 
 connectQuery({
   source: { language: languagesQuery, blocks: blocksQuery },
@@ -27,10 +27,10 @@ This form is used for `target` [_Query_](../primitives/query.md) with parameters
 - `params` — data that is used to start `target` [_Query_](../primitives/query.md)
 
 ```ts
-const blocksQuery: Query<unkown, string, unkown>;
-const blocksQuery: Query<unkown, string[], unkown>;
+const blocksQuery: Query<unknown, string, unknown>;
+const blocksQuery: Query<unknown, string[], unknown>;
 
-const contentQuery: Query<{ language: string; ids: string[] }, unkown, unkown>;
+const contentQuery: Query<{ language: string; ids: string[] }, unknown, unknown>;
 
 connectQuery({
   source: { language: languagesQuery, blocks: blocksQuery },

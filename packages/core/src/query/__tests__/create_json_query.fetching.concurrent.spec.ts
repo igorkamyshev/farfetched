@@ -7,7 +7,7 @@ import { setTimeout } from 'timers/promises';
 
 import { fetchFx } from '../../fetch/fetch';
 import { createJsonQuery } from '../create_json_query';
-import { unkownContract } from '../../contract/unkown_contract';
+import { unknownContract } from '../../contract/unknown_contract';
 import { abortError } from '../../errors/create_error';
 
 describe('remote_data/query/json.fetching.concurrent', () => {
@@ -17,7 +17,7 @@ describe('remote_data/query/json.fetching.concurrent', () => {
         url: 'http://api.salo.com',
         method: 'GET' as const,
       },
-      response: { contract: unkownContract },
+      response: { contract: unknownContract },
     });
 
     const firstResponse = { first: 1 };

@@ -7,7 +7,7 @@ import {
 import { Query } from './type';
 import { InvalidConfigException } from '../misc/config';
 import { Contract } from '../contract/type';
-import { unkownContract } from '../contract/unkown_contract';
+import { unknownContract } from '../contract/unknown_contract';
 import { identity } from '../misc/identity';
 import { TwoArgsDynamicallySourcedField } from '../misc/sourced';
 import { InvalidDataError } from '../errors/type';
@@ -108,7 +108,7 @@ function createQuery<
     MapDataSource,
     ValidationSource
   >({
-    contract: config.contract ?? unkownContract,
+    contract: config.contract ?? unknownContract,
     mapData: config.mapData ?? identity,
     enabled: config.enabled,
     validate: config.validate,

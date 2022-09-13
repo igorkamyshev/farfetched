@@ -2,7 +2,7 @@ import { allSettled, createStore, fork } from 'effector';
 
 import { createJsonQuery } from '../create_json_query';
 import { declareParams } from '../../misc/params';
-import { unkownContract } from '../../contract/unkown_contract';
+import { unknownContract } from '../../contract/unknown_contract';
 
 describe('remote_data/query/json.request.body', () => {
   // Other cases of sourced types are covered in sourced tests
@@ -23,7 +23,7 @@ describe('remote_data/query/json.request.body', () => {
           },
         },
       },
-      response: { contract: unkownContract },
+      response: { contract: unknownContract },
     });
 
     const scope = fork({ handlers: [[query.__.executeFx, fetchMock]] });

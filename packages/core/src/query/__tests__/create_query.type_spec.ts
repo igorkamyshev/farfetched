@@ -2,7 +2,7 @@ import { createEffect, createStore } from 'effector';
 import { expectType } from 'tsd';
 
 import { Contract } from '../../contract/type';
-import { unkownContract } from '../../contract/unkown_contract';
+import { unknownContract } from '../../contract/unknown_contract';
 import { InvalidDataError } from '../../errors/type';
 import { createQuery } from '../create_query';
 import { Query } from '../type';
@@ -103,7 +103,7 @@ effect_mapData: {
 effect_contarct_mapData: {
   const toNumberQuery = createQuery({
     effect: createEffect(() => 12 as unknown),
-    contract: unkownContract,
+    contract: unknownContract,
     mapData: () => 12,
   });
 
@@ -111,7 +111,7 @@ effect_contarct_mapData: {
 
   const toSourceQuery = createQuery({
     effect: createEffect(() => 12 as unknown),
-    contract: unkownContract,
+    contract: unknownContract,
     mapData: {
       source: createStore(12),
       fn: (data: unknown, params: void, source: number): string => 'string',

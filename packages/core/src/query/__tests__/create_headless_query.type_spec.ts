@@ -1,7 +1,7 @@
 import { createStore } from 'effector';
 import { expectType } from 'tsd';
 import { Contract } from '../../contract/type';
-import { unkownContract } from '../../contract/unkown_contract';
+import { unknownContract } from '../../contract/unknown_contract';
 
 import { createHeadlessQuery } from '../create_headless_query';
 import { Query } from '../type';
@@ -28,14 +28,14 @@ contract: {
 
 mapData_callback: {
   const numberQuery = createHeadlessQuery({
-    contract: unkownContract,
+    contract: unknownContract,
     mapData: (data, params) => 12,
   });
 
   expectType<Query<unknown, number, unknown>>(numberQuery);
 
   const objectQuery = createHeadlessQuery({
-    contract: unkownContract,
+    contract: unknownContract,
     mapData: (data, params) => ({ response: 12 }),
   });
 
@@ -44,7 +44,7 @@ mapData_callback: {
 
 mapData_callback_source: {
   const numberQuery = createHeadlessQuery({
-    contract: unkownContract,
+    contract: unknownContract,
     mapData: {
       source: createStore(0),
       fn: (data, params, source) => {
@@ -57,7 +57,7 @@ mapData_callback_source: {
   expectType<Query<unknown, number, unknown>>(numberQuery);
 
   const objectQuery = createHeadlessQuery({
-    contract: unkownContract,
+    contract: unknownContract,
     mapData: {
       source: createStore({ response: 12 }),
       fn: (data, params, source) => {

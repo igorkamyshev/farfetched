@@ -15,7 +15,7 @@ import {
   createHeadlessQuery,
   SharedQueryFactoryConfig,
 } from './create_headless_query';
-import { unkownContract } from '../contract/unkown_contract';
+import { unknownContract } from '../contract/unknown_contract';
 import { identity } from '../misc/identity';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
@@ -198,7 +198,7 @@ function createJsonQuery(config: any) {
     any,
     any
   >({
-    contract: config.response.contract ?? unkownContract,
+    contract: config.response.contract ?? unknownContract,
     mapData: config.response.mapData ?? identity,
     validate: config.response.validate,
     enabled: config.enabled,

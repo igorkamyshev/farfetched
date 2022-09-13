@@ -2,7 +2,7 @@ import { allSettled, createStore, fork } from 'effector';
 
 import { createJsonQuery } from '../create_json_query';
 import { declareParams } from '../../misc/params';
-import { unkownContract } from '../../contract/unkown_contract';
+import { unknownContract } from '../../contract/unknown_contract';
 
 describe('remote_data/query/json.request.url', () => {
   // Other cases of sourced types are covered in sourced tests
@@ -12,7 +12,7 @@ describe('remote_data/query/json.request.url', () => {
     const $source = createStore(12);
 
     const query = createJsonQuery({
-      response: { contract: unkownContract },
+      response: { contract: unknownContract },
       request: {
         method: 'GET' as const,
         url: {

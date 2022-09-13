@@ -3,12 +3,12 @@ import { expectType } from 'tsd';
 
 import { createJsonQuery } from '../create_json_query';
 import { declareParams } from '../../misc/params';
-import { unkownContract } from '../../contract/unkown_contract';
+import { unknownContract } from '../../contract/unknown_contract';
 
 no_params: {
   // callback
   createJsonQuery({
-    response: { contract: unkownContract },
+    response: { contract: unknownContract },
     request: {
       method: 'GET' as const,
       url: (p) => {
@@ -20,7 +20,7 @@ no_params: {
 
   // Store
   createJsonQuery({
-    response: { contract: unkownContract },
+    response: { contract: unknownContract },
     request: {
       method: 'GET' as const,
       url: createStore('http://api.salo.com'),
@@ -29,7 +29,7 @@ no_params: {
 
   // Store and callback
   createJsonQuery({
-    response: { contract: unkownContract },
+    response: { contract: unknownContract },
     request: {
       method: 'GET' as const,
       url: {
@@ -48,7 +48,7 @@ params_no_mapData: {
   // Callback
   createJsonQuery({
     params: declareParams<string>(),
-    response: { contract: unkownContract },
+    response: { contract: unknownContract },
     request: {
       method: 'GET' as const,
       url: (params) => {
@@ -61,7 +61,7 @@ params_no_mapData: {
   // Store
   createJsonQuery({
     params: declareParams<string>(),
-    response: { contract: unkownContract },
+    response: { contract: unknownContract },
     request: {
       method: 'GET' as const,
       url: createStore('http://api.salo.com'),
@@ -71,7 +71,7 @@ params_no_mapData: {
   // Callback + store
   createJsonQuery({
     params: declareParams<string>(),
-    response: { contract: unkownContract },
+    response: { contract: unknownContract },
     request: {
       method: 'GET' as const,
       url: {

@@ -3,7 +3,7 @@ import { setTimeout } from 'timers/promises';
 import { watchQuery } from '@farfetched/test-utils';
 import { createDefer } from '@farfetched/misc';
 
-import { unkownContract } from '../../contract/unkown_contract';
+import { unknownContract } from '../../contract/unknown_contract';
 import { createJsonQuery } from '../create_json_query';
 
 describe('remote_data/query/json.response.success', () => {
@@ -20,7 +20,7 @@ describe('remote_data/query/json.response.success', () => {
 
     const query = createJsonQuery({
       request,
-      response: { contract: unkownContract },
+      response: { contract: unknownContract },
     });
 
     const fetchMock = jest.fn(() => requestDefer.promise);
@@ -59,7 +59,7 @@ describe('remote_data/query/json.response.success', () => {
     const query = createJsonQuery({
       request,
       response: {
-        contract: unkownContract,
+        contract: unknownContract,
         mapData() {
           return mapped;
         },
@@ -89,7 +89,7 @@ describe('remote_data/query/json.response.success', () => {
 
     const query = createJsonQuery({
       request,
-      response: { contract: unkownContract },
+      response: { contract: unknownContract },
     });
 
     const fetchMock = jest

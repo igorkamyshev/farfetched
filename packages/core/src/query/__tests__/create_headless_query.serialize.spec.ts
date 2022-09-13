@@ -1,11 +1,11 @@
 import { allSettled, fork, serialize } from 'effector';
-import { unkownContract } from '../../contract/unkown_contract';
+import { unknownContract } from '../../contract/unknown_contract';
 import { identity } from '../../misc/identity';
 import { withFactory } from '../../misc/sid';
 import { createHeadlessQuery } from '../create_headless_query';
 
 describe('core/createHeadlessQuery with serialize', () => {
-  const defaultConfig = { contract: unkownContract, mapData: identity };
+  const defaultConfig = { contract: unknownContract, mapData: identity };
   const defaultHandler = () => 'Random string';
 
   test('ignore all stores in serialization with "ignore" value', async () => {

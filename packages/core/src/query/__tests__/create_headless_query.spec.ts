@@ -4,13 +4,13 @@ import { watchQuery } from '@farfetched/test-utils';
 import { createDefer } from '@farfetched/misc';
 
 import { createHeadlessQuery } from '../create_headless_query';
-import { unkownContract } from '../../contract/unkown_contract';
+import { unknownContract } from '../../contract/unknown_contract';
 import { identity } from '../../misc/identity';
 import { invalidDataError } from '../../errors/create_error';
 
 describe('core/createHeadlessQuery without contract', () => {
   const query = createHeadlessQuery({
-    contract: unkownContract,
+    contract: unknownContract,
     mapData: identity,
   });
 
@@ -305,7 +305,7 @@ describe('core/createHeadlessQuery with contract and', () => {
     const mappedData = Symbol('mappedData');
 
     const query = createHeadlessQuery({
-      contract: unkownContract,
+      contract: unknownContract,
       mapData(data, params) {
         expect(data).toBe(rawRata);
         expect(params).toBe(passedParams);
@@ -328,7 +328,7 @@ describe('core/createHeadlessQuery with contract and', () => {
     const mappedData = Symbol('mappedData');
 
     const query = createHeadlessQuery({
-      contract: unkownContract,
+      contract: unknownContract,
       mapData: {
         source: $source,
         fn: (data, params, source) => {
@@ -351,7 +351,7 @@ describe('core/createHeadlessQuery with contract and', () => {
 describe('core/createHeadlessQuery enabled', () => {
   test('enabled by default', () => {
     const query = createHeadlessQuery({
-      contract: unkownContract,
+      contract: unknownContract,
       mapData: identity,
     });
 
@@ -362,7 +362,7 @@ describe('core/createHeadlessQuery enabled', () => {
 
   test('skip execution on disabled query', async () => {
     const query = createHeadlessQuery({
-      contract: unkownContract,
+      contract: unknownContract,
       mapData: identity,
       enabled: false,
     });

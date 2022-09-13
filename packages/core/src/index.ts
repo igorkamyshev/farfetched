@@ -1,5 +1,5 @@
 export { type Contract } from './contract/type';
-export { unkownContract } from './contract/unkown_contract';
+export { unknownContract } from './contract/unknown_contract';
 
 export { type Query } from './query/type';
 export { createQuery } from './query/create_query';
