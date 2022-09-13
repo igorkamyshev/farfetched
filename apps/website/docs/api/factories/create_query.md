@@ -52,16 +52,14 @@ Creates [_Query_](/api/primitives/query) based on given [_Effect_](https://effec
 const languagesQuery = createQuery({
   effect: fetchLanguagesFx,
   contarct: {
-    data: {
-      // Our API can return empty array of languages, we consider it as an invalid data
-      validate: (response) => response.languages?.length > 0,
-      extarct: (response) => response.languages,
-    },
-    error: {
-      // Our API can return array on internal errors, we consider it as an error
-      is: (response) => response.errors?.length > 0,
-      extract: (response) => response.errors,
-    },
+    // Our API can return empty array of languages, we consider it as an invalid data
+    isData: (response) => response.languages?.length > 0,
+    // Array with description of reasons why data is invalid
+    getErrorMessages: (response) => [
+      'Expected array with at least one language, but got empty array',
+    ],
+    // Our API can return array on internal errors, we consider it as an error
+    isError: (response) => response.errors?.length > 0,
   },
 });
 
