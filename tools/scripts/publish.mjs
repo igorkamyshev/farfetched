@@ -28,6 +28,7 @@ const originalPackageJson = readJsonFile(`package.json`);
 writeJsonFile('package.json', {
   ...originalPackageJson,
   publishConfig: { access: 'public' },
+  license: 'MIT',
 });
 
 const { version } = originalPackageJson;
