@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "type": "commonjs",
   "dependencies": {
-    "patronum": "^1.10.2"
+    "patronum": "^1.10.2",
+    "@farfetched/misc": "0.1.0"
   },
   "peerDependencies": {
     "effector": "^22.3.0"
