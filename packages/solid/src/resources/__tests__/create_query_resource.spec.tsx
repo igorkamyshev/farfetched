@@ -5,7 +5,7 @@
 import { allSettled, fork, scopeBind } from 'effector';
 import { ErrorBoundary, Suspense } from 'solid-js/web';
 import { render, cleanup, screen } from 'solid-testing-library';
-import { Provider } from 'effector-solid/scope';
+import { Provider } from 'effector-solid';
 import { createQuery } from '@farfetched/core';
 import { allPrevSettled } from '@farfetched/test-utils';
 import { createDefer } from '@farfetched/misc';
