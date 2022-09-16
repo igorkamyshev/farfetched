@@ -129,8 +129,10 @@ importers:
 
   packages/core:
     specifiers:
+      '@farfetched/misc': 0.1.0
       patronum: ^1.10.2
     dependencies:
+      '@farfetched/misc': link:../misc
       patronum: 1.10.2
 
   packages/misc:
@@ -147,8 +149,10 @@ importers:
 
   packages/solid:
     specifiers:
+      '@farfetched/misc': 0.1.0
       effector-solid: ^0.22.6
     dependencies:
+      '@farfetched/misc': link:../misc
       effector-solid: 0.22.6
 
   packages/test-utils:
