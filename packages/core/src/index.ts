@@ -10,9 +10,15 @@ export { createJsonQuery } from './query/create_json_query';
 export { retry } from './retry/retry';
 export { exponentialDelay, linearDelay } from './retry/delay';
 
-export { declareParams } from './misc/params';
+export { declareParams, type ParamsDeclaration } from './misc/params';
+export {
+  TwoArgsDynamicallySourcedField,
+  SourcedField,
+  normalizeSourced,
+  reduceTwoArgs,
+} from './misc/sourced';
 
-export { type Json } from './fetch/json';
+export { type Json, type JsonObject } from './fetch/json';
 
 export {
   type FarfetchedError,
