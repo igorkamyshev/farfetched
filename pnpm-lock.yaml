@@ -35,8 +35,8 @@ importers:
       bytes-iec: ^3.1.1
       core-js: ^3.6.5
       effector: ^22.3.0
-      effector-react: 22.1.2
-      effector-solid: 0.22.1
+      effector-react: 22.2.0
+      effector-solid: 0.22.6
       eslint: ~8.15.0
       eslint-config-prettier: 8.1.0
       eslint-plugin-import: 2.26.0
@@ -66,10 +66,10 @@ importers:
       whatwg-fetch: ^3.6.2
     dependencies:
       atomic-router: 0.6.1_lniv3l6uwnwrnqegjt3aw34cdi
-      atomic-router-solid: 0.5.1_2z4fxlvjaeos7oawwpq6n3swde
+      atomic-router-solid: 0.5.1_wjargvxlcep67hmn6yfbmn22y4
       core-js: 3.23.3
-      effector-react: 22.1.2_fqnc2pqlfbgfkkbezvfttjatja
-      effector-solid: 0.22.1_gy47fnhyujeuzimuk7mxzluzxe
+      effector-react: 22.2.0_fqnc2pqlfbgfkkbezvfttjatja
+      effector-solid: 0.22.6_gy47fnhyujeuzimuk7mxzluzxe
       history: 5.3.0
       patronum: 1.10.2_effector@22.3.0
       react: 18.2.0
@@ -138,18 +138,18 @@ importers:
 
   packages/react:
     specifiers:
-      effector-react: ^22.1.2
+      effector-react: ^22.2.0
     dependencies:
-      effector-react: 22.1.2
+      effector-react: 22.2.0
 
   packages/runtypes:
     specifiers: {}
 
   packages/solid:
     specifiers:
-      effector-solid: ^0.22.2
+      effector-solid: ^0.22.6
     dependencies:
-      effector-solid: 0.22.2
+      effector-solid: 0.22.6
 
   packages/test-utils:
     specifiers: {}
@@ -4318,7 +4318,7 @@ packages:
     hasBin: true
     dev: true
 
-  /atomic-router-solid/0.5.1_2z4fxlvjaeos7oawwpq6n3swde:
+  /atomic-router-solid/0.5.1_wjargvxlcep67hmn6yfbmn22y4:
     resolution: {integrity: sha512-Du+LjjxeRA9h/JmHn3A9Ad3wRjhLFqz256TPg9YX3xkV9fK7eqOOyELntlo/MwL+RLagnvculBVuJwD1r6KbKQ==}
     peerDependencies:
       atomic-router: ~0.4.3
@@ -4330,7 +4330,7 @@ packages:
       atomic-router: 0.6.1_lniv3l6uwnwrnqegjt3aw34cdi
       classcat: 5.0.3
       effector: 22.3.0
-      effector-solid: 0.22.1_gy47fnhyujeuzimuk7mxzluzxe
+      effector-solid: 0.22.6_gy47fnhyujeuzimuk7mxzluzxe
       history: 5.3.0
       solid-js: 1.4.7
     dev: false
@@ -5565,8 +5565,8 @@ packages:
     resolution: {integrity: sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=}
     dev: true
 
-  /effector-react/22.1.2:
-    resolution: {integrity: sha512-JPq0fyoJlWM5rKSTm1Vt5pFoWRoaNI3J3eK/5t4PJOeh4ikP0/H+AknsHXx2z0O9Zq2l3LPs86/w9ZrcbFMkPg==}
+  /effector-react/22.2.0:
+    resolution: {integrity: sha512-Hs9iXP9wJRnTH2IKjM+7GyOjGy9Tt9v5Knl9NylPORgBMVjxjQvw9OmjayHC+T9ibqgLw8AP+N/pe/5L4qiC4g==}
     engines: {node: '>=11.0.0'}
     peerDependencies:
       effector: ^22.0.2
@@ -5575,8 +5575,8 @@ packages:
       use-sync-external-store: 1.2.0
     dev: false
 
-  /effector-react/22.1.2_fqnc2pqlfbgfkkbezvfttjatja:
-    resolution: {integrity: sha512-JPq0fyoJlWM5rKSTm1Vt5pFoWRoaNI3J3eK/5t4PJOeh4ikP0/H+AknsHXx2z0O9Zq2l3LPs86/w9ZrcbFMkPg==}
+  /effector-react/22.2.0_fqnc2pqlfbgfkkbezvfttjatja:
+    resolution: {integrity: sha512-Hs9iXP9wJRnTH2IKjM+7GyOjGy9Tt9v5Knl9NylPORgBMVjxjQvw9OmjayHC+T9ibqgLw8AP+N/pe/5L4qiC4g==}
     engines: {node: '>=11.0.0'}
     peerDependencies:
       effector: ^22.0.2
@@ -5587,8 +5587,16 @@ packages:
       use-sync-external-store: 1.2.0_react@18.2.0
     dev: false
 
-  /effector-solid/0.22.1_gy47fnhyujeuzimuk7mxzluzxe:
-    resolution: {integrity: sha512-ltpA9dJMOCXWdDo67bvCzykpXMpWx4dmvFDPkRN5quhH5fEg4Q62yE4u3gBWCC1B5EShBFJSTRgkiPtwEeHrzg==}
+  /effector-solid/0.22.6:
+    resolution: {integrity: sha512-cjxjnHA8vJbDHV323vCpZIhRgBE/RLojkgiOx9btpXofEQVNW9mQp5Ci74hnk8Csgo3Bt4IFtoUFBB6RZV/ePw==}
+    engines: {node: '>=11.0.0'}
+    peerDependencies:
+      effector: ^22.0.2
+      solid-js: '>= 1.3.0'
+    dev: false
+
+  /effector-solid/0.22.6_gy47fnhyujeuzimuk7mxzluzxe:
+    resolution: {integrity: sha512-cjxjnHA8vJbDHV323vCpZIhRgBE/RLojkgiOx9btpXofEQVNW9mQp5Ci74hnk8Csgo3Bt4IFtoUFBB6RZV/ePw==}
     engines: {node: '>=11.0.0'}
     peerDependencies:
       effector: ^22.0.2
@@ -5596,14 +5604,6 @@ packages:
     dependencies:
       effector: 22.3.0
       solid-js: 1.4.7
-    dev: false
-
-  /effector-solid/0.22.2:
-    resolution: {integrity: sha512-HwbPuEaMSpzYGmdEu3TdGD26MgYkVcpb05AQM3lY1yubmnzAsEG1Ml8iSXf0v6Ttq85vGttpQ8JGakfpm2MWNg==}
-    engines: {node: '>=11.0.0'}
-    peerDependencies:
-      effector: ^22.0.2
-      solid-js: '>= 1.3.0'
     dev: false
 
   /effector/22.3.0:
