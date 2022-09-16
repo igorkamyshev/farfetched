@@ -129,7 +129,7 @@ importers:
 
   packages/core:
     specifiers:
-      '@farfetched/misc': 0.1.0
+      '@farfetched/misc': 0.1.1
       patronum: ^1.10.2
     dependencies:
       '@farfetched/misc': link:../misc
@@ -149,7 +149,7 @@ importers:
 
   packages/solid:
     specifiers:
-      '@farfetched/misc': 0.1.0
+      '@farfetched/misc': 0.1.1
       effector-solid: ^0.22.6
     dependencies:
       '@farfetched/misc': link:../misc
