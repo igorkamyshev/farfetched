@@ -41,6 +41,8 @@ const originQuery = createQuery({
 Now, we have to connect these [Queries](/api/primitives/query) to establish static relationship between them.
 
 ```ts
+import { connectQuery } from '@farfetched/core';
+
 connectQuery({
   source: characterQuery,
   fn(character) {

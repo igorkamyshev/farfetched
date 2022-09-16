@@ -4,7 +4,7 @@ If your project already uses [Babel](https://babeljs.io/), you do not have to in
 
 ```json
 {
-  "plugins": [["effector/babel-plugin", { "factories": "@farfetched/core" }]]
+  "plugins": [["effector/babel-plugin", { "factories": ["@farfetched/core"] }]]
 }
 ```
 

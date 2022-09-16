@@ -18,6 +18,8 @@ Farfetched provides a set of tools to make retries easy and flexible. Let's take
 To retry a [_Query_](/api/primitives/query), we can use the `retry` operator. It takes a [_Query_](/api/primitives/query) itself, number of retries and delay between them. After any error, it will retry the [_Query_](/api/primitives/query) after the specified delay.
 
 ```ts
+import { retry } from '@farfetched/core';
+
 retry({
   // let's retry our characterQuery
   query: characterQuery,
@@ -39,6 +41,8 @@ As soon as Farfetched is [based on Effector](/statements/effector), almost every
 Sometimes, we want to retry only specific errors. For example, we want to retry only 500 errors, but not others. To do this, we can use the `filter` option of the `retry` operator.
 
 ```ts
+import { isHttpErrorCode } from '@farfetched/core';
+
 retry({
   query: characterQuery,
   times: 5,
@@ -106,6 +110,8 @@ Even though static `delay` is also supported, we recommend considering using dyn
 The most common cases for dynamic delay are linear or exponential back off. Farfetched provides a set of helpers to implement them.
 
 ```ts
+import { linearDelay, exponentialDelay } from '@farfetched/core';
+
 retry({
   query: characterQuery,
   times: 5,

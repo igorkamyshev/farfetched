@@ -21,6 +21,8 @@ A lot of modern APIs works with JSON. It accepts JSON as input and returns JSON 
 Let's start with an example, and then we'll explain what's going on.
 
 ```ts
+import { createJsonQuery } from '@farfetched/core';
+
 const characterQuery = createJsonQuery({
   params: declareParams<{ id: number }>(),
   request: {

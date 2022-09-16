@@ -29,6 +29,8 @@ Farfetched does not restrict [Query](/api/primitives/query) creation process, so
 The basic overload of this factory accepts only a handler function:
 
 ```ts
+import { createQuery } from '@farfetched/core';
+
 const myFirstQuery = createQuery({
   handler: async (params) => {
     // TODO: write handler here
@@ -84,6 +86,8 @@ Farfetched provided a set of nice integrations to subscribe on [Query](/api/prim
 In Solid, you can use [`createQueryResource`](/integrations/solid/api/create-query-resource) to create a resource that will subscribe on [Query](/api/primitives/query) and provide its data to the component:
 
 ```tsx
+import { createQueryResource } from '@farfetched/solid';
+
 const Character = () => {
   const [character] = createQueryResource(characterQuery);
 
@@ -103,6 +107,8 @@ const Character = () => {
 In React, you can use [`useQuery`](/integrations/react/api/use_query) hook to subscribe on [Query](/api/primitives/query) and get its data:
 
 ```tsx
+import { useQuery } from '@farfetched/react';
+
 const Character = () => {
   const { data: character } = useQuery(characterQuery);
 

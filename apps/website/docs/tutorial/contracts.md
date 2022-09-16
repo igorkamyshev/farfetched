@@ -31,6 +31,8 @@ If you are using TypeScript, `isData` function has to be [type predicate](https:
 Of course, you can create your own [_Contract_](/api/primitives/contract) by hand, let's create a simple one together.
 
 ```ts
+import { type Contract } from '@farfetched/core';
+
 const numberContract: Contract<
   unknown, // it take some unknown data
   number // and returns number if it is valid
