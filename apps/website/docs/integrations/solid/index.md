@@ -1,23 +1,23 @@
 # Farfetched and Solid
 
-Integration is distributed as a separate package, you have to install it before usage
+Integration is distributed as a separate package, you have to install it and its peer dependency before usage:
 
 with `pnpm`
 
 ```sh
-pnpm install @farfecthed/solid
+pnpm install @farfetched/solid effector-solid
 ```
 
 with `yarn`
 
 ```sh
-yarn add @farfecthed/solid
+yarn add @farfetched/solid effector-solid
 ```
 
 with `npm`
 
 ```sh
-npm install @farfecthed/solid
+npm install @farfetched/solid effector-solid
 ```
 
 ## Showcases
