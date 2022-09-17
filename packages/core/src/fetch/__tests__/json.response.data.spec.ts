@@ -1,6 +1,3 @@
-// TODO: jest-28
-import 'whatwg-fetch';
-
 import { watchEffect } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
 

@@ -51,7 +51,7 @@
     "eslint-plugin-react-hooks": "4.6.0",
     "glob": "^8.0.3",
     "jest": "28.1.3",
-    "jest-environment-jsdom": "^29.0.3",
+    "jest-environment-jsdom": "^28",
     "nx": "14.7.5",
     "prettier": "^2.6.2",
     "react-test-renderer": "18.2.0",
@@ -62,8 +62,7 @@
     "tsd": "^0.22.0",
     "typescript": "~4.7.2",
     "vitepress": "1.0.0-alpha.10",
-    "vue": "^3.2.37",
-    "whatwg-fetch": "^3.6.2"
+    "vue": "^3.2.37"
   },
   "dependencies": {
     "atomic-router": "^0.6.1",
