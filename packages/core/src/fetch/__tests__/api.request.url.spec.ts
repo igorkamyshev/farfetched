@@ -1,6 +1,3 @@
-// TODO: jest-28
-import 'whatwg-fetch';
-
 import { allSettled, createStore, fork } from 'effector';
 
 import { createApiRequest } from '../api';
@@ -32,7 +29,7 @@ describe('fetch/api.request.url', () => {
       params: { url: 'https://api.salo.com' },
     });
 
-    expect(fetchMock.mock.calls[0][0].url).toEqual('https://api.salo.com');
+    expect(fetchMock.mock.calls[0][0].url).toEqual('https://api.salo.com/');
   });
 
   test('pass static url on creation to request', async () => {
@@ -47,7 +44,7 @@ describe('fetch/api.request.url', () => {
 
     await allSettled(callApiFx, { scope, params: {} });
 
-    expect(fetchMock.mock.calls[0][0].url).toEqual('https://api.salo.com');
+    expect(fetchMock.mock.calls[0][0].url).toEqual('https://api.salo.com/');
   });
 
   test('pass reactive url on creation to request', async () => {
@@ -64,11 +61,11 @@ describe('fetch/api.request.url', () => {
 
     // with original value
     await allSettled(callApiFx, { scope, params: {} });
-    expect(fetchMock.mock.calls[0][0].url).toEqual('https://api.salo.com');
+    expect(fetchMock.mock.calls[0][0].url).toEqual('https://api.salo.com/');
 
     // with new value
     await allSettled($url, { scope, params: 'https://new-api.salo.com' });
     await allSettled(callApiFx, { scope, params: {} });
-    expect(fetchMock.mock.calls[1][0].url).toEqual('https://new-api.salo.com');
+    expect(fetchMock.mock.calls[1][0].url).toEqual('https://new-api.salo.com/');
   });
 });

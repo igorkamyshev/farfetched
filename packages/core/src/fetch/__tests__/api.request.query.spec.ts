@@ -1,6 +1,3 @@
-// TODO: jest-28
-import 'whatwg-fetch';
-
 import { allSettled, createStore, fork } from 'effector';
 
 import { createApiRequest } from '../api';
@@ -32,7 +29,7 @@ describe('fetch/api.request.query', () => {
       params: { query: { foo: 'bar' } },
     });
 
-    expect(fetchMock.mock.calls[0][0].url).toEqual(`${url}?foo=bar`);
+    expect(fetchMock.mock.calls[0][0].url).toEqual(`${url}/?foo=bar`);
   });
 
   test('pass static query on creation to request', async () => {
@@ -53,7 +50,7 @@ describe('fetch/api.request.query', () => {
 
     await allSettled(callApiFx, { scope, params: {} });
 
-    expect(fetchMock.mock.calls[0][0].url).toEqual(`${url}?test=yes`);
+    expect(fetchMock.mock.calls[0][0].url).toEqual(`${url}/?test=yes`);
   });
 
   test('pass reactive query on creation to request', async () => {
@@ -70,7 +67,7 @@ describe('fetch/api.request.query', () => {
 
     // with original value
     await allSettled(callApiFx, { scope, params: {} });
-    expect(fetchMock.mock.calls[0][0].url).toEqual(`${url}?test=value`);
+    expect(fetchMock.mock.calls[0][0].url).toEqual(`${url}/?test=value`);
 
     // with new value
     await allSettled($query, {
@@ -78,7 +75,7 @@ describe('fetch/api.request.query', () => {
       params: { other: 'new' },
     });
     await allSettled(callApiFx, { scope, params: {} });
-    expect(fetchMock.mock.calls[1][0].url).toEqual(`${url}?other=new`);
+    expect(fetchMock.mock.calls[1][0].url).toEqual(`${url}/?other=new`);
   });
 
   test('merge sttaic and dynamic queries', async () => {
@@ -105,7 +102,7 @@ describe('fetch/api.request.query', () => {
     });
 
     expect(fetchMock.mock.calls[0][0].url).toEqual(
-      `${url}?static=one&shared=static&shared=dynamic&dynamic=two`
+      `${url}/?static=one&shared=static&shared=dynamic&dynamic=two`
     );
   });
 });

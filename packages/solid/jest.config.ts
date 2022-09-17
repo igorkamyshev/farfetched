@@ -3,7 +3,10 @@ export default {
   displayName: 'solid',
   preset: '../../jest.preset.js',
   transform: {
-    '^.+\\.[tj]sx?$': 'babel-jest',
+    '^.+\\.[tj]sx?$': [
+      'babel-jest',
+      { presets: ['@nrwl/react/babel', 'solid'] },
+    ],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/packages/solid',

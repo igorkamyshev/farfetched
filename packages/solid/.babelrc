@@ -1,6 +1,3 @@
 {
-  "presets": [
-    ["@nrwl/web/babel", { "useBuiltIns": "usage" }],
-    "babel-preset-solid"
-  ]
+  "presets": [["@nrwl/web/babel", { "useBuiltIns": "usage" }], "solid"]
 }

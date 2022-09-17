@@ -1,6 +1,3 @@
-// TODO: jest-28
-import 'whatwg-fetch';
-
 import { allSettled, createStore, fork } from 'effector';
 
 import { createApiRequest } from '../api';
