@@ -1,23 +1,23 @@
 # Farfetched and React
 
-Integration is distributed as a separate package, you have to install it before usage
+Integration is distributed as a separate package, you have to install it and its peer dependency before usage:
 
 with `pnpm`
 
 ```sh
-pnpm install @farfecthed/react
+pnpm install @farfetched/react effector-react
 ```
 
 with `yarn`
 
 ```sh
-yarn add @farfecthed/react
+yarn add @farfetched/react effector-react
 ```
 
 with `npm`
 
 ```sh
-npm install @farfecthed/react
+npm install @farfetched/react effector-react
 ```
 
 ## Showcases
