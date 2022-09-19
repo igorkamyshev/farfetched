@@ -1,5 +1,11 @@
 # @farfetched/react
 
+## 0.1.3
+
+### Patch Changes
+
+- 9793066: Use correct version of effector-react to use isomorphic hooks
+
 ## 0.1.2
 
 ### Patch Changes
