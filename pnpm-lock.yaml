@@ -35,7 +35,7 @@ importers:
       bytes-iec: ^3.1.1
       core-js: ^3.6.5
       effector: ^22.3.0
-      effector-react: 22.2.0
+      effector-react: 22.3.0
       effector-solid: 0.22.6
       eslint: ~8.15.0
       eslint-config-prettier: 8.1.0
@@ -68,7 +68,7 @@ importers:
       atomic-router: 0.6.1_lniv3l6uwnwrnqegjt3aw34cdi
       atomic-router-solid: 0.5.1_frdf5mb4dr74iirxrbmql2igsi
       core-js: 3.23.3
-      effector-react: 22.2.0_fqnc2pqlfbgfkkbezvfttjatja
+      effector-react: 22.3.0_fqnc2pqlfbgfkkbezvfttjatja
       effector-solid: 0.22.6_jcoqkqtdrvikgmisk7pu253p5e
       history: 5.3.0
       patronum: 1.10.2_effector@22.3.0
@@ -5448,8 +5448,8 @@ packages:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
     dev: true
 
-  /effector-react/22.2.0_fqnc2pqlfbgfkkbezvfttjatja:
-    resolution: {integrity: sha512-Hs9iXP9wJRnTH2IKjM+7GyOjGy9Tt9v5Knl9NylPORgBMVjxjQvw9OmjayHC+T9ibqgLw8AP+N/pe/5L4qiC4g==}
+  /effector-react/22.3.0_fqnc2pqlfbgfkkbezvfttjatja:
+    resolution: {integrity: sha512-gzYJRqX1YHW9n1B3l7bJlu9ZGQgxalH9xTZMo0vuZls5PHJ6J3ZRaWSvLuVXKtdKGWNjzykNb5VZQEK3sjLUtQ==}
     engines: {node: '>=11.0.0'}
     peerDependencies:
       effector: ^22.0.2
