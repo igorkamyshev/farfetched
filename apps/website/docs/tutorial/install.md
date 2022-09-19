@@ -15,19 +15,19 @@ First, you need to install Farfetched and its peer dependency:
 with `pnpm`
 
 ```sh
-pnpm install @farfecthed/core effector
+pnpm install @farfetched/core effector
 ```
 
 with `yarn`
 
 ```sh
-yarn add @farfecthed/core effector
+yarn add @farfetched/core effector
 ```
 
 with `npm`
 
 ```sh
-npm install @farfecthed/core effector
+npm install @farfetched/core effector
 ```
 
 :::info
