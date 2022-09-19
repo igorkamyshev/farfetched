@@ -1,6 +1,6 @@
 {
   "name": "@farfetched/react",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "peerDependencies": {
     "effector-react": "^22.3.0"
   }
