@@ -1,5 +1,17 @@
 # @farfetched/core
 
+## 1.1.2
+
+### Patch Changes
+
+- kjljkldsjf
+
+## 1.1.2
+
+### Patch Changes
+
+- kjljkldsjf
+
 ## 0.1.2
 
 ### Patch Changes

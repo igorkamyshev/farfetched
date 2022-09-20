@@ -61,8 +61,8 @@ export default {
             link: '/statements/',
           },
           {
-            text: 'Changelog',
-            link: '/changelog/',
+            text: 'Releases',
+            link: '/releases/',
           },
         ],
       },
@@ -234,16 +234,11 @@ export default {
           ],
         },
       ],
-      '/changelog': [
+      '/releases': [
         {
           text: 'Changelogs',
           collapsible: false,
-          items: [
-            { text: '@farfetchged/core', link: '/changelog/core' },
-            { text: '@farfetchged/solid', link: '/changelog/solid' },
-            { text: '@farfetchged/react', link: '/changelog/react' },
-            { text: '@farfetchged/runtypes', link: '/changelog/runtypes' },
-          ],
+          items: [{ text: 'v0.1 Samet Nangshe', link: '/releases/0-1' }],
         },
       ],
     },
