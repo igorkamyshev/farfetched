@@ -11,9 +11,9 @@ const Asteroid = Record({
   mass: Number,
 });
 
-const asteriodContarct = runtypeContract(Asteroid);
+const asteriodContract = runtypeContract(Asteroid);
 
-/* typeof asteriodContarct === Contarct<
+/* typeof asteriodContract === Contract<
  *   unknown, 👈 it accepts something unknown
  *   { type: 'asteriod', mass: number }, 👈 and validates if it is an asteroid
  * >
