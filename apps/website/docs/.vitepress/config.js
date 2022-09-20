@@ -38,11 +38,7 @@ export default {
         link: '/recipes/',
         activeMatch: '/recipes',
       },
-      {
-        text: 'Statements',
-        link: '/statements/',
-        activeMatch: '^/statements/',
-      },
+
       {
         text: 'Integrations',
         link: '/integrations/',
@@ -52,6 +48,23 @@ export default {
         text: 'API',
         link: '/api/',
         activeMatch: '^/api/',
+      },
+      {
+        text: 'More',
+        items: [
+          {
+            text: 'Roadmap',
+            link: '/roadmap',
+          },
+          {
+            text: 'Statements',
+            link: '/statements/',
+          },
+          {
+            text: 'Changelog',
+            link: '/changelog/',
+          },
+        ],
       },
     ],
     sidebar: {
@@ -218,6 +231,18 @@ export default {
             },
             { text: 'Testing', link: '/statements/tests' },
             { text: 'Effector', link: '/statements/effector' },
+          ],
+        },
+      ],
+      '/changelog': [
+        {
+          text: 'Changelogs',
+          collapsible: false,
+          items: [
+            { text: '@farfetchged/core', link: '/changelog/core' },
+            { text: '@farfetchged/solid', link: '/changelog/solid' },
+            { text: '@farfetchged/react', link: '/changelog/react' },
+            { text: '@farfetchged/runtypes', link: '/changelog/runtypes' },
           ],
         },
       ],
