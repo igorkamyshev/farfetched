@@ -122,9 +122,5 @@ function groupByLevel(targetLevel, data) {
 function getRelease(version) {
   const { major, minor } = parseSemVer(version);
 
-  if (major === 0) {
-    return `${major}.${minor}`;
-  }
-
-  return `${major}`;
+  return `${major}.${minor}`;
 }
