@@ -236,7 +236,7 @@ export default {
       ],
       '/releases': [
         {
-          text: 'Changelogs',
+          text: 'Releases',
           collapsible: false,
           items: [{ text: 'v0.1 Samet Nangshe', link: '/releases/0-1' }],
         },
