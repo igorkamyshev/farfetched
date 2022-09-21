@@ -99,7 +99,7 @@ effect_mapData: {
   expectType<Query<void, string, Error>>(toSourceQuery);
 }
 
-effect_contarct_mapData: {
+effect_contract_mapData: {
   const toNumberQuery = createQuery({
     effect: createEffect(() => 12 as unknown),
     contract: unknownContract,

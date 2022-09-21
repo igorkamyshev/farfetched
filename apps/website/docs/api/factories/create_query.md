@@ -51,7 +51,7 @@ Creates [_Query_](/api/primitives/query) based on given [_Effect_](https://effec
 ```ts
 const languagesQuery = createQuery({
   effect: fetchLanguagesFx,
-  contarct: {
+  contract: {
     // Our API can return empty array of languages, we consider it as an invalid data
     isData: (response) => response.languages?.length > 0,
     // Array with description of reasons why data is invalid
@@ -78,7 +78,7 @@ A valid data is passed to `mapData` callback as well as original parameters of t
 ```ts
 const languagesQuery = createQuery({
   effect: fetchLanguagesFx,
-  contarct: languagesContract,
+  contract: languagesContract,
   mapData(languages, params) {
     return {
       availableLanguages: languages,
@@ -105,7 +105,7 @@ const $minimalLanguagesCount = createStore(1);
 
 const languagesQuery = createQuery({
   effect: fetchLanguagesFx,
-  contarct: languagesContract,
+  contract: languagesContract,
   mapData: {
     // Current value of $minimalLanguagesCount will be passed to `fn` as a third argument
     source: $minimalLanguagesCount,
