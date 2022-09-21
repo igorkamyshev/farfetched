@@ -29,6 +29,10 @@ interface Query<Params, Data, Error> {
   $status: Store<FetchingStatus>;
   /** Is fetching in progress right now? */
   $pending: Store<boolean>;
+  /** Is fetching failed? */
+  $failed: Store<boolean>;
+  /** Is fetching succeeded? */
+  $succeeded: Store<boolean>;
   /**
    * Is query enabled?
    *
