@@ -8,12 +8,14 @@ Representation of a piece of remote data.
 const query: Query<Params, Data, Error>;
 
 // Stores
-query.$data; // Store<Data | null>;
-query.$error; // Store<Error | null>;
-query.$status; // Store<'initial' | 'pending' | 'done' | 'fail'>;
-query.$pending; // Store<boolean>;
-query.$enabled; // Store<boolean>;
-query.$stale; // Store<boolean>;
+query.$data; // Store<Data | null>
+query.$error; // Store<Error | null>
+query.$status; // Store<'initial' | 'pending' | 'done' | 'fail'>
+query.$pending; // Store<boolean>
+query.$failed; // Store<boolean>, since v0.1.3
+query.$pending; // Store<boolean>, since v0.1.3
+query.$enabled; // Store<boolean>
+query.$stale; // Store<boolean>
 
 // Commands
 query.start; // Event<Params>;
