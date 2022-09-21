@@ -38,11 +38,7 @@ export default {
         link: '/recipes/',
         activeMatch: '/recipes',
       },
-      {
-        text: 'Statements',
-        link: '/statements/',
-        activeMatch: '^/statements/',
-      },
+
       {
         text: 'Integrations',
         link: '/integrations/',
@@ -52,6 +48,23 @@ export default {
         text: 'API',
         link: '/api/',
         activeMatch: '^/api/',
+      },
+      {
+        text: 'More',
+        items: [
+          {
+            text: 'Roadmap',
+            link: '/roadmap',
+          },
+          {
+            text: 'Statements',
+            link: '/statements/',
+          },
+          {
+            text: 'Releases',
+            link: '/releases/',
+          },
+        ],
       },
     ],
     sidebar: {
@@ -219,6 +232,13 @@ export default {
             { text: 'Testing', link: '/statements/tests' },
             { text: 'Effector', link: '/statements/effector' },
           ],
+        },
+      ],
+      '/releases': [
+        {
+          text: 'Releases',
+          collapsible: false,
+          items: [{ text: 'v0.1 Samet Nangshe', link: '/releases/0-1' }],
         },
       ],
     },

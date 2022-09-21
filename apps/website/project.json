@@ -7,12 +7,30 @@
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "command": "vitepress build apps/website/docs"
-      }
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "prepare_changelog"
+        }
+      ]
     },
     "serve": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "command": "vitepress dev apps/website/docs"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "prepare_changelog"
+        }
+      ]
+    },
+    "prepare_changelog": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/changelog.mjs"
       }
     }
   },
