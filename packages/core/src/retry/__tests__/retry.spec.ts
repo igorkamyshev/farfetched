@@ -1,4 +1,4 @@
-import { allSettled, createStore, fork } from 'effector';
+import { allSettled, createEvent, createStore, fork } from 'effector';
 
 import { createQuery } from '../../query/create_query';
 import { retry } from '../retry';
@@ -229,5 +229,47 @@ describe('retry', () => {
 
     expect(handler).toBeCalledTimes(1);
     expect(filter).toBeCalledWith({ params: undefined, error: queryError });
+  });
+
+  test('calls fallback event after all retries', async () => {
+    const handler = jest.fn().mockRejectedValue(new Error('Sorry'));
+    const query = createQuery({
+      handler,
+    });
+
+    const fallback = createEvent();
+    const fallbackListener = jest.fn();
+
+    retry({ query, times: 2, delay: 0, fallback });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope, params: 42 });
+
+    expect(fallbackListener).toBeCalledTimes(1);
+    expect(fallbackListener).toBeCalledWith(
+      expect.objectContaining({ params: 42 })
+    );
+  });
+
+  test('does not call fallback event until all retries', async () => {
+    const handler = jest
+      .fn()
+      .mockRejectedValueOnce(new Error('Sorry'))
+      .mockResolvedValueOnce(42);
+    const query = createQuery({
+      handler,
+    });
+
+    const fallback = createEvent();
+    const fallbackListener = jest.fn();
+
+    retry({ query, times: 1, delay: 0, fallback });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope, params: 42 });
+
+    expect(fallbackListener).not.toBeCalled();
   });
 });
