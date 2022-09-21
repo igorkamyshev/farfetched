@@ -107,7 +107,7 @@ interface ApiConfigShared {
      */
     clock?: Event<any>;
     /**
-     * Abort request after this number of milliseconds if it is not succeed yet
+     * Abort request after this number of milliseconds if it is not succeeded yet
      */
     timeout?: StaticOrReactive<number>;
   };

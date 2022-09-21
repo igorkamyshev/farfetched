@@ -30,7 +30,7 @@ retry({
 });
 ```
 
-This code works is pretty straightforward, after first failure of `characterQuery`, it calls it again after 500ms. If it fails again, it will call it again after 500ms and so on up yo 5 times. If it succeeds, it will stop retrying.
+This code works is pretty straightforward, after first failure of `characterQuery`, it calls it again after 500ms. If it fails again, it will call it again after 500ms and so on up yo 5 times. If it succeededs, it will stop retrying.
 
 ::: tip
 As soon as Farfetched is [based on Effector](/statements/effector), almost every field of its configs could be static or reactive. So, you can pass a [_Store_](https://effector.dev/docs/api/effector/store) with a number of retires to `times` option as well.

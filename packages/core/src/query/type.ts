@@ -31,8 +31,8 @@ interface Query<Params, Data, Error> {
   $pending: Store<boolean>;
   /** Is fetching failed? */
   $failed: Store<boolean>;
-  /** Is fetching succeed? */
-  $succeed: Store<boolean>;
+  /** Is fetching succeeded? */
+  $succeeded: Store<boolean>;
   /**
    * Is query enabled?
    *

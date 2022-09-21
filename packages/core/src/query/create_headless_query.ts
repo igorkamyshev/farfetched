@@ -239,7 +239,7 @@ function createHeadlessQuery<
   // -- Derived stores --
   const $pending = $status.map((status) => status === 'pending');
   const $failed = $status.map((status) => status === 'fail');
-  const $succeed = $status.map((status) => status === 'done');
+  const $succeeded = $status.map((status) => status === 'done');
 
   return {
     start,
@@ -249,7 +249,7 @@ function createHeadlessQuery<
     $status,
     $pending,
     $failed,
-    $succeed,
+    $succeeded,
     $enabled,
     $stale,
     __: { executeFx, meta: { serialize }, query: QuerySymbol },

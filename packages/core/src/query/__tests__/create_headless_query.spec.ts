@@ -95,7 +95,7 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(scope.getState(query.$status)).toBe('initial');
     expect(scope.getState(query.$pending)).toBeFalsy();
     expect(scope.getState(query.$failed)).toBeFalsy();
-    expect(scope.getState(query.$succeed)).toBeFalsy();
+    expect(scope.getState(query.$succeeded)).toBeFalsy();
 
     // do not await
     allSettled(query.start, { scope, params: 42 });
@@ -103,7 +103,7 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(scope.getState(query.$status)).toBe('pending');
     expect(scope.getState(query.$pending)).toBeTruthy();
     expect(scope.getState(query.$failed)).toBeFalsy();
-    expect(scope.getState(query.$succeed)).toBeFalsy();
+    expect(scope.getState(query.$succeeded)).toBeFalsy();
 
     executorFirstDefer.resolve('result');
     await executorFirstDefer.promise;
@@ -111,7 +111,7 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(scope.getState(query.$status)).toBe('done');
     expect(scope.getState(query.$pending)).toBeFalsy();
     expect(scope.getState(query.$failed)).toBeFalsy();
-    expect(scope.getState(query.$succeed)).toBeTruthy();
+    expect(scope.getState(query.$succeeded)).toBeTruthy();
 
     // do not await
     allSettled(query.start, { scope, params: 42 });
@@ -119,7 +119,7 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(scope.getState(query.$status)).toBe('pending');
     expect(scope.getState(query.$pending)).toBeTruthy();
     expect(scope.getState(query.$failed)).toBeFalsy();
-    expect(scope.getState(query.$succeed)).toBeFalsy();
+    expect(scope.getState(query.$succeeded)).toBeFalsy();
 
     executorSecondDefer.reject(new Error('error'));
     await executorSecondDefer.promise.catch(() => {
@@ -129,7 +129,7 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(scope.getState(query.$status)).toBe('fail');
     expect(scope.getState(query.$pending)).toBeFalsy();
     expect(scope.getState(query.$failed)).toBeTruthy();
-    expect(scope.getState(query.$succeed)).toBeFalsy();
+    expect(scope.getState(query.$succeeded)).toBeFalsy();
   });
 
   test('re-execute', async () => {
