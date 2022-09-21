@@ -11,7 +11,7 @@ If you ever had to hack around React's `useEffect` with refs or by adding more d
 
 ## When should I start data-fetching?
 
-What you really interested in - is your's application events. Like: specific page being opened by user, button clicked, your server responded, your data became stale and so on.
+What you really interested in - is yours application events. Like: specific page being opened by user, button clicked, your server responded, your data became stale and so on.
 
 E.g. if you want to fetch some data, when user enters some page, you should not place such request to `<PageComponent />` lifecycle hooks - instead it is much better to use your router events, since router is the actual trigger of page transitions and the owner of relevant state.
 
