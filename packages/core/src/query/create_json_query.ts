@@ -33,7 +33,7 @@ type RequestConfig<Params, BodySource, QuerySource, HeadersSource, UrlSource> =
       }
     | {
         method: Exclude<HttpMethod, 'GET' | 'HEAD'>;
-        body: SourcedField<Params, Json, BodySource>;
+        body?: SourcedField<Params, Json, BodySource>;
       }
   );
 
