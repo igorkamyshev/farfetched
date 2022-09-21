@@ -34,13 +34,15 @@ for (const [release, changelog] of mergeChangelogs(changelogs).entries()) {
 // --- // ---
 
 function renderChangelog(tree) {
-  return format(
-    NodeHtmlMarkdown.translate(
-      markdown.renderJsonML(markdown.toHTMLTree(tree))
-    ),
-    {
-      parser: 'markdown',
-    }
+  return makeLinksOnCommits(
+    format(
+      NodeHtmlMarkdown.translate(
+        markdown.renderJsonML(markdown.toHTMLTree(tree))
+      ),
+      {
+        parser: 'markdown',
+      }
+    )
   );
 }
 
@@ -123,4 +125,18 @@ function getRelease(version) {
   const { major, minor } = parseSemVer(version);
 
   return `${major}.${minor}`;
+}
+
+function makeLinksOnCommits(content) {
+  function linkToCommit(commitHash) {
+    return `[${commitHash}](https://github.com/igorkamyshev/farfetched/commit/${commitHash})`;
+  }
+
+  function replacer(all, commitHash) {
+    return all.replace(commitHash, linkToCommit(commitHash));
+  }
+
+  return content
+    .replaceAll(/- ([0-9a-f]{7}):/gi, replacer)
+    .replaceAll(/\\\[([0-9a-f]{7})\\\]/gi, replacer);
 }
