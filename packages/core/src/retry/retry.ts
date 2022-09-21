@@ -1,4 +1,11 @@
-import { combine, createEvent, createStore, Event, sample } from 'effector';
+import {
+  combine,
+  createEvent,
+  createStore,
+  Event,
+  sample,
+  split,
+} from 'effector';
 import { delay } from 'patronum';
 
 import {
@@ -28,6 +35,7 @@ function retry<
   delay: timeout,
   filter,
   mapParams,
+  fallback,
 }: {
   query: Q;
   times: StaticOrReactive<number>;
@@ -39,6 +47,7 @@ function retry<
     QueryParams<Q>,
     MapParamsSource
   >;
+  fallback?: Event<FailInfo<Q>>;
 }): void {
   const $maxAttempts = normalizeStaticOrReactive(times);
   const $attempt = createStore(1, {
@@ -50,31 +59,26 @@ function retry<
   });
 
   const newAttempt = createEvent();
-  const planNextAttempt = createEvent<
-    FailInfo<Q> & {
-      meta: RetryMeta;
-    }
-  >();
 
-  sample({
-    clock: query.finished.failure,
-    source: {
-      maxAttempts: $maxAttempts,
-      attempt: $attempt,
-      shouldPlanRetry: normalizeSourced({
+  const { planNextAttempt, __: retriesAreOver } = split(
+    sample({
+      clock: query.finished.failure,
+      source: {
+        maxAttempts: $maxAttempts,
+        attempt: $attempt,
+      },
+      filter: normalizeSourced({
         field: filter ?? true,
         clock: query.finished.failure,
       }),
-    },
-    filter: ({ maxAttempts, attempt, shouldPlanRetry }) =>
-      shouldPlanRetry && attempt <= maxAttempts,
-    fn: ({ attempt }, { params, error }) => ({
-      params,
-      error,
-      meta: { attempt },
+      fn: ({ attempt, maxAttempts }, { params, error }) => ({
+        params,
+        error,
+        meta: { attempt, maxAttempts },
+      }),
     }),
-    target: planNextAttempt,
-  });
+    { planNextAttempt: ({ meta }) => meta.attempt <= meta.maxAttempts }
+  );
 
   sample({
     clock: delay({
@@ -101,6 +105,10 @@ function retry<
   $attempt
     .on(newAttempt, (attempt) => attempt + 1)
     .reset(query.finished.success);
+
+  if (fallback) {
+    sample({ clock: retriesAreOver, target: fallback });
+  }
 }
 
 export { retry };

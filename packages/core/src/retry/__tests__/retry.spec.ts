@@ -112,6 +112,7 @@ describe('retry', () => {
           },
           Object {
             "attempt": 1,
+            "maxAttempts": 3,
           },
         ],
         Array [
@@ -121,6 +122,7 @@ describe('retry', () => {
           },
           Object {
             "attempt": 2,
+            "maxAttempts": 3,
           },
         ],
         Array [
@@ -130,6 +132,7 @@ describe('retry', () => {
           },
           Object {
             "attempt": 3,
+            "maxAttempts": 3,
           },
         ],
       ]
@@ -237,8 +240,9 @@ describe('retry', () => {
       handler,
     });
 
-    const fallback = createEvent();
+    const fallback = createEvent<{ params: any; error: unknown }>();
     const fallbackListener = jest.fn();
+    fallback.watch(fallbackListener);
 
     retry({ query, times: 2, delay: 0, fallback });
 
@@ -261,8 +265,9 @@ describe('retry', () => {
       handler,
     });
 
-    const fallback = createEvent();
+    const fallback = createEvent<{ params: any; error: unknown }>();
     const fallbackListener = jest.fn();
+    fallback.watch(fallbackListener);
 
     retry({ query, times: 1, delay: 0, fallback });
 
