@@ -35,7 +35,7 @@ function retry<
   delay: timeout,
   filter,
   mapParams,
-  fallback,
+  otherwise,
 }: {
   query: Q;
   times: StaticOrReactive<number>;
@@ -47,7 +47,7 @@ function retry<
     QueryParams<Q>,
     MapParamsSource
   >;
-  fallback?: Event<FailInfo<Q>>;
+  otherwise?: Event<FailInfo<Q>>;
 }): void {
   const $maxAttempts = normalizeStaticOrReactive(times);
   const $attempt = createStore(1, {
@@ -106,8 +106,8 @@ function retry<
     .on(newAttempt, (attempt) => attempt + 1)
     .reset(query.finished.success);
 
-  if (fallback) {
-    sample({ clock: retriesAreOver, target: fallback });
+  if (otherwise) {
+    sample({ clock: retriesAreOver, target: otherwise });
   }
 }
 

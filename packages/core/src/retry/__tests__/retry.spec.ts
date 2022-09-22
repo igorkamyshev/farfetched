@@ -234,29 +234,29 @@ describe('retry', () => {
     expect(filter).toBeCalledWith({ params: undefined, error: queryError });
   });
 
-  test('calls fallback event after all retries', async () => {
+  test('calls otherwise event after all retries', async () => {
     const handler = jest.fn().mockRejectedValue(new Error('Sorry'));
     const query = createQuery({
       handler,
     });
 
-    const fallback = createEvent<{ params: any; error: unknown }>();
-    const fallbackListener = jest.fn();
-    fallback.watch(fallbackListener);
+    const otherwise = createEvent<{ params: any; error: unknown }>();
+    const otherwiseListener = jest.fn();
+    otherwise.watch(otherwiseListener);
 
-    retry({ query, times: 2, delay: 0, fallback });
+    retry({ query, times: 2, delay: 0, otherwise });
 
     const scope = fork();
 
     await allSettled(query.start, { scope, params: 42 });
 
-    expect(fallbackListener).toBeCalledTimes(1);
-    expect(fallbackListener).toBeCalledWith(
+    expect(otherwiseListener).toBeCalledTimes(1);
+    expect(otherwiseListener).toBeCalledWith(
       expect.objectContaining({ params: 42 })
     );
   });
 
-  test('does not call fallback event until all retries', async () => {
+  test('does not call otherwise event until all retries', async () => {
     const handler = jest
       .fn()
       .mockRejectedValueOnce(new Error('Sorry'))
@@ -265,16 +265,16 @@ describe('retry', () => {
       handler,
     });
 
-    const fallback = createEvent<{ params: any; error: unknown }>();
-    const fallbackListener = jest.fn();
-    fallback.watch(fallbackListener);
+    const otherwise = createEvent<{ params: any; error: unknown }>();
+    const otherwiseListener = jest.fn();
+    otherwise.watch(otherwiseListener);
 
-    retry({ query, times: 1, delay: 0, fallback });
+    retry({ query, times: 1, delay: 0, otherwise });
 
     const scope = fork();
 
     await allSettled(query.start, { scope, params: 42 });
 
-    expect(fallbackListener).not.toBeCalled();
+    expect(otherwiseListener).not.toBeCalled();
   });
 });
