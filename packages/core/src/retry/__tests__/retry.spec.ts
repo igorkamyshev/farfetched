@@ -1,4 +1,4 @@
-import { allSettled, createStore, fork } from 'effector';
+import { allSettled, createEvent, createStore, fork } from 'effector';
 
 import { createQuery } from '../../query/create_query';
 import { retry } from '../retry';
@@ -112,6 +112,7 @@ describe('retry', () => {
           },
           Object {
             "attempt": 1,
+            "maxAttempts": 3,
           },
         ],
         Array [
@@ -121,6 +122,7 @@ describe('retry', () => {
           },
           Object {
             "attempt": 2,
+            "maxAttempts": 3,
           },
         ],
         Array [
@@ -130,6 +132,7 @@ describe('retry', () => {
           },
           Object {
             "attempt": 3,
+            "maxAttempts": 3,
           },
         ],
       ]
@@ -229,5 +232,49 @@ describe('retry', () => {
 
     expect(handler).toBeCalledTimes(1);
     expect(filter).toBeCalledWith({ params: undefined, error: queryError });
+  });
+
+  test('calls otherwise event after all retries', async () => {
+    const handler = jest.fn().mockRejectedValue(new Error('Sorry'));
+    const query = createQuery({
+      handler,
+    });
+
+    const otherwise = createEvent<{ params: any; error: unknown }>();
+    const otherwiseListener = jest.fn();
+    otherwise.watch(otherwiseListener);
+
+    retry({ query, times: 2, delay: 0, otherwise });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope, params: 42 });
+
+    expect(otherwiseListener).toBeCalledTimes(1);
+    expect(otherwiseListener).toBeCalledWith(
+      expect.objectContaining({ params: 42 })
+    );
+  });
+
+  test('does not call otherwise event until all retries', async () => {
+    const handler = jest
+      .fn()
+      .mockRejectedValueOnce(new Error('Sorry'))
+      .mockResolvedValueOnce(42);
+    const query = createQuery({
+      handler,
+    });
+
+    const otherwise = createEvent<{ params: any; error: unknown }>();
+    const otherwiseListener = jest.fn();
+    otherwise.watch(otherwiseListener);
+
+    retry({ query, times: 1, delay: 0, otherwise });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope, params: 42 });
+
+    expect(otherwiseListener).not.toBeCalled();
   });
 });
