@@ -231,6 +231,7 @@ export default {
             },
             { text: 'Testing', link: '/statements/tests' },
             { text: 'Effector', link: '/statements/effector' },
+            { text: 'TypeScript', link: '/statements/typescript' },
           ],
         },
       ],
