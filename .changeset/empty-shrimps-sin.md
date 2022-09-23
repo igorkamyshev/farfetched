@@ -1,5 +1,5 @@
 ---
-'@farfetched/core': patch
+'@farfetched/core': minor
 ---
 
-Allow to skip body in non GET/QUERY requests in createJsonQuery
+Allow skipping body in non GET/QUERY requests in `createJsonQuery`
