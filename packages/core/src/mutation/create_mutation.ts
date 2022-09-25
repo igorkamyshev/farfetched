@@ -1,9 +1,16 @@
+import { Effect } from 'effector';
+
 import { Mutation } from './type';
 
 // Overload: Only handler
 function createMutation<Params, Data>(config: {
   handler: (params: Params) => Promise<Data>;
 }): Mutation<Params, Data, unknown>;
+
+// Overload: Only effect
+function createMutation<Params, Data, Error>(config: {
+  effect: Effect<Params, Data, Error>;
+}): Mutation<Params, Data, Error>;
 
 // -- Implementation --
 function createMutation(
