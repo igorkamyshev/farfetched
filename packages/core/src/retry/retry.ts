@@ -16,12 +16,16 @@ import {
   StaticOrReactive,
   TwoArgsDynamicallySourcedField,
 } from '../misc/sourced';
-import { Query, QueryError, QueryParams } from '../query/type';
+import { Query } from '../query/type';
+import {
+  RemoteOperationError,
+  RemoteOperationParams,
+} from '../remote_operation/type';
 import { RetryMeta } from './type';
 
 type FailInfo<Q extends Query<any, any, any>> = {
-  params: QueryParams<Q>;
-  error: QueryError<Q>;
+  params: RemoteOperationParams<Q>;
+  error: RemoteOperationError<Q>;
 };
 
 function retry<
@@ -44,7 +48,7 @@ function retry<
   mapParams?: TwoArgsDynamicallySourcedField<
     FailInfo<Q>,
     RetryMeta,
-    QueryParams<Q>,
+    RemoteOperationParams<Q>,
     MapParamsSource
   >;
   otherwise?: Event<FailInfo<Q>>;
