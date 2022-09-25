@@ -1,10 +1,4 @@
-import {
-  createEffect,
-  createEvent,
-  createStore,
-  sample,
-  split,
-} from 'effector';
+import { createStore, sample, split } from 'effector';
 import { not } from 'patronum';
 
 import { createContractApplier } from '../contract/apply_contract';
@@ -18,14 +12,14 @@ import {
   StaticOrReactive,
   normalizeStaticOrReactive,
 } from '../misc/sourced';
+import { createRemoteOperation } from '../remote_operation/create_remote_operation';
 import { serializationForSideStore } from '../serialization/serizalize_for_side_store';
 import { Serialize } from '../serialization/type';
-import { FetchingStatus } from '../status/type';
 import { checkValidationResult } from '../validation/check_validation_result';
 import { Validator } from '../validation/type';
 import { unwrapValidationResult } from '../validation/unwrap_validation_result';
 import { validValidator } from '../validation/valid_validator';
-import { Query, QuerySymbol } from './type';
+import { Query, QueryMeta, QuerySymbol } from './type';
 
 interface SharedQueryFactoryConfig<Data> {
   name?: string;
@@ -71,40 +65,22 @@ function createHeadlessQuery<
 > {
   const queryName = name ?? 'unnamed';
 
-  // Dummy effect, it will be replaced with real in head-full query creator
-  const executeFx = createEffect<Params, Response, Error>({
-    handler: () => {
-      throw new Error('Not implemented');
-    },
-    sid: `ff.${queryName}.executeFx`,
-    name: `${queryName}.executeFx`,
+  const operation = createRemoteOperation<
+    Params,
+    MappedData,
+    Error | InvalidDataError,
+    QueryMeta<MappedData>
+  >({
+    name: queryName,
+    kind: QuerySymbol,
+    serialize: serializationForSideStore(serialize),
+    $enabled: normalizeStaticOrReactive(enabled ?? true).map(Boolean),
+    meta: { serialize },
   });
 
   const applyContractFx = createContractApplier<Params, Response, ContractData>(
     contract
   );
-
-  /*
-   * Start event, it's used as it or to pipe it in head-full query creator
-   *
-   * sample({
-   *  clock: externalStart,
-   *  target: headlessQuery.start,
-   *  greedy: true
-   * })
-   */
-  const start = createEvent<Params>();
-
-  // Signal-events
-  const finished = {
-    success: createEvent<{ params: Params; data: MappedData }>(),
-    failure: createEvent<{
-      params: Params;
-      error: Error | InvalidDataError;
-    }>(),
-    skip: createEvent<{ params: Params }>(),
-    finally: createEvent<{ params: Params }>(),
-  };
 
   // -- Main stores --
   const $data = createStore<MappedData | null>(null, {
@@ -117,31 +93,32 @@ function createHeadlessQuery<
     name: `${queryName}.$error`,
     serialize: serializationForSideStore(serialize),
   });
-  const $status = createStore<FetchingStatus>('initial', {
-    sid: `ff.${queryName}.$status`,
-    name: `${queryName}.$status`,
-    serialize: serializationForSideStore(serialize),
-  });
   const $stale = createStore<boolean>(false, {
     sid: `ff.${queryName}.$stale`,
     name: `${queryName}.$stale`,
     serialize: serializationForSideStore(serialize),
   });
-  const $enabled = normalizeStaticOrReactive(enabled ?? true).map(Boolean);
 
   // -- Execution --
-  sample({ clock: start, filter: $enabled, target: executeFx });
   sample({
-    clock: start,
-    filter: not($enabled),
+    clock: operation.start,
+    filter: operation.$enabled,
+    target: operation.__.executeFx,
+  });
+  sample({
+    clock: operation.start,
+    filter: not(operation.$enabled),
     fn(params) {
       return { params };
     },
-    target: finished.skip,
+    target: operation.finished.skip,
   });
 
-  sample({ clock: executeFx.done, target: applyContractFx });
-  sample({ clock: executeFx.fail, target: finished.failure });
+  sample({ clock: operation.__.executeFx.done, target: applyContractFx });
+  sample({
+    clock: operation.__.executeFx.fail,
+    target: operation.finished.failure,
+  });
 
   const { validDataRecieved, __: invalidDataRecieved } = split(
     sample({
@@ -179,7 +156,7 @@ function createHeadlessQuery<
       data,
       params,
     }),
-    target: finished.success,
+    target: operation.finished.success,
   });
 
   sample({
@@ -189,7 +166,7 @@ function createHeadlessQuery<
       // Extract original params, it is params of params
       params: params.params,
     }),
-    target: finished.failure,
+    target: operation.finished.failure,
   });
 
   sample({
@@ -200,59 +177,37 @@ function createHeadlessQuery<
         validationErrors: unwrapValidationResult(validation),
       }),
     }),
-    target: finished.failure,
+    target: operation.finished.failure,
   });
 
-  sample({ clock: finished.success, fn: () => null, target: $error });
-  sample({ clock: finished.success, fn: ({ data }) => data, target: $data });
-
-  sample({ clock: finished.failure, fn: () => null, target: $data });
-  sample({ clock: finished.failure, fn: ({ error }) => error, target: $error });
-
+  sample({ clock: operation.finished.success, fn: () => null, target: $error });
   sample({
-    clock: [finished.success, finished.failure, finished.skip],
-    fn({ params }) {
-      return { params };
-    },
-    target: finished.finally,
+    clock: operation.finished.success,
+    fn: ({ data }) => data,
+    target: $data,
   });
 
-  // -- Indicate status --
+  sample({ clock: operation.finished.failure, fn: () => null, target: $data });
   sample({
-    clock: [
-      start.map(() => 'pending' as const),
-      finished.success.map(() => 'done' as const),
-      finished.failure.map(() => 'fail' as const),
-    ],
-    target: $status,
+    clock: operation.finished.failure,
+    fn: ({ error }) => error,
+    target: $error,
   });
 
   // -- Handle stale
   sample({
-    clock: finished.finally,
+    clock: operation.finished.finally,
     fn() {
       return false;
     },
     target: $stale,
   });
 
-  // -- Derived stores --
-  const $pending = $status.map((status) => status === 'pending');
-  const $failed = $status.map((status) => status === 'fail');
-  const $succeeded = $status.map((status) => status === 'done');
-
   return {
-    start,
     $data,
     $error,
-    finished,
-    $status,
-    $pending,
-    $failed,
-    $succeeded,
-    $enabled,
     $stale,
-    __: { executeFx, meta: { serialize }, kind: QuerySymbol },
+    ...operation,
   };
 }
 

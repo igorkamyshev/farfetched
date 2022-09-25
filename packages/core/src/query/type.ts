@@ -37,4 +37,4 @@ function isQuery(value: any): value is Query<any, any, any> {
   return value?.__?.kind === QuerySymbol;
 }
 
-export { type Query, QuerySymbol, isQuery };
+export { type Query, type QueryMeta, QuerySymbol, isQuery };
