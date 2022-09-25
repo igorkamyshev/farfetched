@@ -1,16 +1,21 @@
 import { Effect } from 'effector';
 
+import { SharedMutationFactoryConfig } from './create_headless_mutation';
 import { Mutation } from './type';
 
 // Overload: Only handler
-function createMutation<Params, Data>(config: {
-  handler: (params: Params) => Promise<Data>;
-}): Mutation<Params, Data, unknown>;
+function createMutation<Params, Data>(
+  config: {
+    handler: (params: Params) => Promise<Data>;
+  } & SharedMutationFactoryConfig
+): Mutation<Params, Data, unknown>;
 
 // Overload: Only effect
-function createMutation<Params, Data, Error>(config: {
-  effect: Effect<Params, Data, Error>;
-}): Mutation<Params, Data, Error>;
+function createMutation<Params, Data, Error>(
+  config: {
+    effect: Effect<Params, Data, Error>;
+  } & SharedMutationFactoryConfig
+): Mutation<Params, Data, Error>;
 
 // -- Implementation --
 function createMutation(
