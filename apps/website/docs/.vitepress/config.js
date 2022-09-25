@@ -110,6 +110,7 @@ export default {
               text: 'createJsonQuery',
               link: '/api/factories/create_json_query',
             },
+            { text: 'createMutation', link: '/api/factories/create_mutation' },
           ],
         },
         {
