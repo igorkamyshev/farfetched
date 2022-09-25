@@ -239,7 +239,10 @@ export default {
         {
           text: 'Releases',
           collapsible: false,
-          items: [{ text: 'v0.1 Samet Nangshe', link: '/releases/0-1' }],
+          items: [
+            { text: 'v0.2 Laem Promthep', link: '/releases/0-2' },
+            { text: 'v0.1 Samet Nangshe', link: '/releases/0-1' },
+          ],
         },
       ],
     },
