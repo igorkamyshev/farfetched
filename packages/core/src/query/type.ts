@@ -92,7 +92,7 @@ interface Query<Params, Data, Error> {
        */
       serialize: Serialize<Data>;
     };
-    query: typeof QuerySymbol;
+    kind: typeof QuerySymbol;
   };
 }
 
@@ -105,7 +105,7 @@ type QueryError<Q extends Query<any, any, any>> = EventPayload<
 type QueryParams<Q extends Query<any, any, any>> = EventPayload<Q['start']>;
 
 function isQuery(value: any): value is Query<any, any, any> {
-  return value?.__?.query === QuerySymbol;
+  return value?.__?.kind === QuerySymbol;
 }
 
 export {

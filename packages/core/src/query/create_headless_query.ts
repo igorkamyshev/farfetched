@@ -252,7 +252,7 @@ function createHeadlessQuery<
     $succeeded,
     $enabled,
     $stale,
-    __: { executeFx, meta: { serialize }, query: QuerySymbol },
+    __: { executeFx, meta: { serialize }, kind: QuerySymbol },
   };
 }
 

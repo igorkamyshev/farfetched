@@ -69,7 +69,7 @@ interface Mutation<Params, Data, Error> {
      * Meta information about Mutation and its configuration.
      */
     meta: never;
-    query: typeof MutationSymbol;
+    kind: typeof MutationSymbol;
   };
 }
 
@@ -84,7 +84,7 @@ type MutationParams<Q extends Mutation<any, any, any>> = EventPayload<
 >;
 
 function isMutation(value: any): value is Mutation<any, any, any> {
-  return value?.__?.query === MutationSymbol;
+  return value?.__?.kind === MutationSymbol;
 }
 
 export {
