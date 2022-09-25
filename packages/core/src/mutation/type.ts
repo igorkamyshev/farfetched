@@ -1,5 +1,3 @@
-import { EventPayload } from 'effector';
-
 import { RemoteOperation } from '../remote_operation/type';
 
 const MutationSymbol = Symbol('Mutation');
@@ -12,4 +10,4 @@ function isMutation(value: any): value is Mutation<any, any, any> {
   return value?.__?.kind === MutationSymbol;
 }
 
-export { type Mutation, isMutation };
+export { type Mutation, isMutation, MutationSymbol };
