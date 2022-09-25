@@ -7,6 +7,8 @@ export { connectQuery } from './query/connect_query';
 export { createHeadlessQuery } from './query/create_headless_query';
 export { createJsonQuery } from './query/create_json_query';
 
+export { type Mutation } from './mutation/type';
+
 export { retry } from './retry/retry';
 export { exponentialDelay, linearDelay } from './retry/delay';
 

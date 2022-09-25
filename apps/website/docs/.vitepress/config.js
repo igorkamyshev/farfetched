@@ -125,6 +125,7 @@ export default {
           collapsible: true,
           items: [
             { text: 'Query', link: '/api/primitives/query' },
+            { text: 'Mutation', link: '/api/primitives/mutation' },
             { text: 'Contract', link: '/api/primitives/contract' },
             { text: 'Validator', link: '/api/primitives/validator' },
           ],
