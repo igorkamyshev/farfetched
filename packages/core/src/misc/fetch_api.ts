@@ -7,6 +7,9 @@ function mergeRecords(
   const final: CleanFetchApiRecord = {};
 
   for (const item of records) {
+    if (typeof item !== 'object') {
+      continue;
+    }
     for (const [key, value] of Object.entries(item || {})) {
       if (final[key]) {
         final[key] = [final[key], clearValue(value)].flat();
