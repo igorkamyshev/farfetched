@@ -87,6 +87,10 @@ export default {
                   link: '/tutorial/contracts',
                 },
                 {
+                  text: 'Validators',
+                  link: '/tutorial/validators',
+                },
+                {
                   text: 'Built-in factories',
                   link: '/tutorial/built_in_query_factories',
                 },
