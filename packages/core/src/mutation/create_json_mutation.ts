@@ -77,7 +77,8 @@ function createJsonMutation<
     HeadersSource,
     UrlSource
   > & {
-    response: {};
+    // TODO: fill response
+    response: { empty?: unknown };
   }
 ): Mutation<void, Data, Error | InvalidDataError>;
 
@@ -100,7 +101,8 @@ function createJsonMutation<
     HeadersSource,
     UrlSource
   > & {
-    response: {};
+    // TODO: fill response
+    response: { empty?: unknown };
   }
 ): Mutation<Params, Data, Error | InvalidDataError>;
 
