@@ -20,7 +20,8 @@
       "@farfetched/react": ["packages/react/src/index.ts"],
       "@farfetched/runtypes": ["packages/runtypes/src/index.ts"],
       "@farfetched/solid": ["packages/solid/src/index.ts"],
-      "@farfetched/test-utils": ["packages/test-utils/src/index.ts"]
+      "@farfetched/test-utils": ["packages/test-utils/src/index.ts"],
+      "@farfetched/zod": ["packages/zod/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

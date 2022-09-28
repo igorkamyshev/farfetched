@@ -64,6 +64,7 @@ importers:
       ts-jest: 28.0.8
       ts-node: 10.9.1
       tsd: ^0.22.0
+      tslib: ^2.3.0
       typescript: ~4.7.2
       vitepress: 1.0.0-alpha.10
       vue: ^3.2.37
@@ -80,6 +81,7 @@ importers:
       regenerator-runtime: 0.13.7
       runtypes: 6.5.1
       solid-js: 1.4.8
+      tslib: 2.4.0
     devDependencies:
       '@algolia/client-search': 4.14.2
       '@babel/core': 7.18.6
@@ -158,6 +160,12 @@ importers:
 
   packages/test-utils:
     specifiers: {}
+
+  packages/zod:
+    specifiers:
+      zod: ^3.19.1
+    devDependencies:
+      zod: 3.19.1
 
 packages:
 
@@ -10910,7 +10918,6 @@ packages:
 
   /tslib/2.4.0:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
-    dev: true
 
   /tsutils/3.21.0_typescript@4.7.4:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
@@ -11647,4 +11654,8 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+    dev: true
+
+  /zod/3.19.1:
+    resolution: {integrity: sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA==}
     dev: true

@@ -1,0 +1,11 @@
+{
+  "name": "@farfetched/zod",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "devDependencies": {
+    "zod": "^3.19.1"
+  },
+  "peerDependencies": {
+    "zod": "^3.19"
+  }
+}
