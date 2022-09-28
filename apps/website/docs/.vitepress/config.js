@@ -149,6 +149,10 @@ export default {
               text: 'API',
               items: [
                 { text: 'useQuery', link: '/integrations/react/api/use_query' },
+                {
+                  text: 'useMutation',
+                  link: '/integrations/react/api/use_mutation',
+                },
               ],
             },
           ],
