@@ -1,24 +1,16 @@
-import { createStore, sample, split, createEvent } from 'effector';
-import { not, reset as resetMany } from 'patronum';
+import { createStore, sample, createEvent } from 'effector';
+import { reset as resetMany } from 'patronum';
 
-import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
-import { invalidDataError } from '../errors/create_error';
 import { InvalidDataError } from '../errors/type';
 import {
-  normalizeSourced,
   TwoArgsDynamicallySourcedField,
-  reduceTwoArgs,
   StaticOrReactive,
-  normalizeStaticOrReactive,
 } from '../misc/sourced';
 import { createRemoteOperation } from '../remote_operation/create_remote_operation';
 import { serializationForSideStore } from '../serialization/serizalize_for_side_store';
 import { Serialize } from '../serialization/type';
-import { checkValidationResult } from '../validation/check_validation_result';
 import { Validator } from '../validation/type';
-import { unwrapValidationResult } from '../validation/unwrap_validation_result';
-import { validValidator } from '../validation/valid_validator';
 import { Query, QueryMeta, QuerySymbol } from './type';
 
 interface SharedQueryFactoryConfig<Data> {
@@ -67,20 +59,23 @@ function createHeadlessQuery<
 
   const operation = createRemoteOperation<
     Params,
+    Response,
+    ContractData,
     MappedData,
-    Error | InvalidDataError,
-    QueryMeta<MappedData>
+    Error,
+    QueryMeta<MappedData>,
+    MapDataSource,
+    ValidationSource
   >({
     name: queryName,
     kind: QuerySymbol,
     serialize: serializationForSideStore(serialize),
-    $enabled: normalizeStaticOrReactive(enabled ?? true).map(Boolean),
+    enabled,
     meta: { serialize },
+    contract,
+    validate,
+    mapData,
   });
-
-  const applyContractFx = createContractApplier<Params, Response, ContractData>(
-    contract
-  );
 
   const reset = createEvent();
 
@@ -99,79 +94,6 @@ function createHeadlessQuery<
     sid: `ff.${queryName}.$stale`,
     name: `${queryName}.$stale`,
     serialize: serializationForSideStore(serialize),
-  });
-
-  // -- Execution --
-  sample({
-    clock: operation.start,
-    filter: operation.$enabled,
-    target: operation.__.executeFx,
-  });
-
-  sample({ clock: operation.__.executeFx.done, target: applyContractFx });
-  sample({
-    clock: operation.__.executeFx.fail,
-    target: operation.finished.failure,
-  });
-
-  const { validDataRecieved, __: invalidDataRecieved } = split(
-    sample({
-      clock: applyContractFx.done,
-      source: normalizeSourced(
-        reduceTwoArgs({
-          field: validate ?? validValidator,
-          clock: applyContractFx.done.map(({ result, params }) => [
-            result,
-            params.params, // Extract original params, it is params of params
-          ]),
-        })
-      ),
-      fn: (validation, { params, result: data }) => ({
-        data,
-        // Extract original params, it is params of params
-        params: params.params,
-        validation,
-      }),
-    }),
-    {
-      validDataRecieved: ({ validation }) => checkValidationResult(validation),
-    }
-  );
-
-  sample({
-    clock: validDataRecieved,
-    source: normalizeSourced(
-      reduceTwoArgs({
-        field: mapData,
-        clock: validDataRecieved.map(({ data, params }) => [data, params]),
-      })
-    ),
-    fn: (data, { params }) => ({
-      data,
-      params,
-    }),
-    target: operation.finished.success,
-  });
-
-  sample({
-    clock: applyContractFx.fail,
-    fn: ({ error, params }) => ({
-      error,
-      // Extract original params, it is params of params
-      params: params.params,
-    }),
-    target: operation.finished.failure,
-  });
-
-  sample({
-    clock: invalidDataRecieved,
-    fn: ({ params, validation }) => ({
-      params,
-      error: invalidDataError({
-        validationErrors: unwrapValidationResult(validation),
-      }),
-    }),
-    target: operation.finished.failure,
   });
 
   sample({ clock: operation.finished.success, fn: () => null, target: $error });

@@ -3,10 +3,14 @@ import { watchRemoteOperation } from '@farfetched/test-utils';
 
 import { createHeadlessMutation } from '../create_headless_mutation';
 import { unknownContract } from '../../contract/unknown_contract';
+import { identity } from '../../misc/identity';
 
 describe('createHeadlessMutation', () => {
   test('start triggers executeFx', async () => {
-    const mutation = createHeadlessMutation({ contract: unknownContract });
+    const mutation = createHeadlessMutation({
+      contract: unknownContract,
+      mapData: identity,
+    });
 
     const mockFn = jest.fn();
 
@@ -19,7 +23,10 @@ describe('createHeadlessMutation', () => {
   });
 
   test('finished.success triggers after executeFx.done', async () => {
-    const mutation = createHeadlessMutation({ contract: unknownContract });
+    const mutation = createHeadlessMutation({
+      contract: unknownContract,
+      mapData: identity,
+    });
 
     const scope = fork({
       handlers: [[mutation.__.executeFx, jest.fn((p) => p)]],
@@ -43,6 +50,7 @@ describe('createHeadlessMutation', () => {
     const mutation = createHeadlessMutation({
       contract: unknownContract,
       enabled: false,
+      mapData: identity,
     });
 
     const scope = fork({
@@ -66,6 +74,34 @@ describe('createHeadlessMutation', () => {
         isData: (_: any): _ is any => false,
         getErrorMessages: () => ['Test error'],
       },
+      mapData: identity,
+    });
+
+    const scope = fork({
+      handlers: [[mutation.__.executeFx, jest.fn((p) => p)]],
+    });
+
+    const { listeners } = watchRemoteOperation(mutation, scope);
+
+    await allSettled(mutation.start, { scope, params: 42 });
+
+    expect(listeners.onFailure).toHaveBeenCalledTimes(1);
+    expect(listeners.onFailure).toHaveBeenCalledWith({
+      params: 42,
+      error: {
+        errorType: 'INVALID_DATA',
+        explanation:
+          'Response was considered as invalid against a given contract',
+        validationErrors: ['Test error'],
+      },
+    });
+  });
+
+  test('fail on validation fail', async () => {
+    const mutation = createHeadlessMutation({
+      contract: unknownContract,
+      validate: (_: any) => ['Test error'],
+      mapData: identity,
     });
 
     const scope = fork({
