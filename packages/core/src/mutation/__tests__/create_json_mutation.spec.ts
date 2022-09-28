@@ -115,4 +115,28 @@ describe('createJsonMutation', () => {
       params: undefined,
     });
   });
+
+  test('allow empty response', async () => {
+    const mutation = createJsonMutation({
+      request: {
+        url: 'https://api.salo.com',
+        method: 'GET' as const,
+      },
+      response: { contract: unknownContract },
+    });
+
+    const scope = fork({
+      handlers: [[fetchFx, () => new Response(null)]],
+    });
+
+    const { listeners } = watchRemoteOperation(mutation, scope);
+
+    await allSettled(mutation.start, { scope });
+
+    expect(listeners.onSuccess).toHaveBeenCalled();
+    expect(listeners.onSuccess).toHaveBeenCalledWith({
+      data: null,
+      params: undefined,
+    });
+  });
 });

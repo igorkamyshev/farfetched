@@ -66,7 +66,13 @@ function createJsonApiRequest<R extends CreationRequestConfig>(
       mapBody: (jsonBody) => JSON.stringify(jsonBody),
     },
     response: {
-      extract: (r) => r.json() as Promise<unknown>,
+      extract: async (response) => {
+        if (!response.body) {
+          return null;
+        }
+
+        return response.json();
+      },
     },
   });
 
