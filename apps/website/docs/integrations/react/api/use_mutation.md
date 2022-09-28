@@ -1,5 +1,9 @@
 # useMutation
 
+::: info
+Introduced in v0.2.0.
+:::
+
 Returns function to start [_Mutation_](/api/primitives/mutation).
 
 ```tsx
