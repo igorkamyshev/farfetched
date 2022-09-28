@@ -2,10 +2,11 @@ import { allSettled, fork } from 'effector';
 import { watchRemoteOperation } from '@farfetched/test-utils';
 
 import { createHeadlessMutation } from '../create_headless_mutation';
+import { unknownContract } from '../../contract/unknown_contract';
 
 describe('createHeadlessMutation', () => {
   test('start triggers executeFx', async () => {
-    const mutation = createHeadlessMutation({});
+    const mutation = createHeadlessMutation({ contract: unknownContract });
 
     const mockFn = jest.fn();
 
@@ -18,7 +19,7 @@ describe('createHeadlessMutation', () => {
   });
 
   test('finished.success triggers after executeFx.done', async () => {
-    const mutation = createHeadlessMutation({});
+    const mutation = createHeadlessMutation({ contract: unknownContract });
 
     const scope = fork({
       handlers: [[mutation.__.executeFx, jest.fn((p) => p)]],
@@ -40,6 +41,7 @@ describe('createHeadlessMutation', () => {
 
   test('skip disabled mutation', async () => {
     const mutation = createHeadlessMutation({
+      contract: unknownContract,
       enabled: false,
     });
 
@@ -54,5 +56,35 @@ describe('createHeadlessMutation', () => {
     expect(scope.getState(mutation.$enabled)).toBe(false);
     expect(listeners.onSkip).toHaveBeenCalledTimes(1);
     expect(listeners.onSkip).toHaveBeenCalledWith({ params: 42 });
+    expect(listeners.onSuccess).not.toHaveBeenCalled();
+    expect(listeners.onFailure).not.toHaveBeenCalled();
+  });
+
+  test('fail for invalid contract', async () => {
+    const mutation = createHeadlessMutation({
+      contract: {
+        isData: (_: any): _ is any => false,
+        getErrorMessages: () => ['Test error'],
+      },
+    });
+
+    const scope = fork({
+      handlers: [[mutation.__.executeFx, jest.fn((p) => p)]],
+    });
+
+    const { listeners } = watchRemoteOperation(mutation, scope);
+
+    await allSettled(mutation.start, { scope, params: 42 });
+
+    expect(listeners.onFailure).toHaveBeenCalledTimes(1);
+    expect(listeners.onFailure).toHaveBeenCalledWith({
+      params: 42,
+      error: {
+        errorType: 'INVALID_DATA',
+        explanation:
+          'Response was considered as invalid against a given contract',
+        validationErrors: ['Test error'],
+      },
+    });
   });
 });
