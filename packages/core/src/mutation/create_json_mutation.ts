@@ -202,6 +202,7 @@ function createJsonMutation(config: any): Mutation<any, any, any> {
   const requestFx = createJsonApiRequest({
     request: { method: config.request.method, credentials: 'same-origin' },
     concurrency: { strategy: 'TAKE_EVERY' },
+    response: { status: config.response.status },
   });
 
   const headlessMutation = createHeadlessMutation({

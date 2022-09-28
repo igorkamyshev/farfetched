@@ -19,7 +19,11 @@ import {
   PreparationError,
   TimeoutError,
 } from '../errors/type';
-import { timeoutError, preparationError } from '../errors/create_error';
+import {
+  timeoutError,
+  preparationError,
+  invalidDataError,
+} from '../errors/create_error';
 
 type HttpMethod =
   | 'HEAD'
@@ -81,6 +85,10 @@ interface ApiConfigResponse<P> {
    * })
    */
   extract: (response: Response) => Promise<P>;
+  /** Configuration of allowed response statuses */
+  status?: {
+    expected: number | number[];
+  };
 }
 
 interface ApiConfigShared {
@@ -190,6 +198,23 @@ function createApiRequest<
           reason: cause?.message ?? null,
         });
       });
+
+      console.log(config.response);
+      if (config.response.status) {
+        const expected = Array.isArray(config.response.status.expected)
+          ? config.response.status.expected
+          : [config.response.status.expected];
+
+        if (!expected.includes(response.status)) {
+          throw invalidDataError({
+            validationErrors: [
+              `Expected response status has to be one of [${expected.join(
+                ', '
+              )}], got ${response.status}`,
+            ],
+          });
+        }
+      }
 
       return prepared;
     }

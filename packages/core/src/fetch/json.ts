@@ -31,6 +31,7 @@ type CreationRequestConfig =
 interface JsonApiConfig<R extends CreationRequestConfig>
   extends ApiConfigShared {
   request: R;
+  response?: { status?: { expected: number | number[] } };
 }
 
 function createJsonApiRequest<R extends CreationRequestConfig>(
