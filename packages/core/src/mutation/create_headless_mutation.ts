@@ -1,7 +1,7 @@
-import { createStore, sample } from 'effector';
+import { sample } from 'effector';
 
 import { createRemoteOperation } from '../remote_operation/create_remote_operation';
-import { StaticOrReactive } from '../misc/sourced';
+import { normalizeStaticOrReactive, StaticOrReactive } from '../misc/sourced';
 import { Mutation, MutationSymbol } from './type';
 
 interface SharedMutationFactoryConfig {
@@ -11,13 +11,14 @@ interface SharedMutationFactoryConfig {
 
 function createHeadlessMutation<Params, Data, Error>({
   name,
+  enabled,
 }: SharedMutationFactoryConfig): Mutation<Params, Data, Error> {
   const mutationName = name ?? 'unnamed';
 
   const operation = createRemoteOperation<Params, Data, Error, null>({
     name: mutationName,
     serialize: 'ignore',
-    $enabled: createStore(true),
+    $enabled: normalizeStaticOrReactive(enabled ?? true).map(Boolean),
     kind: MutationSymbol,
     meta: null,
   });

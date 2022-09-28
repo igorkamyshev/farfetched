@@ -4,9 +4,9 @@ import { watchRemoteOperation } from '@farfetched/test-utils';
 import { createHeadlessMutation } from '../create_headless_mutation';
 
 describe('createHeadlessMutation', () => {
-  const mutation = createHeadlessMutation({});
-
   test('start triggers executeFx', async () => {
+    const mutation = createHeadlessMutation({});
+
     const mockFn = jest.fn();
 
     const scope = fork({ handlers: [[mutation.__.executeFx, mockFn]] });
@@ -18,6 +18,8 @@ describe('createHeadlessMutation', () => {
   });
 
   test('finished.success triggers after executeFx.done', async () => {
+    const mutation = createHeadlessMutation({});
+
     const scope = fork({
       handlers: [[mutation.__.executeFx, jest.fn((p) => p)]],
     });
@@ -34,5 +36,23 @@ describe('createHeadlessMutation', () => {
 
     expect(listeners.onFinally).toHaveBeenCalledTimes(1);
     expect(listeners.onFinally).toHaveBeenCalledWith({ params: 42 });
+  });
+
+  test('skip disabled mutation', async () => {
+    const mutation = createHeadlessMutation({
+      enabled: false,
+    });
+
+    const scope = fork({
+      handlers: [[mutation.__.executeFx, jest.fn((p) => p)]],
+    });
+
+    const { listeners } = watchRemoteOperation(mutation, scope);
+
+    await allSettled(mutation.start, { scope, params: 42 });
+
+    expect(scope.getState(mutation.$enabled)).toBe(false);
+    expect(listeners.onSkip).toHaveBeenCalledTimes(1);
+    expect(listeners.onSkip).toHaveBeenCalledWith({ params: 42 });
   });
 });

@@ -107,14 +107,6 @@ function createHeadlessQuery<
     filter: operation.$enabled,
     target: operation.__.executeFx,
   });
-  sample({
-    clock: operation.start,
-    filter: not(operation.$enabled),
-    fn(params) {
-      return { params };
-    },
-    target: operation.finished.skip,
-  });
 
   sample({ clock: operation.__.executeFx.done, target: applyContractFx });
   sample({

@@ -5,6 +5,7 @@ import {
   sample,
   Store,
 } from 'effector';
+import { not } from 'patronum';
 import { FetchingStatus } from '../status/type';
 import { RemoteOperation } from './type';
 
@@ -69,6 +70,16 @@ function createRemoteOperation<Params, Data, Error, Meta>({
       finished.failure.map(() => 'fail' as const),
     ],
     target: $status,
+  });
+
+  // -- Execution flow
+  sample({
+    clock: start,
+    filter: not($enabled),
+    fn(params) {
+      return { params };
+    },
+    target: finished.skip,
   });
 
   // -- Send finally --
