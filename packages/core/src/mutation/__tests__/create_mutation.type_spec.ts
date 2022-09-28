@@ -1,5 +1,7 @@
 import { Effect, Event } from 'effector';
 import { expectType } from 'tsd';
+import { Contract } from '../../contract/type';
+import { InvalidDataError } from '../../errors/type';
 
 import { createMutation } from '../create_mutation';
 
@@ -26,6 +28,19 @@ params_data_error_from_effect: {
     mutation.finished.success
   );
   expectType<Event<{ params: number; error: boolean }>>(
+    mutation.finished.failure
+  );
+}
+
+effect_and_contract: {
+  const effect: Effect<number, unknown, boolean> = {} as any;
+  const contract: Contract<unknown, string> = {} as any;
+
+  const mutation = createMutation({ effect, contract });
+  expectType<Event<{ params: number; data: string }>>(
+    mutation.finished.success
+  );
+  expectType<Event<{ params: number; error: boolean | InvalidDataError }>>(
     mutation.finished.failure
   );
 }
