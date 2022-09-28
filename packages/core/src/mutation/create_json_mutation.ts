@@ -1,12 +1,22 @@
+import { attach, createEvent, sample } from 'effector';
 import { Contract } from '../contract/type';
+import { unknownContract } from '../contract/unknown_contract';
 import { InvalidDataError } from '../errors/type';
 import { ApiRequestError, HttpMethod } from '../fetch/api';
-import { Json } from '../fetch/json';
+import { createJsonApiRequest, Json } from '../fetch/json';
 import { FetchApiRecord } from '../misc/fetch_api';
+import { identity } from '../misc/identity';
 import { ParamsDeclaration } from '../misc/params';
-import { SourcedField, TwoArgsDynamicallySourcedField } from '../misc/sourced';
+import {
+  normalizeSourced,
+  SourcedField,
+  TwoArgsDynamicallySourcedField,
+} from '../misc/sourced';
 import { Validator } from '../validation/type';
-import { SharedMutationFactoryConfig } from './create_headless_mutation';
+import {
+  createHeadlessMutation,
+  SharedMutationFactoryConfig,
+} from './create_headless_mutation';
 import { Mutation } from './type';
 
 // -- Shared --
@@ -188,8 +198,56 @@ function createJsonMutation<
 
 // -- Implementation --
 
-function createJsonMutation(c: any): Mutation<any, any, any> {
-  return null as any;
+function createJsonMutation(config: any): Mutation<any, any, any> {
+  const requestFx = createJsonApiRequest({
+    request: { method: config.request.method, credentials: 'same-origin' },
+    concurrency: { strategy: 'TAKE_EVERY' },
+  });
+
+  const headlessMutation = createHeadlessMutation({
+    contract: config.response.contract ?? unknownContract,
+    mapData: config.response.mapData ?? identity,
+    validate: config.response.validate,
+    enabled: config.enabled,
+    name: config.name,
+  });
+
+  const internalStart = createEvent<any>();
+
+  headlessMutation.__.executeFx.use(
+    attach({
+      source: {
+        url: normalizeSourced({
+          field: config.request.url,
+          clock: internalStart,
+        }),
+        body: normalizeSourced({
+          field: config.request.body,
+          clock: internalStart,
+        }),
+        headers: normalizeSourced({
+          field: config.request.headers,
+          clock: internalStart,
+        }),
+        query: normalizeSourced({
+          field: config.request.query,
+          clock: internalStart,
+        }),
+      },
+      effect: requestFx,
+    })
+  );
+
+  sample({
+    clock: headlessMutation.start,
+    target: internalStart,
+    greedy: true,
+  });
+
+  return {
+    ...headlessMutation,
+    __: { ...headlessMutation.__, executeFx: requestFx },
+  };
 }
 
 export { createJsonMutation };
