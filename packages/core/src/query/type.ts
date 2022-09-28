@@ -1,4 +1,4 @@
-import { Store } from 'effector';
+import { Store, Event } from 'effector';
 import { RemoteOperation } from '../remote_operation/type';
 import { Serialize } from '../serialization/type';
 
@@ -31,6 +31,8 @@ interface Query<Params, Data, Error>
    * Is data stale?
    */
   $stale: Store<boolean>;
+  /** Event to reset the whole state of the query */
+  reset: Event<void>;
 }
 
 function isQuery(value: any): value is Query<any, any, any> {

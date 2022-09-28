@@ -15,7 +15,7 @@ const requestFx = createEffect<Request, Response, NetworkError | HttpError>({
       throw networkError({ reason: cause?.message ?? null });
     });
 
-    if (isResponseFailed(response)) {
+    if (!response.ok) {
       throw httpError({
         status: response.status,
         statusText: response.statusText,
@@ -27,27 +27,5 @@ const requestFx = createEffect<Request, Response, NetworkError | HttpError>({
   },
   sid: 'ff.requestFx',
 });
-
-function isResponseFailed(response: Response) {
-  /*
-   * information codes 1xx does not supported by fetch,
-   * so we do not have to not handle them
-   */
-
-  /*
-   * redirection codex 3xx will be transparent for application:
-   *
-   * + if request has `redirect: follow` (default behavior),
-   *  application will receive response from the of redirection chain
-   *
-   * + if request has `redirect: error` or `redirect: manual`,
-   *  application will receive NetworkError based on TypeError from Fetch API on 3XX response
-   */
-
-  const isClientError = response.status > 399 && response.status < 500;
-  const isServerError = response.status >= 500;
-
-  return isClientError || isServerError;
-}
 
 export { requestFx };

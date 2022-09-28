@@ -1,5 +1,5 @@
-import { createStore, sample, split } from 'effector';
-import { not } from 'patronum';
+import { createStore, sample, split, createEvent } from 'effector';
+import { not, reset as resetMany } from 'patronum';
 
 import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
@@ -81,6 +81,8 @@ function createHeadlessQuery<
   const applyContractFx = createContractApplier<Params, Response, ContractData>(
     contract
   );
+
+  const reset = createEvent();
 
   // -- Main stores --
   const $data = createStore<MappedData | null>(null, {
@@ -203,10 +205,18 @@ function createHeadlessQuery<
     target: $stale,
   });
 
+  // -- Reset state --
+
+  resetMany({
+    clock: reset,
+    target: [$data, $error, $stale, operation.$status],
+  });
+
   return {
     $data,
     $error,
     $stale,
+    reset,
     ...operation,
   };
 }
