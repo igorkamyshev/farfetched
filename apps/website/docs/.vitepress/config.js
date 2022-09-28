@@ -106,23 +106,34 @@ export default {
       '/api': [
         {
           text: 'Factories',
-          collapsible: true,
           items: [
-            { text: 'createQuery', link: '/api/factories/create_query' },
             {
-              text: 'createJsonQuery',
-              link: '/api/factories/create_json_query',
+              text: 'Query',
+              items: [
+                { text: 'createQuery', link: '/api/factories/create_query' },
+                {
+                  text: 'createJsonQuery',
+                  link: '/api/factories/create_json_query',
+                },
+              ],
             },
-            { text: 'createMutation', link: '/api/factories/create_mutation' },
             {
-              text: 'createJsonMutation',
-              link: '/api/factories/create_json_mutation',
+              text: 'Mutation',
+              items: [
+                {
+                  text: 'createMutation',
+                  link: '/api/factories/create_mutation',
+                },
+                {
+                  text: 'createJsonMutation',
+                  link: '/api/factories/create_json_mutation',
+                },
+              ],
             },
           ],
         },
         {
           text: 'Operators',
-          collapsible: true,
           items: [
             { text: 'connectQuery', link: '/api/operators/connect_query' },
             { text: 'retry', link: '/api/operators/retry' },
@@ -130,7 +141,6 @@ export default {
         },
         {
           text: 'Primitives',
-          collapsible: true,
           items: [
             { text: 'Query', link: '/api/primitives/query' },
             { text: 'Mutation', link: '/api/primitives/mutation' },
@@ -142,7 +152,6 @@ export default {
       '/integrations': [
         {
           text: 'React',
-          collapsible: true,
           items: [
             {
               text: 'Get started',
