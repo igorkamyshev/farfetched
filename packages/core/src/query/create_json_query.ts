@@ -236,7 +236,10 @@ function createJsonQuery(config: any) {
 
   sample({ clock: headlessQuery.start, target: internalStart, greedy: true });
 
-  return { ...headlessQuery, __: { executeFx: requestFx } };
+  return {
+    ...headlessQuery,
+    __: { ...headlessQuery.__, executeFx: requestFx },
+  };
 }
 
 export { createJsonQuery };
