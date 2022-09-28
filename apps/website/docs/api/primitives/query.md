@@ -18,13 +18,14 @@ query.$enabled; // Store<boolean>
 query.$stale; // Store<boolean>
 
 // Commands
-query.start; // Event<Params>;
+query.start; // Event<Params>
+query.reset; // Event<void>, since v0.2.0
 
 // Events
-query.finished.success; // Event<Data>;
-query.finished.failure; // Event<Error>;
-query.finished.skip; // Event<void>;
-query.finished.finally; // Event<void>;
+query.finished.success; // Event<Data>
+query.finished.failure; // Event<Error>
+query.finished.skip; // Event<void>
+query.finished.finally; // Event<void>
 
 // Note: Store and Event are imported from 'effector' package
 ```
