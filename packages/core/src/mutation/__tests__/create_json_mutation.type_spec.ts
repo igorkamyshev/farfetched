@@ -196,3 +196,101 @@ optional_validation_field: {
     });
   }
 }
+
+mapData: {
+  const contract: Contract<unknown, number> = {} as any;
+
+  params: {
+    const mutationOne = createJsonMutation({
+      params: declareParams<string>(),
+      request: {
+        url: '',
+        method: 'GET' as const,
+      },
+      response: {
+        contract,
+        mapData: (data, params) => {
+          expectType<number>(data);
+          expectType<string>(params);
+
+          return false;
+        },
+      },
+    });
+
+    expectType<Event<{ data: boolean; params: string }>>(
+      mutationOne.finished.success
+    );
+
+    const mutationTwo = createJsonMutation({
+      params: declareParams<string>(),
+      request: {
+        url: '',
+        method: 'GET' as const,
+      },
+      response: {
+        contract,
+        mapData: {
+          source: createStore(false),
+          fn: (data, params, soruce) => {
+            expectType<number>(data);
+            expectType<string>(params);
+            expectType<boolean>(soruce);
+
+            return false;
+          },
+        },
+      },
+    });
+
+    expectType<Event<{ data: boolean; params: string }>>(
+      mutationOne.finished.success
+    );
+  }
+
+  no_params: {
+    const mutationOne = createJsonMutation({
+      request: {
+        url: '',
+        method: 'GET' as const,
+      },
+      response: {
+        contract,
+        mapData: (data, params) => {
+          expectType<number>(data);
+          expectType<void>(params);
+
+          return false;
+        },
+      },
+    });
+
+    expectType<Event<{ data: boolean; params: void }>>(
+      mutationOne.finished.success
+    );
+
+    const mutationTwo = createJsonMutation({
+      request: {
+        url: '',
+        method: 'GET' as const,
+      },
+      response: {
+        contract,
+        mapData: {
+          source: createStore(false),
+          fn: (data, params, soruce) => {
+            expectType<number>(data);
+            expectType<void>(params);
+            expectType<boolean>(soruce);
+
+            return false;
+          },
+        },
+      },
+    });
+
+    expectType<Event<{ data: boolean; params: void }>>(
+      mutationOne.finished.success
+    );
+  }
+}

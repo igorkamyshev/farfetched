@@ -123,4 +123,22 @@ describe('createHeadlessMutation', () => {
       },
     });
   });
+
+  test('use mapped data', async () => {
+    const mutation = createHeadlessMutation({
+      contract: unknownContract,
+      mapData: (data) => (data as any) + 1,
+    });
+
+    const scope = fork({
+      handlers: [[mutation.__.executeFx, jest.fn((p) => p)]],
+    });
+
+    const { listeners } = watchRemoteOperation(mutation, scope);
+
+    await allSettled(mutation.start, { scope, params: 42 });
+
+    expect(listeners.onSuccess).toHaveBeenCalledTimes(1);
+    expect(listeners.onSuccess).toHaveBeenCalledWith({ params: 42, data: 43 });
+  });
 });
