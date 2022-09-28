@@ -1,7 +1,9 @@
 import { Event } from 'effector';
 import { expectType } from 'tsd';
-import { declareParams } from '../../misc/params';
+import { Contract } from '../../contract/type';
 
+import { unknownContract } from '../../contract/unknown_contract';
+import { declareParams } from '../../misc/params';
 import { createJsonMutation } from '../create_json_mutation';
 
 no_params: {
@@ -11,7 +13,7 @@ no_params: {
         url: '',
         method: 'GET' as const,
       },
-      response: {},
+      response: { contract: unknownContract },
     });
 
     expectType<Event<void>>(mutation.start);
@@ -23,7 +25,7 @@ no_params: {
         // @ts-expect-error body is not allowed for GET
         body: {},
       },
-      response: {},
+      response: { contract: unknownContract },
     });
   }
 
@@ -34,7 +36,7 @@ no_params: {
         method: 'POST' as const,
         body: {},
       },
-      response: {},
+      response: { contract: unknownContract },
     });
 
     expectType<Event<void>>(mutationWithBody.start);
@@ -44,7 +46,7 @@ no_params: {
         url: '',
         method: 'POST' as const,
       },
-      response: {},
+      response: { contract: unknownContract },
     });
 
     expectType<Event<void>>(mutationNoBody.start);
@@ -59,7 +61,7 @@ explicit_params: {
         url: '',
         method: 'GET' as const,
       },
-      response: {},
+      response: { contract: unknownContract },
     });
 
     expectType<Event<number>>(mutation.start);
@@ -71,7 +73,7 @@ explicit_params: {
         // @ts-expect-error body is not allowed for GET
         body: {},
       },
-      response: {},
+      response: { contract: unknownContract },
     });
   }
 
@@ -83,7 +85,7 @@ explicit_params: {
         method: 'POST' as const,
         body: {},
       },
-      response: {},
+      response: { contract: unknownContract },
     });
 
     expectType<Event<number>>(mutationWithBody.start);
@@ -94,9 +96,31 @@ explicit_params: {
         url: '',
         method: 'POST' as const,
       },
-      response: {},
+      response: { contract: unknownContract },
     });
 
     expectType<Event<number>>(mutationNoBody.start);
   }
+}
+
+extract_data_type_from_contarct: {
+  const contract: Contract<unknown, number> = {} as any;
+  const mutation = createJsonMutation({
+    request: { url: '', method: 'GET' },
+    response: { contract },
+  });
+
+  expectType<Event<{ data: number; params: void }>>(mutation.finished.success);
+}
+
+allow_expected_status: {
+  const mutation1 = createJsonMutation({
+    request: { url: '', method: 'GET' },
+    response: { contract: unknownContract, status: { expected: 200 } },
+  });
+
+  const mutation2 = createJsonMutation({
+    request: { url: '', method: 'GET' },
+    response: { contract: unknownContract, status: { expected: [201, 204] } },
+  });
 }

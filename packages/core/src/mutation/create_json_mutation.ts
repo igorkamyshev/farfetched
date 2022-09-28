@@ -1,9 +1,11 @@
+import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
 import { HttpMethod } from '../fetch/api';
 import { Json } from '../fetch/json';
 import { FetchApiRecord } from '../misc/fetch_api';
 import { ParamsDeclaration } from '../misc/params';
 import { SourcedField } from '../misc/sourced';
+import { Validator } from '../validation/type';
 import { SharedMutationFactoryConfig } from './create_headless_mutation';
 import { Mutation } from './type';
 
@@ -77,8 +79,10 @@ function createJsonMutation<
     HeadersSource,
     UrlSource
   > & {
-    // TODO: fill response
-    response: { empty?: unknown };
+    response: {
+      contract: Contract<unknown, Data>;
+      status?: { expected: number | number[] };
+    };
   }
 ): Mutation<void, Data, Error | InvalidDataError>;
 
@@ -101,8 +105,10 @@ function createJsonMutation<
     HeadersSource,
     UrlSource
   > & {
-    // TODO: fill response
-    response: { empty?: unknown };
+    response: {
+      contract: Contract<unknown, Data>;
+      status?: { expected: number | number[] };
+    };
   }
 ): Mutation<Params, Data, Error | InvalidDataError>;
 
