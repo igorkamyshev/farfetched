@@ -1,9 +1,14 @@
 import { Effect } from 'effector';
 
-import { SharedMutationFactoryConfig } from './create_headless_mutation';
+import {
+  createHeadlessMutation,
+  SharedMutationFactoryConfig,
+} from './create_headless_mutation';
 import { InvalidDataError } from '../errors/type';
 import { Contract } from '../contract/type';
 import { Mutation } from './type';
+import { resolveExecuteEffect } from '../misc/execute_effect';
+import { unknownContract } from '../contract/unknown_contract';
 
 // Overload: Only handler
 function createMutation<Params, Data>(
@@ -32,7 +37,15 @@ function createMutation(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config: any
 ): Mutation<any, any, any> {
-  return {} as any;
+  const mutation = createHeadlessMutation({
+    name: config.name,
+    enabled: config.enabled,
+    contract: config.contract ?? unknownContract,
+  });
+
+  mutation.__.executeFx.use(resolveExecuteEffect(config));
+
+  return mutation;
 }
 
 export { createMutation };
