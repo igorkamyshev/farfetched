@@ -196,6 +196,3 @@ optional_validation_field: {
     });
   }
 }
-
-no_params_mapData: {
-}
