@@ -114,6 +114,10 @@ export default {
               link: '/api/factories/create_json_query',
             },
             { text: 'createMutation', link: '/api/factories/create_mutation' },
+            {
+              text: 'createJsonMutation',
+              link: '/api/factories/create_json_mutation',
+            },
           ],
         },
         {
