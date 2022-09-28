@@ -46,6 +46,8 @@ interface Query<Params, Data, Error> {
   $stale: Store<boolean>;
   /** Event to trigger query */
   start: Event<Params>;
+  /** Event to reset the whole state of the query */
+  reset: Event<void>;
   /** Set of events that represent end of query */
   finished: {
     /** Query was successfully ended, data will be passed as a payload */
