@@ -1,7 +1,7 @@
-import { Event } from 'effector';
+import { createStore, Event } from 'effector';
 import { expectType } from 'tsd';
-import { Contract } from '../../contract/type';
 
+import { Contract } from '../../contract/type';
 import { unknownContract } from '../../contract/unknown_contract';
 import { declareParams } from '../../misc/params';
 import { createJsonMutation } from '../create_json_mutation';
@@ -123,4 +123,76 @@ allow_expected_status: {
     request: { url: '', method: 'GET' },
     response: { contract: unknownContract, status: { expected: [201, 204] } },
   });
+}
+
+optional_validation_field: {
+  no_params: {
+    const contract: Contract<unknown, number> = {} as any;
+
+    const mutation1 = createJsonMutation({
+      request: { url: '', method: 'GET' },
+      response: {
+        contract,
+        validate: (data, params) => {
+          expectType<number>(data);
+          expectType<void>(params);
+
+          return true;
+        },
+      },
+    });
+
+    const mutation2 = createJsonMutation({
+      request: { url: '', method: 'GET' },
+      response: {
+        contract,
+        validate: {
+          source: createStore<boolean>(false),
+          fn: (data, params, s) => {
+            expectType<number>(data);
+            expectType<void>(params);
+            expectType<boolean>(s);
+
+            return true;
+          },
+        },
+      },
+    });
+  }
+
+  params: {
+    const contract: Contract<unknown, number> = {} as any;
+
+    const mutation1 = createJsonMutation({
+      params: declareParams<string>(),
+      request: { url: '', method: 'GET' },
+      response: {
+        contract,
+        validate: (data, params) => {
+          expectType<number>(data);
+          expectType<string>(params);
+
+          return true;
+        },
+      },
+    });
+
+    const mutation2 = createJsonMutation({
+      params: declareParams<string>(),
+      request: { url: '', method: 'GET' },
+      response: {
+        contract,
+        validate: {
+          source: createStore<boolean>(false),
+          fn: (data, params, s) => {
+            expectType<number>(data);
+            expectType<string>(params);
+            expectType<boolean>(s);
+
+            return true;
+          },
+        },
+      },
+    });
+  }
 }

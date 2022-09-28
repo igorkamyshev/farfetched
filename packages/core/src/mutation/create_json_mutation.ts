@@ -62,30 +62,6 @@ interface BaseJsonMutationConfigWithParams<
 
 // -- Overloads --
 
-// No params
-function createJsonMutation<
-  Data,
-  Error,
-  BodySource = void,
-  QuerySource = void,
-  HeadersSource = void,
-  UrlSource = void,
-  ValidationSource = void
->(
-  config: BaseJsonMutationConfigNoParams<
-    Data,
-    BodySource,
-    QuerySource,
-    HeadersSource,
-    UrlSource
-  > & {
-    response: {
-      contract: Contract<unknown, Data>;
-      status?: { expected: number | number[] };
-    };
-  }
-): Mutation<void, Data, Error | InvalidDataError>;
-
 // Params
 function createJsonMutation<
   Params,
@@ -108,9 +84,35 @@ function createJsonMutation<
     response: {
       contract: Contract<unknown, Data>;
       status?: { expected: number | number[] };
+      validate?: Validator<Data, Params, ValidationSource>;
     };
   }
 ): Mutation<Params, Data, Error | InvalidDataError>;
+
+// No params
+function createJsonMutation<
+  Data,
+  Error,
+  BodySource = void,
+  QuerySource = void,
+  HeadersSource = void,
+  UrlSource = void,
+  ValidationSource = void
+>(
+  config: BaseJsonMutationConfigNoParams<
+    Data,
+    BodySource,
+    QuerySource,
+    HeadersSource,
+    UrlSource
+  > & {
+    response: {
+      contract: Contract<unknown, Data>;
+      status?: { expected: number | number[] };
+      validate?: Validator<Data, void, ValidationSource>;
+    };
+  }
+): Mutation<void, Data, Error | InvalidDataError>;
 
 // -- Implementation --
 
