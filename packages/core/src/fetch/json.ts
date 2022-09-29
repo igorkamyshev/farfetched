@@ -73,6 +73,7 @@ function createJsonApiRequest<R extends CreationRequestConfig>(
 
         return response.json();
       },
+      status: config.response?.status,
     },
   });
 
