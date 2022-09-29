@@ -26,6 +26,10 @@ export default {
       apiKey: '8dfd0f1aa677d735b609cb1d7eca1b25',
       indexName: 'farfetched',
     },
+    editLink: {
+      pattern:
+        'https://github.com/igorkamyshev/farfetched/edit/master/apps/website/docs/:path',
+    },
     nav: [
       {
         text: 'Tutorial',
