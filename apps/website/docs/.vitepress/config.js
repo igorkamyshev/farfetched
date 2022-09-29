@@ -115,7 +115,7 @@ export default {
                 },
                 {
                   text: 'Built-in factories for Mutation',
-                  link: '/tutorial/built_in_mutation_factorie',
+                  link: '/tutorial/built_in_mutation_factories',
                 },
               ],
             },
