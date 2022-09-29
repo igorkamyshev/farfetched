@@ -189,6 +189,10 @@ export default {
                   text: 'createQueryResource',
                   link: '/integrations/solid/api/create-query-resource',
                 },
+                {
+                  text: 'useMutation',
+                  link: '/integrations/solid/api/use_mutation',
+                },
               ],
             },
           ],
