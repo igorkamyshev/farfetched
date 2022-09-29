@@ -79,12 +79,12 @@ export default {
             { text: 'Get started', link: '/tutorial/' },
             { text: 'Installation', link: '/tutorial/install' },
             {
-              text: 'Query',
+              text: 'Intro',
               items: [
-                { text: 'Intro to Queries', link: '/tutorial/basic_query' },
+                { text: 'Queries', link: '/tutorial/basic_query' },
                 {
-                  text: 'Dependent Queries',
-                  link: '/tutorial/dependent_queries',
+                  text: 'Mutations',
+                  link: '/tutorial/basic_mutation',
                 },
                 {
                   text: 'Contracts',
@@ -94,13 +94,28 @@ export default {
                   text: 'Validators',
                   link: '/tutorial/validators',
                 },
+              ],
+            },
+            {
+              text: 'Operators',
+              items: [
                 {
-                  text: 'Built-in factories',
+                  text: 'Dependent Queries',
+                  link: '/tutorial/dependent_queries',
+                },
+                { text: 'Retries', link: '/tutorial/query_retry' },
+              ],
+            },
+            {
+              text: 'Factories',
+              items: [
+                {
+                  text: 'Built-in factories for Query',
                   link: '/tutorial/built_in_query_factories',
                 },
                 {
-                  text: 'Enhancers',
-                  items: [{ text: 'Retries', link: '/tutorial/query_retry' }],
+                  text: 'Built-in factories for Mutation',
+                  link: '/tutorial/built_in_mutation_factorie',
                 },
               ],
             },
