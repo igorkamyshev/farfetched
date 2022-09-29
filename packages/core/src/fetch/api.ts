@@ -199,7 +199,6 @@ function createApiRequest<
         });
       });
 
-      console.log(config.response);
       if (config.response.status) {
         const expected = Array.isArray(config.response.status.expected)
           ? config.response.status.expected
