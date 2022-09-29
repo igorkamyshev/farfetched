@@ -220,12 +220,16 @@ export default {
             { text: 'Server side rendering', link: '/recipes/ssr' },
             { text: 'Testing', link: '/recipes/testing' },
             {
-              text: 'Custom Query',
+              text: 'Customization',
               items: [
                 { text: 'How not to use Fetch API', link: '/recipes/no_fetch' },
                 {
                   text: 'Custom Query creation',
                   link: '/recipes/custom_query',
+                },
+                {
+                  text: 'Custom Mutation creation',
+                  link: '/recipes/custom_mutation',
                 },
                 {
                   text: 'Your own GraphQL Query',

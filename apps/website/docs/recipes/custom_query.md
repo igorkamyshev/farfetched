@@ -1,4 +1,4 @@
-# Custom Query creation
+# Custom _Query_ creation
 
 [_Query_](/api/primitives/query.md) is a simple object with that stores some reactive primitives — [_Event_](https://effector.dev/docs/api/effector/event), [_Effect_](https://effector.dev/docs/api/effector/effect), and [_Store_](https://effector.dev/docs/api/effector/store). It means you can create Query not only by built-in factories but by your own. E.g. 👇
 
@@ -24,6 +24,8 @@ function createAsyncStorageQuery({ storageKey }) {
 Of course, it looks pretty hard, so Farfetched provides a special helper that aims to simplify creation of custom [_Query_](/api/primitives/query) factories — `createHeadlessQuery`. Let us rewrite provided example with this helper 👇
 
 ```ts
+import { createHeadlessQuery } from '@fafetched/core';
+
 function createAsyncStorageQuery({ storageKey }) {
   const fetchFx = createEffect(() => asyncLocalStorage.getItem(storageKey));
 
