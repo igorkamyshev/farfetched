@@ -1,1 +1,1 @@
-export { createQueryResource } from './resources/create_query_resource';
+export { createQueryResource } from './create_query_resource';
