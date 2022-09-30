@@ -3,14 +3,14 @@ import { allSettled, createEvent, createStore, fork } from 'effector';
 import { createQuery } from '../../query/create_query';
 import { retry } from '../retry';
 
-describe('retry', () => {
+describe('retry with query', () => {
   it('starts query after failure with same args by default', async () => {
     const handler = jest.fn().mockRejectedValue(new Error('Sorry'));
     const query = createQuery({
       handler,
     });
 
-    retry({ query, times: 1, delay: 0 });
+    retry(query, { times: 1, delay: 0 });
 
     const scope = fork();
 
@@ -29,7 +29,7 @@ describe('retry', () => {
       handler,
     });
 
-    retry({ query, times: 4, delay: 0 });
+    retry(query, { times: 4, delay: 0 });
 
     const scope = fork();
 
@@ -44,7 +44,7 @@ describe('retry', () => {
       handler,
     });
 
-    retry({ query, times: 1, delay: 100 });
+    retry(query, { times: 1, delay: 100 });
 
     const scope = fork();
 
@@ -63,7 +63,7 @@ describe('retry', () => {
       handler,
     });
 
-    retry({ query, times: 3, delay: ({ attempt }) => attempt * 100 });
+    retry(query, { times: 3, delay: ({ attempt }) => attempt * 100 });
 
     const scope = fork();
 
@@ -86,8 +86,7 @@ describe('retry', () => {
       ({ params }, { attempt }) => `${params} ${attempt}`
     );
 
-    retry({
-      query,
+    retry(query, {
       times: 3,
       delay: 0,
       mapParams,
@@ -153,7 +152,7 @@ describe('retry', () => {
       handler,
     });
 
-    retry({ query, times: 2, delay: 0 });
+    retry(query, { times: 2, delay: 0 });
 
     const scope = fork();
 
@@ -174,8 +173,7 @@ describe('retry', () => {
       handler,
     });
 
-    retry({
-      query,
+    retry(query, {
       times: 10,
       delay: 0,
       filter: false,
@@ -195,8 +193,7 @@ describe('retry', () => {
       handler,
     });
 
-    retry({
-      query,
+    retry(query, {
       times: 10,
       delay: 0,
       filter: createStore(false),
@@ -219,8 +216,7 @@ describe('retry', () => {
 
     const filter = jest.fn().mockReturnValue(false);
 
-    retry({
-      query,
+    retry(query, {
       times: 10,
       delay: 0,
       filter,
@@ -244,7 +240,7 @@ describe('retry', () => {
     const otherwiseListener = jest.fn();
     otherwise.watch(otherwiseListener);
 
-    retry({ query, times: 2, delay: 0, otherwise });
+    retry(query, { times: 2, delay: 0, otherwise });
 
     const scope = fork();
 
@@ -269,7 +265,7 @@ describe('retry', () => {
     const otherwiseListener = jest.fn();
     otherwise.watch(otherwiseListener);
 
-    retry({ query, times: 1, delay: 0, otherwise });
+    retry(query, { times: 1, delay: 0, otherwise });
 
     const scope = fork();
 
