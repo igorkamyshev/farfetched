@@ -13,7 +13,7 @@ import {
   TimeoutError,
 } from './type';
 
-type WithError<T = any, P = Record<string, never>> = P & { error: T };
+type WithError<T = any, P = Record<string, unknown>> = P & { error: T };
 
 function isInvalidDataError(
   args: WithError
