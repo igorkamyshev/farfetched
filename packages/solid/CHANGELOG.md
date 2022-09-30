@@ -1,5 +1,11 @@
 # @farfetched/solid
 
+## 0.2.0
+
+### Minor Changes
+
+- cb5a598: Add `useMutation` binding
+
 ## 0.1.3
 
 ### Patch Changes
