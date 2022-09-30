@@ -103,7 +103,7 @@ export default {
                   text: 'Dependent Queries',
                   link: '/tutorial/dependent_queries',
                 },
-                { text: 'Retries', link: '/tutorial/query_retry' },
+                { text: 'Retries', link: '/tutorial/retries' },
               ],
             },
             {
