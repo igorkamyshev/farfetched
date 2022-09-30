@@ -4,22 +4,12 @@ Farfetched is under development now, before the first stable release we are goin
 
 ## The next release
 
-### v.0.2 [Laem Promthep](https://github.com/igorkamyshev/farfetched/milestone/2)
+### v.0.3 Sirinat
 
-- Mutation API
-  - `createMutation`
-  - `createJsonMutation`
-  - `stale` state of Query after mutation
-  - optimistic and pessimistic updates
-  - postpone mutation (analogue of `connectQuery`)
-- Initial value for Query
+- Initial value for _Query_
+- Declarative cache
 
 ## Future releases
-
-### v.0.3
-
-- Add-ons concept
-- Declarative cache add-on — `@farfetched/cache`
 
 ### v.0.4
 
