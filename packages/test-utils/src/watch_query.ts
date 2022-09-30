@@ -1,6 +1,6 @@
 import { createWatch, Event, Scope } from 'effector';
 
-interface QueryLike {
+interface RemoteOperationLike {
   start: Event<any>;
   finished: {
     success: Event<any>;
@@ -10,7 +10,7 @@ interface QueryLike {
   };
 }
 
-function watchQuery(query: QueryLike, scope: Scope) {
+function watchRemoteOperation(op: RemoteOperationLike, scope: Scope) {
   const onStart = jest.fn();
 
   const onSuccess = jest.fn();
@@ -18,25 +18,25 @@ function watchQuery(query: QueryLike, scope: Scope) {
   const onFailure = jest.fn();
   const onFinally = jest.fn();
 
-  const startUnwatch = createWatch({ unit: query.start, fn: onStart, scope });
+  const startUnwatch = createWatch({ unit: op.start, fn: onStart, scope });
 
   const doneUnwatch = createWatch({
-    unit: query.finished.success,
+    unit: op.finished.success,
     fn: onSuccess,
     scope,
   });
   const skipUnwatch = createWatch({
-    unit: query.finished.skip,
+    unit: op.finished.skip,
     fn: onSkip,
     scope,
   });
   const errorUnwatch = createWatch({
-    unit: query.finished.failure,
+    unit: op.finished.failure,
     fn: onFailure,
     scope,
   });
   const finallyUnwatch = createWatch({
-    unit: query.finished.finally,
+    unit: op.finished.finally,
     fn: onFinally,
     scope,
   });
@@ -53,4 +53,4 @@ function watchQuery(query: QueryLike, scope: Scope) {
   };
 }
 
-export { watchQuery };
+export { watchRemoteOperation };

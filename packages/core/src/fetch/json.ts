@@ -31,6 +31,7 @@ type CreationRequestConfig =
 interface JsonApiConfig<R extends CreationRequestConfig>
   extends ApiConfigShared {
   request: R;
+  response?: { status?: { expected: number | number[] } };
 }
 
 function createJsonApiRequest<R extends CreationRequestConfig>(
@@ -65,7 +66,14 @@ function createJsonApiRequest<R extends CreationRequestConfig>(
       mapBody: (jsonBody) => JSON.stringify(jsonBody),
     },
     response: {
-      extract: (r) => r.json() as Promise<unknown>,
+      extract: async (response) => {
+        if (!response.body) {
+          return null;
+        }
+
+        return response.json();
+      },
+      status: config.response?.status,
     },
   });
 
