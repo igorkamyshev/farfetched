@@ -8,6 +8,7 @@ Farfetched is under development now, before the first stable release we are goin
 
 - Initial value for _Query_
 - Declarative cache
+- `update` operator
 
 ## Future releases
 
