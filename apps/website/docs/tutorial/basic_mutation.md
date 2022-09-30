@@ -65,7 +65,7 @@ That's it, we have created our first [_Mutation_](/api/primitives/mutation)! Now
 createEntityMutation.start({ id: 1, name: 'Some new name' });
 ```
 
-After this call [Query](/api/primitives/query) will start its handler with the given parameters and store the result inside. But how will we know this result?
+After this call [Mutation](/api/primitives/mutation) will start its handler with the given parameters and store the result inside. But how will we know this result?
 
 ## _Mutation_ result
 
