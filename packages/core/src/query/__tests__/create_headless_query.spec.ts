@@ -1,6 +1,6 @@
 import { allSettled, createStore, fork } from 'effector';
 
-import { watchQuery } from '@farfetched/test-utils';
+import { watchRemoteOperation } from '@farfetched/test-utils';
 import { createDefer } from '@farfetched/misc';
 
 import { createHeadlessQuery } from '../create_headless_query';
@@ -28,7 +28,7 @@ describe('core/createHeadlessQuery without contract', () => {
   test('finished.success triggers after executeFx.done', async () => {
     const scope = fork({ handlers: [[query.__.executeFx, jest.fn((p) => p)]] });
 
-    const { listeners } = watchQuery(query, scope);
+    const { listeners } = watchRemoteOperation(query, scope);
 
     await allSettled(query.start, { scope, params: 42 });
 
@@ -56,7 +56,7 @@ describe('core/createHeadlessQuery without contract', () => {
       ],
     });
 
-    const { listeners } = watchQuery(query, scope);
+    const { listeners } = watchRemoteOperation(query, scope);
 
     await allSettled(query.start, { scope, params: 42 });
 
@@ -185,7 +185,7 @@ describe('core/createHeadlessQuery with contract', () => {
 
     const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
 
-    const { listeners } = watchQuery(query, scope);
+    const { listeners } = watchRemoteOperation(query, scope);
 
     await allSettled(query.start, { scope, params: 42 });
 
@@ -217,7 +217,7 @@ describe('core/createHeadlessQuery with contract', () => {
       ],
     });
 
-    const { listeners } = watchQuery(query, scope);
+    const { listeners } = watchRemoteOperation(query, scope);
 
     await allSettled(query.start, { scope, params: 42 });
 
@@ -325,7 +325,7 @@ describe('core/createHeadlessQuery enabled', () => {
 
     const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
 
-    const watcher = watchQuery(query, scope);
+    const watcher = watchRemoteOperation(query, scope);
 
     await allSettled(query.start, { scope, params: {} });
 

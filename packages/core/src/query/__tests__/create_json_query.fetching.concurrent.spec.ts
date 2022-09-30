@@ -1,4 +1,4 @@
-import { watchQuery } from '@farfetched/test-utils';
+import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 
@@ -34,7 +34,7 @@ describe('remote_data/query/json.fetching.concurrent', () => {
       handlers: [[fetchFx, requestMock]],
     });
 
-    const watcher = watchQuery(query, scope);
+    const watcher = watchRemoteOperation(query, scope);
 
     // Do not wait
     allSettled(query.start, { scope });

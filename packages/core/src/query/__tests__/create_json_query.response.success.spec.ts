@@ -1,6 +1,6 @@
 import { allSettled, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
-import { watchQuery } from '@farfetched/test-utils';
+import { watchRemoteOperation } from '@farfetched/test-utils';
 import { createDefer } from '@farfetched/misc';
 
 import { unknownContract } from '../../contract/unknown_contract';
@@ -27,7 +27,7 @@ describe('remote_data/query/json.response.success', () => {
 
     const scope = fork({ handlers: [[query.__.executeFx, fetchMock]] });
 
-    const watcher = watchQuery(query, scope);
+    const watcher = watchRemoteOperation(query, scope);
 
     expect(scope.getState(query.$status)).toBe('initial');
     expect(scope.getState(query.$pending)).toBeFalsy();
@@ -69,7 +69,7 @@ describe('remote_data/query/json.response.success', () => {
     const fetchMock = jest.fn(() => response);
 
     const scope = fork({ handlers: [[query.__.executeFx, fetchMock]] });
-    const watcher = watchQuery(query, scope);
+    const watcher = watchRemoteOperation(query, scope);
 
     await allSettled(query.start, { scope });
 
