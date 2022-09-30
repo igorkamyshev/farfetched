@@ -333,4 +333,23 @@ describe('core/createHeadlessQuery enabled', () => {
     expect(watcher.listeners.onSkip).toBeCalledTimes(1);
     expect(watcher.listeners.onSkip).toBeCalledWith({ params: {} });
   });
+
+  test('reset', async () => {
+    const query = createHeadlessQuery({
+      contract: unknownContract,
+      mapData: identity,
+      enabled: false,
+    });
+
+    const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
+
+    await allSettled(query.start, { scope, params: {} });
+
+    await allSettled(query.reset, { scope });
+
+    expect(scope.getState(query.$data)).toBeNull();
+    expect(scope.getState(query.$error)).toBeNull();
+    expect(scope.getState(query.$status)).toBe('initial');
+    expect(scope.getState(query.$stale)).toBeFalsy();
+  });
 });

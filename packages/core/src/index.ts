@@ -12,8 +12,8 @@ export { exponentialDelay, linearDelay } from './retry/delay';
 
 export { declareParams, type ParamsDeclaration } from './misc/params';
 export {
-  TwoArgsDynamicallySourcedField,
-  SourcedField,
+  type TwoArgsDynamicallySourcedField,
+  type SourcedField,
   normalizeSourced,
   reduceTwoArgs,
 } from './misc/sourced';

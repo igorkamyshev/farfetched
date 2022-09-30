@@ -21,12 +21,15 @@ export default {
       { icon: 'github', link: 'https://github.com/igorkamyshev/farfetched' },
       { icon: 'twitter', link: 'https://twitter.com/farfetched_dev' },
     ],
-    // TODO: use my own search
-    // algolia: {
-    //   appId: '8J64VVRP8K',
-    //   apiKey: 'a18e2f4cc5665f6602c5631fd868adfd',
-    //   indexName: 'vitepress',
-    // },
+    algolia: {
+      appId: 'E2VDGRUQY3',
+      apiKey: '8dfd0f1aa677d735b609cb1d7eca1b25',
+      indexName: 'farfetched',
+    },
+    editLink: {
+      pattern:
+        'https://github.com/igorkamyshev/farfetched/edit/master/apps/website/docs/:path',
+    },
     nav: [
       {
         text: 'Tutorial',
@@ -86,6 +89,10 @@ export default {
                 {
                   text: 'Contracts',
                   link: '/tutorial/contracts',
+                },
+                {
+                  text: 'Validators',
+                  link: '/tutorial/validators',
                 },
                 {
                   text: 'Built-in factories',

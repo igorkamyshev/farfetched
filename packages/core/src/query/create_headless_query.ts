@@ -5,7 +5,7 @@ import {
   sample,
   split,
 } from 'effector';
-import { not } from 'patronum';
+import { not, reset as resetMany } from 'patronum';
 
 import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
@@ -94,6 +94,8 @@ function createHeadlessQuery<
    * })
    */
   const start = createEvent<Params>();
+
+  const reset = createEvent();
 
   // Signal-events
   const finished = {
@@ -241,8 +243,13 @@ function createHeadlessQuery<
   const $failed = $status.map((status) => status === 'fail');
   const $succeeded = $status.map((status) => status === 'done');
 
+  // -- Reset state --
+
+  resetMany({ clock: reset, target: [$data, $error, $stale, $status] });
+
   return {
     start,
+    reset,
     $data,
     $error,
     finished,
