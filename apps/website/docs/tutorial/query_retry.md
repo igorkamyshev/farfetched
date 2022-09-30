@@ -20,9 +20,8 @@ To retry a [_Query_](/api/primitives/query), we can use the `retry` operator. It
 ```ts
 import { retry } from '@farfetched/core';
 
-retry({
-  // let's retry our characterQuery
-  query: characterQuery,
+// let's retry our characterQuery
+retry(characterQuery, {
   // up to 5 times
   times: 5,
   // with 500ms delay between attempts
@@ -30,7 +29,7 @@ retry({
 });
 ```
 
-This code works is pretty straightforward, after first failure of `characterQuery`, it calls it again after 500ms. If it fails again, it will call it again after 500ms and so on up yo 5 times. If it succeededs, it will stop retrying.
+This code works is pretty straightforward, after first failure of `characterQuery`, it calls it again after 500ms. If it fails again, it will call it again after 500ms and so on up yo 5 times. If it succeeded, it will stop retrying.
 
 ::: tip
 As soon as Farfetched is [based on Effector](/statements/effector), almost every field of its configs could be static or reactive. So, you can pass a [_Store_](https://effector.dev/docs/api/effector/store) with a number of retires to `times` option as well.
@@ -43,8 +42,7 @@ Sometimes, we want to retry only specific errors. For example, we want to retry 
 ```ts
 import { isHttpErrorCode } from '@farfetched/core';
 
-retry({
-  query: characterQuery,
+retry(characterQuery, {
   times: 5,
   delay: 500,
   // retry only 500 errors
@@ -63,8 +61,7 @@ In the following example, we use [Atomic Router](https://atomic-router.github.io
 :::
 
 ```ts
-retry({
-  query: characterQuery,
+retry(characterQuery, {
   times: 5,
   delay: 500,
   filter: characterRoute.$isOpened,
@@ -74,8 +71,7 @@ retry({
 Also, we can combine the first and the second approaches to retry only 500 errors on the particular page.
 
 ```ts
-retry({
-  query: characterQuery,
+retry(characterQuery, {
   times: 5,
   delay: 500,
   filter: {
@@ -95,8 +91,7 @@ This type of fields is called [_Sourced_](/api/primitives/sourced) in Farfetched
 Not only `filter` option is sourced, you can formulate dynamic `delay` as well. For example, you can use linear or exponential back off to retry requests.
 
 ```ts
-retry({
-  query: characterQuery,
+retry(characterQuery, {
   times: 5,
   // linear back off
   delay: ({ attempt }) => attempt * 50,
@@ -112,14 +107,12 @@ The most common cases for dynamic delay are linear or exponential back off. Farf
 ```ts
 import { linearDelay, exponentialDelay } from '@farfetched/core';
 
-retry({
-  query: characterQuery,
+retry(characterQuery, {
   times: 5,
   delay: linearDelay(50),
 });
 
-retry({
-  query: originQuery,
+retry(originQuery, {
   times: 5,
   delay: exponentialDelay(50),
 });
@@ -140,8 +133,7 @@ const characterQuery = createQuery({
   },
 });
 
-retry({
-  query: characterQuery,
+retry(characterQuery, {
   times: 5,
   delay: 500,
   mapParams: ({ params, error }, { attempt }) => ({
