@@ -79,12 +79,12 @@ export default {
             { text: 'Get started', link: '/tutorial/' },
             { text: 'Installation', link: '/tutorial/install' },
             {
-              text: 'Query',
+              text: 'Intro',
               items: [
-                { text: 'Intro to Queries', link: '/tutorial/basic_query' },
+                { text: 'Queries', link: '/tutorial/basic_query' },
                 {
-                  text: 'Dependent Queries',
-                  link: '/tutorial/dependent_queries',
+                  text: 'Mutations',
+                  link: '/tutorial/basic_mutation',
                 },
                 {
                   text: 'Contracts',
@@ -94,13 +94,28 @@ export default {
                   text: 'Validators',
                   link: '/tutorial/validators',
                 },
+              ],
+            },
+            {
+              text: 'Operators',
+              items: [
                 {
-                  text: 'Built-in factories',
+                  text: 'Dependent Queries',
+                  link: '/tutorial/dependent_queries',
+                },
+                { text: 'Retries', link: '/tutorial/query_retry' },
+              ],
+            },
+            {
+              text: 'Factories',
+              items: [
+                {
+                  text: 'Built-in factories for Query',
                   link: '/tutorial/built_in_query_factories',
                 },
                 {
-                  text: 'Enhancers',
-                  items: [{ text: 'Retries', link: '/tutorial/query_retry' }],
+                  text: 'Built-in factories for Mutation',
+                  link: '/tutorial/built_in_mutation_factories',
                 },
               ],
             },
@@ -110,18 +125,34 @@ export default {
       '/api': [
         {
           text: 'Factories',
-          collapsible: true,
           items: [
-            { text: 'createQuery', link: '/api/factories/create_query' },
             {
-              text: 'createJsonQuery',
-              link: '/api/factories/create_json_query',
+              text: 'Query',
+              items: [
+                { text: 'createQuery', link: '/api/factories/create_query' },
+                {
+                  text: 'createJsonQuery',
+                  link: '/api/factories/create_json_query',
+                },
+              ],
+            },
+            {
+              text: 'Mutation',
+              items: [
+                {
+                  text: 'createMutation',
+                  link: '/api/factories/create_mutation',
+                },
+                {
+                  text: 'createJsonMutation',
+                  link: '/api/factories/create_json_mutation',
+                },
+              ],
             },
           ],
         },
         {
           text: 'Operators',
-          collapsible: true,
           items: [
             { text: 'connectQuery', link: '/api/operators/connect_query' },
             { text: 'retry', link: '/api/operators/retry' },
@@ -129,9 +160,9 @@ export default {
         },
         {
           text: 'Primitives',
-          collapsible: true,
           items: [
             { text: 'Query', link: '/api/primitives/query' },
+            { text: 'Mutation', link: '/api/primitives/mutation' },
             { text: 'Contract', link: '/api/primitives/contract' },
             { text: 'Validator', link: '/api/primitives/validator' },
           ],
@@ -140,7 +171,6 @@ export default {
       '/integrations': [
         {
           text: 'React',
-          collapsible: true,
           items: [
             {
               text: 'Get started',
@@ -151,6 +181,10 @@ export default {
               text: 'API',
               items: [
                 { text: 'useQuery', link: '/integrations/react/api/use_query' },
+                {
+                  text: 'useMutation',
+                  link: '/integrations/react/api/use_mutation',
+                },
               ],
             },
           ],
@@ -169,6 +203,10 @@ export default {
                 {
                   text: 'createQueryResource',
                   link: '/integrations/solid/api/create-query-resource',
+                },
+                {
+                  text: 'useMutation',
+                  link: '/integrations/solid/api/use_mutation',
                 },
               ],
             },
@@ -201,12 +239,16 @@ export default {
             { text: 'Server side rendering', link: '/recipes/ssr' },
             { text: 'Testing', link: '/recipes/testing' },
             {
-              text: 'Custom Query',
+              text: 'Customization',
               items: [
                 { text: 'How not to use Fetch API', link: '/recipes/no_fetch' },
                 {
                   text: 'Custom Query creation',
                   link: '/recipes/custom_query',
+                },
+                {
+                  text: 'Custom Mutation creation',
+                  link: '/recipes/custom_mutation',
                 },
                 {
                   text: 'Your own GraphQL Query',

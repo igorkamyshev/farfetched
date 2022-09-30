@@ -12,6 +12,7 @@ import { identity } from '../misc/identity';
 import { TwoArgsDynamicallySourcedField } from '../misc/sourced';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
+import { resolveExecuteEffect } from '../misc/execute_effect';
 
 // Overload: Only handler
 function createQuery<Params, Response>(
@@ -120,22 +121,6 @@ function createQuery<
   query.__.executeFx.use(resolveExecuteEffect<Params, Response, Error>(config));
 
   return query;
-}
-
-function resolveExecuteEffect<Params, Response, Error = unknown>(
-  // Use any because of overloads
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config: any
-): Effect<Params, Response, Error> {
-  if (is.effect(config.effect)) {
-    return config.effect;
-  } else if (typeof config.handler === 'function') {
-    return createEffect<Params, Response, Error>(config.handler);
-  }
-
-  throw new InvalidConfigException(
-    'handler or effect must be passed to createQuery'
-  );
 }
 
 export { createQuery };

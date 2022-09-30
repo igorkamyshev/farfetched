@@ -1,4 +1,4 @@
-import { watchQuery } from '@farfetched/test-utils';
+import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
 
 import { unknownContract } from '../../contract/unknown_contract';
@@ -75,7 +75,7 @@ describe('remote_data/connect_query', () => {
       ],
     });
 
-    const childWatcher = watchQuery(contentQ, scope);
+    const childWatcher = watchRemoteOperation(contentQ, scope);
 
     await Promise.all([
       allSettled(languagesQ.start, { scope }),
@@ -96,7 +96,7 @@ describe('remote_data/connect_query', () => {
       ],
     });
 
-    const childWatcher = watchQuery(contentQ, scope);
+    const childWatcher = watchRemoteOperation(contentQ, scope);
 
     await allSettled(languagesQ.start, { scope });
 
@@ -120,7 +120,7 @@ describe('remote_data/connect_query', () => {
       ],
     });
 
-    const childWatcher = watchQuery(contentQ, scope);
+    const childWatcher = watchRemoteOperation(contentQ, scope);
 
     await Promise.all([
       allSettled(languagesQ.start, { scope }),

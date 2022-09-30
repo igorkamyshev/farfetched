@@ -1,4 +1,4 @@
-import { watchQuery } from '@farfetched/test-utils';
+import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
 import { createDefer } from '@farfetched/misc';
 
@@ -24,7 +24,7 @@ describe('remote_data/query/json.response.error', () => {
     const fetchMock = jest.fn(() => requestDefer.promise);
 
     const scope = fork({ handlers: [[query.__.executeFx, fetchMock]] });
-    const watcher = watchQuery(query, scope);
+    const watcher = watchRemoteOperation(query, scope);
 
     expect(scope.getState(query.$status)).toBe('initial');
     expect(scope.getState(query.$pending)).toBeFalsy();

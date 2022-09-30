@@ -2,7 +2,11 @@ import { combine, merge, sample } from 'effector';
 import { every } from 'patronum';
 
 import { postpone } from '../misc/postpone';
-import { isQuery, Query, QueryData, QueryParams } from '../query/type';
+import { isQuery, Query } from '../query/type';
+import {
+  RemoteOperationData,
+  RemoteOperationParams,
+} from '../remote_operation/type';
 
 /**
  * Target query will be executed after all sources queries successful end.
@@ -30,8 +34,8 @@ function connectQuery<
   Target extends Query<any, any, any>
 >(_config: {
   source: Source;
-  fn: (sources: QueryData<Source>) => {
-    params: QueryParams<Target>;
+  fn: (sources: RemoteOperationData<Source>) => {
+    params: RemoteOperationParams<Target>;
   };
   target: Target | Target[];
 }): void;
@@ -47,8 +51,8 @@ function connectQuery<
 >(_config: {
   source: Sources;
   fn: (sources: {
-    [index in keyof Sources]: QueryData<Sources[index]>;
-  }) => { params: QueryParams<Target> };
+    [index in keyof Sources]: RemoteOperationData<Sources[index]>;
+  }) => { params: RemoteOperationParams<Target> };
   target: Target | Target[];
 }): void;
 
@@ -63,8 +67,8 @@ function connectQuery<
   source: Sources;
   target: Target | Target[];
   fn?: (sources: {
-    [index in keyof Sources]: QueryData<Sources[index]>;
-  }) => { params: QueryParams<Target> };
+    [index in keyof Sources]: RemoteOperationData<Sources[index]>;
+  }) => { params: RemoteOperationParams<Target> };
 }): void {
   // Settings
   const singleParentMode = isQuery(source);
