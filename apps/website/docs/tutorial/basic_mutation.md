@@ -47,7 +47,7 @@ As you can see, the [_Mutation_](/api/primitives/mutation) is really close to [_
 Let's create some mutation to create a new entity in the API:
 
 ```ts
-const createEntityMutation = createQuery({
+const createEntityMutation = createMutation({
   handler: async ({ name, id }) => {
     const response = await fetch(`https://api.salo.com/api/`, {
       method: 'POST',
