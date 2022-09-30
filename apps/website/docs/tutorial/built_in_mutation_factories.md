@@ -15,7 +15,7 @@ Since Farfetched provides `createJsonQuery` to create [_Queries_](/api/primitive
 Let's start with an example, and then we'll explain what's going on.
 
 ```ts
-import { createJsonMutation } from '@farfetched/core';
+import { createJsonMutation, declareParams } from '@farfetched/core';
 
 const loginMutation = createJsonMutation({
   params: declareParams<{ login: string; password: string }>(),
