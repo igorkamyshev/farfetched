@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.2.1
+
+### Patch Changes
+
+- b4a594a: Fix type definitions of error guards
+
 ## 0.2.0
 
 ### Minor Changes
