@@ -4,7 +4,7 @@ Farfetched is under development now, before the first stable release we are goin
 
 ## The next release
 
-### v.0.3 Sirinat
+### v.0.3 [Sirinat](https://github.com/igorkamyshev/farfetched/milestone/3)
 
 - Initial value for _Query_
 - Declarative cache
