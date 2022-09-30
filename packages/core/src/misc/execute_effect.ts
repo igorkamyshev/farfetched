@@ -15,6 +15,6 @@ export function resolveExecuteEffect<Params, Response, Error = unknown>(
   }
 
   throw new InvalidConfigException(
-    'handler or effect must be passed to createQuery'
+    'handler or effect must be passed to the config'
   );
 }
