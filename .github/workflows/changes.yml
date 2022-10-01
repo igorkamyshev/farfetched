@@ -2,7 +2,7 @@ name: Changes
 
 on:
   pull_request:
-    branches: [master]
+    branches: [master, next-*]
 
 jobs:
   changeset:

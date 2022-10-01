@@ -69,14 +69,15 @@ function mergeChangelogs(packages) {
       }))
       .filter(({ changes }) => Object.keys(changes).length > 0);
 
+    currentLog.push(['header', { level: 2 }, 'Full changelog']);
     for (const { name, changes } of relatedChanges) {
-      currentLog.push(['header', { level: 2 }, name]);
+      currentLog.push(['header', { level: 3 }, name]);
       for (const [version, versionChanges] of Object.entries(changes).sort(
         ([v1], [v2]) => -compareSemVer(v1, v2)
       )) {
-        currentLog.push(['header', { level: 3 }, version]);
+        currentLog.push(['header', { level: 4 }, version]);
         for (const [type, items] of Object.entries(versionChanges)) {
-          currentLog.push(['header', { level: 4 }, type], ...items);
+          currentLog.push(['para', ['strong', type]], ...items);
         }
       }
     }
