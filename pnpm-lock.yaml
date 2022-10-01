@@ -155,6 +155,12 @@ importers:
   packages/test-utils:
     specifiers: {}
 
+  packages/zod:
+    specifiers:
+      zod: ^3.19.1
+    devDependencies:
+      zod: 3.19.1
+
 packages:
 
   /@adobe/css-tools/4.0.1:
@@ -11572,4 +11578,8 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+    dev: true
+
+  /zod/3.19.1:
+    resolution: {integrity: sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA==}
     dev: true
