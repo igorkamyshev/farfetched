@@ -1,4 +1,6 @@
+import { Effect } from 'effector';
+
 export interface CacheAdapter {
-  get(key: string): Promise<string | null>;
-  set(key: string, value: string): Promise<void>;
+  get: Effect<{ key: string }, string | null>;
+  set: Effect<{ key: string; value: string }, void>;
 }
