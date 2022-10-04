@@ -1,4 +1,5 @@
 import { allSettled, createEvent, createStore, fork } from 'effector';
+import { describe, test, expect } from 'vitest';
 
 import { normalizeSourced, reduceTwoArgs } from '../sourced';
 

@@ -1,5 +1,6 @@
 import { allSettled, createStore, fork, Store } from 'effector';
 import { expectType } from 'tsd';
+import { describe, test, expect, vi } from 'vitest';
 
 import { unknownContract } from '../../contract/unknown_contract';
 import { createJsonQuery } from '../create_json_query';
@@ -28,7 +29,7 @@ describe('remote_data/query/json.response.map_data', () => {
       response: { contract: validStringContract },
     });
 
-    const fetchMock = jest.fn(() => response);
+    const fetchMock = vi.fn(() => response);
 
     const scope = fork({ handlers: [[query.__.executeFx, fetchMock]] });
 
@@ -56,7 +57,7 @@ describe('remote_data/query/json.response.map_data', () => {
       params: declareParams<string>(),
     });
 
-    const fetchMock = jest.fn(() => response);
+    const fetchMock = vi.fn(() => response);
 
     const scope = fork({ handlers: [[query.__.executeFx, fetchMock]] });
 
@@ -87,7 +88,7 @@ describe('remote_data/query/json.response.map_data', () => {
       },
     });
 
-    const fetchMock = jest.fn(() => response);
+    const fetchMock = vi.fn(() => response);
 
     const scope = fork({ handlers: [[query.__.executeFx, fetchMock]] });
 

@@ -9,8 +9,7 @@
       "options": {
         "outputPath": "dist/packages/misc",
         "main": "packages/misc/src/index.ts",
-        "tsConfig": "packages/misc/tsconfig.lib.json",
-        "assets": ["packages/misc/*.md"]
+        "tsConfig": "packages/misc/tsconfig.json"
       }
     },
     "publish": {

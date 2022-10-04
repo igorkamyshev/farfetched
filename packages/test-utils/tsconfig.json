@@ -11,14 +11,5 @@
     "outDir": "../../dist/out-tsc",
     "types": ["jest", "node"]
   },
-  "files": [],
-  "include": ["jest.config.ts", "**/*.test.ts", "**/*.spec.ts", "**/*.d.ts"],
-  "references": [
-    {
-      "path": "./tsconfig.lib.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
-  ]
+  "files": []
 }

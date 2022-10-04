@@ -2,6 +2,7 @@ import { allSettled, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { watchRemoteOperation } from '@farfetched/test-utils';
 import { createDefer } from '@farfetched/misc';
+import { describe, test, expect, vi } from 'vitest';
 
 import { unknownContract } from '../../contract/unknown_contract';
 import { createJsonQuery } from '../create_json_query';
@@ -23,7 +24,7 @@ describe('remote_data/query/json.response.success', () => {
       response: { contract: unknownContract },
     });
 
-    const fetchMock = jest.fn(() => requestDefer.promise);
+    const fetchMock = vi.fn(() => requestDefer.promise);
 
     const scope = fork({ handlers: [[query.__.executeFx, fetchMock]] });
 
@@ -66,7 +67,7 @@ describe('remote_data/query/json.response.success', () => {
       },
     });
 
-    const fetchMock = jest.fn(() => response);
+    const fetchMock = vi.fn(() => response);
 
     const scope = fork({ handlers: [[query.__.executeFx, fetchMock]] });
     const watcher = watchRemoteOperation(query, scope);
@@ -92,7 +93,7 @@ describe('remote_data/query/json.response.success', () => {
       response: { contract: unknownContract },
     });
 
-    const fetchMock = jest
+    const fetchMock = vi
       .fn()
       .mockRejectedValueOnce(error)
       .mockResolvedValueOnce(response);

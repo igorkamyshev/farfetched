@@ -9,8 +9,7 @@
       "options": {
         "outputPath": "dist/packages/core",
         "main": "packages/core/src/index.ts",
-        "tsConfig": "packages/core/tsconfig.lib.json",
-        "assets": ["packages/core/*.md"]
+        "tsConfig": "packages/core/tsconfig.json"
       }
     },
     "publish": {
@@ -33,11 +32,9 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/core"],
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "jestConfig": "packages/core/jest.config.ts",
-        "passWithNoTests": true
+        "command": "pnpm vitest run --root ./packages/core"
       }
     },
     "typetest": {

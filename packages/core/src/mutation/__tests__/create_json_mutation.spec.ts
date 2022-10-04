@@ -1,5 +1,6 @@
 import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
+import { describe, test, expect, vi } from 'vitest';
 
 import { unknownContract } from '../../contract/unknown_contract';
 import { fetchFx } from '../../fetch/fetch';
@@ -22,7 +23,7 @@ describe('createJsonMutation', () => {
       response: { contract: unknownContract },
     });
 
-    const mockFn = jest.fn();
+    const mockFn = vi.fn();
 
     const scope = fork({ handlers: [[mutation.__.executeFx, mockFn]] });
 
@@ -47,7 +48,7 @@ describe('createJsonMutation', () => {
       response: { contract: unknownContract },
     });
 
-    const mockFn = jest.fn();
+    const mockFn = vi.fn();
 
     const scope = fork({ handlers: [[mutation.__.executeFx, mockFn]] });
 
@@ -71,7 +72,7 @@ describe('createJsonMutation', () => {
       response: { contract: unknownContract },
     });
 
-    const mockFn = jest.fn();
+    const mockFn = vi.fn();
 
     const scope = fork({ handlers: [[mutation.__.executeFx, mockFn]] });
 
