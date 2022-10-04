@@ -1,15 +1,15 @@
 import { createEffect, sample } from 'effector';
 import { delay } from 'patronum';
 
-import { parseTime, Time } from '../lib/time';
-import { CacheAdapter } from './type';
+import { parseTime } from '../lib/time';
+import { CacheAdapter, CacheAdapterOptions } from './type';
 
-export function browserStorageCache(config: {
-  storage: Storage;
-  maxEntries?: number;
-  maxAge?: Time;
-}): CacheAdapter {
-  const { storage } = config;
+export function browserStorageCache(
+  config: {
+    storage: Storage;
+  } & CacheAdapterOptions
+): CacheAdapter {
+  const { storage, observability } = config;
   // -- adapter
   function storageCache(): CacheAdapter {
     const { maxEntries, maxAge } = config;
@@ -51,8 +51,8 @@ export function browserStorageCache(config: {
       });
     }
 
-    return {
-      get: createEffect<{ key: string }, string | null>(async ({ key }) => {
+    const getFx = createEffect<{ key: string }, string | null>(
+      async ({ key }) => {
         const saved = await getSavedItemFx(key);
 
         if (!saved) return null;
@@ -67,7 +67,20 @@ export function browserStorageCache(config: {
         }
 
         return saved.value;
-      }),
+      }
+    );
+
+    if (observability?.keyFound) {
+      sample({
+        clock: getFx.done,
+        filter: ({ result }) => result !== null,
+        fn: ({ params }) => ({ key: params.key }),
+        target: observability.keyFound,
+      });
+    }
+
+    return {
+      get: getFx,
       set: createEffect<{ key: string; value: string }, void>(
         async ({ key, value }) => {
           const meta = await getMetaFx();

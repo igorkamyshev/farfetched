@@ -7,16 +7,13 @@ import {
 } from 'effector';
 import { delay } from 'patronum';
 
-import { parseTime, Time } from '../lib/time';
-import { CacheAdapter } from './type';
+import { parseTime } from '../lib/time';
+import { CacheAdapter, CacheAdapterOptions } from './type';
 
 type Storage = Record<string, string>;
 
-export function inMemoryCache(config?: {
-  maxEntries?: number;
-  maxAge?: Time;
-}): CacheAdapter {
-  const { maxEntries, maxAge } = config ?? {};
+export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
+  const { maxEntries, maxAge, observability } = config ?? {};
 
   const $storage = createStore<Storage>(
     {},
@@ -54,12 +51,23 @@ export function inMemoryCache(config?: {
     });
   }
 
+  const getFx = attach({
+    source: $storage,
+    mapParams: ({ key }: { key: string }, storage) => storage[key] ?? null,
+    effect: createEffect((t: string | null) => t),
+  });
+
+  if (observability?.keyFound) {
+    sample({
+      clock: getFx.done,
+      filter: ({ result }) => result !== null,
+      fn: ({ params }) => ({ key: params.key }),
+      target: observability.keyFound,
+    });
+  }
+
   return {
-    get: attach({
-      source: $storage,
-      mapParams: ({ key }: { key: string }, storage) => storage[key] ?? null,
-      effect: createEffect((t: string | null) => t),
-    }),
+    get: getFx,
     set: createEffect<
       {
         key: string;

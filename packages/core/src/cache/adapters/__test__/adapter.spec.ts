@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { fork, scopeBind } from 'effector';
+import { allSettled, createEvent, fork, scopeBind } from 'effector';
 import { setTimeout } from 'timers/promises';
 
 import { inMemoryCache } from '../in_memory';
@@ -87,5 +87,36 @@ describe.each([
       scope,
     })({ key: 'key' });
     expect(resultTwo).toBeNull();
+  });
+
+  describe('observability', () => {
+    test('on found', async () => {
+      const keyFound = createEvent<{ key: string }>();
+
+      const listener = jest.fn();
+      keyFound.watch(listener);
+
+      const scope = fork();
+
+      const cache = adapter({ observability: { keyFound } });
+
+      await allSettled(cache.set, {
+        params: { key: 'someKey', value: 'someValue ' },
+        scope,
+      });
+
+      await allSettled(cache.get, {
+        params: { key: 'someKey' },
+        scope,
+      });
+
+      await allSettled(cache.get, {
+        params: { key: 'otherKey' },
+        scope,
+      });
+
+      expect(listener).toBeCalledTimes(1);
+      expect(listener).toBeCalledWith({ key: 'someKey' });
+    });
   });
 });
