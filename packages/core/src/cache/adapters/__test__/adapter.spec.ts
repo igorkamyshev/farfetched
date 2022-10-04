@@ -1,11 +1,26 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { fork, scopeBind } from 'effector';
 import { setTimeout } from 'timers/promises';
 
 import { inMemoryCache } from '../in_memory';
+import { localStorageCache } from '../local_storage';
+import { sessionStorageCache } from '../session_storage';
 
-describe('inMemoryCache', () => {
+describe.each([
+  { name: 'inMemory', adapter: inMemoryCache },
+  { name: 'sessionSotrage', adapter: sessionStorageCache },
+  { name: 'localStorage', adapter: localStorageCache },
+])('adapter $name', ({ adapter }) => {
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+
   test('save and get', async () => {
-    const cache = inMemoryCache();
+    const cache = adapter();
 
     const scope = fork();
 
@@ -29,7 +44,7 @@ describe('inMemoryCache', () => {
   });
 
   test('evict', async () => {
-    const cache = inMemoryCache({ maxEntries: 1 });
+    const cache = adapter({ maxEntries: 1 });
 
     const scope = fork();
 
@@ -53,7 +68,7 @@ describe('inMemoryCache', () => {
   });
 
   test('expire', async () => {
-    const cache = inMemoryCache({ maxAge: '1sec' });
+    const cache = adapter({ maxAge: '1sec' });
 
     const scope = fork();
 
