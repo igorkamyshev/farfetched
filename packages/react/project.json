@@ -34,11 +34,9 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/react"],
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "jestConfig": "packages/react/jest.config.ts",
-        "passWithNoTests": true
+        "command": "pnpm vitest run --root ./packages/react --passWithNoTests"
       }
     },
     "typetest": {
