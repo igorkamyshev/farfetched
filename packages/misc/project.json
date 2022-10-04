@@ -33,11 +33,9 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/misc"],
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "jestConfig": "packages/misc/jest.config.ts",
-        "passWithNoTests": true
+        "command": "pnpm vitest run --root ./packages/misc"
       }
     },
     "size": {
