@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.2.2
+
+### Patch Changes
+
+- e871f8b: Do not change `$status` for disabled Queries
+
 ## 0.2.1
 
 ### Patch Changes
