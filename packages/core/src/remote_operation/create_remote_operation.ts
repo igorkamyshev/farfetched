@@ -107,7 +107,7 @@ function createRemoteOperation<
   // -- Indicate status --
   sample({
     clock: [
-      start.map(() => 'pending' as const),
+      executeFx.map(() => 'pending' as const),
       finished.success.map(() => 'done' as const),
       finished.failure.map(() => 'fail' as const),
     ],
