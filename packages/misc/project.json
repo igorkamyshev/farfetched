@@ -8,7 +8,7 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/misc",
-        "main": "packages/misc/src/index.ts",
+        "main": "packages/misc/index.ts",
         "tsConfig": "packages/misc/tsconfig.json"
       }
     },

@@ -15,12 +15,12 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@farfetched/core": ["packages/core/src/index.ts"],
-      "@farfetched/misc": ["packages/misc/src/index.ts"],
-      "@farfetched/react": ["packages/react/src/index.ts"],
-      "@farfetched/runtypes": ["packages/runtypes/src/index.ts"],
-      "@farfetched/solid": ["packages/solid/src/index.ts"],
-      "@farfetched/test-utils": ["packages/test-utils/src/index.ts"]
+      "@farfetched/core": ["packages/core/index.ts"],
+      "@farfetched/misc": ["packages/misc/index.ts"],
+      "@farfetched/react": ["packages/react/index.ts"],
+      "@farfetched/runtypes": ["packages/runtypes/index.ts"],
+      "@farfetched/solid": ["packages/solid/index.ts"],
+      "@farfetched/test-utils": ["packages/test-utils/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

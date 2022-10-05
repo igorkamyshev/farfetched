@@ -9,7 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/react",
-        "main": "packages/react/src/index.ts",
+        "main": "packages/react/index.ts",
         "tsConfig": "packages/react/tsconfig.json"
       }
     },

@@ -3,6 +3,7 @@
  */
 
 import { allSettled, fork, scopeBind } from 'effector';
+import { describe, expect, test, afterEach } from 'vitest';
 import { ErrorBoundary, Suspense } from 'solid-js/web';
 import { render, cleanup, screen } from 'solid-testing-library';
 import { Provider } from 'effector-solid';

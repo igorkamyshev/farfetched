@@ -65,6 +65,7 @@
     "tsd": "^0.22.0",
     "typescript": "~4.7.2",
     "vite": "^3.1.4",
+    "vite-plugin-solid": "^2.3.9",
     "vite-tsconfig-paths": "^3.5.1",
     "vitepress": "1.0.0-alpha.10",
     "vitest": "^0.23.4",

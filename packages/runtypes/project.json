@@ -8,8 +8,8 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/runtypes",
-        "main": "packages/runtypes/src/index.ts",
-        "tsConfig": "packages/runtypes/tsconfig.lib.json",
+        "main": "packages/runtypes/index.ts",
+        "tsConfig": "packages/runtypes/tsconfig.json",
         "assets": ["packages/runtypes/*.md"]
       }
     },

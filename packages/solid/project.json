@@ -9,9 +9,8 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/solid",
-        "main": "packages/solid/src/index.ts",
-        "tsConfig": "packages/solid/tsconfig.lib.json",
-        "assets": ["packages/solid/*.md"]
+        "main": "packages/solid/index.ts",
+        "tsConfig": "packages/solid/tsconfig.json"
       }
     },
     "publish": {
@@ -34,11 +33,9 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/solid"],
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "jestConfig": "packages/solid/jest.config.ts",
-        "passWithNoTests": true
+        "command": "pnpm vitest run --root /Users/igorkamyshev/Code/Personal/farfetched/packages/solid/"
       }
     },
     "typetest": {
