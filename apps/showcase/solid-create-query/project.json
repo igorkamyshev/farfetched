@@ -61,14 +61,6 @@
           "apps/showcase/solid-create-query/**/*.{ts,tsx,js,jsx}"
         ]
       }
-    },
-    "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/showcase/solid-create-query"],
-      "options": {
-        "jestConfig": "apps/showcase/solid-create-query/jest.config.ts",
-        "passWithNoTests": true
-      }
     }
   },
   "tags": []

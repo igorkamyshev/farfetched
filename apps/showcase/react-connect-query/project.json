@@ -61,14 +61,6 @@
           "apps/showcase/react-connect-query/**/*.{ts,tsx,js,jsx}"
         ]
       }
-    },
-    "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/showcase/react-connect-query"],
-      "options": {
-        "jestConfig": "apps/showcase/react-connect-query/jest.config.ts",
-        "passWithNoTests": true
-      }
     }
   },
   "tags": []

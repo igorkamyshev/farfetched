@@ -60,14 +60,6 @@
           "apps/showcase/react-create-json-query/**/*.{ts,tsx,js,jsx}"
         ]
       }
-    },
-    "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/showcase/react-create-json-query"],
-      "options": {
-        "jestConfig": "apps/showcase/react-create-json-query/jest.config.ts",
-        "passWithNoTests": true
-      }
     }
   },
   "tags": []
