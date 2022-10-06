@@ -35,7 +35,8 @@
     "test": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "pnpm vitest run --root ./packages/runtypes"
+        "command": "pnpm vitest run",
+        "cwd": "packages/runtypes"
       }
     },
     "typetest": {

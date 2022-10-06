@@ -35,7 +35,8 @@
     "test": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "pnpm vitest run --root ./packages/react --passWithNoTests"
+        "command": "pnpm vitest run --passWithNoTests",
+        "cwd": "packages/react"
       }
     },
     "typetest": {
