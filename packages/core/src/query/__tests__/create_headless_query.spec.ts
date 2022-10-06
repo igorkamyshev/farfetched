@@ -84,7 +84,7 @@ describe('core/createHeadlessQuery without contract', () => {
       mapData: identity,
     });
 
-    const scope = fork({ handlers: [[disabledQuery.__.executeFx, jest.fn()]] });
+    const scope = fork({ handlers: [[disabledQuery.__.executeFx, vi.fn()]] });
 
     await allSettled(disabledQuery.start, { scope, params: 42 });
 
