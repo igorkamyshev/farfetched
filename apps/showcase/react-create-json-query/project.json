@@ -13,7 +13,7 @@
         "index": "apps/showcase/react-create-json-query/src/index.html",
         "baseHref": "/",
         "main": "apps/showcase/react-create-json-query/src/main.tsx",
-        "tsConfig": "apps/showcase/react-create-json-query/tsconfig.app.json",
+        "tsConfig": "apps/showcase/react-create-json-query/tsconfig.json",
         "assets": ["apps/showcase/react-create-json-query/src/favicon.ico"],
         "scripts": [],
         "webpackConfig": "@nrwl/react/plugins/webpack"

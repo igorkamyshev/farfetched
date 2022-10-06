@@ -13,7 +13,7 @@
         "index": "apps/showcase/react-connect-query/src/index.html",
         "baseHref": "/",
         "main": "apps/showcase/react-connect-query/src/main.tsx",
-        "tsConfig": "apps/showcase/react-connect-query/tsconfig.app.json",
+        "tsConfig": "apps/showcase/react-connect-query/tsconfig.json",
         "assets": ["apps/showcase/react-connect-query/src/favicon.ico"],
         "styles": [],
         "scripts": [],
