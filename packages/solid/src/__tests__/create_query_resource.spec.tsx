@@ -130,7 +130,7 @@ describe('createQueryResource', () => {
     expect(errorText).toBeInTheDocument();
   });
 
-  test('show loading when query skipped', async () => {
+  test('DO NOT show loading when query skipped', async () => {
     const controlledQuery = createQuery({
       enabled: false,
       handler: async () => 'Hello',
@@ -144,6 +144,7 @@ describe('createQueryResource', () => {
       return (
         <Suspense fallback="Loading">
           <ErrorBoundary fallback={(error) => `Error: ${error}`}>
+            <p>Weird situation</p>
             <p>{data()}</p>
           </ErrorBoundary>
         </Suspense>
@@ -158,8 +159,8 @@ describe('createQueryResource', () => {
 
     await allSettled(controlledQuery.start, { scope, params: {} });
 
-    const loadingText = await screen.findByText('Loading');
-    expect(loadingText).toBeInTheDocument();
+    const insideText = await screen.findByText('Weird situation');
+    expect(insideText).toBeInTheDocument();
   });
 
   test('show Suspense-fallback while pending and nested data', async () => {

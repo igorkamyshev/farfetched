@@ -77,6 +77,20 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(listeners.onFinally).toHaveBeenCalledWith({ params: 42 });
   });
 
+  test('skipped query has initial status', async () => {
+    const disabledQuery = createHeadlessQuery({
+      enabled: false,
+      contract: unknownContract,
+      mapData: identity,
+    });
+
+    const scope = fork({ handlers: [[disabledQuery.__.executeFx, jest.fn()]] });
+
+    await allSettled(disabledQuery.start, { scope, params: 42 });
+
+    expect(scope.getState(disabledQuery.$status)).toBe('initial');
+  });
+
   test('$status changes on stages', async () => {
     const executorFirstDefer = createDefer();
     const executorSecondDefer = createDefer();
