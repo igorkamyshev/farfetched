@@ -7,7 +7,7 @@ module.exports = async function tsdExecutor(options, context) {
 
   const diagnostics = await tsd({
     cwd: path.join(context.cwd, project.root),
-    typingsFile: './src/index.ts',
+    typingsFile: './index.ts',
     testFiles: '**/*.type_spec.ts',
   });
 
