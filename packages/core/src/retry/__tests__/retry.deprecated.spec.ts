@@ -1,5 +1,13 @@
 import { allSettled, createEvent, createStore, fork } from 'effector';
-import { describe, test, expect, vi } from 'vitest';
+import {
+  describe,
+  test,
+  expect,
+  vi,
+  beforeAll,
+  afterAll,
+  afterEach,
+} from 'vitest';
 
 import { createQuery } from '../../query/create_query';
 import { retry } from '../retry';
@@ -22,7 +30,7 @@ describe('retry (deprecated form)', () => {
     errorMock.mockClear();
   });
 
-  it('starts query after failure with same args by default', async () => {
+  test('starts query after failure with same args by default', async () => {
     const handler = vi.fn().mockRejectedValue(new Error('Sorry'));
     const query = createQuery({
       handler,
