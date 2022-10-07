@@ -9,8 +9,8 @@
       "options": {
         "project": "packages/misc/package.json",
         "outputPath": "dist/packages/misc",
-        "entryFile": "packages/misc/src/index.ts",
-        "tsConfig": "packages/misc/tsconfig.lib.json",
+        "entryFile": "packages/misc/index.ts",
+        "tsConfig": "packages/misc/tsconfig.json",
         "format": ["esm", "cjs"],
         "generateExportsField": true,
         "compiler": "babel"
@@ -36,11 +36,10 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/misc"],
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "jestConfig": "packages/misc/jest.config.ts",
-        "passWithNoTests": true
+        "command": "pnpm vitest run",
+        "cwd": "packages/misc"
       }
     },
     "size": {

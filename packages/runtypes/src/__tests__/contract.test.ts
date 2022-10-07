@@ -1,4 +1,5 @@
 import { String } from 'runtypes';
+import { describe, test, expect } from 'vitest';
 
 import { runtypeContract } from '../runtype_contract';
 
@@ -7,7 +8,7 @@ describe('runtypes/runtypeContract short', () => {
     const contract = runtypeContract(String);
 
     expect(contract.getErrorMessages(2)).toMatchInlineSnapshot(`
-      Array [
+      [
         "Expected string, but was number",
       ]
     `);

@@ -1,4 +1,5 @@
 import { allSettled, fork } from 'effector';
+import { describe, test, expect, vi } from 'vitest';
 
 import { fetchFx } from '../fetch';
 import { createJsonApiRequest } from '../json';
@@ -15,7 +16,7 @@ describe('fetch/json.request.headers', () => {
       request: { ...request, method: 'POST' as const },
     });
 
-    const fetchMock = jest.fn().mockResolvedValue(new Response('Ok'));
+    const fetchMock = vi.fn().mockResolvedValue(new Response('Ok'));
 
     const scope = fork({ handlers: [[fetchFx, fetchMock]] });
 
@@ -36,7 +37,7 @@ describe('fetch/json.request.headers', () => {
       request: { ...request, method: 'GET' as const },
     });
 
-    const fetchMock = jest.fn().mockResolvedValue(new Response('Ok'));
+    const fetchMock = vi.fn().mockResolvedValue(new Response('Ok'));
 
     const scope = fork({ handlers: [[fetchFx, fetchMock]] });
 

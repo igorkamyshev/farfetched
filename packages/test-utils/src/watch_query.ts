@@ -1,4 +1,5 @@
 import { createWatch, Event, Scope } from 'effector';
+import { vi } from 'vitest';
 
 interface RemoteOperationLike {
   start: Event<any>;
@@ -11,12 +12,12 @@ interface RemoteOperationLike {
 }
 
 function watchRemoteOperation(op: RemoteOperationLike, scope: Scope) {
-  const onStart = jest.fn();
+  const onStart = vi.fn();
 
-  const onSuccess = jest.fn();
-  const onSkip = jest.fn();
-  const onFailure = jest.fn();
-  const onFinally = jest.fn();
+  const onSuccess = vi.fn();
+  const onSkip = vi.fn();
+  const onFailure = vi.fn();
+  const onFinally = vi.fn();
 
   const startUnwatch = createWatch({ unit: op.start, fn: onStart, scope });
 

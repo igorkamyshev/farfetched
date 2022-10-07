@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import { createJsonQuery } from '../create_json_query';
 import { isQuery } from '../type';
 

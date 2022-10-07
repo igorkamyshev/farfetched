@@ -8,8 +8,8 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/core",
-        "entryFile": "packages/core/src/index.ts",
-        "tsConfig": "packages/core/tsconfig.lib.json",
+        "entryFile": "packages/core/index.ts",
+        "tsConfig": "packages/core/tsconfig.json",
         "project": "packages/core/package.json",
         "format": ["esm", "cjs"],
         "generateExportsField": true,
@@ -36,11 +36,10 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/core"],
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "jestConfig": "packages/core/jest.config.ts",
-        "passWithNoTests": true
+        "command": "pnpm vitest run",
+        "cwd": "packages/core"
       }
     },
     "typetest": {

@@ -13,7 +13,7 @@
         "index": "apps/showcase/solid-create-query/src/index.html",
         "baseHref": "/",
         "main": "apps/showcase/solid-create-query/src/main.tsx",
-        "tsConfig": "apps/showcase/solid-create-query/tsconfig.app.json",
+        "tsConfig": "apps/showcase/solid-create-query/tsconfig.json",
         "assets": ["apps/showcase/solid-create-query/src/favicon.ico"],
         "styles": [],
         "scripts": [],
@@ -60,14 +60,6 @@
         "lintFilePatterns": [
           "apps/showcase/solid-create-query/**/*.{ts,tsx,js,jsx}"
         ]
-      }
-    },
-    "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/showcase/solid-create-query"],
-      "options": {
-        "jestConfig": "apps/showcase/solid-create-query/jest.config.ts",
-        "passWithNoTests": true
       }
     }
   },

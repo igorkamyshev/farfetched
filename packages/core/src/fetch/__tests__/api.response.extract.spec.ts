@@ -1,5 +1,6 @@
 import { allSettled, fork } from 'effector';
 import { watchEffect } from '@farfetched/test-utils';
+import { describe, test, expect, vi } from 'vitest';
 
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
@@ -15,7 +16,7 @@ describe('fetch/api.response.prepare', () => {
   };
 
   test('pass oriiginal response to preparation', async () => {
-    const extractMock = jest.fn().mockImplementation((t) => t);
+    const extractMock = vi.fn().mockImplementation((t) => t);
 
     const apiCallFx = createApiRequest({
       request,

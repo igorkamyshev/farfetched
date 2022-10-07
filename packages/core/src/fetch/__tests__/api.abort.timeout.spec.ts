@@ -1,5 +1,6 @@
 import { allSettled, createStore, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
+import { describe, test, expect, vi } from 'vitest';
 
 import { watchEffect } from '@farfetched/test-utils';
 
@@ -31,7 +32,7 @@ describe('fetch/api.abort.timeout', () => {
     });
 
     // Use real fetch
-    const fetchMock = jest
+    const fetchMock = vi
       .fn()
       .mockImplementation((arg) => setTimeout(100).then(() => fetch(arg)));
 
@@ -66,7 +67,7 @@ describe('fetch/api.abort.timeout', () => {
     });
 
     // Use real fetch
-    const fetchMock = jest
+    const fetchMock = vi
       .fn()
       .mockImplementation((arg) => setTimeout(100).then(() => fetch(arg)));
 
@@ -100,7 +101,7 @@ describe('fetch/api.abort.timeout', () => {
     });
 
     // Use real fetch
-    const fetchMock = jest
+    const fetchMock = vi
       .fn()
       .mockImplementationOnce((arg) => setTimeout(100).then(() => fetch(arg)))
       .mockImplementationOnce(() => new Response('Ok'));

@@ -10,8 +10,8 @@
       "options": {
         "project": "packages/react/package.json",
         "outputPath": "dist/packages/react",
-        "entryFile": "packages/react/src/index.ts",
-        "tsConfig": "packages/react/tsconfig.lib.json",
+        "entryFile": "packages/react/index.ts",
+        "tsConfig": "packages/react/tsconfig.json",
         "format": ["esm", "cjs"],
         "generateExportsField": true,
         "compiler": "babel"
@@ -37,11 +37,10 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/react"],
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "jestConfig": "packages/react/jest.config.ts",
-        "passWithNoTests": true
+        "command": "pnpm vitest run --passWithNoTests",
+        "cwd": "packages/react"
       }
     },
     "typetest": {

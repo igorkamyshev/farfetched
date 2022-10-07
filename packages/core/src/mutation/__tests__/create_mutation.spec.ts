@@ -1,10 +1,12 @@
 import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, createEffect, fork } from 'effector';
+import { describe, test, expect, vi } from 'vitest';
+
 import { createMutation } from '../create_mutation';
 
 describe('createMutation', () => {
   test('use function as handler', async () => {
-    const handler = jest
+    const handler = vi
       .fn()
       .mockResolvedValueOnce('data')
       .mockRejectedValueOnce('error');
@@ -26,7 +28,7 @@ describe('createMutation', () => {
   });
 
   test('use effect as handler', async () => {
-    const handler = jest
+    const handler = vi
       .fn()
       .mockResolvedValueOnce('data')
       .mockRejectedValueOnce('error');
@@ -50,7 +52,7 @@ describe('createMutation', () => {
 
   test('uses contract', async () => {
     const mutation = createMutation({
-      effect: createEffect(jest.fn().mockResolvedValue('data')),
+      effect: createEffect(vi.fn().mockResolvedValue('data')),
       contract: {
         isData: (_: any): _ is any => false,
         getErrorMessages: () => ['Test error'],
@@ -74,7 +76,7 @@ describe('createMutation', () => {
   });
 
   test('skip disabled mutation', async () => {
-    const handler = jest.fn();
+    const handler = vi.fn();
     const mutation = createMutation({ handler, enabled: false });
 
     const scope = fork();

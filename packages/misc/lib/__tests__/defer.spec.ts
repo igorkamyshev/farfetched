@@ -1,6 +1,7 @@
 /**
  * Copy-pasted, original author is https://github.com/AlexandrHoroshih
  */
+import { test, expect, vi } from 'vitest';
 
 import { createDefer } from '../defer';
 
@@ -19,7 +20,7 @@ test('returns promise that is rejected by command', async () => {
 });
 
 test('does not leave unhandled rejection, if now awaited', async () => {
-  const rejected = jest.fn();
+  const rejected = vi.fn();
   process.on('unhandledRejection', rejected);
 
   const def = createDefer();

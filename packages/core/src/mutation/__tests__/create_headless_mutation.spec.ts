@@ -1,5 +1,6 @@
 import { allSettled, fork } from 'effector';
 import { watchRemoteOperation } from '@farfetched/test-utils';
+import { describe, test, expect, vi } from 'vitest';
 
 import { createHeadlessMutation } from '../create_headless_mutation';
 import { unknownContract } from '../../contract/unknown_contract';
@@ -12,7 +13,7 @@ describe('createHeadlessMutation', () => {
       mapData: identity,
     });
 
-    const mockFn = jest.fn();
+    const mockFn = vi.fn();
 
     const scope = fork({ handlers: [[mutation.__.executeFx, mockFn]] });
 
@@ -29,7 +30,7 @@ describe('createHeadlessMutation', () => {
     });
 
     const scope = fork({
-      handlers: [[mutation.__.executeFx, jest.fn((p) => p)]],
+      handlers: [[mutation.__.executeFx, vi.fn((p) => p)]],
     });
 
     const { listeners } = watchRemoteOperation(mutation, scope);
@@ -54,7 +55,7 @@ describe('createHeadlessMutation', () => {
     });
 
     const scope = fork({
-      handlers: [[mutation.__.executeFx, jest.fn((p) => p)]],
+      handlers: [[mutation.__.executeFx, vi.fn((p) => p)]],
     });
 
     const { listeners } = watchRemoteOperation(mutation, scope);
@@ -78,7 +79,7 @@ describe('createHeadlessMutation', () => {
     });
 
     const scope = fork({
-      handlers: [[mutation.__.executeFx, jest.fn((p) => p)]],
+      handlers: [[mutation.__.executeFx, vi.fn((p) => p)]],
     });
 
     const { listeners } = watchRemoteOperation(mutation, scope);
@@ -105,7 +106,7 @@ describe('createHeadlessMutation', () => {
     });
 
     const scope = fork({
-      handlers: [[mutation.__.executeFx, jest.fn((p) => p)]],
+      handlers: [[mutation.__.executeFx, vi.fn((p) => p)]],
     });
 
     const { listeners } = watchRemoteOperation(mutation, scope);
@@ -131,7 +132,7 @@ describe('createHeadlessMutation', () => {
     });
 
     const scope = fork({
-      handlers: [[mutation.__.executeFx, jest.fn((p) => p)]],
+      handlers: [[mutation.__.executeFx, vi.fn((p) => p)]],
     });
 
     const { listeners } = watchRemoteOperation(mutation, scope);

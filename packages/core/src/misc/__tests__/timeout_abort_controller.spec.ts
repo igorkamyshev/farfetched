@@ -1,4 +1,5 @@
 import { setTimeout } from 'timers/promises';
+import { describe, test, expect, vi } from 'vitest';
 
 import { TimeoutController } from '../timeout_abort_controller';
 
@@ -6,7 +7,7 @@ describe('TimeoutController', () => {
   test('aborts when the timer expires', async () => {
     const timeoutController = new TimeoutController(50);
 
-    const onAbort = jest.fn();
+    const onAbort = vi.fn();
 
     timeoutController.signal.addEventListener('abort', onAbort);
 
@@ -18,7 +19,7 @@ describe('TimeoutController', () => {
   test('can be manually aborted', async () => {
     const timeoutController = new TimeoutController(50);
 
-    const onAbort = jest.fn();
+    const onAbort = vi.fn();
 
     timeoutController.signal.addEventListener('abort', onAbort);
 

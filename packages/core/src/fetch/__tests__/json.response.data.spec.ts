@@ -1,5 +1,6 @@
 import { watchEffect } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
+import { describe, test, expect, vi } from 'vitest';
 
 import { fetchFx } from '../fetch';
 import { createJsonApiRequest } from '../json';
@@ -16,9 +17,7 @@ describe('fetch/json.response.data', () => {
   test('throw error on non-json body', async () => {
     const callJsonApiFx = createJsonApiRequest({ request });
 
-    const fetchMock = jest
-      .fn()
-      .mockResolvedValue(new Response('It is not JSON'));
+    const fetchMock = vi.fn().mockResolvedValue(new Response('It is not JSON'));
 
     const scope = fork({ handlers: [[fetchFx, fetchMock]] });
 
@@ -40,7 +39,7 @@ describe('fetch/json.response.data', () => {
   test('return parsed json body', async () => {
     const callJsonApiFx = createJsonApiRequest({ request });
 
-    const fetchMock = jest
+    const fetchMock = vi
       .fn()
       .mockResolvedValue(new Response(JSON.stringify({ test: 'value' })));
 

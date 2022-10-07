@@ -9,8 +9,8 @@
       "options": {
         "project": "packages/runtypes/package.json",
         "outputPath": "dist/packages/runtypes",
-        "entryFile": "packages/runtypes/src/index.ts",
-        "tsConfig": "packages/runtypes/tsconfig.lib.json",
+        "entryFile": "packages/runtypes/index.ts",
+        "tsConfig": "packages/runtypes/tsconfig.json",
         "format": ["esm", "cjs"],
         "generateExportsField": true,
         "compiler": "babel"
@@ -36,11 +36,10 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/runtypes"],
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "jestConfig": "packages/runtypes/jest.config.ts",
-        "passWithNoTests": true
+        "command": "pnpm vitest run",
+        "cwd": "packages/runtypes"
       }
     },
     "typetest": {

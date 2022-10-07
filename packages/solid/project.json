@@ -10,8 +10,8 @@
       "options": {
         "project": "packages/solid/package.json",
         "outputPath": "dist/packages/solid",
-        "entryFile": "packages/solid/src/index.ts",
-        "tsConfig": "packages/solid/tsconfig.lib.json",
+        "entryFile": "packages/solid/index.ts",
+        "tsConfig": "packages/solid/tsconfig.json",
         "format": ["esm", "cjs"],
         "generateExportsField": true,
         "compiler": "babel"
@@ -37,11 +37,10 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/solid"],
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "jestConfig": "packages/solid/jest.config.ts",
-        "passWithNoTests": true
+        "command": "pnpm vitest run",
+        "cwd": "packages/solid"
       }
     },
     "typetest": {

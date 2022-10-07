@@ -1,6 +1,7 @@
 import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
+import { describe, test, expect, vi } from 'vitest';
 
 import { fetchFx } from '../../fetch/fetch';
 import { createJsonQuery } from '../create_json_query';
@@ -21,7 +22,7 @@ describe('remote_data/query/json.fetching.concurrent', () => {
     const secondResponse = { second: 2 };
 
     // We have to mock base fetchFx because of deep-bounding of abortion logic
-    const requestMock = jest
+    const requestMock = vi
       .fn()
       .mockImplementationOnce(() =>
         setTimeout(1000).then(() => new Response(JSON.stringify(firstResponse)))

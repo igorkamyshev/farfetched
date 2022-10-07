@@ -1,5 +1,6 @@
 import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
+import { describe, test, expect, vi } from 'vitest';
 
 import { unknownContract } from '../../contract/unknown_contract';
 import { identity } from '../../misc/identity';
@@ -69,9 +70,9 @@ describe('remote_data/connect_query', () => {
 
     const scope = fork({
       handlers: [
-        [languagesQ.__.executeFx, jest.fn(() => response)],
-        [contentQ.__.executeFx, jest.fn(() => response)],
-        [blocksQ.__.executeFx, jest.fn(() => response)],
+        [languagesQ.__.executeFx, vi.fn(() => response)],
+        [contentQ.__.executeFx, vi.fn(() => response)],
+        [blocksQ.__.executeFx, vi.fn(() => response)],
       ],
     });
 
@@ -90,9 +91,9 @@ describe('remote_data/connect_query', () => {
 
     const scope = fork({
       handlers: [
-        [languagesQ.__.executeFx, jest.fn(() => response)],
-        [contentQ.__.executeFx, jest.fn(() => response)],
-        [blocksQ.__.executeFx, jest.fn(() => response)],
+        [languagesQ.__.executeFx, vi.fn(() => response)],
+        [contentQ.__.executeFx, vi.fn(() => response)],
+        [blocksQ.__.executeFx, vi.fn(() => response)],
       ],
     });
 
@@ -111,12 +112,12 @@ describe('remote_data/connect_query', () => {
       handlers: [
         [
           languagesQ.__.executeFx,
-          jest.fn(() => {
+          vi.fn(() => {
             throw error;
           }),
         ],
-        [contentQ.__.executeFx, jest.fn(() => response)],
-        [blocksQ.__.executeFx, jest.fn(() => response)],
+        [contentQ.__.executeFx, vi.fn(() => response)],
+        [blocksQ.__.executeFx, vi.fn(() => response)],
       ],
     });
 

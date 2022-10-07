@@ -1,4 +1,5 @@
 import { allSettled, createStore, fork } from 'effector';
+import { describe, test, expect, vi } from 'vitest';
 
 import { createApiRequest, RequestBody } from '../api';
 import { fetchFx } from '../fetch';
@@ -14,14 +15,14 @@ describe('remote_data/transport/api.request.map_body', () => {
   };
 
   test('call mapBody on dynamic body', async () => {
-    const mapBody = jest.fn().mockImplementation((v) => v + v);
+    const mapBody = vi.fn().mockImplementation((v) => v + v);
 
     const callApiFx = createApiRequest({
       request: { url, method: 'POST' as const, credentials, mapBody },
       response,
     });
 
-    const fetchMock = jest.fn().mockResolvedValue(new Response('Ok'));
+    const fetchMock = vi.fn().mockResolvedValue(new Response('Ok'));
 
     const scope = fork({
       handlers: [[fetchFx, fetchMock]],
@@ -35,7 +36,7 @@ describe('remote_data/transport/api.request.map_body', () => {
   });
 
   test('call mapBody on static body', async () => {
-    const mapBody = jest.fn().mockImplementation((v) => v + v);
+    const mapBody = vi.fn().mockImplementation((v) => v + v);
 
     const callApiFx = createApiRequest({
       request: {
@@ -48,7 +49,7 @@ describe('remote_data/transport/api.request.map_body', () => {
       response,
     });
 
-    const fetchMock = jest.fn().mockResolvedValue(new Response('Ok'));
+    const fetchMock = vi.fn().mockResolvedValue(new Response('Ok'));
 
     const scope = fork({
       handlers: [[fetchFx, fetchMock]],
@@ -62,7 +63,7 @@ describe('remote_data/transport/api.request.map_body', () => {
   });
 
   test('call mapBody on reactive body', async () => {
-    const mapBody = jest.fn().mockImplementation((v) => v + v);
+    const mapBody = vi.fn().mockImplementation((v) => v + v);
 
     const $body = createStore<RequestBody>('раз');
 
@@ -77,7 +78,7 @@ describe('remote_data/transport/api.request.map_body', () => {
       response,
     });
 
-    const fetchMock = jest.fn().mockResolvedValue(new Response('Ok'));
+    const fetchMock = vi.fn().mockResolvedValue(new Response('Ok'));
 
     const scope = fork({
       handlers: [[fetchFx, fetchMock]],
