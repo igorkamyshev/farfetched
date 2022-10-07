@@ -6,4 +6,4 @@
 '@farfetched/solid': patch
 ---
 
-use a rollup executor to build libraries (bundles .d.ts files and allows multiple module formats)
+Add ESM build
