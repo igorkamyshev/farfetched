@@ -4,12 +4,16 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "project": "packages/misc/package.json",
         "outputPath": "dist/packages/misc",
-        "main": "packages/misc/index.ts",
-        "tsConfig": "packages/misc/tsconfig.json"
+        "entryFile": "packages/misc/index.ts",
+        "tsConfig": "packages/misc/tsconfig.json",
+        "format": ["esm", "cjs"],
+        "generateExportsField": true,
+        "compiler": "babel"
       }
     },
     "publish": {

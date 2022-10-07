@@ -131,7 +131,7 @@ importers:
 
   packages/core:
     specifiers:
-      '@farfetched/misc': 0.1.1
+      '@farfetched/misc': 0.1.2
       patronum: ^1.10.2
     dependencies:
       '@farfetched/misc': link:../misc
@@ -148,7 +148,7 @@ importers:
 
   packages/solid:
     specifiers:
-      '@farfetched/misc': 0.1.1
+      '@farfetched/misc': 0.1.2
     dependencies:
       '@farfetched/misc': link:../misc
 

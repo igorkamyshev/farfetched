@@ -5,12 +5,16 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "project": "packages/solid/package.json",
         "outputPath": "dist/packages/solid",
-        "main": "packages/solid/index.ts",
-        "tsConfig": "packages/solid/tsconfig.json"
+        "entryFile": "packages/solid/index.ts",
+        "tsConfig": "packages/solid/tsconfig.json",
+        "format": ["esm", "cjs"],
+        "generateExportsField": true,
+        "compiler": "babel"
       }
     },
     "publish": {
