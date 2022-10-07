@@ -1,8 +1,8 @@
 {
   "name": "@farfetched/solid",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "dependencies": {
-    "@farfetched/misc": "0.1.1"
+    "@farfetched/misc": "0.1.2"
   },
   "peerDependencies": {
     "effector-solid": "^0.22.6",

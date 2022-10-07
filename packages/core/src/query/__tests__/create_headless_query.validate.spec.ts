@@ -1,4 +1,6 @@
 import { allSettled, fork } from 'effector';
+import { describe, test, expect } from 'vitest';
+
 import { unknownContract } from '../../contract/unknown_contract';
 import { invalidDataError } from '../../errors/create_error';
 import { identity } from '../../misc/identity';

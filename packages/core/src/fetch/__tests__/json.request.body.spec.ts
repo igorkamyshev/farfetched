@@ -1,4 +1,5 @@
 import { allSettled, fork } from 'effector';
+import { describe, test, expect, vi } from 'vitest';
 
 import { fetchFx } from '../fetch';
 import { createJsonApiRequest } from '../json';
@@ -14,7 +15,7 @@ describe('fetch/json.request.body', () => {
   test('serialize JSON to string', async () => {
     const callJsonApiFx = createJsonApiRequest({ request });
 
-    const fetchMock = jest.fn().mockResolvedValue(new Response('Ok'));
+    const fetchMock = vi.fn().mockResolvedValue(new Response('Ok'));
 
     const scope = fork({ handlers: [[fetchFx, fetchMock]] });
 

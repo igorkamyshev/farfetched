@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import { exponentialDelay, linearDelay } from '../delay';
 
 describe('linearDelay', () => {

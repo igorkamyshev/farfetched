@@ -55,7 +55,7 @@ interface RemoteOperation<Params, Data, Error, Meta> {
      *
      * test('some test', async () => {
      *   const scope = fork({
-     *     handlers: [[locationQuery.__.executeFx, jest.fn()]]
+     *     handlers: [[locationQuery.__.executeFx, vi.fn()]]
      *   });
      *
      *   //...test code

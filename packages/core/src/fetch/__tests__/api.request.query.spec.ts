@@ -1,4 +1,5 @@
 import { allSettled, createStore, fork } from 'effector';
+import { describe, test, expect, vi } from 'vitest';
 
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
@@ -20,7 +21,7 @@ describe('fetch/api.request.query', () => {
       response,
     });
 
-    const fetchMock = jest.fn().mockResolvedValue(new Response('test'));
+    const fetchMock = vi.fn().mockResolvedValue(new Response('test'));
 
     const scope = fork({ handlers: [[fetchFx, fetchMock]] });
 
@@ -44,7 +45,7 @@ describe('fetch/api.request.query', () => {
       response,
     });
 
-    const fetchMock = jest.fn().mockResolvedValue(new Response('test'));
+    const fetchMock = vi.fn().mockResolvedValue(new Response('test'));
 
     const scope = fork({ handlers: [[fetchFx, fetchMock]] });
 
@@ -61,7 +62,7 @@ describe('fetch/api.request.query', () => {
       response,
     });
 
-    const fetchMock = jest.fn().mockResolvedValue(new Response('test'));
+    const fetchMock = vi.fn().mockResolvedValue(new Response('test'));
 
     const scope = fork({ handlers: [[fetchFx, fetchMock]] });
 
@@ -90,7 +91,7 @@ describe('fetch/api.request.query', () => {
       response,
     });
 
-    const fetchMock = jest.fn().mockResolvedValue(new Response('test'));
+    const fetchMock = vi.fn().mockResolvedValue(new Response('test'));
 
     const scope = fork({ handlers: [[fetchFx, fetchMock]] });
 

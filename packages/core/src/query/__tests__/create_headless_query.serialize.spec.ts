@@ -1,4 +1,6 @@
 import { allSettled, fork, serialize } from 'effector';
+import { describe, test, expect } from 'vitest';
+
 import { unknownContract } from '../../contract/unknown_contract';
 import { identity } from '../../misc/identity';
 import { withFactory } from '../../misc/sid';

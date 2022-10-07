@@ -1,5 +1,13 @@
 # @farfetched/solid
 
+## 0.2.1
+
+### Patch Changes
+
+- f373689: Add ESM build
+- Updated dependencies [f373689]
+  - @farfetched/misc@0.1.2
+
 ## 0.2.0
 
 ### Minor Changes

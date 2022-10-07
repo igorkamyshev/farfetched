@@ -1,4 +1,5 @@
 import { allSettled, createEffect, fork } from 'effector';
+import { describe, test, expect } from 'vitest';
 
 import { createQuery } from '../create_query';
 

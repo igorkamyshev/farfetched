@@ -1,6 +1,7 @@
-import { watchRemoteOperation } from '@farfetched/test-utils';
+import { allPrevSettled, watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
 import { createDefer } from '@farfetched/misc';
+import { describe, test, expect, vi } from 'vitest';
 
 import { unknownContract } from '../../contract/unknown_contract';
 import { createJsonQuery } from '../create_json_query';
@@ -21,7 +22,7 @@ describe('remote_data/query/json.response.error', () => {
       response: { contract: unknownContract },
     });
 
-    const fetchMock = jest.fn(() => requestDefer.promise);
+    const fetchMock = vi.fn(() => requestDefer.promise);
 
     const scope = fork({ handlers: [[query.__.executeFx, fetchMock]] });
     const watcher = watchRemoteOperation(query, scope);
@@ -35,7 +36,7 @@ describe('remote_data/query/json.response.error', () => {
     expect(scope.getState(query.$pending)).toBeTruthy();
 
     requestDefer.reject(error);
-    await requestDefer.promise.catch(() => null);
+    await allPrevSettled(scope);
 
     expect(scope.getState(query.$status)).toBe('fail');
     expect(scope.getState(query.$pending)).toBeFalsy();
@@ -56,7 +57,7 @@ describe('remote_data/query/json.response.error', () => {
       response: { contract: unknownContract },
     });
 
-    const fetchMock = jest
+    const fetchMock = vi
       .fn()
       .mockResolvedValueOnce(response)
       .mockRejectedValueOnce(error);

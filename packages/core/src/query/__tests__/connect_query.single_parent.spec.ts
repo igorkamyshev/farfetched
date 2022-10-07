@@ -1,5 +1,6 @@
 import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
+import { describe, test, expect, vi } from 'vitest';
 
 import { unknownContract } from '../../contract/unknown_contract';
 import { identity } from '../../misc/identity';
@@ -46,11 +47,11 @@ describe('remote_data/connect_query', () => {
 
   test('execute child with data from parents', async () => {
     const childResposne = Symbol('response');
-    const fetchContentMock = jest.fn(() => childResposne);
+    const fetchContentMock = vi.fn(() => childResposne);
 
     const scope = fork({
       handlers: [
-        [languagesQ.__.executeFx, jest.fn(() => 'RU')],
+        [languagesQ.__.executeFx, vi.fn(() => 'RU')],
         [contentQ.__.executeFx, fetchContentMock],
       ],
     });

@@ -5,13 +5,16 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "project": "packages/react/package.json",
         "outputPath": "dist/packages/react",
-        "main": "packages/react/src/index.ts",
-        "tsConfig": "packages/react/tsconfig.lib.json",
-        "assets": ["packages/react/*.md"]
+        "entryFile": "packages/react/index.ts",
+        "tsConfig": "packages/react/tsconfig.json",
+        "format": ["esm", "cjs"],
+        "generateExportsField": true,
+        "compiler": "babel"
       }
     },
     "publish": {
@@ -34,11 +37,10 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/react"],
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "jestConfig": "packages/react/jest.config.ts",
-        "passWithNoTests": true
+        "command": "pnpm vitest run --passWithNoTests",
+        "cwd": "packages/react"
       }
     },
     "typetest": {

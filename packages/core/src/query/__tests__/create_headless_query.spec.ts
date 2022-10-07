@@ -1,6 +1,7 @@
 import { allSettled, createStore, fork } from 'effector';
+import { describe, test, expect, vi } from 'vitest';
 
-import { watchRemoteOperation } from '@farfetched/test-utils';
+import { allPrevSettled, watchRemoteOperation } from '@farfetched/test-utils';
 import { createDefer } from '@farfetched/misc';
 
 import { createHeadlessQuery } from '../create_headless_query';
@@ -15,7 +16,7 @@ describe('core/createHeadlessQuery without contract', () => {
   });
 
   test('start triggers executeFx', async () => {
-    const mockFn = jest.fn();
+    const mockFn = vi.fn();
 
     const scope = fork({ handlers: [[query.__.executeFx, mockFn]] });
 
@@ -26,7 +27,7 @@ describe('core/createHeadlessQuery without contract', () => {
   });
 
   test('finished.success triggers after executeFx.done', async () => {
-    const scope = fork({ handlers: [[query.__.executeFx, jest.fn((p) => p)]] });
+    const scope = fork({ handlers: [[query.__.executeFx, vi.fn((p) => p)]] });
 
     const { listeners } = watchRemoteOperation(query, scope);
 
@@ -49,7 +50,7 @@ describe('core/createHeadlessQuery without contract', () => {
       handlers: [
         [
           query.__.executeFx,
-          jest.fn(() => {
+          vi.fn(() => {
             throw new Error('from mock');
           }),
         ],
@@ -76,6 +77,20 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(listeners.onFinally).toHaveBeenCalledWith({ params: 42 });
   });
 
+  test('skipped query has initial status', async () => {
+    const disabledQuery = createHeadlessQuery({
+      enabled: false,
+      contract: unknownContract,
+      mapData: identity,
+    });
+
+    const scope = fork({ handlers: [[disabledQuery.__.executeFx, vi.fn()]] });
+
+    await allSettled(disabledQuery.start, { scope, params: 42 });
+
+    expect(scope.getState(disabledQuery.$status)).toBe('initial');
+  });
+
   test('$status changes on stages', async () => {
     const executorFirstDefer = createDefer();
     const executorSecondDefer = createDefer();
@@ -84,7 +99,7 @@ describe('core/createHeadlessQuery without contract', () => {
       handlers: [
         [
           query.__.executeFx,
-          jest
+          vi
             .fn()
             .mockImplementationOnce(() => executorFirstDefer.promise)
             .mockImplementationOnce(() => executorSecondDefer.promise),
@@ -106,7 +121,7 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(scope.getState(query.$succeeded)).toBeFalsy();
 
     executorFirstDefer.resolve('result');
-    await executorFirstDefer.promise;
+    await allPrevSettled(scope);
 
     expect(scope.getState(query.$status)).toBe('done');
     expect(scope.getState(query.$pending)).toBeFalsy();
@@ -122,9 +137,7 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(scope.getState(query.$succeeded)).toBeFalsy();
 
     executorSecondDefer.reject(new Error('error'));
-    await executorSecondDefer.promise.catch(() => {
-      //pass
-    });
+    await allPrevSettled(scope);
 
     expect(scope.getState(query.$status)).toBe('fail');
     expect(scope.getState(query.$pending)).toBeFalsy();
@@ -137,7 +150,7 @@ describe('core/createHeadlessQuery without contract', () => {
       handlers: [
         [
           query.__.executeFx,
-          jest
+          vi
             .fn()
             .mockResolvedValueOnce('first done')
             .mockRejectedValueOnce(new Error('first error'))
@@ -183,7 +196,7 @@ describe('core/createHeadlessQuery with contract', () => {
       mapData: identity,
     });
 
-    const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
+    const scope = fork({ handlers: [[query.__.executeFx, vi.fn()]] });
 
     const { listeners } = watchRemoteOperation(query, scope);
 
@@ -213,7 +226,7 @@ describe('core/createHeadlessQuery with contract', () => {
 
     const scope = fork({
       handlers: [
-        [query.__.executeFx, jest.fn().mockResolvedValue(extractedData)],
+        [query.__.executeFx, vi.fn().mockResolvedValue(extractedData)],
       ],
     });
 
@@ -233,7 +246,7 @@ describe('core/createHeadlessQuery with contract', () => {
   test('contract receives response (for data)', async () => {
     const response = Symbol('response');
 
-    const validate = jest.fn().mockReturnValue([]);
+    const validate = vi.fn().mockReturnValue([]);
 
     const query = createHeadlessQuery({
       contract: {
@@ -244,7 +257,7 @@ describe('core/createHeadlessQuery with contract', () => {
     });
 
     const scope = fork({
-      handlers: [[query.__.executeFx, jest.fn(() => response)]],
+      handlers: [[query.__.executeFx, vi.fn(() => response)]],
     });
 
     await allSettled(query.start, { scope, params: 42 });
@@ -270,7 +283,7 @@ describe('core/createHeadlessQuery with contract and', () => {
     });
 
     const scope = fork({
-      handlers: [[query.__.executeFx, jest.fn(() => rawRata)]],
+      handlers: [[query.__.executeFx, vi.fn(() => rawRata)]],
     });
 
     await allSettled(query.start, { scope, params: passedParams });
@@ -295,7 +308,7 @@ describe('core/createHeadlessQuery with contract and', () => {
     });
 
     const scope = fork({
-      handlers: [[query.__.executeFx, jest.fn()]],
+      handlers: [[query.__.executeFx, vi.fn()]],
     });
 
     await allSettled(query.start, { scope, params: 'random data' });
@@ -311,7 +324,7 @@ describe('core/createHeadlessQuery enabled', () => {
       mapData: identity,
     });
 
-    const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
+    const scope = fork({ handlers: [[query.__.executeFx, vi.fn()]] });
 
     expect(scope.getState(query.$enabled)).toBe(true);
   });
@@ -323,7 +336,7 @@ describe('core/createHeadlessQuery enabled', () => {
       enabled: false,
     });
 
-    const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
+    const scope = fork({ handlers: [[query.__.executeFx, vi.fn()]] });
 
     const watcher = watchRemoteOperation(query, scope);
 
@@ -341,7 +354,7 @@ describe('core/createHeadlessQuery enabled', () => {
       enabled: false,
     });
 
-    const scope = fork({ handlers: [[query.__.executeFx, jest.fn()]] });
+    const scope = fork({ handlers: [[query.__.executeFx, vi.fn()]] });
 
     await allSettled(query.start, { scope, params: {} });
 

@@ -1,10 +1,19 @@
 import { allSettled, createEvent, createStore, fork } from 'effector';
+import {
+  describe,
+  test,
+  expect,
+  vi,
+  beforeAll,
+  afterAll,
+  afterEach,
+} from 'vitest';
 
 import { createQuery } from '../../query/create_query';
 import { retry } from '../retry';
 
 describe('retry (deprecated form)', () => {
-  const errorMock = jest.fn();
+  const errorMock = vi.fn();
   let originalError: any;
 
   beforeAll(() => {
@@ -21,8 +30,8 @@ describe('retry (deprecated form)', () => {
     errorMock.mockClear();
   });
 
-  it('starts query after failure with same args by default', async () => {
-    const handler = jest.fn().mockRejectedValue(new Error('Sorry'));
+  test('starts query after failure with same args by default', async () => {
+    const handler = vi.fn().mockRejectedValue(new Error('Sorry'));
     const query = createQuery({
       handler,
     });
@@ -40,8 +49,8 @@ describe('retry (deprecated form)', () => {
     expect(handler).toHaveBeenNthCalledWith(2, 'Some test param');
   });
 
-  it('respects times (static)', async () => {
-    const handler = jest.fn().mockRejectedValue(new Error('Sorry'));
+  test('respects times (static)', async () => {
+    const handler = vi.fn().mockRejectedValue(new Error('Sorry'));
     const query = createQuery({
       handler,
     });
@@ -55,8 +64,8 @@ describe('retry (deprecated form)', () => {
     expect(handler).toBeCalledTimes(5);
   });
 
-  it('respects delay (static)', async () => {
-    const handler = jest.fn().mockRejectedValue(new Error('Sorry'));
+  test('respects delay (static)', async () => {
+    const handler = vi.fn().mockRejectedValue(new Error('Sorry'));
     const query = createQuery({
       handler,
     });
@@ -74,8 +83,8 @@ describe('retry (deprecated form)', () => {
     expect(end - start).toBeGreaterThanOrEqual(100);
   });
 
-  it('respects delay (function)', async () => {
-    const handler = jest.fn().mockRejectedValue(new Error('Sorry'));
+  test('respects delay (function)', async () => {
+    const handler = vi.fn().mockRejectedValue(new Error('Sorry'));
     const query = createQuery({
       handler,
     });
@@ -94,12 +103,12 @@ describe('retry (deprecated form)', () => {
   });
 
   test('respects mapParams', async () => {
-    const handler = jest.fn().mockRejectedValue(new Error('Sorry'));
+    const handler = vi.fn().mockRejectedValue(new Error('Sorry'));
     const query = createQuery({
       handler,
     });
 
-    const mapParams = jest.fn(
+    const mapParams = vi.fn(
       ({ params }, { attempt }) => `${params} ${attempt}`
     );
 
@@ -121,33 +130,33 @@ describe('retry (deprecated form)', () => {
     expect(handler).toHaveBeenNthCalledWith(4, 'Initial 1 2 3');
 
     expect(mapParams.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
-          Object {
+      [
+        [
+          {
             "error": [Error: Sorry],
             "params": "Initial",
           },
-          Object {
+          {
             "attempt": 1,
             "maxAttempts": 3,
           },
         ],
-        Array [
-          Object {
+        [
+          {
             "error": [Error: Sorry],
             "params": "Initial 1",
           },
-          Object {
+          {
             "attempt": 2,
             "maxAttempts": 3,
           },
         ],
-        Array [
-          Object {
+        [
+          {
             "error": [Error: Sorry],
             "params": "Initial 1 2",
           },
-          Object {
+          {
             "attempt": 3,
             "maxAttempts": 3,
           },
@@ -157,7 +166,7 @@ describe('retry (deprecated form)', () => {
   });
 
   test('respects after success', async () => {
-    const handler = jest
+    const handler = vi
       .fn()
       .mockRejectedValueOnce(new Error('Sorry'))
       .mockRejectedValueOnce(new Error('Sorry'))
@@ -185,7 +194,7 @@ describe('retry (deprecated form)', () => {
   });
 
   test('respects filter option (static)', async () => {
-    const handler = jest.fn().mockRejectedValue(new Error('Sorry'));
+    const handler = vi.fn().mockRejectedValue(new Error('Sorry'));
 
     const query = createQuery({
       handler,
@@ -206,7 +215,7 @@ describe('retry (deprecated form)', () => {
   });
 
   test('respects filter option (store)', async () => {
-    const handler = jest.fn().mockRejectedValue(new Error('Sorry'));
+    const handler = vi.fn().mockRejectedValue(new Error('Sorry'));
 
     const query = createQuery({
       handler,
@@ -228,13 +237,13 @@ describe('retry (deprecated form)', () => {
 
   test('respects filter option (function)', async () => {
     const queryError = new Error('Sorry');
-    const handler = jest.fn().mockRejectedValue(queryError);
+    const handler = vi.fn().mockRejectedValue(queryError);
 
     const query = createQuery({
       handler,
     });
 
-    const filter = jest.fn().mockReturnValue(false);
+    const filter = vi.fn().mockReturnValue(false);
 
     retry({
       query,
@@ -252,13 +261,13 @@ describe('retry (deprecated form)', () => {
   });
 
   test('calls otherwise event after all retries', async () => {
-    const handler = jest.fn().mockRejectedValue(new Error('Sorry'));
+    const handler = vi.fn().mockRejectedValue(new Error('Sorry'));
     const query = createQuery({
       handler,
     });
 
     const otherwise = createEvent<{ params: any; error: unknown }>();
-    const otherwiseListener = jest.fn();
+    const otherwiseListener = vi.fn();
     otherwise.watch(otherwiseListener);
 
     retry({ query, times: 2, delay: 0, otherwise });
@@ -274,7 +283,7 @@ describe('retry (deprecated form)', () => {
   });
 
   test('does not call otherwise event until all retries', async () => {
-    const handler = jest
+    const handler = vi
       .fn()
       .mockRejectedValueOnce(new Error('Sorry'))
       .mockResolvedValueOnce(42);
@@ -283,7 +292,7 @@ describe('retry (deprecated form)', () => {
     });
 
     const otherwise = createEvent<{ params: any; error: unknown }>();
-    const otherwiseListener = jest.fn();
+    const otherwiseListener = vi.fn();
     otherwise.watch(otherwiseListener);
 
     retry({ query, times: 1, delay: 0, otherwise });
