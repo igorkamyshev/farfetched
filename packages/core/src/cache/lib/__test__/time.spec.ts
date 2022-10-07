@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import { parseTime } from '../time';
 
 describe('parseTime', () => {

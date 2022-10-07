@@ -1,8 +1,9 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
 import { fork, scopeBind } from 'effector';
+import { describe, beforeEach, test, expect, vi } from 'vitest';
 
 import { sessionStorageCache } from '../session_storage';
 
@@ -12,7 +13,7 @@ describe('sessionStorageCache', () => {
   });
 
   test('expire (in other tab)', async () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
 
     // Tab one
     const cacheTabOne = sessionStorageCache({ maxAge: '1sec' });
@@ -29,7 +30,7 @@ describe('sessionStorageCache', () => {
     expect(resultOne).toEqual('myValue');
 
     // Tick between tabs change, does not affect timer in cacheTabOne
-    jest.advanceTimersByTime(1 * 1000);
+    vi.advanceTimersByTime(1 * 1000);
 
     // Tab two
     const cacheTabTwo = sessionStorageCache({ maxAge: '1sec' });

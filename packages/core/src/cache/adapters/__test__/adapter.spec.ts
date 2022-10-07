@@ -1,9 +1,10 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
 import { allSettled, createEvent, fork, scopeBind } from 'effector';
 import { setTimeout } from 'timers/promises';
+import { describe, beforeEach, test, expect, vi } from 'vitest';
 
 import { inMemoryCache } from '../in_memory';
 import { localStorageCache } from '../local_storage';
@@ -93,7 +94,7 @@ describe.each([
     test('on found', async () => {
       const keyFound = createEvent<{ key: string }>();
 
-      const listener = jest.fn();
+      const listener = vi.fn();
       keyFound.watch(listener);
 
       const scope = fork();
