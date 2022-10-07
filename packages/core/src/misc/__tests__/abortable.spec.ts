@@ -1,11 +1,12 @@
 import { is, createEvent, fork, allSettled, scopeBind } from 'effector';
+import { describe, test, expect, vi } from 'vitest';
 
 import { abortError } from '../../errors/create_error';
 import { abortable } from '../abortable';
 
 describe('lib/effector-abortable', () => {
   test('returns effect', async () => {
-    const success = jest.fn();
+    const success = vi.fn();
     const Param = 10;
 
     const fFx = abortable({
@@ -27,9 +28,9 @@ describe('lib/effector-abortable', () => {
   });
 
   test('aborts effect', async () => {
-    const aborted = jest.fn();
-    const success = jest.fn();
-    const failed = jest.fn();
+    const aborted = vi.fn();
+    const success = vi.fn();
+    const failed = vi.fn();
 
     const stop = createEvent();
     const fFx = abortable({
@@ -67,9 +68,9 @@ describe('lib/effector-abortable', () => {
   });
 
   test('multiple abort hooks', async () => {
-    const aborted = jest.fn();
-    const success = jest.fn();
-    const aborted2 = jest.fn();
+    const aborted = vi.fn();
+    const success = vi.fn();
+    const aborted2 = vi.fn();
 
     const stop = createEvent();
     const fFx = abortable({
@@ -110,9 +111,9 @@ describe('lib/effector-abortable', () => {
   });
 
   test('multiple abort hooks', async () => {
-    const aborted = jest.fn();
-    const success = jest.fn();
-    const aborted2 = jest.fn();
+    const aborted = vi.fn();
+    const success = vi.fn();
+    const aborted2 = vi.fn();
 
     const stop = createEvent();
     const fFx = abortable({
@@ -156,9 +157,9 @@ describe('lib/effector-abortable', () => {
 
   test('does not affect other scope', async () => {
     const ALLOWED_PARAM = 10;
-    const aborted = jest.fn();
-    const success = jest.fn();
-    const failed = jest.fn();
+    const aborted = vi.fn();
+    const success = vi.fn();
+    const failed = vi.fn();
 
     const stop = createEvent();
     const fFx = abortable({
@@ -202,9 +203,9 @@ describe('lib/effector-abortable', () => {
   });
 
   test('multiple unwatch calls does not affect other hooks', async () => {
-    const aborted = jest.fn();
-    const aborted2 = jest.fn();
-    const aborted3 = jest.fn();
+    const aborted = vi.fn();
+    const aborted2 = vi.fn();
+    const aborted3 = vi.fn();
 
     const stop = createEvent();
     const fFx = abortable({

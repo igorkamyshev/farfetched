@@ -1,4 +1,5 @@
 import { allSettled, fork } from 'effector';
+import { describe, test, expect, vi } from 'vitest';
 
 import { createJsonQuery } from '../create_json_query';
 
@@ -19,7 +20,7 @@ describe('remote_data/query/json.fetching', () => {
   };
 
   test('perform fetching on start', async () => {
-    const requestMock = jest.fn();
+    const requestMock = vi.fn();
 
     const query = createJsonQuery({
       request,

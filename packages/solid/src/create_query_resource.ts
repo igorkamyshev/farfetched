@@ -1,7 +1,7 @@
-import { type Query } from '@farfetched/core';
-import { createDefer } from '@farfetched/misc';
 import { useUnit } from 'effector-solid';
 import { createResource, createSignal, createEffect, Resource } from 'solid-js';
+import { type Query } from '@farfetched/core';
+import { createDefer } from '@farfetched/misc';
 
 function createQueryResource<Params, Data, Error>(
   query: Query<Params, Data, Error>

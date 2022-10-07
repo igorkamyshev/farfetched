@@ -1,4 +1,5 @@
 import { allSettled, createEvent, createStore, fork } from 'effector';
+import { describe, test, expect, vi } from 'vitest';
 
 import { postpone } from '../postpone';
 
@@ -8,7 +9,7 @@ describe('postpone', () => {
 
     const triggered = postpone({ clock, until: createStore<boolean>(true) });
 
-    const mock = jest.fn();
+    const mock = vi.fn();
     triggered.watch(mock);
 
     const scope = fork();
@@ -23,7 +24,7 @@ describe('postpone', () => {
 
     const triggered = postpone({ clock, until: createStore<boolean>(false) });
 
-    const mock = jest.fn();
+    const mock = vi.fn();
     triggered.watch(mock);
 
     const scope = fork();
@@ -39,7 +40,7 @@ describe('postpone', () => {
 
     const triggered = postpone({ clock, until: $until });
 
-    const mock = jest.fn();
+    const mock = vi.fn();
     triggered.watch(mock);
 
     const scope = fork();
@@ -56,7 +57,7 @@ describe('postpone', () => {
 
     const triggered = postpone({ clock, until: createStore<boolean>(true) });
 
-    const mock = jest.fn();
+    const mock = vi.fn();
     triggered.watch(mock);
 
     expect(mock).toHaveBeenCalledTimes(0);
@@ -68,7 +69,7 @@ describe('postpone', () => {
 
     const triggered = postpone({ clock, until: $until });
 
-    const mock = jest.fn();
+    const mock = vi.fn();
     triggered.watch(mock);
 
     const scope = fork();

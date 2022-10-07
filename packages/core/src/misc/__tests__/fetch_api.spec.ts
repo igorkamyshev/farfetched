@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import { mergeRecords } from '../fetch_api';
 
 describe('mergeRecords', () => {

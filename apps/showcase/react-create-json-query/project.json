@@ -13,7 +13,7 @@
         "index": "apps/showcase/react-create-json-query/src/index.html",
         "baseHref": "/",
         "main": "apps/showcase/react-create-json-query/src/main.tsx",
-        "tsConfig": "apps/showcase/react-create-json-query/tsconfig.app.json",
+        "tsConfig": "apps/showcase/react-create-json-query/tsconfig.json",
         "assets": ["apps/showcase/react-create-json-query/src/favicon.ico"],
         "scripts": [],
         "webpackConfig": "@nrwl/react/plugins/webpack"
@@ -59,14 +59,6 @@
         "lintFilePatterns": [
           "apps/showcase/react-create-json-query/**/*.{ts,tsx,js,jsx}"
         ]
-      }
-    },
-    "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/showcase/react-create-json-query"],
-      "options": {
-        "jestConfig": "apps/showcase/react-create-json-query/jest.config.ts",
-        "passWithNoTests": true
       }
     }
   },

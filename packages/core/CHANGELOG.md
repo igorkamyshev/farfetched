@@ -1,5 +1,19 @@
 # @farfetched/core
 
+## 0.2.3
+
+### Patch Changes
+
+- f373689: Add ESM build
+- Updated dependencies [f373689]
+  - @farfetched/misc@0.1.2
+
+## 0.2.2
+
+### Patch Changes
+
+- e871f8b: Do not change `$status` for disabled Queries
+
 ## 0.2.1
 
 ### Patch Changes

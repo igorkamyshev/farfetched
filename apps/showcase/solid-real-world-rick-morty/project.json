@@ -13,7 +13,7 @@
         "index": "apps/showcase/solid-real-world-rick-morty/src/index.html",
         "baseHref": "/",
         "main": "apps/showcase/solid-real-world-rick-morty/src/main.tsx",
-        "tsConfig": "apps/showcase/solid-real-world-rick-morty/tsconfig.app.json",
+        "tsConfig": "apps/showcase/solid-real-world-rick-morty/tsconfig.json",
         "assets": ["apps/showcase/solid-real-world-rick-morty/src/favicon.ico"],
         "styles": [],
         "scripts": [],
@@ -60,14 +60,6 @@
         "lintFilePatterns": [
           "apps/showcase/solid-real-world-rick-morty/**/*.{ts,tsx,js,jsx}"
         ]
-      }
-    },
-    "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/showcase/solid-real-world-rick-morty"],
-      "options": {
-        "jestConfig": "apps/showcase/solid-real-world-rick-morty/jest.config.ts",
-        "passWithNoTests": true
       }
     }
   },

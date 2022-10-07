@@ -3,7 +3,7 @@
     [
       "@nrwl/web/babel",
       {
-        "useBuiltIns": "usage"
+        "useBuiltIns": false
       }
     ]
   ]

@@ -1,4 +1,5 @@
 import { allSettled, createStore, fork } from 'effector';
+import { describe, test, expect, vi } from 'vitest';
 
 import { createApiRequest, RequestBody } from '../api';
 import { fetchFx } from '../fetch';
@@ -119,7 +120,7 @@ describe('remote_data/transport/api.request.body', () => {
       response,
     });
 
-    const fetchMock = jest.fn().mockResolvedValue(new Response('Ok'));
+    const fetchMock = vi.fn().mockResolvedValue(new Response('Ok'));
 
     const scope = fork({
       handlers: [[fetchFx, fetchMock]],
@@ -142,7 +143,7 @@ describe('remote_data/transport/api.request.body', () => {
       response,
     });
 
-    const fetchMock = jest.fn().mockResolvedValue(new Response('Ok'));
+    const fetchMock = vi.fn().mockResolvedValue(new Response('Ok'));
 
     const scope = fork({
       handlers: [[fetchFx, fetchMock]],
@@ -167,7 +168,7 @@ describe('remote_data/transport/api.request.body', () => {
       response,
     });
 
-    const fetchMock = jest.fn().mockResolvedValue(new Response('Ok'));
+    const fetchMock = vi.fn().mockResolvedValue(new Response('Ok'));
 
     const scope = fork({
       handlers: [[fetchFx, fetchMock]],
