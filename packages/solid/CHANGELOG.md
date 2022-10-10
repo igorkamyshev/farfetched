@@ -1,5 +1,11 @@
 # @farfetched/solid
 
+## 0.2.2
+
+### Patch Changes
+
+- b596c20: Fix bug with stale data returned by `createQueryResource` after re-executing the _Query_
+
 ## 0.2.1
 
 ### Patch Changes
