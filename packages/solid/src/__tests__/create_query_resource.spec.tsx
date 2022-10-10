@@ -13,7 +13,6 @@ import { createDefer } from '@farfetched/misc';
 import { setTimeout } from 'timers/promises';
 
 import { createQueryResource } from '../create_query_resource';
-import { createEffect } from 'solid-js';
 
 describe('createQueryResource', () => {
   afterEach(cleanup);
@@ -264,7 +263,7 @@ describe('createQueryResource', () => {
       target: query.start,
     });
 
-    query.start();
+    const scope = fork();
 
     const App = () => {
       const [resource] = createQueryResource(query);
@@ -272,11 +271,21 @@ describe('createQueryResource', () => {
       return <For each={resource()}>{(item) => <span>{item}</span>}</For>;
     };
 
-    render(() => <App />);
+    render(() => (
+      <Provider value={scope}>
+        <App />
+      </Provider>
+    ));
+
+    await allSettled(query.start, {
+      scope,
+    });
 
     expect(await screen.findByText(1)).toBeInTheDocument();
 
-    mutation.start();
+    await allSettled(mutation.start, {
+      scope,
+    });
 
     expect(await screen.findByText(2)).toBeInTheDocument();
   });
