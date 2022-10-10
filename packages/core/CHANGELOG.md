@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.2.4
+
+### Patch Changes
+
+- 3fc1ff3: Expose types `ValidationResult` and `Validator`
+
 ## 0.2.3
 
 ### Patch Changes
