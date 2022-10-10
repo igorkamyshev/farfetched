@@ -2,17 +2,18 @@
  * @jest-environment jsdom
  */
 
-import { allSettled, fork, scopeBind } from 'effector';
+import { allSettled, fork, sample, scopeBind } from 'effector';
 import { describe, expect, test, afterEach } from 'vitest';
-import { ErrorBoundary, Suspense } from 'solid-js/web';
+import { ErrorBoundary, For, Suspense } from 'solid-js/web';
 import { render, cleanup, screen } from 'solid-testing-library';
 import { Provider } from 'effector-solid';
-import { createQuery } from '@farfetched/core';
+import { createMutation, createQuery } from '@farfetched/core';
 import { allPrevSettled } from '@farfetched/test-utils';
 import { createDefer } from '@farfetched/misc';
 import { setTimeout } from 'timers/promises';
 
 import { createQueryResource } from '../create_query_resource';
+import { createEffect } from 'solid-js';
 
 describe('createQueryResource', () => {
   afterEach(cleanup);
@@ -245,5 +246,38 @@ describe('createQueryResource', () => {
 
     await allPrevSettled(correctScope);
     await allPrevSettled(wrongScope);
+  });
+
+  test('should update when query restarted', async () => {
+    const items = [1];
+
+    const query = createQuery({
+      handler: async (x: void) => [...items],
+    });
+
+    const mutation = createMutation({
+      handler: async (x: void) => items.push(2),
+    });
+
+    sample({
+      clock: mutation.finished.success,
+      target: query.start,
+    });
+
+    query.start();
+
+    const App = () => {
+      const [resource] = createQueryResource(query);
+
+      return <For each={resource()}>{(item) => <span>{item}</span>}</For>;
+    };
+
+    render(() => <App />);
+
+    expect(await screen.findByText(1)).toBeInTheDocument();
+
+    mutation.start();
+
+    expect(await screen.findByText(2)).toBeInTheDocument();
   });
 });
