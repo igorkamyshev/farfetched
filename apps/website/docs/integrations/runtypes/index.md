@@ -5,19 +5,19 @@ Integration is distributed as a separate package, you have to install it and its
 with `pnpm`
 
 ```sh
-pnpm install runtypes @farfecthed/runtypes
+pnpm install runtypes @farfetched/runtypes
 ```
 
 with `yarn`
 
 ```sh
-yarn add runtypes @farfecthed/runtypes
+yarn add runtypes @farfetched/runtypes
 ```
 
 with `npm`
 
 ```sh
-npm install runtypes @farfecthed/runtypes
+npm install runtypes @farfetched/runtypes
 ```
 
 ## Showcases
