@@ -10,50 +10,34 @@ import {
 
 /**
  * Target query will be executed after all sources queries successful end.
+ *
+ * Data of source queries transforms by optional `fn` and passes to target query as a params.
  */
 function connectQuery<
   Sources extends Record<string, Query<any, any, any>>,
-  Target extends Query<void, any, any>
->(config: { source: Sources; target: Target | Target[] }): void;
+  Target extends Query<any, any, any>
+>(config: {
+  source: Sources;
+  fn?: (sources: {
+    [index in keyof Sources]: RemoteOperationData<Sources[index]>;
+  }) => { params: RemoteOperationParams<Target> };
+  target: Target | [...Target[]];
+}): void;
 
 /**
  * Target query will be executed after source query successful end.
- */
-function connectQuery<
-  Source extends Query<void, any, any>,
-  Target extends Query<void, any, any>
->(config: { source: Source; target: Target | Target[] }): void;
-
-/**
- * Target query will be executed after all sources queries successful end.
  *
- * Data of source queries transforms by `fn` and passes to target query as a params.
+ * Data of source queries transforms by optional `fn` and passes to target query as a params.
  */
 function connectQuery<
   Source extends Query<any, any, any>,
   Target extends Query<any, any, any>
->(_config: {
+>(config: {
   source: Source;
-  fn: (sources: RemoteOperationData<Source>) => {
+  fn?: (sources: RemoteOperationData<Source>) => {
     params: RemoteOperationParams<Target>;
   };
-  target: Target | Target[];
-}): void;
-
-/**
- * Target query will be executed after all sources queries successful end.
- *
- * Data of source queries transforms by `fn` and passes to target query as a params.
- */
-function connectQuery<
-  Sources extends Record<string, Query<any, any, any>>,
-  Target extends Query<any, any, any>
->(_config: {
-  source: Sources;
-  fn: (sources: {
-    [index in keyof Sources]: RemoteOperationData<Sources[index]>;
-  }) => { params: RemoteOperationParams<Target> };
-  target: Target | Target[];
+  target: Target | [...Target[]];
 }): void;
 
 function connectQuery<
