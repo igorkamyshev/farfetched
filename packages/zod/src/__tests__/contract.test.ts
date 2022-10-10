@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { describe, test, expect } from 'vitest';
 
 import { zodContract } from '../zod_contract';
 
@@ -7,7 +8,7 @@ describe('zod/zodContract short', () => {
     const contract = zodContract(z.string());
 
     expect(contract.getErrorMessages(2)).toMatchInlineSnapshot(`
-      Array [
+      [
         "Expected string, received number",
       ]
     `);
@@ -75,7 +76,7 @@ describe('zod/zodContract short', () => {
         '42',
       ])
     ).toMatchInlineSnapshot(`
-      Array [
+      [
         "Invalid literal value, expected true",
         "Invalid set, expected set of strings",
         "Invalid literal value, expected \\"Uhm?\\"",
