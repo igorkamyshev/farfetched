@@ -2,4 +2,4 @@
 '@farfetched/solid': patch
 ---
 
-fix(solid): do not use stale data when resolving resource
+Fix bug with stale data returned by `createQueryResource` after re-executing the _Query_
