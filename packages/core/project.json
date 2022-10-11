@@ -42,6 +42,13 @@
         "cwd": "packages/core"
       }
     },
+    "test_watch": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "pnpm vitest",
+        "cwd": "packages/core"
+      }
+    },
     "typetest": {
       "executor": "./tools/executors/tsd:tsd",
       "inputs": ["{projectRoot}/**/*.type_spec.ts", "{projectRoot}/**/*.ts"]

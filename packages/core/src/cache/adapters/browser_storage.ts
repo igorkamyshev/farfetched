@@ -2,6 +2,7 @@ import { createEffect, sample } from 'effector';
 import { delay } from 'patronum';
 
 import { parseTime } from '../lib/time';
+import { createAdapter } from './instance';
 import { CacheAdapter, CacheAdapterOptions } from './type';
 
 export function browserStorageCache(
@@ -79,7 +80,7 @@ export function browserStorageCache(
       });
     }
 
-    return {
+    return createAdapter({
       get: getFx,
       set: createEffect<{ key: string; value: string }, void>(
         async ({ key, value }) => {
@@ -97,7 +98,7 @@ export function browserStorageCache(
           await setSavedItemFx({ key, value });
         }
       ),
-    };
+    });
   }
 
   interface SavedItem {

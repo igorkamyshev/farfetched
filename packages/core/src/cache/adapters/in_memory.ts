@@ -8,6 +8,7 @@ import {
 import { delay } from 'patronum';
 
 import { parseTime } from '../lib/time';
+import { createAdapter } from './instance';
 import { CacheAdapter, CacheAdapterOptions } from './type';
 
 type Storage = Record<string, string>;
@@ -66,7 +67,7 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
     });
   }
 
-  return {
+  return createAdapter({
     get: getFx,
     set: createEffect<
       {
@@ -75,7 +76,7 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
       },
       void
     >(saveValue),
-  };
+  });
 }
 
 function applyMaxEntries(

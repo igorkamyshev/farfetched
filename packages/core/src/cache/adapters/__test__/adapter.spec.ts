@@ -3,12 +3,14 @@
  */
 
 import { allSettled, createEvent, fork, scopeBind } from 'effector';
+import { withFactory } from 'packages/core/src/misc/sid';
 import { setTimeout } from 'timers/promises';
 import { describe, beforeEach, test, expect, vi } from 'vitest';
 
 import { inMemoryCache } from '../in_memory';
 import { localStorageCache } from '../local_storage';
 import { sessionStorageCache } from '../session_storage';
+import { voidCache } from '../void';
 
 describe.each([
   { name: 'inMemory', adapter: inMemoryCache },
@@ -119,5 +121,27 @@ describe.each([
       expect(listener).toBeCalledTimes(1);
       expect(listener).toBeCalledWith({ key: 'someKey' });
     });
+  });
+
+  test('replacable', async () => {
+    const cache = withFactory({ fn: () => adapter(), sid: '1' });
+    const mockCache = withFactory({ fn: () => voidCache(), sid: '2' });
+
+    const scope = fork({ values: [[cache.__.$instance, mockCache]] });
+
+    // it have to be void adapter
+    const scopedAdapter = scope.getState(cache.__.$instance);
+
+    await allSettled(scopedAdapter.set, {
+      params: { key: 'someKey', value: 'someValue ' },
+      scope,
+    });
+
+    const result = await allSettled(scopedAdapter.get, {
+      params: { key: 'someKey' },
+      scope,
+    });
+
+    expect(result.value).toBeNull();
   });
 });
