@@ -211,6 +211,16 @@ function createJsonQuery(config: any) {
     clock: internalStart,
   });
 
+  const headers = normalizeSourced({
+    field: config.request.headers,
+    clock: internalStart,
+  });
+
+  const query = normalizeSourced({
+    field: config.request.query,
+    clock: internalStart,
+  });
+
   const headlessQuery = createHeadlessQuery<any, any, any, any, any, any, any>({
     contract: config.response.contract ?? unknownContract,
     mapData: config.response.mapData ?? identity,
@@ -218,7 +228,7 @@ function createJsonQuery(config: any) {
     enabled: config.enabled,
     name: config.name,
     serialize: config.serialize,
-    sources: [url, body],
+    sources: [url, body, headers, query],
   });
 
   headlessQuery.__.executeFx.use(
@@ -226,14 +236,8 @@ function createJsonQuery(config: any) {
       source: {
         url,
         body,
-        headers: normalizeSourced({
-          field: config.request.headers,
-          clock: internalStart,
-        }),
-        query: normalizeSourced({
-          field: config.request.query,
-          clock: internalStart,
-        }),
+        headers,
+        query,
       },
       effect: requestFx,
     })

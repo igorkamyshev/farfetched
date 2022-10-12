@@ -1,11 +1,12 @@
 import { describe, vi, expect, test } from 'vitest';
-import { fork, allSettled, createStore } from 'effector';
+import { fork, allSettled, createStore, combine } from 'effector';
 import { firstArg } from '@farfetched/test-utils';
 
 import { createJsonQuery } from '../../../query/create_json_query';
 import { withFactory } from '../../../misc/sid';
 import { unknownContract } from '../../../contract/unknown_contract';
 import { declareParams } from '../../../misc/params';
+import { FetchApiRecord } from '../../../misc/fetch_api';
 import { enrichStartWithKey } from '../key';
 
 describe('key, sourced, createJsonQuery', () => {
@@ -76,11 +77,78 @@ describe('key, sourced, createJsonQuery', () => {
     expect(firstArg(listener, 0).key).not.toBe(firstArg(listener, 1).key);
   });
 
-  // TODO: createJsonQuery mapData.source
-  // TODO: createJsonQuery validate.source
-  // TODO: createJsonQuery headers
-  // TODO: createJsonQuery query
+  test('respects headers as store', async () => {
+    const $language = createStore('ru');
 
-  // TODO: createQuery mapData.source
-  // TODO: createQuery validate.source
+    const query = withFactory({
+      fn: () =>
+        createJsonQuery({
+          params: declareParams<number>(),
+          request: {
+            url: 'https://api.salo.com',
+            method: 'GET',
+            headers: combine(
+              { 'X-Lang': $language },
+              (h) => h as FetchApiRecord
+            ),
+          },
+          response: { contract: unknownContract },
+        }),
+      sid: '1',
+    });
+
+    const startWithKey = enrichStartWithKey(query);
+
+    const listener = vi.fn();
+    startWithKey.watch(listener);
+
+    const scope = fork({ handlers: [[query.__.executeFx, vi.fn()]] });
+
+    // Start with old language
+    await allSettled(query.start, { scope, params: 1 });
+
+    // Change language
+    await allSettled($language, { scope, params: 'en' });
+
+    // Start with new language and same params
+    await allSettled(query.start, { scope, params: 1 });
+
+    expect(firstArg(listener, 0).key).not.toBe(firstArg(listener, 1).key);
+  });
+
+  test('respects query as store', async () => {
+    const $language = createStore('ru');
+
+    const query = withFactory({
+      fn: () =>
+        createJsonQuery({
+          params: declareParams<number>(),
+          request: {
+            url: 'https://api.salo.com',
+            method: 'GET',
+            query: combine({ lang: $language }, (h) => h as FetchApiRecord),
+          },
+          response: { contract: unknownContract },
+        }),
+      sid: '1',
+    });
+
+    const startWithKey = enrichStartWithKey(query);
+
+    const listener = vi.fn();
+    startWithKey.watch(listener);
+
+    const scope = fork({ handlers: [[query.__.executeFx, vi.fn()]] });
+
+    // Start with old language
+    await allSettled(query.start, { scope, params: 1 });
+
+    // Change language
+    await allSettled($language, { scope, params: 'en' });
+
+    // Start with new language and same params
+    await allSettled(query.start, { scope, params: 1 });
+
+    expect(firstArg(listener, 0).key).not.toBe(firstArg(listener, 1).key);
+  });
 });
