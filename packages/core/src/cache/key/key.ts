@@ -2,6 +2,7 @@ import { Event, sample } from 'effector';
 
 import { Query } from '../../query/type';
 import { RemoteOperationParams } from '../../remote_operation/type';
+import { sha1 } from '../lib/hash';
 
 export function enrichStartWithKey<Q extends Query<any, any, any>>(
   query: Q
@@ -27,7 +28,7 @@ function createKey({
   params: unknown;
   sources: unknown[];
 }): string {
-  return sid + JSON.stringify(params) + JSON.stringify(sources);
+  return sha1(sid + JSON.stringify(params) + JSON.stringify(sources));
 }
 
 function querySid(query: Query<any, any, any>) {
