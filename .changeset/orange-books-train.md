@@ -2,4 +2,4 @@
 '@farfetched/core': patch
 ---
 
-feat(core): simplify connect query declaration
+feat(core): fixed connect query typings (incorrect inference of argument in fn)
