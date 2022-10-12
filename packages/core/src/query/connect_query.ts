@@ -8,52 +8,33 @@ import {
   RemoteOperationParams,
 } from '../remote_operation/type';
 
-/**
- * Target query will be executed after all sources queries successful end.
- *
- * Data of source queries transforms by optional `fn` and passes to target query as a params.
- */
-function connectQuery<
-  Sources extends Record<string, Query<any, any, any>>,
-  Target extends Query<any, any, any>
->(config: {
-  source: Sources;
-  fn?: (sources: {
-    [index in keyof Sources]: RemoteOperationData<Sources[index]>;
-  }) => { params: RemoteOperationParams<Target> };
-  target: Target | [...Target[]];
-}): void;
+type NonExtendable = {
+  [K in string]: never;
+};
 
-/**
- * Target query will be executed after source query successful end.
- *
- * Data of source queries transforms by optional `fn` and passes to target query as a params.
- */
-function connectQuery<
-  Source extends Query<any, any, any>,
-  Target extends Query<any, any, any>
->(config: {
-  source: Source;
-  fn?: (sources: RemoteOperationData<Source>) => {
-    params: RemoteOperationParams<Target>;
-  };
-  target: Target | [...Target[]];
-}): void;
-
-function connectQuery<
-  Sources extends Record<string, Query<any, any, any>>,
-  Target extends Query<any, any, any>
->({
-  source,
-  target,
-  fn,
-}: {
-  source: Sources;
-  target: Target | Target[];
-  fn?: (sources: {
-    [index in keyof Sources]: RemoteOperationData<Sources[index]>;
-  }) => { params: RemoteOperationParams<Target> };
-}): void {
+function connectQuery<Sources, Target extends Query<any, any, any>>(
+  args: {
+    source: Sources;
+    target: Target | [...Target[]];
+  } & (Target extends Query<infer P, any, any>
+    ? P extends void
+      ? NonExtendable
+      : Sources extends Query<any, any, any>
+      ? {
+          fn: (sources: RemoteOperationData<Sources>) => {
+            params: RemoteOperationParams<Target>;
+          };
+        }
+      : Sources extends Record<string, Query<any, any, any>>
+      ? {
+          fn: (sources: {
+            [index in keyof Sources]: RemoteOperationData<Sources[index]>;
+          }) => { params: RemoteOperationParams<Target> };
+        }
+      : NonExtendable
+    : NonExtendable)
+): void {
+  const { source, target } = args;
   // Settings
   const singleParentMode = isQuery(source);
 
@@ -80,9 +61,7 @@ function connectQuery<
     : combine(
         parentsEntries.reduce(
           (prev, [key, query]) => ({ ...prev, [key]: query.$data }),
-          {} as {
-            [index in keyof Sources]: Sources[index]['$data'];
-          }
+          {}
         )
       );
 
@@ -102,7 +81,7 @@ function connectQuery<
     }),
     source: $allParentDataDictionary,
     fn(data: any) {
-      return fn?.(data)?.params ?? null;
+      return (args as any)?.fn?.(data)?.params ?? null;
     },
     target: children.map((t) => t.start),
   });
