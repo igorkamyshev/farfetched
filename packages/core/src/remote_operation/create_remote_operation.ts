@@ -43,6 +43,7 @@ function createRemoteOperation<
   contract,
   validate,
   mapData,
+  sources,
 }: {
   name: string;
   meta: Meta;
@@ -57,6 +58,7 @@ function createRemoteOperation<
     MappedData,
     MapDataSource
   >;
+  sources?: Array<Store<unknown>>;
 }): RemoteOperation<Params, MappedData, Error | InvalidDataError, Meta> {
   const applyContractFx = createContractApplier<Params, Data, ContractData>(
     contract
@@ -213,7 +215,7 @@ function createRemoteOperation<
     $failed,
     $succeeded,
     $enabled,
-    __: { executeFx, meta, kind },
+    __: { executeFx, meta, kind, sources: sources ?? [] },
   };
 }
 

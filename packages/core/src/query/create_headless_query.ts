@@ -1,4 +1,4 @@
-import { createStore, sample, createEvent } from 'effector';
+import { createStore, sample, createEvent, Store } from 'effector';
 import { reset as resetMany } from 'patronum';
 
 import { Contract } from '../contract/type';
@@ -41,6 +41,7 @@ function createHeadlessQuery<
   validate,
   name,
   serialize,
+  sources,
 }: {
   contract: Contract<Response, ContractData>;
   mapData: TwoArgsDynamicallySourcedField<
@@ -50,6 +51,7 @@ function createHeadlessQuery<
     MapDataSource
   >;
   validate?: Validator<ContractData, Params, ValidationSource>;
+  sources?: Array<Store<unknown>>;
 } & SharedQueryFactoryConfig<MappedData>): Query<
   Params,
   MappedData,
@@ -75,6 +77,7 @@ function createHeadlessQuery<
     contract,
     validate,
     mapData,
+    sources,
   });
 
   const reset = createEvent();

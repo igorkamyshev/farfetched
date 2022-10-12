@@ -198,6 +198,19 @@ function createJsonQuery(config: any) {
     concurrency: { strategy: 'TAKE_LATEST' },
   });
 
+  // Connections
+  const internalStart = createEvent<any>();
+
+  const url = normalizeSourced({
+    field: config.request.url,
+    clock: internalStart,
+  });
+
+  const body = normalizeSourced({
+    field: config.request.body,
+    clock: internalStart,
+  });
+
   const headlessQuery = createHeadlessQuery<any, any, any, any, any, any, any>({
     contract: config.response.contract ?? unknownContract,
     mapData: config.response.mapData ?? identity,
@@ -205,22 +218,14 @@ function createJsonQuery(config: any) {
     enabled: config.enabled,
     name: config.name,
     serialize: config.serialize,
+    sources: [url, body],
   });
-
-  // Connections
-  const internalStart = createEvent<any>();
 
   headlessQuery.__.executeFx.use(
     attach({
       source: {
-        url: normalizeSourced({
-          field: config.request.url,
-          clock: internalStart,
-        }),
-        body: normalizeSourced({
-          field: config.request.body,
-          clock: internalStart,
-        }),
+        url,
+        body,
         headers: normalizeSourced({
           field: config.request.headers,
           clock: internalStart,

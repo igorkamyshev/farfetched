@@ -66,6 +66,7 @@ interface RemoteOperation<Params, Data, Error, Meta> {
      * Meta information about operation and its configuration.
      */
     meta: Meta;
+    sources: Array<Store<unknown>>;
     kind: unknown;
   };
 }
