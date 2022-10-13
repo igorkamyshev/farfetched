@@ -93,15 +93,15 @@ describe.each([
   });
 
   describe('observability', () => {
-    test('on found', async () => {
-      const keyFound = createEvent<{ key: string }>();
+    test('on key found — hit', async () => {
+      const hit = createEvent<{ key: string }>();
 
       const listener = vi.fn();
-      keyFound.watch(listener);
+      hit.watch(listener);
 
       const scope = fork();
 
-      const cache = adapter({ observability: { keyFound } });
+      const cache = adapter({ observability: { hit } });
 
       await allSettled(cache.set, {
         params: { key: 'someKey', value: 'someValue ' },
@@ -120,6 +120,79 @@ describe.each([
 
       expect(listener).toBeCalledTimes(1);
       expect(listener).toBeCalledWith({ key: 'someKey' });
+    });
+
+    test('on key not found — miss', async () => {
+      const miss = createEvent<{ key: string }>();
+
+      const listener = vi.fn();
+      miss.watch(listener);
+
+      const scope = fork();
+
+      const cache = adapter({ observability: { miss } });
+
+      await allSettled(cache.set, {
+        params: { key: 'someKey', value: 'someValue ' },
+        scope,
+      });
+
+      await allSettled(cache.get, {
+        params: { key: 'someKey' },
+        scope,
+      });
+
+      await allSettled(cache.get, {
+        params: { key: 'otherKey' },
+        scope,
+      });
+
+      expect(listener).toBeCalledTimes(1);
+      expect(listener).toBeCalledWith({ key: 'otherKey' });
+    });
+
+    test('expired', async () => {
+      const expired = createEvent<{ key: string }>();
+      const listener = vi.fn();
+      expired.watch(listener);
+
+      const cache = adapter({ maxAge: '1sec', observability: { expired } });
+
+      const scope = fork();
+
+      await scopeBind(cache.set, {
+        scope,
+      })({ key: 'firstKey', value: 'myValue' });
+
+      await setTimeout(1 * 1000);
+
+      await scopeBind(cache.set, {
+        scope,
+      })({ key: 'secondKey', value: 'otherValue' });
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toBeCalledWith({ key: 'firstKey' });
+    });
+
+    test('evicted', async () => {
+      const evicted = createEvent<{ key: string }>();
+      const listener = vi.fn();
+      evicted.watch(listener);
+
+      const cache = adapter({ maxEntries: 1, observability: { evicted } });
+
+      const scope = fork();
+
+      await scopeBind(cache.set, {
+        scope,
+      })({ key: 'firstKey', value: 'myValue' });
+
+      await scopeBind(cache.set, {
+        scope,
+      })({ key: 'secondKey', value: 'otherValue' });
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toBeCalledWith({ key: 'firstKey' });
     });
   });
 

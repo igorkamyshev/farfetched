@@ -1,8 +1,9 @@
-import { createEffect, sample } from 'effector';
+import { createEffect, createEvent, sample } from 'effector';
 import { delay } from 'patronum';
 
 import { parseTime } from '../lib/time';
 import { createAdapter } from './instance';
+import { attachObservability } from './observability';
 import { CacheAdapter, CacheAdapterOptions } from './type';
 
 export function browserStorageCache(
@@ -44,16 +45,28 @@ export function browserStorageCache(
       await removeItemFx(key);
     });
 
+    const itemExpired = createEvent<{ key: string; value: string }>();
+    const itemEvicted = createEvent<{ key: string }>();
+
     if (maxAge) {
       sample({
-        clock: delay({ source: setItemFx.done, timeout: parseTime(maxAge) }),
-        fn: ({ params }) => params.key,
-        target: removeSavedItemFx,
+        clock: delay({
+          source: sample({
+            clock: setItemFx.done,
+            filter: ({ params }) => params.key !== META_KEY,
+          }),
+          timeout: parseTime(maxAge),
+        }),
+        fn: (params) => ({
+          key: params.params.key,
+          value: params.params.value,
+        }),
+        target: [itemExpired, removeSavedItemFx],
       });
     }
 
-    const getFx = createEffect<{ key: string }, string | null>(
-      async ({ key }) => {
+    const adapter = {
+      get: createEffect<{ key: string }, string | null>(async ({ key }) => {
         const saved = await getSavedItemFx(key);
 
         if (!saved) return null;
@@ -62,26 +75,14 @@ export function browserStorageCache(
           const expiredAt = saved?.timestamp + parseTime(maxAge);
 
           if (Date.now() >= expiredAt) {
+            itemExpired({ key, value: saved.value });
             await removeSavedItemFx(key);
             return null;
           }
         }
 
         return saved.value;
-      }
-    );
-
-    if (observability?.keyFound) {
-      sample({
-        clock: getFx.done,
-        filter: ({ result }) => result !== null,
-        fn: ({ params }) => ({ key: params.key }),
-        target: observability.keyFound,
-      });
-    }
-
-    return createAdapter({
-      get: getFx,
+      }),
       set: createEffect<{ key: string; value: string }, void>(
         async ({ key, value }) => {
           const meta = await getMetaFx();
@@ -92,13 +93,22 @@ export function browserStorageCache(
             const forDelete = meta?.keys?.slice(0, keysAmount - maxEntries + 1);
 
             for (const key of forDelete ?? []) {
+              itemEvicted({ key });
               await removeSavedItemFx(key);
             }
           }
           await setSavedItemFx({ key, value });
         }
       ),
+    };
+
+    attachObservability({
+      adapter,
+      options: observability,
+      events: { itemExpired, itemEvicted },
     });
+
+    return createAdapter(adapter);
   }
 
   interface SavedItem {

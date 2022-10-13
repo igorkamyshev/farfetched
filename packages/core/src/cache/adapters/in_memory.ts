@@ -9,6 +9,7 @@ import { delay } from 'patronum';
 
 import { parseTime } from '../lib/time';
 import { createAdapter } from './instance';
+import { attachObservability } from './observability';
 import { CacheAdapter, CacheAdapterOptions } from './type';
 
 type Storage = Record<string, string>;
@@ -26,12 +27,27 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
   const saveValue = createEvent<{ key: string; value: string }>();
   const removeValue = createEvent<{ key: string }>();
 
-  sample({
+  const itemExpired = createEvent<{ key: string; value: string }>();
+  const itemEvicted = createEvent<{ key: string }>();
+
+  const maxEntriesApplied = sample({
     clock: saveValue,
     source: $storage,
     fn: (storage, { key, value }) =>
       applyMaxEntries(storage, { key, value }, maxEntries),
+  });
+
+  sample({
+    source: maxEntriesApplied,
+    fn: ({ next }) => next,
     target: $storage,
+  });
+
+  sample({
+    clock: maxEntriesApplied,
+    filter: ({ evicted }) => !!evicted,
+    fn: ({ evicted }) => ({ key: evicted! }),
+    target: itemEvicted,
   });
 
   sample({
@@ -46,29 +62,25 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
   });
 
   if (maxAge) {
+    delay({
+      source: saveValue,
+      timeout: parseTime(maxAge),
+      target: itemExpired,
+    });
+
     sample({
-      clock: delay({ source: saveValue, timeout: parseTime(maxAge) }),
+      clock: itemExpired,
+      fn: ({ key }) => ({ key }),
       target: removeValue,
     });
   }
 
-  const getFx = attach({
-    source: $storage,
-    mapParams: ({ key }: { key: string }, storage) => storage[key] ?? null,
-    effect: createEffect((t: string | null) => t),
-  });
-
-  if (observability?.keyFound) {
-    sample({
-      clock: getFx.done,
-      filter: ({ result }) => result !== null,
-      fn: ({ params }) => ({ key: params.key }),
-      target: observability.keyFound,
-    });
-  }
-
-  return createAdapter({
-    get: getFx,
+  const adapter = {
+    get: attach({
+      source: $storage,
+      mapParams: ({ key }: { key: string }, storage) => storage[key] ?? null,
+      effect: createEffect((t: string | null) => t),
+    }),
     set: createEffect<
       {
         key: string;
@@ -76,20 +88,30 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
       },
       void
     >(saveValue),
+  };
+
+  attachObservability({
+    adapter,
+    options: observability,
+    events: { itemExpired, itemEvicted },
   });
+
+  return createAdapter(adapter);
 }
 
 function applyMaxEntries(
   storage: Storage,
   { key, value }: { key: string; value: string },
   maxEntries?: number
-): Storage {
-  if (maxEntries === undefined) return { ...storage, [key]: value };
+): { next: Storage; evicted: string | null } {
+  if (maxEntries === undefined)
+    return { next: { ...storage, [key]: value }, evicted: null };
 
   const keys = Object.keys(storage);
-  if (keys.length < maxEntries) return { ...storage, [key]: value };
+  if (keys.length < maxEntries)
+    return { next: { ...storage, [key]: value }, evicted: null };
 
   const [firstKey] = keys;
   const { [firstKey]: _, ...rest } = storage;
-  return { ...rest, [key]: value };
+  return { next: { ...rest, [key]: value }, evicted: firstKey };
 }

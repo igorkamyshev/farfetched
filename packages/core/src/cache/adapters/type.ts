@@ -10,7 +10,12 @@ export interface CacheAdapterInstance {
 export interface CacheAdapterOptions {
   maxEntries?: number;
   maxAge?: Time;
-  observability?: { keyFound?: Event<{ key: string }> };
+  observability?: {
+    hit?: Event<{ key: string }>;
+    miss?: Event<{ key: string }>;
+    expired?: Event<{ key: string }>;
+    evicted?: Event<{ key: string }>;
+  };
 }
 
 export interface CacheAdapter extends CacheAdapterInstance {

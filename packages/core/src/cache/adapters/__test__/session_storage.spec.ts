@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 
-import { fork, scopeBind } from 'effector';
+import { createEvent, fork, scopeBind } from 'effector';
 import { describe, beforeEach, test, expect, vi } from 'vitest';
 
 import { sessionStorageCache } from '../session_storage';
@@ -13,10 +13,17 @@ describe('sessionStorageCache', () => {
   });
 
   test('expire (in other tab)', async () => {
+    const expired = createEvent<{ key: string }>();
+    const listener = vi.fn();
+    expired.watch(listener);
+
     vi.useFakeTimers();
 
     // Tab one
-    const cacheTabOne = sessionStorageCache({ maxAge: '1sec' });
+    const cacheTabOne = sessionStorageCache({
+      maxAge: '1sec',
+      observability: { expired },
+    });
 
     const scopeTabOne = fork();
 
@@ -42,5 +49,8 @@ describe('sessionStorageCache', () => {
     })({ key: 'key' });
     expect(resultTwo).toBeNull();
     expect(sessionStorage.getItem('key')).toBeNull();
+
+    expect(listener).toBeCalledTimes(1);
+    expect(listener).toBeCalledWith({ key: 'key' });
   });
 });
