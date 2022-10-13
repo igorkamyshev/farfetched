@@ -97,15 +97,11 @@ export default {
               ],
             },
             {
-              text: 'Operators',
-              items: [
-                {
-                  text: 'Dependent Queries',
-                  link: '/tutorial/dependent_queries',
-                },
-                { text: 'Retries', link: '/tutorial/retries' },
-              ],
+              text: 'Dependent Queries',
+              link: '/tutorial/dependent_queries',
             },
+            { text: 'Retries', link: '/tutorial/retries' },
+            { text: 'Caching', link: '/tutorial/caching' },
             {
               text: 'Factories',
               items: [
