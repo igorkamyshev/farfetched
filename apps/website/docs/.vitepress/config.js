@@ -156,6 +156,7 @@ export default {
           items: [
             { text: 'connectQuery', link: '/api/operators/connect_query' },
             { text: 'retry', link: '/api/operators/retry' },
+            { text: 'cache', link: '/api/operators/cache' },
           ],
         },
         {

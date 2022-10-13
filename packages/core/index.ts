@@ -23,6 +23,14 @@ export {
   reduceTwoArgs,
 } from './src/misc/sourced';
 
+export {
+  inMemoryCache,
+  localStorageCache,
+  sessionStorageCache,
+  createAdapter,
+  voidCache,
+} from './src/cache';
+
 export { type Json, type JsonObject } from './src/fetch/json';
 
 export {
