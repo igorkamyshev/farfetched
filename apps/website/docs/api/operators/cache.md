@@ -2,6 +2,18 @@
 
 Saves result of the [_Query_](/api/primitives/query) to some storage and allows to restore it back.
 
+## Formulae
+
+```ts
+import { cache } from '@farfetched/core';
+
+cache(query, config);
+```
+
+Config fields:
+
+- `adapter`: _CacheAdapter_
+
 ## Adapters
 
 Required field `adapter` is used to specify storage to save results. Available adapters:
