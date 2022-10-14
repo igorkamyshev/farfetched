@@ -1,16 +1,16 @@
 import { expectType } from 'tsd';
 import { Contract } from '@farfetched/core';
-import { z } from 'zod';
+import { z as zod } from 'zod';
 
 import { zodContract } from '../zod_contract';
 
-expectType<Contract<unknown, string>>(zodContract(z.string()));
+expectType<Contract<unknown, string>>(zodContract(zod.string()));
 
 type ComplexObject = [
   {
     x: number;
     y: false;
-    z: Set<string>;
+    k: Set<string>;
   },
   'literal',
   42
@@ -18,14 +18,14 @@ type ComplexObject = [
 
 expectType<Contract<unknown, ComplexObject>>(
   zodContract(
-    z.tuple([
-      z.object({
-        x: z.number(),
-        y: z.literal(false),
-        z: z.set(z.string()),
+    zod.tuple([
+      zod.object({
+        x: zod.number(),
+        y: zod.literal(false),
+        k: zod.set(zod.string()),
       }),
-      z.literal('literal'),
-      z.literal(42),
+      zod.literal('literal'),
+      zod.literal(42),
     ])
   )
 );

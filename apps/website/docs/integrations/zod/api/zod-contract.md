@@ -3,12 +3,12 @@
 Creates a [_Contract_](/api/primitives/contract) based on given `ZodType`.
 
 ```ts
-import { z } from 'zod';
+import { z as zod } from 'zod';
 import { zodContract } from '@farfetched/zod';
 
-const Asteroid = z.object({
-  type: z.literal('asteroid'),
-  mass: z.number(),
+const Asteroid = zod.object({
+  type: zod.literal('asteroid'),
+  mass: zod.number(),
 });
 
 const asteroidContract = zodContract(Asteroid);

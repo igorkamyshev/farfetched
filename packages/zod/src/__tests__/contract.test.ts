@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import { z as zod } from 'zod';
 import { describe, test, expect } from 'vitest';
 
 import { zodContract } from '../zod_contract';
 
 describe('zod/zodContract short', () => {
   test('interprets invalid response as error', () => {
-    const contract = zodContract(z.string());
+    const contract = zodContract(zod.string());
 
     expect(contract.getErrorMessages(2)).toMatchInlineSnapshot(`
       [
@@ -15,16 +15,16 @@ describe('zod/zodContract short', () => {
   });
 
   test('passes valid data', () => {
-    const contract = zodContract(z.string());
+    const contract = zodContract(zod.string());
 
     expect(contract.getErrorMessages('foo')).toEqual([]);
   });
 
   test('isData passes for valid data', () => {
     const contract = zodContract(
-      z.object({
-        x: z.number(),
-        y: z.string(),
+      zod.object({
+        x: zod.number(),
+        y: zod.string(),
       })
     );
 
@@ -38,9 +38,9 @@ describe('zod/zodContract short', () => {
 
   test('isData does not pass for invalid data', () => {
     const contract = zodContract(
-      z.object({
-        x: z.number(),
-        y: z.string(),
+      zod.object({
+        x: zod.number(),
+        y: zod.string(),
       })
     );
 
@@ -54,14 +54,16 @@ describe('zod/zodContract short', () => {
 
   test('interprets complex invalid response as error', () => {
     const contract = zodContract(
-      z.tuple([
-        z.object({
-          x: z.number(),
-          y: z.literal(true),
-          z: z.set(z.string()).nonempty('Invalid set, expected set of strings'),
+      zod.tuple([
+        zod.object({
+          x: zod.number(),
+          y: zod.literal(true),
+          k: zod
+            .set(zod.string())
+            .nonempty('Invalid set, expected set of strings'),
         }),
-        z.literal('Uhm?'),
-        z.literal(42),
+        zod.literal('Uhm?'),
+        zod.literal(42),
       ])
     );
 
@@ -70,7 +72,7 @@ describe('zod/zodContract short', () => {
         {
           x: 456,
           y: false,
-          z: new Set(),
+          k: new Set(),
         },
         'Answer is:',
         '42',
