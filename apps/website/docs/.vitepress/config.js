@@ -231,6 +231,25 @@ export default {
             },
           ],
         },
+        {
+          text: 'Zod',
+          collapsible: true,
+          items: [
+            {
+              text: 'Get started',
+              link: '/integrations/zod/',
+            },
+            {
+              text: 'API',
+              items: [
+                {
+                  text: 'zodContract',
+                  link: '/integrations/zod/api/zod-contract',
+                },
+              ],
+            },
+          ],
+        },
       ],
       '/recipes': [
         {
