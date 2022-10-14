@@ -5,7 +5,7 @@ import { CacheAdapter } from './type';
 
 export function voidCache(): CacheAdapter {
   return createAdapter({
-    get: createEffect<{ key: string }, string | null>(() => null),
+    get: createEffect<{ key: string }, { value: string } | null>(() => null),
     set: createEffect<{ key: string; value: string }, void>(() => {
       // pass
     }),

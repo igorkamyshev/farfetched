@@ -79,7 +79,13 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
     get: attach({
       source: $storage,
       mapParams: ({ key }: { key: string }, storage) => storage[key] ?? null,
-      effect: createEffect((t: string | null) => t),
+      effect: createEffect((value: string | null) => {
+        if (value === null) return null;
+
+        return {
+          value,
+        };
+      }),
     }),
     set: createEffect<
       {

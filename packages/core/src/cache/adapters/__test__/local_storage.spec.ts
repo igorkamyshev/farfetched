@@ -34,7 +34,7 @@ describe('localStorageCache', () => {
     const resultOne = await scopeBind(cacheTabOne.get, {
       scope: scopeTabOne,
     })({ key: 'key' });
-    expect(resultOne).toEqual('myValue');
+    expect(resultOne?.value).toEqual('myValue');
 
     // Tick between tabs change, does not affect timer in cacheTabOne
     vi.advanceTimersByTime(1 * 1000);

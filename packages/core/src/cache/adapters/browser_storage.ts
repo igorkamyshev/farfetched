@@ -66,23 +66,25 @@ export function browserStorageCache(
     }
 
     const adapter = {
-      get: createEffect<{ key: string }, string | null>(async ({ key }) => {
-        const saved = await getSavedItemFx(key);
+      get: createEffect<{ key: string }, { value: string } | null>(
+        async ({ key }) => {
+          const saved = await getSavedItemFx(key);
 
-        if (!saved) return null;
+          if (!saved) return null;
 
-        if (maxAge) {
-          const expiredAt = saved?.timestamp + parseTime(maxAge);
+          if (maxAge) {
+            const expiredAt = saved?.timestamp + parseTime(maxAge);
 
-          if (Date.now() >= expiredAt) {
-            itemExpired({ key, value: saved.value });
-            await removeSavedItemFx(key);
-            return null;
+            if (Date.now() >= expiredAt) {
+              itemExpired({ key, value: saved.value });
+              await removeSavedItemFx(key);
+              return null;
+            }
           }
-        }
 
-        return saved.value;
-      }),
+          return { value: saved.value };
+        }
+      ),
       set: createEffect<{ key: string; value: string }, void>(
         async ({ key, value }) => {
           const meta = await getMetaFx();

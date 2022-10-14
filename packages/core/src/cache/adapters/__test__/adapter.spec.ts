@@ -34,7 +34,7 @@ describe.each([
     const resultOne = await scopeBind(cache.get, {
       scope,
     })({ key: 'key' });
-    expect(resultOne).toEqual('myValue');
+    expect(resultOne?.value).toEqual('myValue');
 
     await scopeBind(cache.set, {
       scope,
@@ -43,7 +43,7 @@ describe.each([
     const resultTwo = await scopeBind(cache.get, {
       scope,
     })({ key: 'key' });
-    expect(resultTwo).toEqual('myValue');
+    expect(resultTwo?.value).toEqual('myValue');
   });
 
   test('evict', async () => {
@@ -67,7 +67,7 @@ describe.each([
     const resultTwo = await scopeBind(cache.get, {
       scope,
     })({ key: 'second' });
-    expect(resultTwo).toBe('second');
+    expect(resultTwo?.value).toBe('second');
   });
 
   test('expire', async () => {
@@ -82,7 +82,7 @@ describe.each([
     const resultOne = await scopeBind(cache.get, {
       scope,
     })({ key: 'key' });
-    expect(resultOne).toEqual('myValue');
+    expect(resultOne?.value).toEqual('myValue');
 
     await setTimeout(1 * 1000);
 
