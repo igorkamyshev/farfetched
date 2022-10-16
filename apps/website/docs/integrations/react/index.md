@@ -22,6 +22,4 @@ npm install @farfetched/react effector-react
 
 ## Showcases
 
-- [React + `createQuery`](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/react-create-query/)
-- [React + `createJsonQuery`](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/react-create-json-query/)
-- [React + `connectQuery`](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/react-connect-query/)
+TODO:
