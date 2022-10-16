@@ -4,53 +4,17 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/web:webpack",
-      "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "compiler": "babel",
-        "outputPath": "dist/apps/showcase/solid-real-world-rick-morty",
-        "index": "apps/showcase/solid-real-world-rick-morty/src/index.html",
-        "baseHref": "/",
-        "main": "apps/showcase/solid-real-world-rick-morty/src/main.tsx",
-        "tsConfig": "apps/showcase/solid-real-world-rick-morty/tsconfig.json",
-        "assets": ["apps/showcase/solid-real-world-rick-morty/src/favicon.ico"],
-        "styles": [],
-        "scripts": [],
-        "webpackConfig": "@nrwl/react/plugins/webpack"
-      },
-      "configurations": {
-        "development": {
-          "extractLicenses": false,
-          "optimization": false,
-          "sourceMap": true,
-          "vendorChunk": true
-        },
-        "production": {
-          "optimization": true,
-          "outputHashing": "all",
-          "sourceMap": false,
-          "namedChunks": false,
-          "extractLicenses": true,
-          "vendorChunk": false
-        }
+        "command": "vite build",
+        "cwd": "apps/showcase/solid-real-world-rick-morty"
       }
     },
     "serve": {
-      "executor": "@nrwl/web:dev-server",
-      "defaultConfiguration": "development",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "buildTarget": "showcase-solid-real-world-rick-morty:build",
-        "hmr": true
-      },
-      "configurations": {
-        "development": {
-          "buildTarget": "showcase-solid-real-world-rick-morty:build:development"
-        },
-        "production": {
-          "buildTarget": "showcase-solid-real-world-rick-morty:build:production",
-          "hmr": false
-        }
+        "command": "vite",
+        "cwd": "apps/showcase/solid-real-world-rick-morty"
       }
     },
     "lint": {
