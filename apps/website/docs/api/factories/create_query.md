@@ -124,7 +124,3 @@ const languagesQuery = createQuery({
  * }>
  */
 ```
-
-## Showcases
-
-TODO:

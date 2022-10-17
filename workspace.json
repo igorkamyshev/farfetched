@@ -6,6 +6,7 @@
     "misc": "packages/misc",
     "react": "packages/react",
     "runtypes": "packages/runtypes",
+    "showcase-react-real-world-pokemons": "apps/showcase/react-real-world-pokemons",
     "showcase-solid-real-world-rick-morty": "apps/showcase/solid-real-world-rick-morty",
     "solid": "packages/solid",
     "test-utils": "packages/test-utils",
