@@ -24,8 +24,8 @@ importers:
       '@types/testing-library__jest-dom': ^5.14.5
       '@typescript-eslint/eslint-plugin': 5.33.1
       '@typescript-eslint/parser': 5.33.1
-      atomic-router: 0.7.1
-      atomic-router-solid: 0.7.2
+      atomic-router: '0.6'
+      atomic-router-solid: '0.5'
       bytes-iec: ^3.1.1
       core-js: ^3.6.5
       effector: ^22.3.0
@@ -64,8 +64,8 @@ importers:
       vitest: ^0.23.4
       vue: ^3.2.37
     dependencies:
-      atomic-router: 0.7.1_lniv3l6uwnwrnqegjt3aw34cdi
-      atomic-router-solid: 0.7.2_ojrreccuhgozlp4tl5qnguy3wi
+      atomic-router: 0.6.3_lniv3l6uwnwrnqegjt3aw34cdi
+      atomic-router-solid: 0.5.1_s7cqqczyhb6gnjk7pds7w5lvrq
       core-js: 3.23.3
       effector-react: 22.3.0_fqnc2pqlfbgfkkbezvfttjatja
       effector-solid: 0.22.6_jcoqkqtdrvikgmisk7pu253p5e
@@ -3791,16 +3791,16 @@ packages:
     hasBin: true
     dev: true
 
-  /atomic-router-solid/0.7.2_ojrreccuhgozlp4tl5qnguy3wi:
-    resolution: {integrity: sha512-f4ITBxmGwKojeWqFzFG6dO0yxCb0fueiTtYNeNKgooxVCYGSbS+i7UWP2LNjV01s+gDpEFBbYMChMD3BWUuFCg==}
+  /atomic-router-solid/0.5.1_s7cqqczyhb6gnjk7pds7w5lvrq:
+    resolution: {integrity: sha512-Du+LjjxeRA9h/JmHn3A9Ad3wRjhLFqz256TPg9YX3xkV9fK7eqOOyELntlo/MwL+RLagnvculBVuJwD1r6KbKQ==}
     peerDependencies:
-      atomic-router: ^0.7.0
+      atomic-router: ~0.4.3
       effector: ~22.3.0
       effector-solid: ~0.22.1
       history: ~5
-      solid-js: ^1.4 || ^1.5
+      solid-js: ~1.4.8
     dependencies:
-      atomic-router: 0.7.1_lniv3l6uwnwrnqegjt3aw34cdi
+      atomic-router: 0.6.3_lniv3l6uwnwrnqegjt3aw34cdi
       classcat: 5.0.4
       effector: 22.3.0
       effector-solid: 0.22.6_jcoqkqtdrvikgmisk7pu253p5e
@@ -3808,8 +3808,8 @@ packages:
       solid-js: 1.4.8
     dev: false
 
-  /atomic-router/0.7.1_lniv3l6uwnwrnqegjt3aw34cdi:
-    resolution: {integrity: sha512-W09EU4xqpBCj8RUgu8SR93jycXRdpzZAr8YoSOHlJb1Sk8vxInKYOlapbXzOJ6HkaF0R3nTCxR+wNK4K1q9jXg==}
+  /atomic-router/0.6.3_lniv3l6uwnwrnqegjt3aw34cdi:
+    resolution: {integrity: sha512-hEPoWZIiBYhtesXoppSVgA8QoJVu+GnkjYeIXZKhhzcVX6FZw40DJiQM9yHbkVpOjW5LlFyie4O9Q/xtpEP36Q==}
     engines: {node: '>=10'}
     peerDependencies:
       effector: ^22
