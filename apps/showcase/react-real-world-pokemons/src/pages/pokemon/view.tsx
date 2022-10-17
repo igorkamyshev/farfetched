@@ -18,6 +18,7 @@ export function PokemonPage() {
   return (
     <>
       <h2>{pokemon?.name}</h2>
+      <img src={pokemon?.avatarUrl} alt={pokemon?.name} />
       <table>
         <thead>
           <tr>

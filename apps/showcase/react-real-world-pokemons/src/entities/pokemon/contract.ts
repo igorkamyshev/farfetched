@@ -12,4 +12,5 @@ export const Pokemon = Record({
   name: String,
   height: Number,
   weight: Number,
+  sprites: Record({ front_default: Url }),
 });

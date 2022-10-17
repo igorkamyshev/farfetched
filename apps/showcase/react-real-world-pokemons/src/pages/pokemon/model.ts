@@ -15,6 +15,10 @@ export const pokemonQuery = createJsonQuery({
   },
   response: {
     contract: runtypeContract(Pokemon),
+    mapData: ({ sprites, ...data }) => ({
+      ...data,
+      avatarUrl: sprites.front_default,
+    }),
   },
 });
 
