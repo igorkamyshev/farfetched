@@ -6,13 +6,10 @@
     "misc": "packages/misc",
     "react": "packages/react",
     "runtypes": "packages/runtypes",
-    "showcase-react-connect-query": "apps/showcase/react-connect-query",
-    "showcase-react-create-json-query": "apps/showcase/react-create-json-query",
-    "showcase-react-create-query": "apps/showcase/react-create-query",
-    "showcase-solid-create-query": "apps/showcase/solid-create-query",
     "showcase-solid-real-world-rick-morty": "apps/showcase/solid-real-world-rick-morty",
     "solid": "packages/solid",
     "test-utils": "packages/test-utils",
-    "website": "apps/website"
+    "website": "apps/website",
+    "zod": "packages/zod"
   }
 }

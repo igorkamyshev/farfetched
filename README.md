@@ -62,7 +62,7 @@ Farfetched powered by [Aviasales](https://aviasales.com).
 
 Special thanks to all contributors and especially [Alexandr](https://github.com/AlexandrHoroshih) for endless patience during our debates about this library.
 
-Some of external libraries were inlined to Farfecthed due to bundle size and custom features requirements:
+Some of external libraries were inlined to Farfetched due to bundle size and custom features requirements:
 
 - https://github.com/jacobheun/any-signal
 - https://github.com/jacobheun/timeout-abort-controller/

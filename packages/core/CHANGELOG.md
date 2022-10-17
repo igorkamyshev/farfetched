@@ -1,5 +1,17 @@
 # @farfetched/core
 
+## 0.2.5
+
+### Patch Changes
+
+- 989891f: Fix `connectQuery` incorrect inference of argument in `fn` in some cases
+
+## 0.2.4
+
+### Patch Changes
+
+- 3fc1ff3: Expose types `ValidationResult` and `Validator`
+
 ## 0.2.3
 
 ### Patch Changes

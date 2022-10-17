@@ -1,6 +1,6 @@
 {
   "name": "@farfetched/core",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "type": "commonjs",
   "dependencies": {
     "patronum": "^1.10.2",

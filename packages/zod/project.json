@@ -1,0 +1,65 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/zod/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "project": "packages/zod/package.json",
+        "outputPath": "dist/packages/zod",
+        "entryFile": "packages/zod/index.ts",
+        "tsConfig": "packages/zod/tsconfig.json",
+        "format": ["esm", "cjs"],
+        "generateExportsField": true,
+        "compiler": "babel"
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs zod"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/zod/**/*.ts"]
+      }
+    },
+    "typetest": {
+      "executor": "./tools/executors/tsd:tsd",
+      "inputs": ["{projectRoot}/**/*.type_spec.ts", "{projectRoot}/**/*.ts"]
+    },
+    "test": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "pnpm vitest run",
+        "cwd": "packages/zod"
+      }
+    },
+    "size": {
+      "executor": "./tools/executors/size-limit:size-limit",
+      "options": {
+        "limit": "1.2 kB",
+        "outputPath": "dist/packages/zod"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    }
+  },
+  "implicitDependencies": ["!test-utils"],
+  "tags": []
+}
