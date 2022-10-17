@@ -2,12 +2,12 @@
  * @vitest-environment jsdom
  */
 
-import { allSettled, fork, scopeBind } from 'effector';
+import { allSettled, fork, sample, scopeBind } from 'effector';
 import { describe, expect, test, afterEach } from 'vitest';
-import { ErrorBoundary, Suspense } from 'solid-js/web';
+import { ErrorBoundary, For, Suspense } from 'solid-js/web';
 import { render, cleanup, screen } from 'solid-testing-library';
 import { Provider } from 'effector-solid';
-import { createQuery } from '@farfetched/core';
+import { createMutation, createQuery } from '@farfetched/core';
 import { allPrevSettled } from '@farfetched/test-utils';
 import { createDefer } from '@farfetched/misc';
 import { setTimeout } from 'timers/promises';
@@ -245,5 +245,48 @@ describe('createQueryResource', () => {
 
     await allPrevSettled(correctScope);
     await allPrevSettled(wrongScope);
+  });
+
+  test('should update when query restarted', async () => {
+    const items = [1];
+
+    const query = createQuery({
+      handler: async (x: void) => [...items],
+    });
+
+    const mutation = createMutation({
+      handler: async (x: void) => items.push(2),
+    });
+
+    sample({
+      clock: mutation.finished.success,
+      target: query.start,
+    });
+
+    const scope = fork();
+
+    const App = () => {
+      const [resource] = createQueryResource(query);
+
+      return <For each={resource()}>{(item) => <span>{item}</span>}</For>;
+    };
+
+    render(() => (
+      <Provider value={scope}>
+        <App />
+      </Provider>
+    ));
+
+    await allSettled(query.start, {
+      scope,
+    });
+
+    expect(await screen.findByText(1)).toBeInTheDocument();
+
+    await allSettled(mutation.start, {
+      scope,
+    });
+
+    expect(await screen.findByText(2)).toBeInTheDocument();
   });
 });

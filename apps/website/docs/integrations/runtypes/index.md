@@ -5,23 +5,21 @@ Integration is distributed as a separate package, you have to install it and its
 with `pnpm`
 
 ```sh
-pnpm install runtypes @farfecthed/runtypes
+pnpm install runtypes @farfetched/runtypes
 ```
 
 with `yarn`
 
 ```sh
-yarn add runtypes @farfecthed/runtypes
+yarn add runtypes @farfetched/runtypes
 ```
 
 with `npm`
 
 ```sh
-npm install runtypes @farfecthed/runtypes
+npm install runtypes @farfetched/runtypes
 ```
 
 ## Showcases
 
-- [React + `createJsonQuery`](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/react-create-json-query/)
-- [React + `connectQuery`](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/react-connect-query/)
 - [Real-world showcase with SolidJS around JSON API](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/solid-real-world-rick-morty/)

@@ -28,7 +28,7 @@ function createQueryResource<Params, Data, Error>(
 
     // Resolve Resource after Query returns data
     const currentData = data();
-    if (currentData !== null) {
+    if (currentData !== null && !pending()) {
       dataDefer.resolve(currentData);
     }
 

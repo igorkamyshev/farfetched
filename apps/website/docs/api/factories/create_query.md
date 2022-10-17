@@ -127,5 +127,4 @@ const languagesQuery = createQuery({
 
 ## Showcases
 
-- [React + `createQuery`](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/react-create-query/)
-- [SolidJS + `createQuery`](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/solid-create-query/)
+TODO:

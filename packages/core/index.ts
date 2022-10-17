@@ -22,6 +22,7 @@ export {
   normalizeSourced,
   reduceTwoArgs,
 } from './src/misc/sourced';
+export { type ValidationResult, type Validator } from './src/validation/type';
 
 export { type Json, type JsonObject } from './src/fetch/json';
 
