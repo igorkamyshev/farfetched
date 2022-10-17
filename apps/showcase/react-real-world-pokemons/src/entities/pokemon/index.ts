@@ -1,2 +1,2 @@
-export { Pokemon, PokemonLink } from './contract';
-export { pokemonUrl } from './api';
+export { Pokemon, Species } from './contract';
+export { pokemonUrl, speciesUrl } from './api';

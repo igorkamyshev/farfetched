@@ -4,8 +4,9 @@ import { Array, Number, Record } from 'runtypes';
 import { createGate } from 'effector-react';
 import { combine, createStore, sample } from 'effector';
 
-import { PokemonLink, pokemonUrl } from '../../entities/pokemon';
+import { pokemonUrl } from '../../entities/pokemon';
 import { urlToId } from '../../shared/id';
+import { EntityLink } from '../../shared/entity_link';
 
 export const MainPageGate = createGate<{ page: number }>();
 
@@ -23,7 +24,7 @@ const pokemonListQuery = createJsonQuery({
   },
   response: {
     contract: runtypeContract(
-      Record({ count: Number, results: Array(PokemonLink) })
+      Record({ count: Number, results: Array(EntityLink) })
     ),
     mapData(data) {
       return {

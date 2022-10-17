@@ -1,15 +1,17 @@
-import { useGate } from 'effector-react';
+import { useGate, useUnit } from 'effector-react';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@farfetched/react';
 
-import { PokemonPageGate, pokemonQuery } from './model';
+import { $pending, $pokemon, PokemonPageGate } from './model';
 
 export function PokemonPage() {
   const params = useParams();
 
   useGate(PokemonPageGate, { id: Number(params['id']) });
 
-  const { data: pokemon, pending } = useQuery(pokemonQuery);
+  const { pokemon, pending } = useUnit({
+    pending: $pending,
+    pokemon: $pokemon,
+  });
 
   if (pending) {
     return <p>Loading ...</p>;
@@ -24,12 +26,14 @@ export function PokemonPage() {
           <tr>
             <th>Height</th>
             <th>Weight</th>
+            <th>Color</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>{pokemon?.height}</td>
             <td>{pokemon?.weight}</td>
+            {pokemon?.color && <td>{pokemon.color}</td>}
           </tr>
         </tbody>
       </table>
