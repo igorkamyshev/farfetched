@@ -24,6 +24,7 @@ export function MainPage() {
 
   return (
     <>
+      <h1>Main page</h1>
       {!pending && <ol>{items}</ol>}
       {pending && <p>Loading...</p>}
       {totalPages && (

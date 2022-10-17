@@ -11,17 +11,22 @@ export function Pagination({
 }) {
   const pages = allInRange(1, totalPages);
 
+  const hasNext = currentPage < totalPages;
+  const hasPrev = currentPage > 1;
+
   return (
     <>
+      {hasPrev && <Link to={`${pathname}/${currentPage - 1}`}>prev</Link>}
       {pages.map((page) =>
         page === currentPage ? (
           <span key={page}>{page}</span>
         ) : (
-          <Link to={{ pathname: `${pathname}/${page}` }} key={page}>
+          <Link to={`${pathname}/${page}`} key={page}>
             {page}
           </Link>
         )
       )}
+      {hasNext && <Link to={`${pathname}/${currentPage + 1}`}>next</Link>}
     </>
   );
 }
