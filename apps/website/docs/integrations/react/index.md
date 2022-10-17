@@ -22,4 +22,4 @@ npm install @farfetched/react effector-react
 
 ## Showcases
 
-TODO:
+- [Real-world showcase with React around JSON API](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/react-real-world-pokemons/)
