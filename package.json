@@ -35,6 +35,7 @@
     "@types/testing-library__jest-dom": "^5.14.5",
     "@typescript-eslint/eslint-plugin": "5.33.1",
     "@typescript-eslint/parser": "5.33.1",
+    "@vitejs/plugin-react": "^2.1.0",
     "bytes-iec": "^3.1.1",
     "effector": "^22.3.0",
     "eslint": "~8.15.0",
