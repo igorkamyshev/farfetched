@@ -27,6 +27,7 @@ describe('cache', () => {
 
     // Do not await
     allSettled(query.start, { scope });
+    await setTimeout(1);
     // Value from cache
     expect(scope.getState(query.$data)).toEqual(1);
     expect(scope.getState(query.$stale)).toBeTruthy();

@@ -14,6 +14,7 @@ import { CacheAdapter, CacheAdapterOptions } from './type';
 
 type Storage = Record<string, string>;
 
+// TODO: save time to prevent stale data because of throttling
 export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
   const { maxEntries, maxAge, observability } = config ?? {};
 
