@@ -30,4 +30,4 @@ query.finished.finally; // Event<void>
 // Note: Store and Event are imported from 'effector' package
 ```
 
-More information about API can be found in [the source code](../../../packages/core/src/query/type.ts).
+More information about API can be found in [the source code](https://github.com/igorkamyshev/farfetched/blob/master/packages/core/src/query/type.ts).

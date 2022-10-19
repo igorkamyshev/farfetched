@@ -14,4 +14,4 @@ contract.isData; // (raw: unknown) => raw is Data
 contract.getErrorMessages; // (raw: unknown) => string[]
 ```
 
-More information about API can be found in [the source code](../../../packages/core/src/contract/type.ts).
+More information about API can be found in [the source code](https://github.com/igorkamyshev/farfetched/blob/master/packages/core/src/contract/type.ts).
