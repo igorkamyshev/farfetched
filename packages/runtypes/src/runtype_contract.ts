@@ -1,4 +1,4 @@
-import { Runtype } from 'runtypes';
+import { Details, Runtype } from 'runtypes';
 import { Contract } from '@farfetched/core';
 
 /**
@@ -16,9 +16,45 @@ function runtypeContract<D>(data: Runtype<D>): Contract<unknown, D> {
         return [];
       }
 
+      if (validation.details) {
+        return traverseErrorDetails(validation.details);
+      }
+
       return [validation.message];
     },
   };
+}
+
+function traverseErrorDetails(
+  details: string | Details,
+  prevKey?: string,
+  curKey?: string
+): string[] {
+  const nextKey = resolveKey(prevKey, curKey);
+  if (typeof details === 'string') {
+    if (nextKey) {
+      return [`${nextKey}: ${details}`];
+    } else {
+      return [details];
+    }
+  }
+
+  if (Array.isArray(details)) {
+    return details.flatMap((detail, index) =>
+      traverseErrorDetails(detail, nextKey, index.toString())
+    );
+  }
+
+  return Object.entries(details).flatMap(([key, detail]) =>
+    traverseErrorDetails(detail, nextKey, key)
+  );
+}
+
+function resolveKey(prev?: string, cur?: string): string | undefined {
+  if (prev && cur) {
+    return `${prev}.${cur}`;
+  }
+  return prev ?? cur;
 }
 
 export { runtypeContract };
