@@ -85,3 +85,18 @@ params_no_mapData: {
     },
   });
 }
+
+headers_combine: {
+  const $headers = createStore({
+    Authorization: `Bearer jwt`,
+  });
+
+  const query = createJsonQuery({
+    request: {
+      method: 'GET',
+      url: 'https://api.salo.com',
+      headers: $headers,
+    },
+    response: { contract: unknownContract },
+  });
+}
