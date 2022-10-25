@@ -46,12 +46,26 @@ describe('runtypes/runtypeContract short', () => {
       Record({ users: Array(Record({ age: Number, name: String })) })
     );
 
-    expect(
-      contract.getErrorMessages({ users: [{ age: 'eleven', name: 11 }] })
-    ).toMatchInlineSnapshot(`
+    expect(contract.getErrorMessages({ users: [{ age: 'eleven', name: 11 }] }))
+      .toMatchInlineSnapshot(`
       [
         "users.0.age: Expected number, but was string",
         "users.0.name: Expected string, but was number",
+      ]
+    `);
+
+    // ignore correct value
+    expect(
+      contract.getErrorMessages({
+        users: [
+          { age: 25, name: 'Igor' },
+          { age: 'eleven', name: 11 },
+        ],
+      })
+    ).toMatchInlineSnapshot(`
+      [
+        "users.1.age: Expected number, but was string",
+        "users.1.name: Expected string, but was number",
       ]
     `);
   });
