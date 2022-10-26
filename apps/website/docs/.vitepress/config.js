@@ -277,7 +277,10 @@ export default {
         {
           text: 'Deep dive',
           collapsible: true,
-          items: [{ text: 'Unique store identifiers', link: '/recipes/sids' }],
+          items: [
+            { text: 'Unique store identifiers', link: '/recipes/sids' },
+            { text: 'Automated cache', link: '/recipes/cache' },
+          ],
         },
       ],
       '/statements': [
