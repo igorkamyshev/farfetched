@@ -3,6 +3,7 @@ import { expectType } from 'tsd';
 
 import { Contract } from '../../contract/type';
 import { unknownContract } from '../../contract/unknown_contract';
+import { ExecutionMeta } from '../../misc/execution';
 import { declareParams } from '../../misc/params';
 import { createJsonMutation } from '../create_json_mutation';
 
@@ -110,7 +111,7 @@ extract_data_type_from_contarct: {
     response: { contract },
   });
 
-  expectType<Event<{ data: number; params: void; meta: any }>>(
+  expectType<Event<{ data: number; params: void; meta: ExecutionMeta }>>(
     mutation.finished.success
   );
 }
@@ -220,7 +221,7 @@ mapData: {
       },
     });
 
-    expectType<Event<{ data: boolean; params: string; meta: any }>>(
+    expectType<Event<{ data: boolean; params: string; meta: ExecutionMeta }>>(
       mutationOne.finished.success
     );
 
@@ -245,7 +246,7 @@ mapData: {
       },
     });
 
-    expectType<Event<{ data: boolean; params: string; meta: any }>>(
+    expectType<Event<{ data: boolean; params: string; meta: ExecutionMeta }>>(
       mutationOne.finished.success
     );
   }
@@ -267,7 +268,7 @@ mapData: {
       },
     });
 
-    expectType<Event<{ data: boolean; params: void; meta: any }>>(
+    expectType<Event<{ data: boolean; params: void; meta: ExecutionMeta }>>(
       mutationOne.finished.success
     );
 
@@ -291,7 +292,7 @@ mapData: {
       },
     });
 
-    expectType<Event<{ data: boolean; params: void; meta: any }>>(
+    expectType<Event<{ data: boolean; params: void; meta: ExecutionMeta }>>(
       mutationOne.finished.success
     );
   }
