@@ -2,6 +2,10 @@ import { Effect, Event, EventPayload, Store } from 'effector';
 
 import { FetchingStatus } from '../status/type';
 
+interface FinishedMeta {
+  stopPropagation: boolean;
+}
+
 interface RemoteOperation<Params, Data, Error, Meta> {
   /**
    * Reactive current request status
@@ -30,13 +34,13 @@ interface RemoteOperation<Params, Data, Error, Meta> {
   /** Set of events that represent end of query */
   finished: {
     /** Query was successfully ended, data will be passed as a payload */
-    success: Event<{ params: Params; data: Data }>;
+    success: Event<{ params: Params; data: Data; meta: FinishedMeta }>;
     /** Query was failed, error will be passed as a payload */
-    failure: Event<{ params: Params; error: Error }>;
+    failure: Event<{ params: Params; error: Error; meta: FinishedMeta }>;
     /** Query execution was skipped due to `enabled` field in config */
-    skip: Event<{ params: Params }>;
+    skip: Event<{ params: Params; meta: FinishedMeta }>;
     /** Query was ended, it merges `success`, `error` and `skip` */
-    finally: Event<{ params: Params }>;
+    finally: Event<{ params: Params; meta: FinishedMeta }>;
   };
   /**
    * DO NOT USE THIS FIELD IN PRODUCTION
@@ -68,6 +72,15 @@ interface RemoteOperation<Params, Data, Error, Meta> {
     meta: Meta;
     sources: Array<Store<unknown>>;
     kind: unknown;
+    cmd: {
+      registerInterruption: () => void;
+      fillData: Event<{
+        params: Params;
+        result: unknown;
+        stopPropagation: boolean;
+      }>;
+      resumeExecution: Event<{ params: Params }>;
+    };
   };
 }
 
@@ -83,4 +96,5 @@ export {
   type RemoteOperationData,
   type RemoteOperationError,
   type RemoteOperationParams,
+  type FinishedMeta,
 };

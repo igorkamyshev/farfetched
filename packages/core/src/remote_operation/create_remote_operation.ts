@@ -6,7 +6,7 @@ import {
   split,
   Store,
 } from 'effector';
-import { not } from 'patronum';
+import { debug, not } from 'patronum';
 import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
 import { invalidDataError } from '../errors/create_error';
@@ -23,7 +23,7 @@ import { checkValidationResult } from '../validation/check_validation_result';
 import { Validator } from '../validation/type';
 import { unwrapValidationResult } from '../validation/unwrap_validation_result';
 import { validValidator } from '../validation/valid_validator';
-import { RemoteOperation } from './type';
+import { FinishedMeta, RemoteOperation } from './type';
 
 function createRemoteOperation<
   Params,
@@ -60,6 +60,19 @@ function createRemoteOperation<
   >;
   sources?: Array<Store<unknown>>;
 }): RemoteOperation<Params, MappedData, Error | InvalidDataError, Meta> {
+  let withInterruption = false;
+  const registerInterruption = () => {
+    withInterruption = true;
+  };
+
+  const fillData = createEvent<{
+    params: Params;
+    result: any;
+    stopPropagation: boolean;
+  }>();
+
+  const resumeExecution = createEvent<{ params: Params }>();
+
   const applyContractFx = createContractApplier<Params, Data, ContractData>(
     contract
   );
@@ -86,10 +99,18 @@ function createRemoteOperation<
 
   // Signal-events
   const finished = {
-    success: createEvent<{ params: Params; data: MappedData }>(),
-    failure: createEvent<{ params: Params; error: Error | InvalidDataError }>(),
-    skip: createEvent<{ params: Params }>(),
-    finally: createEvent<{ params: Params }>(),
+    success: createEvent<{
+      params: Params;
+      data: MappedData;
+      meta: FinishedMeta;
+    }>(),
+    failure: createEvent<{
+      params: Params;
+      error: Error | InvalidDataError;
+      meta: FinishedMeta;
+    }>(),
+    skip: createEvent<{ params: Params; meta: FinishedMeta }>(),
+    finally: createEvent<{ params: Params; meta: FinishedMeta }>(),
   };
 
   // -- Main stores --
@@ -121,20 +142,39 @@ function createRemoteOperation<
     clock: start,
     filter: not($enabled),
     fn(params) {
-      return { params };
+      return { params, meta: { stopPropagation: false } };
     },
     target: finished.skip,
   });
 
   sample({
     clock: start,
-    filter: $enabled,
+    source: { enabled: $enabled },
+    filter: ({ enabled }) => enabled && !withInterruption,
+    fn: (_, params) => params,
     target: executeFx,
   });
 
-  sample({ clock: executeFx.done, target: applyContractFx });
+  sample({
+    clock: resumeExecution,
+    fn: ({ params }) => params,
+    target: executeFx,
+  });
+
+  sample({
+    clock: executeFx.done,
+    fn: ({ params, result }) => ({ params, result, stopPropagation: false }),
+    target: fillData,
+  });
+
+  sample({ clock: fillData, target: applyContractFx });
   sample({
     clock: executeFx.fail,
+    fn: ({ error, params }) => ({
+      error,
+      params,
+      meta: { stopPropagation: false },
+    }),
     target: finished.failure,
   });
 
@@ -155,6 +195,7 @@ function createRemoteOperation<
         // Extract original params, it is params of params
         params: params.params,
         validation,
+        stopPropagation: params.stopPropagation,
       }),
     }),
     {
@@ -170,30 +211,35 @@ function createRemoteOperation<
         clock: validDataRecieved.map(({ data, params }) => [data, params]),
       })
     ),
-    fn: (data, { params }) => ({
+    fn: (data, { params, stopPropagation }) => ({
       data,
       params,
+      meta: { stopPropagation },
     }),
     target: finished.success,
   });
 
   sample({
     clock: applyContractFx.fail,
+    filter: ({ params }) => !params.stopPropagation,
     fn: ({ error, params }) => ({
       error,
       // Extract original params, it is params of params
       params: params.params,
+      meta: { stopPropagation: params.stopPropagation },
     }),
     target: finished.failure,
   });
 
   sample({
     clock: invalidDataRecieved,
-    fn: ({ params, validation }) => ({
+    filter: ({ stopPropagation }) => !stopPropagation,
+    fn: ({ params, validation, stopPropagation }) => ({
       params,
       error: invalidDataError({
         validationErrors: unwrapValidationResult(validation),
       }),
+      meta: { stopPropagation },
     }),
     target: finished.failure,
   });
@@ -201,8 +247,8 @@ function createRemoteOperation<
   // -- Send finally --
   sample({
     clock: [finished.success, finished.failure, finished.skip],
-    fn({ params }) {
-      return { params };
+    fn({ params, meta }) {
+      return { params, meta };
     },
     target: finished.finally,
   });
@@ -215,7 +261,13 @@ function createRemoteOperation<
     $failed,
     $succeeded,
     $enabled,
-    __: { executeFx, meta, kind, sources: sources ?? [] },
+    __: {
+      executeFx,
+      meta,
+      kind,
+      sources: sources ?? [],
+      cmd: { registerInterruption, fillData, resumeExecution },
+    },
   };
 }
 

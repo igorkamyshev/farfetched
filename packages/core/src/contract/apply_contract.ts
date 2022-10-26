@@ -6,9 +6,13 @@ import { Contract } from './type';
 
 function createContractApplier<Params, Raw, Data extends Raw>(
   contract: Contract<Raw, Data>
-): Effect<{ params: Params; result: Raw }, Data, InvalidDataError> {
+): Effect<
+  { params: Params; result: Raw; stopPropagation: boolean },
+  Data,
+  InvalidDataError
+> {
   const applyContractFx = createEffect<
-    { params: Params; result: Raw },
+    { params: Params; result: Raw; stopPropagation: boolean },
     Data,
     InvalidDataError
   >({

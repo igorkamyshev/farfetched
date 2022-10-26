@@ -2,9 +2,8 @@ import { allPrevSettled } from '@farfetched/test-utils';
 import { allSettled, createEffect, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, vi, expect, test } from 'vitest';
-import { Contract } from '../../contract/type';
-import { unknownContract } from '../../contract/unknown_contract';
 
+import { Contract } from '../../contract/type';
 import { withFactory } from '../../misc/sid';
 import { createQuery } from '../../query/create_query';
 import { inMemoryCache } from '../adapters/in_memory';

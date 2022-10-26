@@ -114,11 +114,18 @@ function createHeadlessQuery<
   });
 
   // -- Handle stale
+
+  sample({
+    clock: operation.finished.success,
+    filter: ({ meta }) => meta.stopPropagation,
+    fn: () => true,
+    target: $stale,
+  });
+
   sample({
     clock: operation.finished.finally,
-    fn() {
-      return false;
-    },
+    filter: ({ meta }) => !meta.stopPropagation,
+    fn: () => false,
     target: $stale,
   });
 
