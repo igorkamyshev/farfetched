@@ -273,8 +273,12 @@ function createRemoteOperation<
       executeFx,
       meta,
       kind,
-      sources: sources ?? [],
-      cmd: { registerInterruption, fillData, resumeExecution },
+      cmd: {
+        sources: sources ?? [],
+        registerInterruption,
+        fillData,
+        resumeExecution,
+      },
     },
   };
 }
