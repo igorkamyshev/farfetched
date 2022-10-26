@@ -5,14 +5,15 @@ import {
   createStore,
   sample,
 } from 'effector';
-import { delay } from 'patronum';
+import { delay, time } from 'patronum';
 
 import { parseTime } from '../lib/time';
 import { createAdapter } from './instance';
 import { attachObservability } from './observability';
 import { CacheAdapter, CacheAdapterOptions } from './type';
 
-type Storage = Record<string, string>;
+type Entry = { value: string; cachedAt: number };
+type Storage = Record<string, Entry>;
 
 // TODO: save time to prevent stale data because of throttling
 export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
@@ -31,11 +32,17 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
   const itemExpired = createEvent<{ key: string; value: string }>();
   const itemEvicted = createEvent<{ key: string }>();
 
+  const $now = time({ clock: saveValue });
+
   const maxEntriesApplied = sample({
     clock: saveValue,
-    source: $storage,
-    fn: (storage, { key, value }) =>
-      applyMaxEntries(storage, { key, value }, maxEntries),
+    source: { storage: $storage, now: $now },
+    fn: ({ storage, now }, { key, value }) =>
+      applyMaxEntries(
+        storage,
+        { key, entry: { value, cachedAt: now } },
+        maxEntries
+      ),
   });
 
   sample({
@@ -79,14 +86,8 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
   const adapter = {
     get: attach({
       source: $storage,
-      mapParams: ({ key }: { key: string }, storage) => storage[key] ?? null,
-      effect: createEffect((value: string | null) => {
-        if (value === null) return null;
-
-        return {
-          value,
-        };
-      }),
+      effect: (storage, { key }: { key: string }): Entry | null =>
+        storage[key] ?? null,
     }),
     set: createEffect<
       {
@@ -108,17 +109,17 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
 
 function applyMaxEntries(
   storage: Storage,
-  { key, value }: { key: string; value: string },
+  { key, entry }: { key: string; entry: Entry },
   maxEntries?: number
 ): { next: Storage; evicted: string | null } {
   if (maxEntries === undefined)
-    return { next: { ...storage, [key]: value }, evicted: null };
+    return { next: { ...storage, [key]: entry }, evicted: null };
 
   const keys = Object.keys(storage);
   if (keys.length < maxEntries)
-    return { next: { ...storage, [key]: value }, evicted: null };
+    return { next: { ...storage, [key]: entry }, evicted: null };
 
   const [firstKey] = keys;
   const { [firstKey]: _, ...rest } = storage;
-  return { next: { ...rest, [key]: value }, evicted: firstKey };
+  return { next: { ...rest, [key]: entry }, evicted: firstKey };
 }

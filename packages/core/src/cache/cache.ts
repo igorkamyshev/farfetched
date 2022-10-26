@@ -64,15 +64,7 @@ function pickFromCache<Q extends Query<any, any, any>>(
       instance: CacheAdapterInstance;
       key: string;
       params: RemoteOperationParams<Q>;
-    }) => {
-      const result = await instance.get({ key });
-
-      if (result) {
-        // TODO: user real cachedAt
-        return { ...result, cachedAt: 122 };
-      }
-      return undefined;
-    }
+    }) => instance.get({ key })
   );
 
   const startWithKey = enrichStartWithKey(query);
