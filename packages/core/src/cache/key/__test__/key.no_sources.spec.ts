@@ -14,7 +14,7 @@ describe('key, without sourced', () => {
 
     expect(() => {
       enrichStartWithKey(query);
-    }).toThrowErrorMatchingInlineSnapshot('"HMMM"');
+    }).toThrowErrorMatchingInlineSnapshot('"Query does not have sid, which is required for caching, read more https://farfetched.pages.dev/recipes/sids.html"');
   });
 
   test('different keys for different Queries', async () => {

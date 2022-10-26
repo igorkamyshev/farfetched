@@ -273,7 +273,7 @@ function createRemoteOperation<
       executeFx,
       meta,
       kind,
-      cmd: {
+      lowLevelAPI: {
         sources: sources ?? [],
         registerInterruption,
         fillData,

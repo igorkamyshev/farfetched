@@ -58,8 +58,9 @@ function querySid(query: Query<any, any, any>) {
   const sid = query.$data.sid;
 
   if (!sid?.includes('|')) {
-    // TODO: throw something
-    throw new Error('HMMM');
+    throw new Error(
+      'Query does not have sid, which is required for caching, read more https://farfetched.pages.dev/recipes/sids.html'
+    );
   }
 
   return sid;
