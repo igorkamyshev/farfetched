@@ -17,7 +17,7 @@ export function cache<Q extends Query<any, any, any>>(
   query: Q,
   params: CacheParameters
 ): void {
-  query.__.cmd.registerInterruption();
+  query.__.lowLevelAPI.registerInterruption();
 
   connectPurge(params);
   saveToCache(query, params);
@@ -120,12 +120,12 @@ function pickFromCache<Q extends Query<any, any, any>>(
       params: params.params,
       meta: { stopErrorPropagation: true, isFreshData },
     }),
-    target: query.__.cmd.fillData,
+    target: query.__.lowLevelAPI.fillData,
   });
 
   sample({
     clock: [foundStale, notFound],
     fn: ({ params }) => ({ params: params.params }),
-    target: query.__.cmd.resumeExecution,
+    target: query.__.lowLevelAPI.resumeExecution,
   });
 }
