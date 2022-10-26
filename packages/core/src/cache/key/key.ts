@@ -18,7 +18,7 @@ export function enrichFinishedSuccessWithKey<Q extends Query<any, any, any>>(
 
   return sample({
     clock: query.finished.success,
-    source: query.__.sources,
+    source: query.__.cmd.sources,
     fn: (sources, { params, data }) => ({
       params,
       data,
@@ -34,7 +34,7 @@ export function enrichStartWithKey<Q extends Query<any, any, any>>(
 
   return sample({
     clock: query.start,
-    source: query.__.sources,
+    source: query.__.cmd.sources,
     fn: (sources, params) => ({
       params,
       key: createKey({ sid: queryDataSid, params, sources }),
