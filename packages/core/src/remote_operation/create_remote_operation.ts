@@ -6,11 +6,12 @@ import {
   split,
   Store,
 } from 'effector';
-import { debug, not } from 'patronum';
+import { not } from 'patronum';
 import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
 import { invalidDataError } from '../errors/create_error';
 import { InvalidDataError } from '../errors/type';
+import { ExecutionMeta } from '../misc/execution';
 import {
   normalizeSourced,
   normalizeStaticOrReactive,
@@ -23,7 +24,7 @@ import { checkValidationResult } from '../validation/check_validation_result';
 import { Validator } from '../validation/type';
 import { unwrapValidationResult } from '../validation/unwrap_validation_result';
 import { validValidator } from '../validation/valid_validator';
-import { FinishedMeta, RemoteOperation } from './type';
+import { RemoteOperation } from './type';
 
 function createRemoteOperation<
   Params,
@@ -68,7 +69,7 @@ function createRemoteOperation<
   const fillData = createEvent<{
     params: Params;
     result: any;
-    stopPropagation: boolean;
+    meta: ExecutionMeta;
   }>();
 
   const resumeExecution = createEvent<{ params: Params }>();
@@ -102,15 +103,15 @@ function createRemoteOperation<
     success: createEvent<{
       params: Params;
       data: MappedData;
-      meta: FinishedMeta;
+      meta: ExecutionMeta;
     }>(),
     failure: createEvent<{
       params: Params;
       error: Error | InvalidDataError;
-      meta: FinishedMeta;
+      meta: ExecutionMeta;
     }>(),
-    skip: createEvent<{ params: Params; meta: FinishedMeta }>(),
-    finally: createEvent<{ params: Params; meta: FinishedMeta }>(),
+    skip: createEvent<{ params: Params; meta: ExecutionMeta }>(),
+    finally: createEvent<{ params: Params; meta: ExecutionMeta }>(),
   };
 
   // -- Main stores --
@@ -142,7 +143,10 @@ function createRemoteOperation<
     clock: start,
     filter: not($enabled),
     fn(params) {
-      return { params, meta: { stopPropagation: false } };
+      return {
+        params,
+        meta: { stopErrorPropagation: false, isFreshData: true },
+      };
     },
     target: finished.skip,
   });
@@ -163,7 +167,11 @@ function createRemoteOperation<
 
   sample({
     clock: executeFx.done,
-    fn: ({ params, result }) => ({ params, result, stopPropagation: false }),
+    fn: ({ params, result }) => ({
+      params,
+      result,
+      meta: { stopErrorPropagation: false, isFreshData: true },
+    }),
     target: fillData,
   });
 
@@ -173,7 +181,7 @@ function createRemoteOperation<
     fn: ({ error, params }) => ({
       error,
       params,
-      meta: { stopPropagation: false },
+      meta: { stopErrorPropagation: false, isFreshData: true },
     }),
     target: finished.failure,
   });
@@ -195,7 +203,7 @@ function createRemoteOperation<
         // Extract original params, it is params of params
         params: params.params,
         validation,
-        stopPropagation: params.stopPropagation,
+        meta: params.meta,
       }),
     }),
     {
@@ -211,35 +219,35 @@ function createRemoteOperation<
         clock: validDataRecieved.map(({ data, params }) => [data, params]),
       })
     ),
-    fn: (data, { params, stopPropagation }) => ({
+    fn: (data, { params, meta }) => ({
       data,
       params,
-      meta: { stopPropagation },
+      meta,
     }),
     target: finished.success,
   });
 
   sample({
     clock: applyContractFx.fail,
-    filter: ({ params }) => !params.stopPropagation,
+    filter: ({ params }) => !params.meta.stopErrorPropagation,
     fn: ({ error, params }) => ({
       error,
       // Extract original params, it is params of params
       params: params.params,
-      meta: { stopPropagation: params.stopPropagation },
+      meta: params.meta,
     }),
     target: finished.failure,
   });
 
   sample({
     clock: invalidDataRecieved,
-    filter: ({ stopPropagation }) => !stopPropagation,
-    fn: ({ params, validation, stopPropagation }) => ({
+    filter: ({ meta }) => !meta.stopErrorPropagation,
+    fn: ({ params, validation, meta }) => ({
       params,
       error: invalidDataError({
         validationErrors: unwrapValidationResult(validation),
       }),
-      meta: { stopPropagation },
+      meta,
     }),
     target: finished.failure,
   });

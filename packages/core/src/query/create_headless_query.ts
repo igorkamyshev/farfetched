@@ -116,15 +116,15 @@ function createHeadlessQuery<
   // -- Handle stale
 
   sample({
-    clock: operation.finished.success,
-    filter: ({ meta }) => meta.stopPropagation,
+    clock: operation.finished.finally,
+    filter: ({ meta }) => !meta.isFreshData,
     fn: () => true,
     target: $stale,
   });
 
   sample({
     clock: operation.finished.finally,
-    filter: ({ meta }) => !meta.stopPropagation,
+    filter: ({ meta }) => meta.isFreshData,
     fn: () => false,
     target: $stale,
   });

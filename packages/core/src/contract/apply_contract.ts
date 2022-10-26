@@ -2,17 +2,18 @@ import { createEffect, Effect } from 'effector';
 
 import { invalidDataError } from '../errors/create_error';
 import { InvalidDataError } from '../errors/type';
+import { ExecutionMeta } from '../misc/execution';
 import { Contract } from './type';
 
 function createContractApplier<Params, Raw, Data extends Raw>(
   contract: Contract<Raw, Data>
 ): Effect<
-  { params: Params; result: Raw; stopPropagation: boolean },
+  { params: Params; result: Raw; meta: ExecutionMeta },
   Data,
   InvalidDataError
 > {
   const applyContractFx = createEffect<
-    { params: Params; result: Raw; stopPropagation: boolean },
+    { params: Params; result: Raw; meta: ExecutionMeta },
     Data,
     InvalidDataError
   >({
