@@ -48,6 +48,14 @@ export function browserStorageCache(
     const itemExpired = createEvent<{ key: string; value: string }>();
     const itemEvicted = createEvent<{ key: string }>();
 
+    const purge = createEvent();
+    const purgeFx = createEffect(async () => {
+      const keys = await metaStorage.getKeysFx();
+      await Promise.all(keys.map(removeSavedItemFx));
+    });
+
+    sample({ clock: purge, target: purgeFx });
+
     if (maxAge) {
       sample({
         clock: delay({
@@ -103,6 +111,7 @@ export function browserStorageCache(
           await setSavedItemFx({ key, value });
         }
       ),
+      purge,
     };
 
     attachObservability({
@@ -120,6 +129,7 @@ export function browserStorageCache(
   }
 
   // -- meta storage
+  // TODO: protect meta storage against races
 
   const META_KEY = '__farfetched_meta__';
 

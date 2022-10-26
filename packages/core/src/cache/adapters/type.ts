@@ -5,6 +5,7 @@ import { Time } from '../lib/time';
 export interface CacheAdapterInstance {
   get: Effect<{ key: string }, { value: string; cachedAt: number } | null>;
   set: Effect<{ key: string; value: string }, void>;
+  purge: Event<void>;
 }
 
 export interface CacheAdapterOptions {

@@ -1,5 +1,5 @@
 import { allPrevSettled } from '@farfetched/test-utils';
-import { allSettled, createEffect, fork } from 'effector';
+import { allSettled, createEffect, createEvent, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, vi, expect, test } from 'vitest';
 
@@ -157,5 +157,42 @@ describe('cache', () => {
     // Value from cache is not a number, did not put it to cache
     expect(scope.getState(query.$data)).toEqual(null);
     expect(scope.getState(query.$stale)).toBeFalsy();
+  });
+
+  test('purge value after purge call', async () => {
+    let index = 1;
+    const handler = vi.fn(async (p: void) =>
+      setTimeout(1000).then(() => index++)
+    );
+    const query = withFactory({ fn: () => createQuery({ handler }), sid: '1' });
+
+    const purge = createEvent();
+
+    cache(query, { adapter: inMemoryCache(), purge });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope });
+    expect(scope.getState(query.$data)).toEqual(1);
+
+    await allSettled(query.reset, { scope });
+    await allSettled(purge, { scope });
+
+    // Do not await
+    allSettled(query.start, { scope });
+    // But wait for next tick becuase of async adapter's nature
+    await setTimeout(1);
+
+    // Value from cache not found
+    expect(scope.getState(query.$data)).toEqual(null);
+    expect(scope.getState(query.$stale)).toBeFalsy();
+
+    await allPrevSettled(scope);
+
+    // After refetch, it's new value
+    expect(scope.getState(query.$data)).toEqual(2);
+    expect(scope.getState(query.$stale)).toBeFalsy();
+
+    expect(handler).toBeCalledTimes(2);
   });
 });

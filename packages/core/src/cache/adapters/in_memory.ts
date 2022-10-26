@@ -32,6 +32,10 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
   const itemExpired = createEvent<{ key: string; value: string }>();
   const itemEvicted = createEvent<{ key: string }>();
 
+  const purge = createEvent();
+
+  $storage.reset(purge);
+
   const $now = time({ clock: saveValue });
 
   const maxEntriesApplied = sample({
@@ -96,6 +100,7 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
       },
       void
     >(saveValue),
+    purge,
   };
 
   attachObservability({

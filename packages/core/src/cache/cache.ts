@@ -1,4 +1,4 @@
-import { createEffect, sample, split } from 'effector';
+import { createEffect, Event, sample, split } from 'effector';
 import { time } from 'patronum';
 
 import { Query } from '../query/type';
@@ -10,6 +10,7 @@ import { parseTime, Time } from './lib/time';
 interface CacheParameters {
   adapter: CacheAdapter;
   staleAfter?: Time;
+  purge?: Event<void>;
 }
 
 export function cache<Q extends Query<any, any, any>>(
@@ -18,8 +19,26 @@ export function cache<Q extends Query<any, any, any>>(
 ): void {
   query.__.cmd.registerInterruption();
 
+  connectPurge(params);
   saveToCache(query, params);
   pickFromCache(query, params);
+}
+
+function connectPurge<Q extends Query<any, any, any>>({
+  adapter,
+  purge,
+}: CacheParameters) {
+  if (purge) {
+    const purgeCachedValuesFx = createEffect(
+      ({ instance }: { instance: CacheAdapterInstance }) => instance.purge()
+    );
+
+    sample({
+      clock: purge,
+      source: { instance: adapter.__.$instance },
+      target: purgeCachedValuesFx,
+    });
+  }
 }
 
 function saveToCache<Q extends Query<any, any, any>>(

@@ -92,6 +92,39 @@ describe.each([
     expect(resultTwo).toBeNull();
   });
 
+  test('purge removes all values', async () => {
+    const cache = adapter();
+
+    const scope = fork();
+
+    await Promise.all([
+      allSettled(cache.set, {
+        scope,
+        params: { key: 'one', value: 'oneValue' },
+      }),
+      allSettled(cache.set, {
+        scope,
+        params: { key: 'two', value: 'twoValue' },
+      }),
+    ]);
+
+    await allSettled(cache.purge, { scope });
+
+    const [resultOne, resultTwo] = await Promise.all([
+      allSettled(cache.get, {
+        scope,
+        params: { key: 'one' },
+      }),
+      allSettled(cache.get, {
+        scope,
+        params: { key: 'two' },
+      }),
+    ]);
+
+    expect(resultOne.value).toBeNull();
+    expect(resultTwo.value).toBeNull();
+  });
+
   describe('observability', () => {
     test('on key found — hit', async () => {
       const hit = createEvent<{ key: string }>();
