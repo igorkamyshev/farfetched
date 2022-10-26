@@ -44,7 +44,9 @@ describe('remote_data/query/json.response.error', () => {
     expect(scope.getState(query.$data)).toBeNull();
     expect(scope.getState(query.$error)).toBe(error);
 
-    expect(watcher.listeners.onFailure).toHaveBeenCalledWith({ error });
+    expect(watcher.listeners.onFailure).toHaveBeenCalledWith(
+      expect.objectContaining({ error })
+    );
     expect(watcher.listeners.onFailure).toHaveBeenCalledTimes(1);
   });
 
