@@ -9,6 +9,7 @@ import { createQuery } from '../../query/create_query';
 import { inMemoryCache } from '../adapters/in_memory';
 import { cache } from '../cache';
 import { sha1 } from '../lib/hash';
+import { parseTime } from '../lib/time';
 
 describe('cache without stale', () => {
   test('use value from cache on second call', async () => {
@@ -87,5 +88,40 @@ describe('cache without stale', () => {
     // Value from cache is not a number, did not put it to cache
     expect(scope.getState(query.$data)).toEqual(null);
     expect(scope.getState(query.$stale)).toBeFalsy();
+  });
+
+  test('mark value as stale after stale timeout', async () => {
+    let index = 1;
+    const handler = vi.fn(async (p: void) =>
+      setTimeout(100).then(() => index++)
+    );
+    const query = withFactory({ fn: () => createQuery({ handler }), sid: '1' });
+
+    cache(query, { adapter: inMemoryCache(), staleAfter: '1sec' });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope });
+    expect(scope.getState(query.$data)).toEqual(1);
+
+    await allSettled(query.reset, { scope });
+    await setTimeout(parseTime('1sec')); // wait for stale after time
+
+    // Do not await
+    allSettled(query.start, { scope });
+    // But wait for next tick becuase of async adapter's nature
+    await setTimeout(1);
+
+    // Value from cache
+    expect(scope.getState(query.$data)).toEqual(1);
+    expect(scope.getState(query.$stale)).toBeTruthy();
+
+    await allPrevSettled(scope);
+
+    // After refetch, it's new value
+    expect(scope.getState(query.$data)).toEqual(2);
+    expect(scope.getState(query.$stale)).toBeFalsy();
+
+    expect(handler).toBeCalledTimes(2);
   });
 });
