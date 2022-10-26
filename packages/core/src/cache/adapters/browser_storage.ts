@@ -1,4 +1,10 @@
-import { createEffect, createEvent, sample } from 'effector';
+import {
+  attach,
+  createEffect,
+  createEvent,
+  createStore,
+  sample,
+} from 'effector';
 import { delay } from 'patronum';
 
 import { parseTime } from '../lib/time';
@@ -34,14 +40,14 @@ export function browserStorageCache(
       async ({ key, value }: { key: string; value: string }) => {
         const item = JSON.stringify({ value, timestamp: Date.now() });
 
-        await metaStorage.addKeyFx({ key });
+        metaStorage.addKey({ key });
 
         await setItemFx({ key, value: item });
       }
     );
 
     const removeSavedItemFx = createEffect(async (key: string) => {
-      await metaStorage.removeKeyFx({ key });
+      metaStorage.removeKey({ key });
       await removeItemFx(key);
     });
 
@@ -49,12 +55,16 @@ export function browserStorageCache(
     const itemEvicted = createEvent<{ key: string }>();
 
     const purge = createEvent();
-    const purgeFx = createEffect(async () => {
-      const keys = await metaStorage.getKeysFx();
-      await Promise.all(keys.map(removeSavedItemFx));
-    });
+    const purgeFx = createEffect(async (keys: string[]) =>
+      Promise.all(keys.map(removeSavedItemFx))
+    );
 
-    sample({ clock: purge, target: purgeFx });
+    sample({
+      clock: purge,
+      source: metaStorage.$meta,
+      fn: (meta) => meta?.keys ?? [],
+      target: purgeFx,
+    });
 
     if (maxAge) {
       sample({
@@ -129,9 +139,9 @@ export function browserStorageCache(
   }
 
   // -- meta storage
-  // TODO: protect meta storage against races
-
   const META_KEY = '__farfetched_meta__';
+
+  const $meta = createStore<Meta | null>(null, { serialize: 'ignore' });
 
   const getMetaFx = createEffect(async () => {
     const meta = await getItemFx(META_KEY);
@@ -151,26 +161,32 @@ export function browserStorageCache(
     setItemFx({ key: META_KEY, value: JSON.stringify(meta) })
   );
 
+  const addKey = createEvent<{ key: string }>();
+  const removeKey = createEvent<{ key: string }>();
+
   const metaStorage = {
-    getKeysFx: createEffect(() => getMetaFx().then((meta) => meta?.keys ?? [])),
-    addKeyFx: createEffect<{ key: string }, void>(async ({ key }) => {
-      const meta = await getMetaFx();
-
-      const newMeta = { ...meta, keys: [...(meta?.keys ?? []), key] };
-
-      await setMetaFx(newMeta);
-    }),
-    removeKeyFx: createEffect<{ key: string }, void>(async ({ key }) => {
-      const meta = await getMetaFx();
-
-      const newMeta = {
-        ...meta,
-        keys: meta?.keys?.filter((k) => k !== key) ?? [],
-      };
-
-      await setMetaFx(newMeta);
-    }),
+    $meta,
+    addKey,
+    removeKey,
   };
+
+  sample({ clock: getMetaFx.doneData, target: $meta });
+  sample({ clock: $meta, filter: Boolean, target: setMetaFx });
+  sample({
+    clock: addKey,
+    source: $meta,
+    fn: (meta, { key }) => ({ ...meta, keys: [...(meta?.keys ?? []), key] }),
+    target: $meta,
+  });
+  sample({
+    clock: removeKey,
+    source: $meta,
+    fn: (meta, { key }) => ({
+      ...meta,
+      keys: meta?.keys?.filter((k) => k !== key) ?? [],
+    }),
+    target: $meta,
+  });
 
   interface Meta {
     keys?: string[];
