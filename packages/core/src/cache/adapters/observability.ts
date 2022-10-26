@@ -8,9 +8,9 @@ export function attachObservability({
 }: {
   adapter: CacheAdapterInstance;
   options?: CacheAdapterOptions['observability'];
-  events: {
-    itemExpired: Event<{ key: string; value: unknown }>;
-    itemEvicted: Event<{ key: string }>;
+  events?: {
+    itemExpired?: Event<{ key: string; value: unknown }>;
+    itemEvicted?: Event<{ key: string }>;
   };
 }) {
   if (options?.hit) {
@@ -31,7 +31,7 @@ export function attachObservability({
     });
   }
 
-  if (options?.expired) {
+  if (options?.expired && events?.itemExpired) {
     sample({
       clock: events.itemExpired,
       fn: ({ key }) => ({ key }),
@@ -39,7 +39,7 @@ export function attachObservability({
     });
   }
 
-  if (options?.evicted) {
+  if (options?.evicted && events?.itemEvicted) {
     sample({
       clock: events.itemEvicted,
       fn: ({ key }) => ({ key }),
