@@ -24,10 +24,7 @@ export function cache<Q extends Query<any, any, any>>(
   pickFromCache(query, params);
 }
 
-function connectPurge<Q extends Query<any, any, any>>({
-  adapter,
-  purge,
-}: CacheParameters) {
+function connectPurge({ adapter, purge }: CacheParameters) {
   if (purge) {
     const purgeCachedValuesFx = createEffect(
       ({ instance }: { instance: CacheAdapterInstance }) => instance.purge()
