@@ -1,5 +1,4 @@
 import { createEffect, createEvent, sample, split } from 'effector';
-import { debug } from 'patronum';
 
 import { Query } from '../query/type';
 import { RemoteOperationParams } from '../remote_operation/type';
@@ -70,9 +69,6 @@ function pickFromCache<Q extends Query<any, any, any>>(
   }>();
   const startWithKey = enrichStartWithKey(query);
 
-  // b34cb98f7b5e9cd963b9519b252da09e077eacc6
-  // debug(pickCachedValueFx.done);
-
   sample({
     clock: startWithKey,
     source: adapter.__.$instance,
@@ -94,13 +90,13 @@ function pickFromCache<Q extends Query<any, any, any>>(
     target: cachedValueFound,
   });
 
-  // TODO: push to internal state because of contract and validation apply
   sample({
     clock: cachedValueFound,
     fn: ({ data, params }) => ({ params, result: data, stopPropagation: true }),
     target: query.__.cmd.fillData,
   });
 
+  // TODO: do not resume for non-stale case
   sample({
     clock: [found, notFound],
     fn: ({ params }) => params,
