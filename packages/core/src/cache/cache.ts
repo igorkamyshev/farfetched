@@ -50,7 +50,7 @@ function saveToCache<Q extends Query<any, any, any>>(
     }: {
       instance: CacheAdapterInstance;
       key: string;
-      value: string;
+      value: unknown;
     }) => instance.set({ key, value })
   );
   const doneWithKey = enrichFinishedSuccessWithKey(query);
@@ -61,8 +61,7 @@ function saveToCache<Q extends Query<any, any, any>>(
     fn: (instance, { key, data }) => ({
       instance,
       key,
-      // TODO: store serizalizer in adapter to prevent serialization in inMempory adapter
-      value: JSON.stringify(data),
+      value: data,
     }),
     target: putCachedValueFx,
   });
@@ -117,8 +116,7 @@ function pickFromCache<Q extends Query<any, any, any>>(
       sample({ clock: foundFresh, fn: (p) => ({ ...p, isFreshData: true }) }),
     ],
     fn: ({ result, params, isFreshData }) => ({
-      // TODO: store serizalizer in adapter to prevent serialization in inMempory adapter
-      result: JSON.parse(result!.value),
+      result: result!.value,
       params: params.params,
       meta: { stopErrorPropagation: true, isFreshData },
     }),

@@ -9,7 +9,7 @@ export function attachObservability({
   adapter: CacheAdapterInstance;
   options?: CacheAdapterOptions['observability'];
   events: {
-    itemExpired: Event<{ key: string; value: string }>;
+    itemExpired: Event<{ key: string; value: unknown }>;
     itemEvicted: Event<{ key: string }>;
   };
 }) {

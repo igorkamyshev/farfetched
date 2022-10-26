@@ -1,10 +1,4 @@
-import {
-  attach,
-  createEffect,
-  createEvent,
-  createStore,
-  sample,
-} from 'effector';
+import { createEffect, createEvent, createStore, sample } from 'effector';
 import { delay } from 'patronum';
 
 import { parseTime } from '../lib/time';
@@ -37,7 +31,7 @@ export function browserStorageCache(
     });
 
     const setSavedItemFx = createEffect(
-      async ({ key, value }: { key: string; value: string }) => {
+      async ({ key, value }: { key: string; value: unknown }) => {
         const item = JSON.stringify({ value, timestamp: Date.now() });
 
         metaStorage.addKey({ key });
@@ -51,7 +45,7 @@ export function browserStorageCache(
       await removeItemFx(key);
     });
 
-    const itemExpired = createEvent<{ key: string; value: string }>();
+    const itemExpired = createEvent<{ key: string; value: unknown }>();
     const itemEvicted = createEvent<{ key: string }>();
 
     const purge = createEvent();
@@ -86,7 +80,7 @@ export function browserStorageCache(
     const adapter = {
       get: createEffect<
         { key: string },
-        { value: string; cachedAt: number } | null
+        { value: unknown; cachedAt: number } | null
       >(async ({ key }) => {
         const saved = await getSavedItemFx(key);
 
@@ -104,7 +98,7 @@ export function browserStorageCache(
 
         return { value: saved.value, cachedAt: saved.timestamp };
       }),
-      set: createEffect<{ key: string; value: string }, void>(
+      set: createEffect<{ key: string; value: unknown }, void>(
         async ({ key, value }) => {
           const meta = await getMetaFx();
 
@@ -135,7 +129,7 @@ export function browserStorageCache(
 
   interface SavedItem {
     timestamp: number;
-    value: string;
+    value: unknown;
   }
 
   // -- meta storage

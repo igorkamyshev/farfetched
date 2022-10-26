@@ -12,7 +12,7 @@ import { createAdapter } from './instance';
 import { attachObservability } from './observability';
 import { CacheAdapter, CacheAdapterOptions } from './type';
 
-type Entry = { value: string; cachedAt: number };
+type Entry = { value: unknown; cachedAt: number };
 type Storage = Record<string, Entry>;
 
 // TODO: save time to prevent stale data because of throttling
@@ -26,10 +26,10 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
     }
   );
 
-  const saveValue = createEvent<{ key: string; value: string }>();
+  const saveValue = createEvent<{ key: string; value: unknown }>();
   const removeValue = createEvent<{ key: string }>();
 
-  const itemExpired = createEvent<{ key: string; value: string }>();
+  const itemExpired = createEvent<{ key: string; value: unknown }>();
   const itemEvicted = createEvent<{ key: string }>();
 
   const purge = createEvent();
@@ -96,7 +96,7 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
     set: createEffect<
       {
         key: string;
-        value: string;
+        value: unknown;
       },
       void
     >(saveValue),
