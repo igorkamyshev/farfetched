@@ -56,3 +56,31 @@ cache(query, {
   adapter: someAdapter({ observability: { hit, miss, expired, evicted } }),
 });
 ```
+
+### External adapter for `cache`
+
+To integrate `cache` with external cache storage (e.g. Redis), there is `externalCache` provider.
+
+```ts
+import { cache, externalCache } from '@farfetched/core';
+
+cache(query, {
+  adapter: externalCache({
+    get: async ({ key }) => {
+      const result = await redis.get(key);
+
+      return JSON.parse(result);
+    },
+    set: async ({ key, value }) => {
+      await redis.set(key, JSON.stringify(value));
+    },
+    purge: async () => {
+      await redis.flushdb();
+    },
+  }),
+});
+```
+
+::: warning
+Due to external nature of the storage, `externalCache` supports only subset of observability events: `observability.hit` and `observability.miss`, any other event is not supported.
+:::

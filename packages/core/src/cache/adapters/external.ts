@@ -10,9 +10,14 @@ interface NarrowObservability {
 }
 
 export function externalCache(config: {
-  get: (opts: { key: string }) => { value: unknown; cachedAt: number } | null;
-  set: (opts: { key: string; value: unknown }) => void;
-  purge: () => void;
+  get: (opts: {
+    key: string;
+  }) =>
+    | Promise<{ value: unknown; cachedAt: number } | null>
+    | { value: unknown; cachedAt: number }
+    | null;
+  set: (opts: { key: string; value: unknown }) => Promise<void> | void;
+  purge: () => Promise<void> | void;
   observability?: NarrowObservability;
 }): CacheAdapter {
   const purge = createEvent();
