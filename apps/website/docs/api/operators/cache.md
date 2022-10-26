@@ -13,6 +13,8 @@ cache(query, config);
 Config fields:
 
 - `adapter`: _CacheAdapter_
+- `staleAfter?`: [_Time_](/api/primitives/time) after which the data is considered stale and will be re-fetched immediately
+- `purge?`: [_Event_](https://effector.dev/docs/api/effector/event) after calling which all records will be deleted from the cache
 
 ## Adapters
 
@@ -27,7 +29,7 @@ Required field `adapter` is used to specify storage to save results. Available a
 
 Every adapter accepts settings for auto-deletion of the cached results by the following fields:
 
-- `maxAge?` - _number_ with a maximum age of the cached result in milliseconds or _string_ with a maximum age of the cached result in human-readable format, like `1h23m14s`
+- `maxAge?` - [_Time_](/api/primitives/time) with a maximum age of the cached result
 - `maxEntries?` — _number_ with a maximum number of maximum entries in the cache
 
 ```ts
