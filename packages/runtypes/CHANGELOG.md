@@ -1,5 +1,11 @@
 # @farfetched/runtypes
 
+## 0.1.3
+
+### Patch Changes
+
+- d28c94a: Use details in error description if it was presented in runtypes validation result
+
 ## 0.1.2
 
 ### Patch Changes
