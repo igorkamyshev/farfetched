@@ -33,7 +33,7 @@ Read more about HTTP caching on [MDN](https://developer.mozilla.org/en-US/docs/W
 
 Browsers are very powerful systems, they are developed by large teams with a great experience. They have a lot of optimizations and tricks to make your application work faster. If you are using custom cache, you are bypassing all of them. This can lead to unexpected behavior and performance issues.
 
-Consider using [browser cache](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching) first, talk to your backend team to make sure that they are using proper cache headers. If you still need custom cache, make sure that you are aware of the consequences.
+Consider using [browser cache](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching) first, talk to your backend team to make sure that they are using proper cache headers. If you still need custom cache, make sure that you are aware of the consequences and that it is worth it.
 
 :::
 
