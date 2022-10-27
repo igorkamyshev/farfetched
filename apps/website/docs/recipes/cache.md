@@ -20,7 +20,7 @@ User-land code can't access the cached data directly. It is only available throu
 
 To achieve this, Every remote operation ([_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutation)) exposes [_Event_](https://effector.dev/docs/api/effector/event) `.__.lowLevelAPI.fillData` that will push any data through the validation flow.
 
-::: warning
+::: danger
 `.__.lowLevelAPI.fillData` is a low-level API that is not recommended using it directly in user-land.
 :::
 
@@ -84,7 +84,7 @@ const $url = normalizedSourced(
 
 After that, we can use `$url` in `.__.lowLevelAPI.sources`, it will contain only related data and could be used as a part of cache entry key. Same transformation applies for every sourced field to extract only significant data.
 
-::: warning
+::: danger
 `normalizeSourced` is a low-level API function that is used internally in Farfetched. It is not recommended using it directly in user-land.
 :::
 
@@ -142,7 +142,7 @@ function makeAdapterRepalcable(adapter) {
 }
 ```
 
-::: warning
+::: danger
 `makeAdapterRepalcable` is a low-level API function that is used internally in Farfetched. It is not recommended using it directly in user-land.
 :::
 
@@ -178,7 +178,7 @@ Operator [`cache`](/api/operators/cache) does not use `.get`, `.set` and `.purge
 
 ### Interruption API
 
-::: warning
+::: danger
 Interruption API is an internal API that is not recommended using directly in user-land.
 :::
 
