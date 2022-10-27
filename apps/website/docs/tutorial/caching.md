@@ -41,7 +41,7 @@ If browser cache is not enough for your use case, you can use custom cache. Farf
 
 ::: tip TL;DR
 
-Call [`cache`](/api/operators/cache) operator with a [_Query_](/api/primitives/query) that you want to cache and a cache adapter that you want to use as a cache storage.
+Call [`cache`](/api/operators/cache) operator with a [_Query_](/api/primitives/query) that you want to cache.
 
 ```ts
 import { cache } from '@farfetched/core';
