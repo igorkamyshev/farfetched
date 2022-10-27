@@ -90,8 +90,24 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
   const adapter = {
     get: attach({
       source: $storage,
-      effect: (storage, { key }: { key: string }): Entry | null =>
-        storage[key] ?? null,
+      effect: (storage, { key }: { key: string }): Entry | null => {
+        const saved = storage[key] ?? null;
+
+        if (!saved) {
+          return null;
+        }
+
+        if (maxAge) {
+          const expiredAt = saved?.cachedAt + parseTime(maxAge);
+
+          if (Date.now() >= expiredAt) {
+            removeValue({ key });
+            return null;
+          }
+        }
+
+        return saved;
+      },
     }),
     set: createEffect<
       {

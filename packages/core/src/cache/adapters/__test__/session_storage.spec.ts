@@ -12,7 +12,7 @@ describe('sessionStorageCache', () => {
     sessionStorage.clear();
   });
 
-  test('expire (in other tab)', async () => {
+  test('expire (after page reload)', async () => {
     const expired = createEvent<{ key: string }>();
     const listener = vi.fn();
     expired.watch(listener);
@@ -20,32 +20,32 @@ describe('sessionStorageCache', () => {
     vi.useFakeTimers();
 
     // Tab one
-    const cacheTabOne = sessionStorageCache({
+    const cacheBeforeReload = sessionStorageCache({
       maxAge: '1sec',
       observability: { expired },
     });
 
-    const scopeTabOne = fork();
+    const scopeBeforeReload = fork();
 
-    await scopeBind(cacheTabOne.set, {
-      scope: scopeTabOne,
+    await scopeBind(cacheBeforeReload.set, {
+      scope: scopeBeforeReload,
     })({ key: 'key', value: 'myValue' });
 
-    const resultOne = await scopeBind(cacheTabOne.get, {
-      scope: scopeTabOne,
+    const resultOne = await scopeBind(cacheBeforeReload.get, {
+      scope: scopeBeforeReload,
     })({ key: 'key' });
     expect(resultOne?.value).toEqual('myValue');
 
-    // Tick between tabs change, does not affect timer in cacheTabOne
+    // Tick between tabs change, does not affect timer in cacheBeforeReload
     vi.advanceTimersByTime(1 * 1000);
 
     // Tab two
-    const cacheTabTwo = sessionStorageCache({ maxAge: '1sec' });
+    const cacheAfterReload = sessionStorageCache({ maxAge: '1sec' });
 
-    const scopeTabTwo = fork();
+    const scopeAfterReload = fork();
 
-    const resultTwo = await scopeBind(cacheTabTwo.get, {
-      scope: scopeTabTwo,
+    const resultTwo = await scopeBind(cacheAfterReload.get, {
+      scope: scopeAfterReload,
     })({ key: 'key' });
     expect(resultTwo).toBeNull();
     expect(sessionStorage.getItem('key')).toBeNull();
