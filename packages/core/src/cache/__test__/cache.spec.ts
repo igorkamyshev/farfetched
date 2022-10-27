@@ -19,7 +19,7 @@ describe('cache', () => {
     );
     const query = withFactory({ fn: () => createQuery({ handler }), sid: '1' });
 
-    cache(query, { adapter: inMemoryCache() });
+    cache(query);
 
     const scope = fork();
 
@@ -53,7 +53,7 @@ describe('cache', () => {
     );
     const query = withFactory({ fn: () => createQuery({ handler }), sid: '1' });
 
-    cache(query, { adapter: inMemoryCache(), staleAfter: '1h' });
+    cache(query, { staleAfter: '1h' });
 
     const scope = fork();
 
@@ -84,7 +84,7 @@ describe('cache', () => {
     );
     const query = withFactory({ fn: () => createQuery({ handler }), sid: '1' });
 
-    cache(query, { adapter: inMemoryCache(), staleAfter: '1sec' });
+    cache(query, { staleAfter: '1sec' });
 
     const scope = fork();
 
@@ -168,7 +168,7 @@ describe('cache', () => {
 
     const purge = createEvent();
 
-    cache(query, { adapter: inMemoryCache(), purge });
+    cache(query, { purge });
 
     const scope = fork();
 

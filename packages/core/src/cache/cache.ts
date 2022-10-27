@@ -3,11 +3,18 @@ import { time } from 'patronum';
 
 import { Query } from '../query/type';
 import { RemoteOperationParams } from '../remote_operation/type';
+import { inMemoryCache } from './adapters/in_memory';
 import { CacheAdapter, CacheAdapterInstance } from './adapters/type';
 import { enrichFinishedSuccessWithKey, enrichStartWithKey } from './key/key';
 import { parseTime, Time } from './lib/time';
 
 interface CacheParameters {
+  adapter?: CacheAdapter;
+  staleAfter?: Time;
+  purge?: Event<void>;
+}
+
+interface CacheParametersDefaulted {
   adapter: CacheAdapter;
   staleAfter?: Time;
   purge?: Event<void>;
@@ -15,16 +22,21 @@ interface CacheParameters {
 
 export function cache<Q extends Query<any, any, any>>(
   query: Q,
-  params: CacheParameters
+  params?: CacheParameters
 ): void {
   query.__.lowLevelAPI.registerInterruption();
 
-  connectPurge(params);
-  saveToCache(query, params);
-  pickFromCache(query, params);
+  const defaultedParams: CacheParametersDefaulted = {
+    adapter: params?.adapter ?? inMemoryCache(),
+    ...params,
+  };
+
+  connectPurge(defaultedParams);
+  saveToCache(query, defaultedParams);
+  pickFromCache(query, defaultedParams);
 }
 
-function connectPurge({ adapter, purge }: CacheParameters) {
+function connectPurge({ adapter, purge }: CacheParametersDefaulted) {
   if (purge) {
     const purgeCachedValuesFx = createEffect(
       ({ instance }: { instance: CacheAdapterInstance }) => instance.purge()
@@ -40,7 +52,7 @@ function connectPurge({ adapter, purge }: CacheParameters) {
 
 function saveToCache<Q extends Query<any, any, any>>(
   query: Q,
-  { adapter }: CacheParameters
+  { adapter }: CacheParametersDefaulted
 ) {
   const putCachedValueFx = createEffect(
     ({
@@ -69,7 +81,7 @@ function saveToCache<Q extends Query<any, any, any>>(
 
 function pickFromCache<Q extends Query<any, any, any>>(
   query: Q,
-  { adapter, staleAfter }: CacheParameters
+  { adapter, staleAfter }: CacheParametersDefaulted
 ) {
   const pickCachedValueFx = createEffect(
     async ({

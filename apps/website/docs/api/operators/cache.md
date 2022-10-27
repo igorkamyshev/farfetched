@@ -12,7 +12,7 @@ cache(query, config);
 
 Config fields:
 
-- `adapter`: _CacheAdapter_
+- `adapter?`: _CacheAdapter_
 - `staleAfter?`: [_Time_](/api/primitives/time) after which the data is considered stale and will be re-fetched immediately
 - `purge?`: [_Event_](https://effector.dev/docs/api/effector/event) after calling which all records will be deleted from the cache
 
@@ -20,7 +20,7 @@ Config fields:
 
 Required field `adapter` is used to specify storage to save results. Available adapters:
 
-- `inMemoryCache` useful for caching results of the [_Query_](/api/primitives/query) during one interaction with the application.
+- `inMemoryCache` (**default adapter**) useful for caching results of the [_Query_](/api/primitives/query) during one interaction with the application.
 - `sessionStorageCache` uses [Session Storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage), useful for caching results of the [_Query_](/api/primitives/query) across tab reloads during single session.
 - `localStorageCache` uses [Local Storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage), useful for caching results of the [_Query_](/api/primitives/query) across sessions.
 - `voidCache` never saves anything, never restores anything. It's useful for testing purposes.
