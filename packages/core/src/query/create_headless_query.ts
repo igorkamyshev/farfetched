@@ -88,7 +88,7 @@ function createHeadlessQuery<
 
   // -- Main stores --
   const $data = createStore<MappedData | Initial>(
-    initialData ?? (null as Initial),
+    initialData ?? (null as unknown as Initial),
     {
       sid: `ff.${queryName}.$data`,
       name: `${queryName}.$data`,
