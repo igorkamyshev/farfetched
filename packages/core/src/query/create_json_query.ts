@@ -355,8 +355,9 @@ function createJsonQuery(config: any) {
     any,
     any,
     any,
-    null
+    any
   >({
+    initialData: config.initialData,
     contract: config.response.contract ?? unknownContract,
     mapData: config.response.mapData ?? identity,
     validate: config.response.validate,
