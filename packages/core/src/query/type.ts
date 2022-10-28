@@ -13,14 +13,14 @@ interface QueryMeta<Data> {
   serialize: Serialize<Data>;
 }
 
-interface Query<Params, Data, Error>
+interface Query<Params, Data, Error, InitialData = null>
   extends RemoteOperation<Params, Data, Error, QueryMeta<Data>> {
   /**
    * The reactive value of the latest received data.
    *
    * If there was an error during fetching or there has not been a request yet, the store will be `null`.
    */
-  $data: Store<Data | null>;
+  $data: Store<Data | InitialData>;
   /**
    * The reactive value of the data retrieval error.
    *
