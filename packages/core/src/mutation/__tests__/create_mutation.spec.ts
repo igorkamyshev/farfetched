@@ -20,11 +20,15 @@ describe('createMutation', () => {
     await allSettled(mutation.start, { scope, params: 42 });
 
     expect(handler).toHaveBeenNthCalledWith(1, 42);
-    expect(listeners.onSuccess).toBeCalledWith({ params: 42, data: 'data' });
+    expect(listeners.onSuccess).toBeCalledWith(
+      expect.objectContaining({ params: 42, data: 'data' })
+    );
 
     await allSettled(mutation.start, { scope, params: 24 });
     expect(handler).toHaveBeenNthCalledWith(2, 24);
-    expect(listeners.onFailure).toBeCalledWith({ params: 24, error: 'error' });
+    expect(listeners.onFailure).toBeCalledWith(
+      expect.objectContaining({ params: 24, error: 'error' })
+    );
   });
 
   test('use effect as handler', async () => {
@@ -43,11 +47,15 @@ describe('createMutation', () => {
     await allSettled(mutation.start, { scope, params: 42 });
 
     expect(handler).toHaveBeenNthCalledWith(1, 42);
-    expect(listeners.onSuccess).toBeCalledWith({ params: 42, data: 'data' });
+    expect(listeners.onSuccess).toBeCalledWith(
+      expect.objectContaining({ params: 42, data: 'data' })
+    );
 
     await allSettled(mutation.start, { scope, params: 24 });
     expect(handler).toHaveBeenNthCalledWith(2, 24);
-    expect(listeners.onFailure).toBeCalledWith({ params: 24, error: 'error' });
+    expect(listeners.onFailure).toBeCalledWith(
+      expect.objectContaining({ params: 24, error: 'error' })
+    );
   });
 
   test('uses contract', async () => {
@@ -64,15 +72,17 @@ describe('createMutation', () => {
     const { listeners } = watchRemoteOperation(mutation, scope);
 
     await allSettled(mutation.start, { scope, params: 42 });
-    expect(listeners.onFailure).toBeCalledWith({
-      params: 42,
-      error: {
-        errorType: 'INVALID_DATA',
-        explanation:
-          'Response was considered as invalid against a given contract',
-        validationErrors: ['Test error'],
-      },
-    });
+    expect(listeners.onFailure).toBeCalledWith(
+      expect.objectContaining({
+        params: 42,
+        error: {
+          errorType: 'INVALID_DATA',
+          explanation:
+            'Response was considered as invalid against a given contract',
+          validationErrors: ['Test error'],
+        },
+      })
+    );
   });
 
   test('skip disabled mutation', async () => {

@@ -1,4 +1,4 @@
-### Babel plugin
+**Babel plugin**
 
 If your project already uses [Babel](https://babeljs.io/), you do not have to install any additional packages, just modify your Babel config with the following plugin:
 
@@ -12,7 +12,7 @@ If your project already uses [Babel](https://babeljs.io/), you do not have to in
 Read more about `effector/babel-plugin` configuration in the [Effector's documentation](https://effector.now.sh/docs/api/effector/babel-plugin).
 :::
 
-### SWC plugin
+**SWC plugin**
 
 [SWC](https://swc.rs) is a blazing fast alternative to Babel. If you are using it, you can install `@effector/swc-plugin` to get the same DX as with Babel.
 
@@ -42,10 +42,12 @@ Now just modify your `.swcrc` config to enable installed plugin:
   "jsc": {
     "experimental": {
       "plugins": [
-        "@effector/swc-plugin",
-        {
-          "factories": ["@farfetched/core"]
-        }
+        [
+          "@effector/swc-plugin",
+          {
+            "factories": ["@farfetched/core"]
+          }
+        ]
       ]
     }
   }

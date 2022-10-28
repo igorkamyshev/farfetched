@@ -97,15 +97,11 @@ export default {
               ],
             },
             {
-              text: 'Operators',
-              items: [
-                {
-                  text: 'Dependent Queries',
-                  link: '/tutorial/dependent_queries',
-                },
-                { text: 'Retries', link: '/tutorial/retries' },
-              ],
+              text: 'Dependent Queries',
+              link: '/tutorial/dependent_queries',
             },
+            { text: 'Retries', link: '/tutorial/retries' },
+            { text: 'Caching', link: '/tutorial/caching' },
             {
               text: 'Factories',
               items: [
@@ -156,6 +152,7 @@ export default {
           items: [
             { text: 'connectQuery', link: '/api/operators/connect_query' },
             { text: 'retry', link: '/api/operators/retry' },
+            { text: 'cache', link: '/api/operators/cache' },
           ],
         },
         {
@@ -280,7 +277,10 @@ export default {
         {
           text: 'Deep dive',
           collapsible: true,
-          items: [{ text: 'Unique store identifiers', link: '/recipes/sids' }],
+          items: [
+            { text: 'Unique store identifiers', link: '/recipes/sids' },
+            { text: 'Automated cache', link: '/recipes/cache' },
+          ],
         },
       ],
       '/statements': [

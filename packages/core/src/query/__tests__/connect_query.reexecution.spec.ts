@@ -90,18 +90,23 @@ describe('remote_data/connect_query', () => {
     ]);
 
     expect(childWatcher.listeners.onSuccess).toHaveBeenCalledTimes(1);
-    expect(childWatcher.listeners.onSuccess).toHaveBeenCalledWith({
-      data: 'content_1',
-      params: { ids: 'block_1', language: 'language_1' },
-    });
+    expect(childWatcher.listeners.onSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: 'content_1',
+        params: { ids: 'block_1', language: 'language_1' },
+      })
+    );
 
     // Re-execution
     await Promise.all([allSettled(languagesQ.start, { scope, params: 2 })]);
 
     expect(childWatcher.listeners.onSuccess).toHaveBeenCalledTimes(2);
-    expect(childWatcher.listeners.onSuccess).toHaveBeenNthCalledWith(2, {
-      data: 'content_2',
-      params: { ids: 'block_1', language: 'language_2' },
-    });
+    expect(childWatcher.listeners.onSuccess).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        data: 'content_2',
+        params: { ids: 'block_1', language: 'language_2' },
+      })
+    );
   });
 });

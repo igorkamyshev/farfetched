@@ -257,7 +257,9 @@ describe('retry (deprecated form)', () => {
     await allSettled(query.start, { scope });
 
     expect(handler).toBeCalledTimes(1);
-    expect(filter).toBeCalledWith({ params: undefined, error: queryError });
+    expect(filter).toBeCalledWith(
+      expect.objectContaining({ params: undefined, error: queryError })
+    );
   });
 
   test('calls otherwise event after all retries', async () => {
