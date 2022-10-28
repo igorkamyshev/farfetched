@@ -2,4 +2,4 @@
 '@farfetched/core': minor
 ---
 
-Allow to use `retry` with Mutation
+Allow using `retry` with Mutation
