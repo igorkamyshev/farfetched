@@ -221,7 +221,17 @@ function createJsonQuery(config: any) {
     clock: internalStart,
   });
 
-  const headlessQuery = createHeadlessQuery<any, any, any, any, any, any, any>({
+  const headlessQuery = createHeadlessQuery<
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    null
+  >({
+    initialData: null,
     contract: config.response.contract ?? unknownContract,
     mapData: config.response.mapData ?? identity,
     validate: config.response.validate,

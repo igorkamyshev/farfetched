@@ -33,8 +33,10 @@ function createHeadlessQuery<
   ContractData extends Response,
   MappedData,
   MapDataSource,
-  ValidationSource
+  ValidationSource,
+  Initial
 >({
+  initialData,
   contract,
   mapData,
   enabled,
@@ -43,6 +45,7 @@ function createHeadlessQuery<
   serialize,
   sources,
 }: {
+  initialData: Initial;
   contract: Contract<Response, ContractData>;
   mapData: TwoArgsDynamicallySourcedField<
     ContractData,
@@ -55,7 +58,8 @@ function createHeadlessQuery<
 } & SharedQueryFactoryConfig<MappedData>): Query<
   Params,
   MappedData,
-  Error | InvalidDataError
+  Error | InvalidDataError,
+  Initial
 > {
   const queryName = name ?? 'unnamed';
 
@@ -83,7 +87,7 @@ function createHeadlessQuery<
   const reset = createEvent();
 
   // -- Main stores --
-  const $data = createStore<MappedData | null>(null, {
+  const $data = createStore<MappedData | Initial>(initialData, {
     sid: `ff.${queryName}.$data`,
     name: `${queryName}.$data`,
     serialize,
@@ -106,7 +110,11 @@ function createHeadlessQuery<
     target: $data,
   });
 
-  sample({ clock: operation.finished.failure, fn: () => null, target: $data });
+  sample({
+    clock: operation.finished.failure,
+    fn: () => initialData,
+    target: $data,
+  });
   sample({
     clock: operation.finished.failure,
     fn: ({ error }) => error,

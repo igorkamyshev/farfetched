@@ -168,6 +168,7 @@ function createQuery<
   Response,
   Error,
   ContractData extends Response = Response,
+  Initial = null,
   MappedData = ContractData,
   MapDataSource = void,
   ValidationSource = void
@@ -175,7 +176,7 @@ function createQuery<
   // Use any because of overloads
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config: any
-): Query<Params, MappedData, Error | InvalidDataError> {
+): Query<Params, MappedData, Error | InvalidDataError, Initial> {
   const query = createHeadlessQuery<
     Params,
     Response,
@@ -183,8 +184,10 @@ function createQuery<
     ContractData,
     MappedData,
     MapDataSource,
-    ValidationSource
+    ValidationSource,
+    Initial
   >({
+    initialData: config.initialData ?? null,
     contract: config.contract ?? unknownContract,
     mapData: config.mapData ?? identity,
     enabled: config.enabled,
