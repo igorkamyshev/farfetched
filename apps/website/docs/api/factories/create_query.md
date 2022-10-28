@@ -2,6 +2,10 @@
 
 ## Formulae
 
+::: info
+Option `initialData` available in all overloads since v0.3.0
+:::
+
 ### `createQuery({ handler, initialData? })`
 
 Creates [_Query_](/api/primitives/query) based on given asynchronous function.
