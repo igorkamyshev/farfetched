@@ -34,7 +34,7 @@ function createHeadlessQuery<
   MappedData,
   MapDataSource,
   ValidationSource,
-  Initial
+  Initial = null
 >({
   initialData,
   contract,
@@ -45,7 +45,7 @@ function createHeadlessQuery<
   serialize,
   sources,
 }: {
-  initialData: Initial;
+  initialData?: Initial;
   contract: Contract<Response, ContractData>;
   mapData: TwoArgsDynamicallySourcedField<
     ContractData,
@@ -87,11 +87,14 @@ function createHeadlessQuery<
   const reset = createEvent();
 
   // -- Main stores --
-  const $data = createStore<MappedData | Initial>(initialData, {
-    sid: `ff.${queryName}.$data`,
-    name: `${queryName}.$data`,
-    serialize,
-  });
+  const $data = createStore<MappedData | Initial>(
+    initialData ?? (null as Initial),
+    {
+      sid: `ff.${queryName}.$data`,
+      name: `${queryName}.$data`,
+      serialize,
+    }
+  );
   const $error = createStore<Error | InvalidDataError | null>(null, {
     sid: `ff.${queryName}.$error`,
     name: `${queryName}.$error`,
@@ -110,11 +113,7 @@ function createHeadlessQuery<
     target: $data,
   });
 
-  sample({
-    clock: operation.finished.failure,
-    fn: () => initialData,
-    target: $data,
-  });
+  $data.reset(operation.finished.failure);
   sample({
     clock: operation.finished.failure,
     fn: ({ error }) => error,
