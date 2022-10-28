@@ -2,7 +2,7 @@
 
 ## Formulae
 
-### `createQuery({ handler })`
+### `createQuery({ handler, initialData? })`
 
 Creates [_Query_](/api/primitives/query) based on given asynchronous function.
 
@@ -16,7 +16,7 @@ const languagesQuery = createQuery({
 });
 ```
 
-### `createQuery({ effect, validate? })`
+### `createQuery({ effect, validate?, initialData? })`
 
 Creates [_Query_](/api/primitives/query) based on given [_Effect_](https://effector.dev/docs/api/effector/effect).
 
@@ -42,7 +42,7 @@ const languagesQuery = createQuery({
 // typeof languagesQuery.$error === Store<EmptyLanguagesError | null>
 ```
 
-### `createQuery({ effect, contract, validate? })`
+### `createQuery({ effect, contract, validate?, initialData? })`
 
 Creates [_Query_](/api/primitives/query) based on given [_Effect_](https://effector.dev/docs/api/effector/effect).
 
@@ -69,7 +69,7 @@ const languagesQuery = createQuery({
  */
 ```
 
-### `createQuery({ effect, contract?, validate?, mapData: Function })`
+### `createQuery({ effect, contract?, validate?, mapData: Function, initialData? })`
 
 Creates [_Query_](/api/primitives/query) based on given [_Effect_](https://effector.dev/docs/api/effector/effect). Result of the effect will be validated against the [_Contract_](/api/primitives/contract) and the optional [_Validator_](/api/primitives/validator). Invalid result will cause the [_Query_](/api/primitives/query) to fail.
 
@@ -94,7 +94,7 @@ const languagesQuery = createQuery({
  */
 ```
 
-### `createQuery({ effect, contract?, validate?, mapData: { source, fn } })`
+### `createQuery({ effect, contract?, validate?, mapData: { source, fn }, initialData? })`
 
 Creates [_Query_](/api/primitives/query) based on given [_Effect_](https://effector.dev/docs/api/effector/effect). Result of the effect will be validated against the [_Contract_](/api/primitives/contract) and the optional [_Validator_](/api/primitives/validator). Invalid result will cause the query to fail.
 
