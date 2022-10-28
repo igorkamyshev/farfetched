@@ -2,4 +2,4 @@
 '@farfetched/core': minor
 ---
 
-Allow seting initial data for _Query_
+Allow setting initial data for _Query_
