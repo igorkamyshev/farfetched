@@ -1,11 +1,10 @@
-import { createEffect, Effect, is } from 'effector';
+import { Effect } from 'effector';
 
 import {
   createHeadlessQuery,
   SharedQueryFactoryConfig,
 } from './create_headless_query';
 import { Query } from './type';
-import { InvalidConfigException } from '../misc/config';
 import { Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
 import { identity } from '../misc/identity';
@@ -21,12 +20,26 @@ function createQuery<Params, Response>(
   } & SharedQueryFactoryConfig<Response>
 ): Query<Params, Response, unknown>;
 
+function createQuery<Params, Response, Initial>(
+  config: {
+    initialData: Initial;
+    handler: (p: Params) => Promise<Response>;
+  } & SharedQueryFactoryConfig<Response>
+): Query<Params, Response, unknown, Initial>;
+
 // Overload: Only effect
 function createQuery<Params, Response, Error>(
   config: {
     effect: Effect<Params, Response, Error>;
   } & SharedQueryFactoryConfig<Response>
 ): Query<Params, Response, Error>;
+
+function createQuery<Params, Response, Error, Initial>(
+  config: {
+    initialData: Initial;
+    effect: Effect<Params, Response, Error>;
+  } & SharedQueryFactoryConfig<Response>
+): Query<Params, Response, Error, Initial>;
 
 // Overload: Effect and Contract
 function createQuery<
@@ -42,6 +55,22 @@ function createQuery<
     validate?: Validator<ContractData, Params, ValidationSource>;
   } & SharedQueryFactoryConfig<ContractData>
 ): Query<Params, ContractData, Error | InvalidDataError>;
+
+function createQuery<
+  Params,
+  Response,
+  Error,
+  ContractData extends Response,
+  Initial,
+  ValidationSource = void
+>(
+  config: {
+    initialData: Initial;
+    effect: Effect<Params, Response, Error>;
+    contract: Contract<Response, ContractData>;
+    validate?: Validator<ContractData, Params, ValidationSource>;
+  } & SharedQueryFactoryConfig<ContractData>
+): Query<Params, ContractData, Error | InvalidDataError, Initial>;
 
 // Overload: Effect and MapData
 function createQuery<
@@ -63,6 +92,28 @@ function createQuery<
     validate?: Validator<MappedData, Params, ValidationSource>;
   } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error>;
+
+function createQuery<
+  Params,
+  Response,
+  Error,
+  MappedData,
+  Initial,
+  MapDataSource = void,
+  ValidationSource = void
+>(
+  config: {
+    initialData: Initial;
+    effect: Effect<Params, Response, Error>;
+    mapData: TwoArgsDynamicallySourcedField<
+      Response,
+      Params,
+      MappedData,
+      MapDataSource
+    >;
+    validate?: Validator<MappedData, Params, ValidationSource>;
+  } & SharedQueryFactoryConfig<MappedData>
+): Query<Params, MappedData, Error, Initial>;
 
 // Overload: Effect, Contract and MapData
 function createQuery<
@@ -86,6 +137,30 @@ function createQuery<
     validate?: Validator<ContractData, Params, ValidationSource>;
   } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error | InvalidDataError>;
+
+function createQuery<
+  Params,
+  Response,
+  Error,
+  ContractData extends Response,
+  MappedData,
+  Initial,
+  MapDataSource = void,
+  ValidationSource = void
+>(
+  config: {
+    initialData: Initial;
+    effect: Effect<Params, Response, Error>;
+    contract: Contract<Response, ContractData>;
+    mapData: TwoArgsDynamicallySourcedField<
+      ContractData,
+      Params,
+      MappedData,
+      MapDataSource
+    >;
+    validate?: Validator<ContractData, Params, ValidationSource>;
+  } & SharedQueryFactoryConfig<MappedData>
+): Query<Params, MappedData, Error | InvalidDataError, Initial>;
 
 // -- Implementation --
 function createQuery<
