@@ -135,13 +135,13 @@ initial_value: {
 
   const effectContarctQuery = createQuery({
     initialData: 1,
-    effect: createEffect<number, string, { effectError: boolean }>(),
-    contract: {} as Contract<string, string>,
+    effect: createEffect<string, unknown, { effectError: boolean }>(),
+    contract: {} as Contract<unknown, number>,
   });
   expectType<
     Query<
-      number,
       string,
+      number,
       | { effectError: boolean } // from effect
       | InvalidDataError, // from data.validate
       number
@@ -156,13 +156,13 @@ initial_value: {
   expectType<Query<void, number, Error, number>>(effectMapDataQuery);
 
   const effectContractMapDataQuery = createQuery({
-    initialData: 'hello',
+    initialData: 42,
     effect: createEffect(() => 12 as unknown),
     contract: unknownContract,
     mapData: () => 12,
   });
 
-  expectType<Query<void, number, InvalidDataError | Error, string>>(
+  expectType<Query<void, number, InvalidDataError | Error, number>>(
     effectContractMapDataQuery
   );
 }
