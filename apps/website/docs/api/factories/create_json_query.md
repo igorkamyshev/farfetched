@@ -11,6 +11,8 @@ Config fields:
   - You can declare [_Query_](/api/primitives/query) parameters by call `declareParams` function.
   - If not passed, [_Query_](/api/primitives/query) will be created without parameters.
 
+- `initialData?`: initial data of the [_Query_](/api/primitives/query), will be passed to the `$data` store as an initial value
+
 - `request`: declarative rules to formulate request to the API.
 
   - `method`: _String_

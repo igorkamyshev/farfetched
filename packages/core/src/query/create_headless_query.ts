@@ -33,8 +33,10 @@ function createHeadlessQuery<
   ContractData extends Response,
   MappedData,
   MapDataSource,
-  ValidationSource
+  ValidationSource,
+  Initial = null
 >({
+  initialData,
   contract,
   mapData,
   enabled,
@@ -43,6 +45,7 @@ function createHeadlessQuery<
   serialize,
   sources,
 }: {
+  initialData?: Initial;
   contract: Contract<Response, ContractData>;
   mapData: TwoArgsDynamicallySourcedField<
     ContractData,
@@ -55,7 +58,8 @@ function createHeadlessQuery<
 } & SharedQueryFactoryConfig<MappedData>): Query<
   Params,
   MappedData,
-  Error | InvalidDataError
+  Error | InvalidDataError,
+  Initial
 > {
   const queryName = name ?? 'unnamed';
 
@@ -83,11 +87,14 @@ function createHeadlessQuery<
   const reset = createEvent();
 
   // -- Main stores --
-  const $data = createStore<MappedData | null>(null, {
-    sid: `ff.${queryName}.$data`,
-    name: `${queryName}.$data`,
-    serialize,
-  });
+  const $data = createStore<MappedData | Initial>(
+    initialData ?? (null as unknown as Initial),
+    {
+      sid: `ff.${queryName}.$data`,
+      name: `${queryName}.$data`,
+      serialize,
+    }
+  );
   const $error = createStore<Error | InvalidDataError | null>(null, {
     sid: `ff.${queryName}.$error`,
     name: `${queryName}.$error`,
@@ -106,7 +113,7 @@ function createHeadlessQuery<
     target: $data,
   });
 
-  sample({ clock: operation.finished.failure, fn: () => null, target: $data });
+  $data.reset(operation.finished.failure);
   sample({
     clock: operation.finished.failure,
     fn: ({ error }) => error,

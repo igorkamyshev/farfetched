@@ -59,7 +59,7 @@ export function retry<
 ): void;
 
 /**
- * @deprecated since 0.3.0
+ * @deprecated since v0.3.0
  *
  * use retry(query, config) instead
  */

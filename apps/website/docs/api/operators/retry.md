@@ -7,7 +7,7 @@ Retries a failed [_Query_](../primitives/query.md) with a specified configuratio
 ### `retry(operation, config)`
 
 ::: info
-since 0.3.0
+since v0.3.0
 :::
 
 Operation could be a [_Query_](/api/primitives/query) or a [_Mutation_](/api/primitives/mutation).
@@ -25,7 +25,7 @@ Config fields:
 ### `retry(config)`
 
 ::: warning
-This overload is deprecated since 0.3.0 and will be removed in the next release.
+This overload is deprecated since v0.3.0 and will be removed in the next release.
 :::
 
 Config fields:

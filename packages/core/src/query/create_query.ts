@@ -1,11 +1,10 @@
-import { createEffect, Effect, is } from 'effector';
+import { Effect } from 'effector';
 
 import {
   createHeadlessQuery,
   SharedQueryFactoryConfig,
 } from './create_headless_query';
 import { Query } from './type';
-import { InvalidConfigException } from '../misc/config';
 import { Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
 import { identity } from '../misc/identity';
@@ -21,12 +20,26 @@ function createQuery<Params, Response>(
   } & SharedQueryFactoryConfig<Response>
 ): Query<Params, Response, unknown>;
 
+function createQuery<Params, Response>(
+  config: {
+    initialData: Response;
+    handler: (p: Params) => Promise<Response>;
+  } & SharedQueryFactoryConfig<Response>
+): Query<Params, Response, unknown, Response>;
+
 // Overload: Only effect
 function createQuery<Params, Response, Error>(
   config: {
     effect: Effect<Params, Response, Error>;
   } & SharedQueryFactoryConfig<Response>
 ): Query<Params, Response, Error>;
+
+function createQuery<Params, Response, Error>(
+  config: {
+    initialData: Response;
+    effect: Effect<Params, Response, Error>;
+  } & SharedQueryFactoryConfig<Response>
+): Query<Params, Response, Error, Response>;
 
 // Overload: Effect and Contract
 function createQuery<
@@ -42,6 +55,21 @@ function createQuery<
     validate?: Validator<ContractData, Params, ValidationSource>;
   } & SharedQueryFactoryConfig<ContractData>
 ): Query<Params, ContractData, Error | InvalidDataError>;
+
+function createQuery<
+  Params,
+  Response,
+  Error,
+  ContractData extends Response,
+  ValidationSource = void
+>(
+  config: {
+    initialData: ContractData;
+    effect: Effect<Params, Response, Error>;
+    contract: Contract<Response, ContractData>;
+    validate?: Validator<ContractData, Params, ValidationSource>;
+  } & SharedQueryFactoryConfig<ContractData>
+): Query<Params, ContractData, Error | InvalidDataError, ContractData>;
 
 // Overload: Effect and MapData
 function createQuery<
@@ -63,6 +91,27 @@ function createQuery<
     validate?: Validator<MappedData, Params, ValidationSource>;
   } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error>;
+
+function createQuery<
+  Params,
+  Response,
+  Error,
+  MappedData,
+  MapDataSource = void,
+  ValidationSource = void
+>(
+  config: {
+    initialData: MappedData;
+    effect: Effect<Params, Response, Error>;
+    mapData: TwoArgsDynamicallySourcedField<
+      Response,
+      Params,
+      MappedData,
+      MapDataSource
+    >;
+    validate?: Validator<MappedData, Params, ValidationSource>;
+  } & SharedQueryFactoryConfig<MappedData>
+): Query<Params, MappedData, Error, MappedData>;
 
 // Overload: Effect, Contract and MapData
 function createQuery<
@@ -87,6 +136,29 @@ function createQuery<
   } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error | InvalidDataError>;
 
+function createQuery<
+  Params,
+  Response,
+  Error,
+  ContractData extends Response,
+  MappedData,
+  MapDataSource = void,
+  ValidationSource = void
+>(
+  config: {
+    initialData: MappedData;
+    effect: Effect<Params, Response, Error>;
+    contract: Contract<Response, ContractData>;
+    mapData: TwoArgsDynamicallySourcedField<
+      ContractData,
+      Params,
+      MappedData,
+      MapDataSource
+    >;
+    validate?: Validator<ContractData, Params, ValidationSource>;
+  } & SharedQueryFactoryConfig<MappedData>
+): Query<Params, MappedData, Error | InvalidDataError, MappedData>;
+
 // -- Implementation --
 function createQuery<
   Params,
@@ -100,7 +172,7 @@ function createQuery<
   // Use any because of overloads
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config: any
-): Query<Params, MappedData, Error | InvalidDataError> {
+): Query<Params, MappedData, Error | InvalidDataError, MappedData> {
   const query = createHeadlessQuery<
     Params,
     Response,
@@ -108,8 +180,10 @@ function createQuery<
     ContractData,
     MappedData,
     MapDataSource,
-    ValidationSource
+    ValidationSource,
+    MappedData
   >({
+    initialData: config.initialData ?? null,
     contract: config.contract ?? unknownContract,
     mapData: config.mapData ?? identity,
     enabled: config.enabled,
