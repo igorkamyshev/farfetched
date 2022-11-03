@@ -1,5 +1,5 @@
-import { Domain } from 'effector';
-import { useUnit } from 'effector-solid';
+import { Domain, Scope } from 'effector';
+import { useUnit, Provider } from 'effector-solid';
 import { render } from 'solid-js/web';
 
 import { OpenButton } from './ui/open_button';
@@ -23,9 +23,11 @@ function DevToolsApp() {
 
 export function initDevTools({
   domain,
+  scope,
   container,
 }: {
   domain: Domain;
+  scope?: Scope;
   container?: HTMLElement;
 }) {
   let renderTo = container;
@@ -35,5 +37,16 @@ export function initDevTools({
     renderTo = newContainer;
   }
 
-  render(() => <DevToolsApp />, renderTo);
+  if (scope) {
+    render(
+      () => (
+        <Provider value={scope}>
+          <DevToolsApp />
+        </Provider>
+      ),
+      renderTo
+    );
+  } else {
+    render(() => <DevToolsApp />, renderTo);
+  }
 }
