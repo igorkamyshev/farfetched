@@ -10,6 +10,7 @@ import {
 } from '../../entities/character';
 import { Episode, episodeUrl } from '../../entities/episode';
 import { Location, locationUrl } from '../../entities/location';
+import { rootDomain } from '../../shared/domain';
 import { TId, urlToId } from '../../shared/id';
 
 const characterQuery = createJsonQuery({
@@ -19,12 +20,14 @@ const characterQuery = createJsonQuery({
     method: 'GET',
   },
   response: { contract: runtypeContract(Character) },
+  domain: rootDomain,
 });
 
 const originQuery = createJsonQuery({
   params: declareParams<{ id: TId }>(),
   request: { url: ({ id }) => locationUrl({ id }), method: 'GET' },
   response: { contract: runtypeContract(Location) },
+  domain: rootDomain,
 });
 
 connectQuery({
@@ -42,6 +45,7 @@ const currentLocationQuery = createJsonQuery({
     method: 'GET',
   },
   response: { contract: runtypeContract(Location) },
+  domain: rootDomain,
 });
 
 connectQuery({
@@ -59,6 +63,7 @@ const characterEpisodesQuery = createJsonQuery({
     method: 'GET',
   },
   response: { contract: runtypeContract(Array(Episode)) },
+  domain: rootDomain,
 });
 
 connectQuery({

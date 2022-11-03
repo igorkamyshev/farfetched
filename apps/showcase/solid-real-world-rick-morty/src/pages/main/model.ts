@@ -13,6 +13,7 @@ import {
   characterListRoute,
   characterUrl,
 } from '../../entities/character';
+import { rootDomain } from '../../shared/domain';
 import { Info } from '../../shared/info';
 
 const characterListQuery = createJsonQuery({
@@ -27,9 +28,10 @@ const characterListQuery = createJsonQuery({
       Record({ info: Info, results: Array(Character) })
     ),
   },
+  domain: rootDomain,
 });
 
-retry({ query: characterListQuery, times: 3, delay: exponentialDelay(50) });
+retry(characterListQuery, { times: 3, delay: exponentialDelay(50) });
 
 const $currentPage = characterListRoute.$params.map(
   (params) => params.page ?? 1

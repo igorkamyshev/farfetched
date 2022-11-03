@@ -4,6 +4,7 @@ import { sample } from 'effector';
 import { Array, Record } from 'runtypes';
 
 import { Episode, episodeListRoute, episodeUrl } from '../../entities/episode';
+import { rootDomain } from '../../shared/domain';
 import { Info } from '../../shared/info';
 
 const episodesQuery = createJsonQuery({
@@ -16,6 +17,7 @@ const episodesQuery = createJsonQuery({
   response: {
     contract: runtypeContract(Record({ info: Info, results: Array(Episode) })),
   },
+  domain: rootDomain,
 });
 
 const $currentPage = episodeListRoute.$params.map((params) => params.page ?? 1);

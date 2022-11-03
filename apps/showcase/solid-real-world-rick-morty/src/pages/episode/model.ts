@@ -5,6 +5,7 @@ import { Array } from 'runtypes';
 
 import { Character, characterUrl } from '../../entities/character';
 import { Episode, episodeRoute, episodeUrl } from '../../entities/episode';
+import { rootDomain } from '../../shared/domain';
 import { TId, urlToId } from '../../shared/id';
 
 const episodeQuery = createJsonQuery({
@@ -14,6 +15,7 @@ const episodeQuery = createJsonQuery({
     method: 'GET',
   },
   response: { contract: runtypeContract(Episode) },
+  domain: rootDomain,
 });
 
 const charactersInEpisodeQuery = createJsonQuery({
@@ -23,6 +25,7 @@ const charactersInEpisodeQuery = createJsonQuery({
     method: 'GET',
   },
   response: { contract: runtypeContract(Array(Character)) },
+  domain: rootDomain,
 });
 
 connectQuery({

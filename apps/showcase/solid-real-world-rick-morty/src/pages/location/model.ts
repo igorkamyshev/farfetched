@@ -5,6 +5,7 @@ import { Array } from 'runtypes';
 
 import { Character, characterUrl } from '../../entities/character';
 import { Location, locationRoute, locationUrl } from '../../entities/location';
+import { rootDomain } from '../../shared/domain';
 import { TId, urlToId } from '../../shared/id';
 
 const locationQuery = createJsonQuery({
@@ -14,6 +15,7 @@ const locationQuery = createJsonQuery({
     method: 'GET',
   },
   response: { contract: runtypeContract(Location) },
+  domain: rootDomain,
 });
 
 const residentsQuery = createJsonQuery({
@@ -23,6 +25,7 @@ const residentsQuery = createJsonQuery({
     method: 'GET',
   },
   response: { contract: runtypeContract(Array(Character)) },
+  domain: rootDomain,
 });
 
 sample({
