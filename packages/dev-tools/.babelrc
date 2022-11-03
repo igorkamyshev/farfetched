@@ -1,0 +1,6 @@
+{
+  "presets": [
+    ["@nrwl/web/babel", { "useBuiltIns": false }],
+    "babel-preset-solid"
+  ]
+}

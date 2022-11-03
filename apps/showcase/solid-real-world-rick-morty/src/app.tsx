@@ -1,4 +1,5 @@
 import { RouterProvider, Route } from 'atomic-router-solid';
+import { initDevTools } from '@farfetched/dev-tools';
 import { createHistoryRouter } from 'atomic-router';
 import { createBrowserHistory } from 'history';
 
@@ -13,6 +14,8 @@ import { characterRoute, characterListRoute } from './entities/character';
 import { locationRoute } from './entities/location';
 import { episodeRoute, episodeListRoute } from './entities/episode';
 import { EpisodesListPage } from './pages/episodes_list';
+
+import { rootDomain } from './shared/domain';
 
 const router = createHistoryRouter({
   routes: [
@@ -41,5 +44,7 @@ function App() {
     </RouterProvider>
   );
 }
+
+initDevTools({ domain: rootDomain });
 
 export { App };

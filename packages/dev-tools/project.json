@@ -1,0 +1,75 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/dev-tools/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/dev-tools",
+        "entryFile": "packages/dev-tools/index.ts",
+        "tsConfig": "packages/dev-tools/tsconfig.json",
+        "project": "packages/dev-tools/package.json",
+        "format": ["esm", "cjs"],
+        "generateExportsField": true,
+        "compiler": "babel"
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs dev-tools"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/dev-tools/**/*.ts",
+          "packages/dev-tools/**/*.tsx"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "pnpm vitest run",
+        "cwd": "packages/dev-tools"
+      }
+    },
+    "test_watch": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "pnpm vitest",
+        "cwd": "packages/dev-tools"
+      }
+    },
+    "typetest": {
+      "executor": "./tools/executors/tsd:tsd",
+      "inputs": ["{projectRoot}/**/*.type_spec.ts", "{projectRoot}/**/*.ts"]
+    },
+    "size": {
+      "executor": "./tools/executors/size-limit:size-limit",
+      "options": {
+        "limit": "2 kB",
+        "outputPath": "dist/packages/dev-tools"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    }
+  },
+  "implicitDependencies": ["!test-utils"],
+  "tags": []
+}

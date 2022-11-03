@@ -137,6 +137,9 @@ importers:
       '@farfetched/misc': link:../misc
       patronum: 1.10.2
 
+  packages/dev-tools:
+    specifiers: {}
+
   packages/misc:
     specifiers: {}
 
