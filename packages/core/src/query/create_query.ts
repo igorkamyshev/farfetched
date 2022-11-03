@@ -190,6 +190,7 @@ function createQuery<
     validate: config.validate,
     name: config.name,
     serialize: config.serialize,
+    domain: config.domain,
   });
 
   query.__.executeFx.use(resolveExecuteEffect<Params, Response, Error>(config));

@@ -365,6 +365,7 @@ function createJsonQuery(config: any) {
     name: config.name,
     serialize: config.serialize,
     sources: [url, body, headers, query],
+    domain: config.domain,
   });
 
   headlessQuery.__.executeFx.use(

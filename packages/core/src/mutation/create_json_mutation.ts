@@ -211,6 +211,7 @@ function createJsonMutation(config: any): Mutation<any, any, any> {
     validate: config.response.validate,
     enabled: config.enabled,
     name: config.name,
+    domain: config.domain,
   });
 
   const internalStart = createEvent<any>();

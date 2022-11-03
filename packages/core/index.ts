@@ -59,3 +59,6 @@ export {
   isInvalidDataError,
   isHttpErrorCode,
 } from './src/errors/guards';
+
+export { InternalDomain, internalDomainSymbol } from './src/domain/type';
+export { toInternalDomain } from './src/domain/guard_domain';

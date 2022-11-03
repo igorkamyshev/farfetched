@@ -43,6 +43,7 @@ function createMutation(
     enabled: config.enabled,
     contract: config.contract ?? unknownContract,
     mapData: identity,
+    domain: config.domain,
   });
 
   mutation.__.executeFx.use(resolveExecuteEffect(config));

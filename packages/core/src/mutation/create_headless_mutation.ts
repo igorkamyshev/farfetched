@@ -1,3 +1,5 @@
+import { Domain } from 'effector';
+
 import { createRemoteOperation } from '../remote_operation/create_remote_operation';
 import {
   StaticOrReactive,
@@ -7,10 +9,13 @@ import { Mutation, MutationSymbol } from './type';
 import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
+import { toInternalDomain } from '../domain/guard_domain';
+import { internalDomainSymbol } from '../domain/type';
 
 interface SharedMutationFactoryConfig {
   name?: string;
   enabled?: StaticOrReactive<boolean>;
+  domain?: Domain;
 }
 
 function createHeadlessMutation<
@@ -27,6 +32,7 @@ function createHeadlessMutation<
   contract,
   validate,
   mapData,
+  domain,
 }: SharedMutationFactoryConfig & {
   contract: Contract<Data, ContractData>;
   validate?: Validator<ContractData, Params, ValidationSource>;
@@ -39,7 +45,7 @@ function createHeadlessMutation<
 }): Mutation<Params, MappedData, Error | InvalidDataError> {
   const mutationName = name ?? 'unnamed';
 
-  const operation = createRemoteOperation<
+  const mutation = createRemoteOperation<
     Params,
     Data,
     ContractData,
@@ -59,7 +65,11 @@ function createHeadlessMutation<
     mapData,
   });
 
-  return operation;
+  if (domain) {
+    toInternalDomain(domain)[internalDomainSymbol].registerMutation(mutation);
+  }
+
+  return mutation;
 }
 
 export { type SharedMutationFactoryConfig, createHeadlessMutation };

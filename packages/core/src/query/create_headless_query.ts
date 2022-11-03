@@ -1,7 +1,10 @@
+import { Domain } from 'effector';
 import { createStore, sample, createEvent, Store } from 'effector';
 import { reset as resetMany } from 'patronum';
 
 import { Contract } from '../contract/type';
+import { toInternalDomain } from '../domain/guard_domain';
+import { internalDomainSymbol } from '../domain/type';
 import { InvalidDataError } from '../errors/type';
 import {
   TwoArgsDynamicallySourcedField,
@@ -17,6 +20,7 @@ interface SharedQueryFactoryConfig<Data> {
   name?: string;
   enabled?: StaticOrReactive<boolean>;
   serialize?: Serialize<Data>;
+  domain?: Domain;
 }
 
 /**
@@ -44,6 +48,7 @@ function createHeadlessQuery<
   name,
   serialize,
   sources,
+  domain,
 }: {
   initialData?: Initial;
   contract: Contract<Response, ContractData>;
@@ -143,13 +148,19 @@ function createHeadlessQuery<
     target: [$data, $error, $stale, operation.$status],
   });
 
-  return {
+  const query = {
     $data,
     $error,
     $stale,
     reset,
     ...operation,
   };
+
+  if (domain) {
+    toInternalDomain(domain)[internalDomainSymbol].registerQuery(query);
+  }
+
+  return query;
 }
 
 export { createHeadlessQuery };
