@@ -48,4 +48,13 @@ describe('toInternalDomain', () => {
     expect(listenerBeforeCreation).toBeCalledTimes(1);
     expect(listenerBeforeCreation).toHaveBeenCalledWith(mutation);
   });
+
+  test('idempotent', () => {
+    const domain = createDomain();
+
+    const internal1 = toInternalDomain(domain)[internalDomainSymbol];
+    const internal2 = toInternalDomain(domain)[internalDomainSymbol];
+
+    expect(internal1).toBe(internal2);
+  });
 });
