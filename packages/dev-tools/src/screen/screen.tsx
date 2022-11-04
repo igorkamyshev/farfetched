@@ -1,13 +1,13 @@
 import { useUnit } from 'effector-solid';
 import { ParentProps, children } from 'solid-js';
 
-import { open, close, $open } from './model';
+import { toggle, close, $open } from './model';
 import { OpenButton } from './open_button';
 import { Modal } from './modal';
 
 export function Screen(props: ParentProps) {
-  const { handleOpen, handleClose, visible } = useUnit({
-    handleOpen: open,
+  const { handleButtonClick, handleClose, visible } = useUnit({
+    handleButtonClick: toggle,
     handleClose: close,
     visible: $open,
   });
@@ -16,7 +16,7 @@ export function Screen(props: ParentProps) {
 
   return (
     <>
-      <OpenButton onClick={handleOpen} />
+      <OpenButton onClick={handleButtonClick} />
       <Modal visible={visible()} onClose={handleClose}>
         {c()}
       </Modal>

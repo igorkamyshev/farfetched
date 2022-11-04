@@ -3,10 +3,11 @@ import { render } from 'solid-js/web';
 
 import { toInternalDomain, internalDomainSymbol } from '@farfetched/core';
 
-import { Screen } from './screen';
+import { Screen, openSequenceChanged } from './screen';
 import { addQuery } from './kernel';
 import { Menu } from './menu';
 import { queryDataChanged } from './kernel/main';
+import { appInited } from './viewer';
 
 function DevToolsApp() {
   return (
@@ -20,11 +21,13 @@ function DevToolsApp() {
 export function initDevTools({
   domain,
   container,
+  openSequence,
 }: {
   domain: Domain;
   // TODO: handle scope properly
   scope?: Scope;
   container?: HTMLElement;
+  openSequence?: string;
 }) {
   let renderTo = container;
   if (!renderTo) {
@@ -37,7 +40,7 @@ export function initDevTools({
 
   internalDomain.onQueryCreated((query) => {
     const name = query.__.meta.name;
-    
+
     addQuery({
       name,
       data: query.$data.getState(),
@@ -52,4 +55,10 @@ export function initDevTools({
   });
 
   render(() => <DevToolsApp />, renderTo);
+
+  if (openSequence) {
+    openSequenceChanged(openSequence);
+  }
+
+  appInited();
 }

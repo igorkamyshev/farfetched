@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "type": "commonjs",
   "dependencies": {
+    "@emotion/css": "^11.10.5",
     "@farfetched/core": "0.2.5"
   }
 }

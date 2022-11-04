@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [tsconfigPaths(), solidPlugin()],
   test: {
     globals: true,
-    setupFiles: './test.setup.ts',
+    // setupFiles: './test.setup.ts',
   },
   resolve: {
     conditions: ['browser'],

@@ -55,6 +55,7 @@ export function createListApi<Item, Key extends PossibleKey>({
       kv.ref[key] = { ...kv.ref[key], ...upd };
       return { ref: kv.ref };
     }
+    return undefined;
   });
   $kv.on(removeWhen, (kv, { field }) => ({
     ref: filterKV(kv.ref, (val) => !val[field]),

@@ -12,6 +12,7 @@
         "entryFile": "packages/dev-tools/index.ts",
         "tsConfig": "packages/dev-tools/tsconfig.json",
         "project": "packages/dev-tools/package.json",
+        "rollupConfig": "packages/dev-tools/rollup.config.js",
         "format": ["esm", "cjs"],
         "generateExportsField": true,
         "compiler": "babel"

@@ -15,6 +15,7 @@ export function createConsumerPort(): ConsumerPort {
   });
   $consumers.on(addConsumer, (consumers, id) => {
     if (!consumers.includes(id)) return [...consumers, id];
+    return undefined;
   });
   $consumers.on(removeConsumer, (consumers, id) => {
     if (consumers.includes(id)) {
@@ -22,6 +23,7 @@ export function createConsumerPort(): ConsumerPort {
       result.splice(result.indexOf(id), 1);
       return result;
     }
+    return undefined;
   });
   return {
     state: {

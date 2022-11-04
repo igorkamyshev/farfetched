@@ -1,0 +1,1 @@
+export { appInited } from './model';
