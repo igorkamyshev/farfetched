@@ -15,6 +15,7 @@ const episodeQuery = createJsonQuery({
     method: 'GET',
   },
   response: { contract: runtypeContract(Episode) },
+  enabled: episodeRoute.$isOpened,
   domain: rootDomain,
   name: 'episodeQuery',
 });
@@ -26,6 +27,7 @@ const charactersInEpisodeQuery = createJsonQuery({
     method: 'GET',
   },
   response: { contract: runtypeContract(Array(Character)) },
+  enabled: episodeRoute.$isOpened,
   domain: rootDomain,
   name: 'charactersInEpisodeQuery',
 });

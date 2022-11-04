@@ -17,6 +17,7 @@ const episodesQuery = createJsonQuery({
   response: {
     contract: runtypeContract(Record({ info: Info, results: Array(Episode) })),
   },
+  enabled: episodeListRoute.$isOpened,
   domain: rootDomain,
   name: 'episodesQuery',
 });

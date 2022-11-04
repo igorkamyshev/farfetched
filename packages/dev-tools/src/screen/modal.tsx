@@ -37,6 +37,7 @@ export function Modal(
             border-radius: 8px;
             width: calc(100% - 64px);
             height: calc(100% - 64px);
+            overflow: scroll;
           `}
         >
           {c()}

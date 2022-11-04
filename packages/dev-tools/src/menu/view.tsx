@@ -1,10 +1,10 @@
 import { useUnit } from 'effector-solid';
 import { For } from 'solid-js';
 
-import { $menuItems } from './model';
+import { $allQueries } from '../kernel';
 
 export function Menu() {
-  const items = useUnit($menuItems);
+  const items = useUnit($allQueries);
 
   return (
     <ul>

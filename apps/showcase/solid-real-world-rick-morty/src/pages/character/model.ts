@@ -20,6 +20,7 @@ const characterQuery = createJsonQuery({
     method: 'GET',
   },
   response: { contract: runtypeContract(Character) },
+  enabled: characterRoute.$isOpened,
   domain: rootDomain,
   name: 'characterQuery',
 });
@@ -28,6 +29,7 @@ const originQuery = createJsonQuery({
   params: declareParams<{ id: TId }>(),
   request: { url: ({ id }) => locationUrl({ id }), method: 'GET' },
   response: { contract: runtypeContract(Location) },
+  enabled: characterRoute.$isOpened,
   domain: rootDomain,
   name: 'originQuery',
 });
@@ -47,6 +49,7 @@ const currentLocationQuery = createJsonQuery({
     method: 'GET',
   },
   response: { contract: runtypeContract(Location) },
+  enabled: characterRoute.$isOpened,
   domain: rootDomain,
   name: 'currentLocationQuery',
 });
@@ -66,6 +69,7 @@ const characterEpisodesQuery = createJsonQuery({
     method: 'GET',
   },
   response: { contract: runtypeContract(Array(Episode)) },
+  enabled: characterRoute.$isOpened,
   domain: rootDomain,
   name: 'characterEpisodesQuery',
 });

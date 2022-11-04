@@ -28,6 +28,7 @@ const characterListQuery = createJsonQuery({
       Record({ info: Info, results: Array(Character) })
     ),
   },
+  enabled: characterListRoute.$isOpened,
   domain: rootDomain,
   name: 'characterListQuery',
 });

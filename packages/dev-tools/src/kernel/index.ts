@@ -1,1 +1,1 @@
-export { addQuery, queries } from './main';
+export { addQuery, queryApi, $allQueries, $allQueryIds } from './main';

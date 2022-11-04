@@ -4,16 +4,16 @@ import { render } from 'solid-js/web';
 import { toInternalDomain, internalDomainSymbol } from '@farfetched/core';
 
 import { Screen, openSequenceChanged } from './screen';
-import { addQuery } from './kernel';
+import { addQuery, queryApi } from './kernel';
 import { Menu } from './menu';
-import { queryDataChanged } from './kernel/main';
 import { appInited } from './viewer';
+import { Canvas } from './canvas';
 
 function DevToolsApp() {
   return (
     <Screen>
       <Menu />
-      <p>...</p>
+      <Canvas />
     </Screen>
   );
 }
@@ -45,12 +45,34 @@ export function initDevTools({
       name,
       data: query.$data.getState(),
       currentParams: null,
+      startEvent: query.start,
+      pending: query.$pending.getState(),
+      enabled: query.$enabled.getState(),
     });
 
     sample({
       clock: query.$data,
       fn: (value) => ({ key: name, value }),
-      target: queryDataChanged,
+      target: queryApi.api.dataChanged,
+    });
+
+    sample({
+      clock: query.start,
+      fn: (value) => ({ key: name, value }),
+      target: queryApi.api.paramsChanged,
+    });
+
+    sample({
+      clock: query.$pending,
+      fn: (value) => ({ key: name, value }),
+      target: queryApi.api.pendingStateChanged,
+    });
+
+    // TODO: two-way binding
+    sample({
+      clock: query.$enabled,
+      fn: (value) => ({ key: name, value }),
+      target: queryApi.api.enabledStateChanged,
     });
   });
 

@@ -1,7 +1,7 @@
 import { createEvent, createStore, restore, sample } from 'effector';
 import { hotkey, keyboardSequence } from '../hotkeys';
 
-export const $open = createStore(false);
+export const $open = createStore(true);
 
 export const open = createEvent();
 export const close = createEvent();

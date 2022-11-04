@@ -15,6 +15,7 @@ const locationQuery = createJsonQuery({
     method: 'GET',
   },
   response: { contract: runtypeContract(Location) },
+  enabled: locationRoute.$isOpened,
   domain: rootDomain,
   name: 'locationQuery',
 });
@@ -26,6 +27,7 @@ const residentsQuery = createJsonQuery({
     method: 'GET',
   },
   response: { contract: runtypeContract(Array(Character)) },
+  enabled: locationRoute.$isOpened,
   domain: rootDomain,
   name: 'residentsQuery',
 });
