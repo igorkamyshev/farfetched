@@ -16,6 +16,7 @@ const locationQuery = createJsonQuery({
   },
   response: { contract: runtypeContract(Location) },
   domain: rootDomain,
+  name: 'locationQuery',
 });
 
 const residentsQuery = createJsonQuery({
@@ -26,6 +27,7 @@ const residentsQuery = createJsonQuery({
   },
   response: { contract: runtypeContract(Array(Character)) },
   domain: rootDomain,
+  name: 'residentsQuery',
 });
 
 sample({

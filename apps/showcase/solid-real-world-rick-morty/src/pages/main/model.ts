@@ -29,6 +29,7 @@ const characterListQuery = createJsonQuery({
     ),
   },
   domain: rootDomain,
+  name: 'characterListQuery',
 });
 
 retry(characterListQuery, { times: 3, delay: exponentialDelay(50) });

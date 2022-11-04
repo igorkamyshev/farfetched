@@ -11,6 +11,7 @@ interface QueryMeta<Data> {
    * - save state to persistent storage during caching
    */
   serialize: Serialize<Data>;
+  name: string;
 }
 
 interface Query<Params, Data, Error, InitialData = null>

@@ -82,7 +82,7 @@ function createHeadlessQuery<
     kind: QuerySymbol,
     serialize: serializationForSideStore(serialize),
     enabled,
-    meta: { serialize },
+    meta: { serialize, name: queryName },
     contract,
     validate,
     mapData,

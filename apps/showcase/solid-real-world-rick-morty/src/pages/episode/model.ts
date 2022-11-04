@@ -16,6 +16,7 @@ const episodeQuery = createJsonQuery({
   },
   response: { contract: runtypeContract(Episode) },
   domain: rootDomain,
+  name: 'episodeQuery',
 });
 
 const charactersInEpisodeQuery = createJsonQuery({
@@ -26,6 +27,7 @@ const charactersInEpisodeQuery = createJsonQuery({
   },
   response: { contract: runtypeContract(Array(Character)) },
   domain: rootDomain,
+  name: 'charactersInEpisodeQuery',
 });
 
 connectQuery({

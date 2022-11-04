@@ -18,6 +18,7 @@ const episodesQuery = createJsonQuery({
     contract: runtypeContract(Record({ info: Info, results: Array(Episode) })),
   },
   domain: rootDomain,
+  name: 'episodesQuery',
 });
 
 const $currentPage = episodeListRoute.$params.map((params) => params.page ?? 1);

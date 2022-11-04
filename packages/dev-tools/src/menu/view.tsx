@@ -1,14 +1,24 @@
 import { useUnit } from 'effector-solid';
 import { For } from 'solid-js';
 
-import { allQueries } from './model';
+import { $menuItems } from './model';
 
 export function Menu() {
-  const items = useUnit(allQueries.state.items);
+  const items = useUnit($menuItems);
 
   return (
-    <For each={Object.entries(items())}>
-      {([key, item]) => <p>{item.name}</p>}
-    </For>
+    <ul>
+      <For each={items()}>
+        {([id, item]) => (
+          <li>
+            <MenuItem name={item.name} id={id} />
+          </li>
+        )}
+      </For>
+    </ul>
   );
+}
+
+function MenuItem(props: { id: string; name: string }) {
+  return <span>{props.name}</span>;
 }

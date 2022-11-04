@@ -21,6 +21,7 @@ const characterQuery = createJsonQuery({
   },
   response: { contract: runtypeContract(Character) },
   domain: rootDomain,
+  name: 'characterQuery',
 });
 
 const originQuery = createJsonQuery({
@@ -28,6 +29,7 @@ const originQuery = createJsonQuery({
   request: { url: ({ id }) => locationUrl({ id }), method: 'GET' },
   response: { contract: runtypeContract(Location) },
   domain: rootDomain,
+  name: 'originQuery',
 });
 
 connectQuery({
@@ -46,6 +48,7 @@ const currentLocationQuery = createJsonQuery({
   },
   response: { contract: runtypeContract(Location) },
   domain: rootDomain,
+  name: 'currentLocationQuery',
 });
 
 connectQuery({
@@ -64,6 +67,7 @@ const characterEpisodesQuery = createJsonQuery({
   },
   response: { contract: runtypeContract(Array(Episode)) },
   domain: rootDomain,
+  name: 'characterEpisodesQuery',
 });
 
 connectQuery({

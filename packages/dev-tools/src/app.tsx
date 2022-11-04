@@ -1,4 +1,4 @@
-import { Domain, Scope } from 'effector';
+import { Domain, sample, Scope } from 'effector';
 import { render } from 'solid-js/web';
 
 import { toInternalDomain, internalDomainSymbol } from '@farfetched/core';
@@ -6,6 +6,7 @@ import { toInternalDomain, internalDomainSymbol } from '@farfetched/core';
 import { Screen } from './screen';
 import { addQuery } from './kernel';
 import { Menu } from './menu';
+import { queryDataChanged } from './kernel/main';
 
 function DevToolsApp() {
   return (
@@ -35,9 +36,18 @@ export function initDevTools({
   const internalDomain = toInternalDomain(domain)[internalDomainSymbol];
 
   internalDomain.onQueryCreated((query) => {
+    const name = query.__.meta.name;
+    
     addQuery({
-      name: Math.random().toString(),
+      name,
       data: query.$data.getState(),
+      currentParams: null,
+    });
+
+    sample({
+      clock: query.$data,
+      fn: (value) => ({ key: name, value }),
+      target: queryDataChanged,
     });
   });
 
