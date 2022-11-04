@@ -1,6 +1,6 @@
 import { createEvent, createStore } from 'effector';
 
-export const $open = createStore(false);
+export const $open = createStore(true);
 
 export const open = createEvent();
 export const close = createEvent();

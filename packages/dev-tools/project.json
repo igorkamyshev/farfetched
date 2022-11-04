@@ -2,6 +2,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/dev-tools/src",
   "projectType": "library",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nrwl/web:rollup",
@@ -52,10 +53,6 @@
         "cwd": "packages/dev-tools"
       }
     },
-    "typetest": {
-      "executor": "./tools/executors/tsd:tsd",
-      "inputs": ["{projectRoot}/**/*.type_spec.ts", "{projectRoot}/**/*.ts"]
-    },
     "size": {
       "executor": "./tools/executors/size-limit:size-limit",
       "options": {
@@ -70,6 +67,5 @@
       ]
     }
   },
-  "implicitDependencies": ["!test-utils"],
-  "tags": []
+  "implicitDependencies": ["!test-utils"]
 }

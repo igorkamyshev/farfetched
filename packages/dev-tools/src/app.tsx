@@ -1,32 +1,27 @@
 import { Domain, Scope } from 'effector';
-import { useUnit, Provider } from 'effector-solid';
 import { render } from 'solid-js/web';
 
-import { OpenButton } from './ui/open_button';
-import { Modal } from './ui/modal';
-import { open, $open, close } from './ui/model';
+import { toInternalDomain, internalDomainSymbol } from '@farfetched/core';
+
+import { Screen } from './screen';
+import { addQuery } from './kernel';
+import { Menu } from './menu';
 
 function DevToolsApp() {
-  const { handleOpen, handleClose, visible } = useUnit({
-    handleOpen: open,
-    handleClose: close,
-    visible: $open,
-  });
-
   return (
-    <>
-      <OpenButton onClick={handleOpen} />
-      <Modal visible={visible()} onClose={handleClose} />
-    </>
+    <Screen>
+      <Menu />
+      <p>...</p>
+    </Screen>
   );
 }
 
 export function initDevTools({
   domain,
-  scope,
   container,
 }: {
   domain: Domain;
+  // TODO: handle scope properly
   scope?: Scope;
   container?: HTMLElement;
 }) {
@@ -37,16 +32,14 @@ export function initDevTools({
     renderTo = newContainer;
   }
 
-  if (scope) {
-    render(
-      () => (
-        <Provider value={scope}>
-          <DevToolsApp />
-        </Provider>
-      ),
-      renderTo
-    );
-  } else {
-    render(() => <DevToolsApp />, renderTo);
-  }
+  const internalDomain = toInternalDomain(domain)[internalDomainSymbol];
+
+  internalDomain.onQueryCreated((query) => {
+    addQuery({
+      name: Math.random().toString(),
+      data: query.$data.getState(),
+    });
+  });
+
+  render(() => <DevToolsApp />, renderTo);
 }

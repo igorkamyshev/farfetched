@@ -138,7 +138,10 @@ importers:
       patronum: 1.10.2
 
   packages/dev-tools:
-    specifiers: {}
+    specifiers:
+      '@farfetched/core': 0.2.5
+    dependencies:
+      '@farfetched/core': link:../core
 
   packages/misc:
     specifiers: {}

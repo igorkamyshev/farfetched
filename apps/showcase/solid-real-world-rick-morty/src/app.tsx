@@ -1,7 +1,8 @@
 import { RouterProvider, Route } from 'atomic-router-solid';
-import { initDevTools } from '@farfetched/dev-tools';
 import { createHistoryRouter } from 'atomic-router';
 import { createBrowserHistory } from 'history';
+
+import { initDevTools } from '@farfetched/dev-tools';
 
 import { MainPage } from './pages/main';
 import { CharacterPage } from './pages/character';

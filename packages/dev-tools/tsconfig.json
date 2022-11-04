@@ -10,9 +10,10 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "declaration": true,
+    "allowJs": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js"
   },
   "files": [],
-  "include": ["**/*.js", "**/*.ts", "src/app.tsx"]
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
 }
