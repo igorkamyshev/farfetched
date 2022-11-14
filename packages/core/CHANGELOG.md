@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- 9e9ba85: Fixed a bug in sourced.ts normalizeSourced when passing a nullish value to the field
+- 9e9ba85: Handle nullish values in Sourced fields
 
 ## 0.2.5
 
