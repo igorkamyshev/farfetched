@@ -37,7 +37,7 @@ function normalizeSourced<Data, Result, Source>({
   let $target = createStore<any>(null, { serialize: 'ignore' });
 
   if (clock) {
-    if (!field) {
+    if (field === undefined) {
       // do nothing
     } else if (is.store(field)) {
       const $storeField = field as Store<Result>;
@@ -65,7 +65,7 @@ function normalizeSourced<Data, Result, Source>({
 
   if (source) {
     const $source = source as Store<Data>;
-    if (!field) {
+    if (field === undefined) {
       // do nothing
     } else if (is.store(field)) {
       const $storeField = field as Store<Result>;

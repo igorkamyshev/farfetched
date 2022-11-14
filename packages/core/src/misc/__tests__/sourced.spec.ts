@@ -20,6 +20,18 @@ describe('normalizeSourced (with clock)', () => {
     expect(scope.getState($normalized)).toBe('static string');
   });
 
+  test('handle simple nullish value', async () => {
+    const clock = createEvent();
+
+    const $normalized = normalizeSourced({ field: false, clock });
+
+    const scope = fork();
+
+    await allSettled(clock, { scope });
+
+    expect(scope.getState($normalized)).toBe(false);
+  });
+
   test('handle store value', async () => {
     const clock = createEvent();
 
@@ -101,6 +113,23 @@ describe('normalizeSourced (with source)', () => {
     await allSettled($source, { scope, params: 'tretre' });
 
     expect(scope.getState($normalized)).toBe('static string');
+  });
+
+  test('handle simple nullish value', async () => {
+    const $source = createStore<string>('fdsfd');
+
+    const $normalized = normalizeSourced({
+      field: false,
+      source: $source,
+    });
+
+    const scope = fork();
+
+    expect(scope.getState($normalized)).toBe(false);
+
+    await allSettled($source, { scope, params: 'tretre' });
+
+    expect(scope.getState($normalized)).toBe(false);
   });
 
   test('handle store value', async () => {

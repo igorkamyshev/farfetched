@@ -67,7 +67,7 @@ By default, `createJsonQuery` returns a [_Query_](/api/primitives/query) without
 - `request.method` has to be a _string_ with an HTTP method in uppercase, e.g. `GET` or `POST`.
 - `request.url` is used to formulate a URL of the request, it could be declared in many forms, but two the most interesting for us:
   - just static _string_
-  - function that accepts [_Query_](/api/primitives/query) and returns a _string_
+  - function that accepts [_Query_](/api/primitives/query) paramters and returns a _string_
 
 ```ts{3-6}
 const characterQuery = createJsonQuery({

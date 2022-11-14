@@ -35,7 +35,7 @@ Config fields:
 
 You can use the following delays:
 
-- `lineralDelay(base, opts)`
+- `linearDelay(base, opts)`
 - `exponentialDelay(base, opts)`
 
 Options:
