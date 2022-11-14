@@ -4,17 +4,17 @@ import { Serialize } from '../serialization/type';
 
 const QuerySymbol = Symbol('Query');
 
-interface QueryMeta<Data> {
+interface QueryMeta<Data, InitialData> {
   /**
    * This field is used to determine how to serialize data in various cases:
    * - transfer state from server to client during SSR
    * - save state to persistent storage during caching
    */
-  serialize: Serialize<Data>;
+  serialize: Serialize<Data | InitialData>;
 }
 
 interface Query<Params, Data, Error, InitialData = null>
-  extends RemoteOperation<Params, Data, Error, QueryMeta<Data>> {
+  extends RemoteOperation<Params, Data, Error, QueryMeta<Data, InitialData>> {
   /**
    * The reactive value of the latest received data.
    *
