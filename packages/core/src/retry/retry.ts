@@ -7,6 +7,8 @@ import {
   split,
 } from 'effector';
 import { delay } from 'patronum';
+
+import { Time, parseTime } from '../misc/time';
 import { deprecationWarning } from '../deprectaion/warning';
 
 import {
@@ -37,7 +39,7 @@ interface RetryConfig<
   MapParamsSource = unknown
 > {
   times: StaticOrReactive<number>;
-  delay: SourcedField<RetryMeta, number, DelaySource>;
+  delay: SourcedField<RetryMeta, Time, DelaySource>;
   filter?: SourcedField<FailInfo<Q>, boolean, FilterSource>;
   mapParams?: TwoArgsDynamicallySourcedField<
     FailInfo<Q>,
@@ -132,7 +134,7 @@ export function retry(operationOrConfig: any, maybeConfig?: any): void {
       timeout: normalizeSourced({
         field: timeout,
         source: $meta,
-      }),
+      }).map(parseTime),
     }),
     target: [newAttempt, operation.start],
   });

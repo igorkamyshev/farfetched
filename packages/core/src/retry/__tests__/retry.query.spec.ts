@@ -77,6 +77,25 @@ describe('retry with query', () => {
     expect(end - start).toBeGreaterThanOrEqual(100 + 200 + 300);
   });
 
+  test('respects delay (string)', async () => {
+    const handler = vi.fn().mockRejectedValue(new Error('Sorry'));
+    const query = createQuery({
+      handler,
+    });
+
+    retry(query, { times: 1, delay: '1sec' });
+
+    const scope = fork();
+
+    const start = Date.now();
+
+    await allSettled(query.start, { scope, params: 'Some test param' });
+
+    const end = Date.now();
+
+    expect(end - start).toBeGreaterThanOrEqual(1000);
+  });
+
   test('respects mapParams', async () => {
     const handler = vi.fn().mockRejectedValue(new Error('Sorry'));
     const query = createQuery({

@@ -11,7 +11,7 @@ Operation could be a [_Query_](/api/primitives/query) or a [_Mutation_](/api/pri
 Config fields:
 
 - `times`: _number_ of _[Store](https://effector.dev/docs/api/effector/store) with a number_ of attempts to retry
-- `delay`: _[Sourced](/api/primitives/sourced) number_ with an amount of milliseconds to wait before retrying
+- `delay`: _[Sourced](/api/primitives/sourced) [Time](/api/primitives/time)_ with an amount of milliseconds to wait before retrying
 - `filter`: _[Sourced](/api/primitives/sourced) boolean_ with a predicate to decide whether to retry or not
 - `mapParams?`: optional mapper for the [_Query_](/api/primitives/query) parameters mapping before the next retry, available overloads:
   - `(params, { attempt }) => mapped`
@@ -24,7 +24,7 @@ Config fields:
 
 - `query`: [_Query_](/api/primitives/query) to retry
 - `times`: _number_ of _[Store](https://effector.dev/docs/api/effector/store) with a number_ of attempts to retry
-- `delay`: _[Sourced](/api/primitives/sourced) number_ with an amount of milliseconds to wait before retrying
+- `delay`: _[Sourced](/api/primitives/sourced) [Time](/api/primitives/time)_ with an amount of milliseconds to wait before retrying
 - `filter`: _[Sourced](/api/primitives/sourced) boolean_ with a predicate to decide whether to retry or not
 - `mapParams?`: optional mapper for the [_Query_](/api/primitives/query) parameters mapping before the next retry, available overloads:
   - `(params, { attempt }) => mapped`
