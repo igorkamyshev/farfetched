@@ -47,11 +47,7 @@ function UserProfile() {
 }
 ```
 
-## `useMutation`
-
-::: info
-Introduced in v0.2.0.
-:::
+## `useMutation` <Badge type="tip" text="since v0.2.0" />
 
 Returns function to start [_Mutation_](/api/primitives/mutation).
 
