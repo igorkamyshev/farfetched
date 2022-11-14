@@ -4,6 +4,10 @@
   "type": "commonjs",
   "dependencies": {
     "@emotion/css": "^11.10.5",
-    "@farfetched/core": "0.2.5"
+    "@farfetched/core": "0.2.5",
+    "cytoscape": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/cytoscape": "^3.19.9"
   }
 }

@@ -9,21 +9,23 @@ export function QueryDetails(props: { id: string }) {
   const { forceStart } = useItemApi(props.id, queryApi);
 
   return (
-    <section
-      class={css`
-        border: 1px solid black;
-        padding: 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      `}
-    >
-      <h2>{query().name}</h2>
-      <QueryState id={props.id} />
-      <ParamsEditor id={props.id} />
-      <button onClick={forceStart}>Force start</button>
-      <Show when={query().pending}>🌊</Show>
-    </section>
+    <Show when={query()}>
+      {({ name }) => (
+        <section
+          class={css`
+            border: 1px solid black;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+          `}
+        >
+          <h2>{name}</h2>
+          <QueryState id={props.id} />
+          <ParamsEditor id={props.id} />
+          <button onClick={forceStart}>Force start</button>
+        </section>
+      )}
+    </Show>
   );
 }
 
