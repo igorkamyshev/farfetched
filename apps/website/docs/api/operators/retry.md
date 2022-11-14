@@ -4,7 +4,7 @@ Retries a failed [_Query_](../primitives/query.md) with a specified configuratio
 
 ## Formulae
 
-### `retry(operation, config)` <Badge type="tip" text=" since v0.3.0" />
+### `retry(operation, config)` <Badge type="tip" text="since v0.3.0" />
 
 Operation could be a [_Query_](/api/primitives/query) or a [_Mutation_](/api/primitives/mutation).
 
