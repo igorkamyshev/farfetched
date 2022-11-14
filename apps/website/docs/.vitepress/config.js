@@ -41,16 +41,10 @@ export default {
         link: '/recipes/',
         activeMatch: '/recipes',
       },
-
-      {
-        text: 'Integrations',
-        link: '/integrations/',
-        activeMatch: '^/integrations/',
-      },
       {
         text: 'API',
         link: '/api/',
-        activeMatch: '^/api/',
+        activeMatch: '^/(api|integrations)/',
       },
       {
         text: 'More',
@@ -169,84 +163,32 @@ export default {
             { text: 'Validator', link: '/api/primitives/validator' },
           ],
         },
-      ],
-      '/integrations': [
         {
-          text: 'React',
+          text: 'Integrations',
           items: [
             {
-              text: 'Get started',
-              link: '/integrations/react/',
-            },
-            { text: 'Suspense', link: '/integrations/react/suspense' },
-            {
-              text: 'API',
+              text: 'UI libraries',
               items: [
-                { text: 'useQuery', link: '/integrations/react/api/use_query' },
                 {
-                  text: 'useMutation',
-                  link: '/integrations/react/api/use_mutation',
+                  text: 'React',
+                  link: '/api/ui/react',
+                },
+                {
+                  text: 'Solid',
+                  link: '/api/ui/solid',
                 },
               ],
             },
-          ],
-        },
-        {
-          text: 'Solid',
-          collapsible: true,
-          items: [
             {
-              text: 'Get started',
-              link: '/integrations/solid/',
-            },
-            {
-              text: 'API',
+              text: 'Contract libraries',
               items: [
                 {
-                  text: 'createQueryResource',
-                  link: '/integrations/solid/api/create-query-resource',
+                  text: 'Runtypes',
+                  link: '/api/contracts/runtypes',
                 },
                 {
-                  text: 'useMutation',
-                  link: '/integrations/solid/api/use_mutation',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          text: 'Runtypes',
-          collapsible: true,
-          items: [
-            {
-              text: 'Get started',
-              link: '/integrations/runtypes/',
-            },
-            {
-              text: 'API',
-              items: [
-                {
-                  text: 'runtypeContract',
-                  link: '/integrations/runtypes/api/runtype-contract',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          text: 'Zod',
-          collapsible: true,
-          items: [
-            {
-              text: 'Get started',
-              link: '/integrations/zod/',
-            },
-            {
-              text: 'API',
-              items: [
-                {
-                  text: 'zodContract',
-                  link: '/integrations/zod/api/zod-contract',
+                  text: 'Zod',
+                  link: '/api/contracts/zod',
                 },
               ],
             },
