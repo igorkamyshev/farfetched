@@ -10,5 +10,4 @@ Farfetched is a **missing data-fetching library for frontend**, in more technica
 
 - Learn Farfetched at your own pace with our amazingly [Thorough Tutorial](/tutorial/install)
 - See the whole picture in [API reference](/api/)
-- Examine our delicious [integrations](/integrations/)
 - Check out Farfetched's [roadmap](/roadmap) to stay in the same wavelength with us
