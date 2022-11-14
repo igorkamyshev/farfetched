@@ -1,4 +1,4 @@
-# `cache`
+# `cache` <Badge type="tip" text=" since v0.3.0" />
 
 Saves result of the [_Query_](/api/primitives/query) to some storage and allows to restore it back.
 

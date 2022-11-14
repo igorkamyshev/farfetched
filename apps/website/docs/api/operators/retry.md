@@ -4,11 +4,7 @@ Retries a failed [_Query_](../primitives/query.md) with a specified configuratio
 
 ## Formulae
 
-### `retry(operation, config)`
-
-::: info
-since v0.3.0
-:::
+### `retry(operation, config)` <Badge type="tip" text=" since v0.3.0" />
 
 Operation could be a [_Query_](/api/primitives/query) or a [_Mutation_](/api/primitives/mutation).
 
@@ -22,11 +18,7 @@ Config fields:
   - `{ source: Store, fn: (params, { attempt }, source) => mapped }`
 - `otherwise?`: [_Event_](https://effector.dev/docs/api/effector/event) or [_Effect_](https://effector.dev/docs/api/effector/effect), that will be called after the last attempt if the [_Query_](/api/primitives/query) is still failed
 
-### `retry(config)`
-
-::: warning
-This overload is deprecated since v0.3.0 and will be removed in the next release.
-:::
+### `retry(config)` <Badge type="warning" text="deprecated since v0.3.0" />
 
 Config fields:
 
@@ -37,7 +29,7 @@ Config fields:
 - `mapParams?`: optional mapper for the [_Query_](/api/primitives/query) parameters mapping before the next retry, available overloads:
   - `(params, { attempt }) => mapped`
   - `{ source: Store, fn: (params, { attempt }, source) => mapped }`
-- **[since 0.2.0]** `otherwise?`: [_Event_](https://effector.dev/docs/api/effector/event) or [_Effect_](https://effector.dev/docs/api/effector/effect), that will be called after the last attempt if the [_Query_](/api/primitives/query) is still failed
+- <Badge type="tip" text=" since v0.2.0" /> `otherwise?`: [_Event_](https://effector.dev/docs/api/effector/event) or [_Effect_](https://effector.dev/docs/api/effector/effect), that will be called after the last attempt if the [_Query_](/api/primitives/query) is still failed
 
 ## Build-in delays
 
