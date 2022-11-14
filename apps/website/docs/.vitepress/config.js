@@ -100,6 +100,10 @@ export default {
               text: 'Dependent Queries',
               link: '/tutorial/dependent_queries',
             },
+            {
+              text: 'Update Query after Mutation',
+              link: '/tutorial/update_query',
+            },
             { text: 'Retries', link: '/tutorial/retries' },
             { text: 'Caching', link: '/tutorial/caching' },
             {
@@ -151,6 +155,7 @@ export default {
           text: 'Operators',
           items: [
             { text: 'connectQuery', link: '/api/operators/connect_query' },
+            { text: 'update', link: '/api/operators/update' },
             { text: 'retry', link: '/api/operators/retry' },
             { text: 'cache', link: '/api/operators/cache' },
           ],
