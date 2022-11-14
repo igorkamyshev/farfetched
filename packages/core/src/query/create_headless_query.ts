@@ -13,10 +13,10 @@ import { Serialize } from '../serialization/type';
 import { Validator } from '../validation/type';
 import { Query, QueryMeta, QuerySymbol } from './type';
 
-interface SharedQueryFactoryConfig<Data> {
+interface SharedQueryFactoryConfig<Data, Initial = Data> {
   name?: string;
   enabled?: StaticOrReactive<boolean>;
-  serialize?: Serialize<Data>;
+  serialize?: Serialize<Data | Initial>;
 }
 
 /**
@@ -55,7 +55,7 @@ function createHeadlessQuery<
   >;
   validate?: Validator<ContractData, Params, ValidationSource>;
   sources?: Array<Store<unknown>>;
-} & SharedQueryFactoryConfig<MappedData>): Query<
+} & SharedQueryFactoryConfig<MappedData, Initial>): Query<
   Params,
   MappedData,
   Error | InvalidDataError,
@@ -69,7 +69,7 @@ function createHeadlessQuery<
     ContractData,
     MappedData,
     Error,
-    QueryMeta<MappedData>,
+    QueryMeta<MappedData, Initial>,
     MapDataSource,
     ValidationSource
   >({
