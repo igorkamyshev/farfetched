@@ -9,7 +9,7 @@ import { createQuery } from '../../query/create_query';
 import { inMemoryCache } from '../adapters/in_memory';
 import { cache } from '../cache';
 import { sha1 } from '../lib/hash';
-import { parseTime } from '../lib/time';
+import { parseTime } from '../../misc/time';
 
 describe('cache', () => {
   test('use value from cache on second call, revalidate', async () => {

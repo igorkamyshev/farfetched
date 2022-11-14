@@ -1,6 +1,6 @@
 import { Effect, Event, Store } from 'effector';
 
-import { Time } from '../lib/time';
+import { Time } from '../../misc/time';
 
 export interface CacheAdapterInstance {
   get: Effect<{ key: string }, { value: unknown; cachedAt: number } | null>;

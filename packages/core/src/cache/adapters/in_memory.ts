@@ -7,7 +7,7 @@ import {
 } from 'effector';
 import { delay, time } from 'patronum';
 
-import { parseTime } from '../lib/time';
+import { parseTime } from '../../misc/time';
 import { createAdapter } from './instance';
 import { attachObservability } from './observability';
 import { CacheAdapter, CacheAdapterOptions } from './type';
