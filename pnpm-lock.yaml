@@ -42,6 +42,7 @@ importers:
       history: ^5.3.0
       jsdom: ^20.0.1
       markdown: ^0.5.0
+      mermaid: '8'
       node-html-markdown: ^1.2.0
       nx: 14.7.5
       patronum: ^1.10.2
@@ -63,6 +64,7 @@ importers:
       vite-plugin-solid: ^2.3.9
       vite-tsconfig-paths: ^3.5.1
       vitepress: 1.0.0-alpha.10
+      vitepress-plugin-mermaid: ^2.0.8
       vitest: ^0.23.4
       vue: ^3.2.37
     dependencies:
@@ -72,6 +74,7 @@ importers:
       effector-react: 22.3.3_fqnc2pqlfbgfkkbezvfttjatja
       effector-solid: 0.22.6_jcoqkqtdrvikgmisk7pu253p5e
       history: 5.3.0
+      mermaid: 8.14.0
       patronum: 1.10.2_effector@22.3.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -126,6 +129,7 @@ importers:
       vite-plugin-solid: 2.3.9_solid-js@1.4.8+vite@3.1.4
       vite-tsconfig-paths: 3.5.1_vite@3.1.4
       vitepress: 1.0.0-alpha.10_3pchsht33q5pryjz4x4n4xry4a
+      vitepress-plugin-mermaid: 2.0.8_k7rpm5vgc3accmwlg6v3jho4zu
       vitest: 0.23.4_jsdom@20.0.1
       vue: 3.2.37
 
@@ -12381,6 +12385,17 @@ packages:
       rollup: 2.78.1
     optionalDependencies:
       fsevents: 2.3.2
+    dev: true
+
+  /vitepress-plugin-mermaid/2.0.8_k7rpm5vgc3accmwlg6v3jho4zu:
+    resolution: {integrity: sha512-ywWxTeg9kMv7ZPf/igCBF4ZHhWZAyRtbPnA12ICQuNK2AMp7r5IHOfnuX1EJQf8gNdsh8bcvvSvm8Ll92fdOTw==}
+    peerDependencies:
+      mermaid: ^8.0.0 || ^9.0.0
+      vite-plugin-md: ^0.20.4
+      vitepress: ^0.21.6 || ^1.0.0 || ^1.0.0-alpha
+    dependencies:
+      mermaid: 8.14.0
+      vitepress: 1.0.0-alpha.10_3pchsht33q5pryjz4x4n4xry4a
     dev: true
 
   /vitepress-plugin-mermaid/2.0.8_mermaid@8.14.0:

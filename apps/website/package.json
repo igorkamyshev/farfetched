@@ -1,8 +1,0 @@
-{
-  "devDependencies": {
-    "vitepress-plugin-mermaid": "^2.0.8"
-  },
-  "dependencies": {
-    "mermaid": "8"
-  }
-}
