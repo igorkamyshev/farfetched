@@ -56,42 +56,62 @@ Data-flow control is a boring and complex task, so it is recommended to use **sp
 - [`createJsonQuery`](/api/factories/create_json_query)
 - [`createJsonMutation`](/api/factories/create_json_mutation)
 
-## Request-response cycle
+## Data-flow in specific factories
 
-The first step is to send a request to the remote source and wait for a response. The response is then passed to the next stage.
+Since only **specific** factories are allows Farfetched to have a full control of data-flow, in the following articles we will use only them. **Basic** factories work in the same way, but they require more attention from the user.
 
-**Basic factories** are designed to pass control of this stage to the user-land, so `handler` (or `effect`) property of their configuration object is used to perform the request-response cycle.
+### Request-response cycle
 
-**Specific factories** handle this stage internally, so user-land code have to describe only the desired result of this stage and the library will perform the request-response cycle internally in the most optimal way.
+The first step is to send a request to the remote source and wait for a response. Because of Farfetched handles this stage internally, user-land code have to describe only the desired result of this stage and the library will perform the request-response cycle internally in the most optimal way.
 
-## Response parsing
+Failed response stops the data-flow and returns control to the user-land code through `.finished.failed` [_Event_](https://effector.dev/docs/api/effector/event). Successful response continues the data-flow and passes control to the next step — response parsing.
 
-This stage could be performed by internal Farfetched parsers. E.g. [`createJsonQuery`](/api/factories/create_json_query) and [`createJsonMutation`](/api/factories/create_json_mutation) use `JSON.parse` to parse the response and throw an error if the response is not a valid JSON.
+### Response parsing
 
-However, **basic factories** do not perform any parsing. This is because the response could be in any format, and it is up to the user to decide how to parse it. It's a responsibility of the user to perform parsing inside `handler` (or `effect`) in these cases.
+This stage could be performed by internal Farfetched parsers. In case of parsing error, the data-flow stops and returns control to the user-land code through `.finished.failed` [_Event_](https://effector.dev/docs/api/effector/event). Otherwise, the data-flow continues and passes control to the next step — contract application.
 
-::: details A space for optimization
+::: details JSON example
 
-Because **specific factories** handle this stage internally, they can optimize the request-response cycle in the most optimal way.
+[`createJsonQuery`](/api/factories/create_json_query) and [`createJsonMutation`](/api/factories/create_json_mutation) use `JSON.parse` to parse the response and throw an error if the response is not a valid JSON. Because these factories handle this stage internally, they can optimize the parsing process in the most optimal way.
 
 For example, if some when in the future `JSON.parse` will be considered as a bottleneck, the library can replace it with a more optimal implementation without breaking the API. Your application would not be affected by this change, because it does not know anything about the implementation details of the library.
 
 :::
 
-## Contract application
+### Contract application
 
-Because of the [no trust](/statements/never_trust) principle, Farfetched requires to apply a [_Contract_](/api/primitives/contract) to the response before it can be used in the application.
+**Specific factories** require explicit [_Contract_](/api/primitives/contract) because they [consider the response as `unknown` by default](/statements/never_trust). So, the user-land code have to describe the contract of the response or explicitly use `unkownContarct` to preserve the `unknown` type.
 
-## Validation
+If parsed data does not satisfy the [_Contract_](/api/primitives/contract), the data-flow stops and returns control to the user-land code through `.finished.failed` [_Event_](https://effector.dev/docs/api/effector/event) with an error-message that is returned from the [_Contract_](/api/primitives/contract). Otherwise, the data-flow continues and passes control to the next step — validation.
 
-This is optional stage. It is performed by [_Validator_](/api/primitives/validator) and is used to check if the response is valid. If the response is not valid, it throws an error.
+### Validation
 
-## Data mapping
+This is optional stage. It is performed by [_Validator_](/api/primitives/validator) and is used to check if the response is valid. If the response is not valid, the data-flow stops and returns control to the user-land code through `.finished.failed` [_Event_](https://effector.dev/docs/api/effector/event) with an error-message that is returned from the [_Validator_](/api/primitives/validator). Otherwise, the data-flow continues and passes control to the next step — data mapping.
+
+Since [_Validator_](/api/primitives/validator) is a [_Sourced_](/api/primitives/sourced), it's possible to add some extra data from the application to the validation process. For example, it could be a user's session token:
+
+```ts
+const $session = createStore<{ userId: string } | null>(null);
+
+const userQuery = createJsonQuery({
+  //...
+  response: {
+    validate: {
+      source: $session,
+      fn: (data, _params, sessionToken) => data.userId !== session.userId,
+    },
+  },
+});
+```
+
+### Data mapping
 
 This is optional stage.
+
+## Data-flow in basic factories
+
+Same but different.
 
 ## Error handling
 
 If any of the stages fails, the _Remote Operation_ is considered failed, [_Event_](https://effector.dev/docs/api/effector/event) `.finished.failed` is triggered, and the error is passed to the event payload.
-
-## Summary
