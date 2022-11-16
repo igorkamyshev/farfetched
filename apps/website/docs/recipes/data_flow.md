@@ -19,21 +19,18 @@ sequenceDiagram
     activate S
     S->>C: response
     deactivate S
+    C-->>A: finished.failed
 
     C->>C: parse response
-
     C-->>A: finished.failed
 
     C->>C: apply contract
-
     C-->>A: finished.failed
 
     C->>C: apply validator
-
     C-->>A: finished.failed
 
     C->>C: apply data mapper
-
     C->>A: finished.success
 
     deactivate C
@@ -41,15 +38,45 @@ sequenceDiagram
 
 :::
 
+## Basic and specific factories
+
+There are two types of factories for _Remote Operations_: **basic** and **specific**. **Basic** factories are used to create _Remote Operations_ with a more control of data-flow in user-land, while **specific** factories are used to create _Remote Operations_ with a more control of data-flow in the library.
+
+::: tip
+Data-flow control is a boring and complex task, so it is recommended to use **specific** factories in many cases to delegate this task to the library.
+:::
+
+### Basic factories
+
+- [`createQuery`](/api/factories/create_query)
+- [`createMutation`](/api/factories/create_mutation)
+
+### Specific factories
+
+- [`createJsonQuery`](/api/factories/create_json_query)
+- [`createJsonMutation`](/api/factories/create_json_mutation)
+
 ## Request-response cycle
 
 The first step is to send a request to the remote source and wait for a response. The response is then passed to the next stage.
+
+**Basic factories** are designed to pass control of this stage to the user-land, so `handler` (or `effect`) property of their configuration object is used to perform the request-response cycle.
+
+**Specific factories** handle this stage internally, so user-land code have to describe only the desired result of this stage and the library will perform the request-response cycle internally in the most optimal way.
 
 ## Response parsing
 
 This stage could be performed by internal Farfetched parsers. E.g. [`createJsonQuery`](/api/factories/create_json_query) and [`createJsonMutation`](/api/factories/create_json_mutation) use `JSON.parse` to parse the response and throw an error if the response is not a valid JSON.
 
-However, basic factories like [`createQuery`](/api/factories/create_query) and [`createMutation`](/api/factories/create_mutation) do not perform any parsing. This is because the response could be in any format, and it is up to the user to decide how to parse it. It's a responsibility of the user to perform parsing inside `handler` function in these cases.
+However, **basic factories** do not perform any parsing. This is because the response could be in any format, and it is up to the user to decide how to parse it. It's a responsibility of the user to perform parsing inside `handler` (or `effect`) in these cases.
+
+::: details A space for optimization
+
+Because **specific factories** handle this stage internally, they can optimize the request-response cycle in the most optimal way.
+
+For example, if some when in the future `JSON.parse` will be considered as a bottleneck, the library can replace it with a more optimal implementation without breaking the API. Your application would not be affected by this change, because it does not know anything about the implementation details of the library.
+
+:::
 
 ## Contract application
 
