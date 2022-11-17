@@ -129,7 +129,7 @@ cache(characterQuery, {
 Sometimes you need to purge all data from cache. For example, when you want to force user to reload all data after logout. Farfetched provides `purge`option of [`cache`](/api/operators/cache) operator for this purpose.
 
 ```ts
-import { logout } from 'effector';
+import { createEvent } from 'effector';
 import { cache } from '@farfetched/core';
 
 const logout = createEvent();
