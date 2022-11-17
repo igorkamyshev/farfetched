@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.3.1
+
+### Patch Changes
+
+- 7498a4a: Remove dependency added by mistake — `runtypes`
+
 ## 0.3.0
 
 ### Minor Changes
