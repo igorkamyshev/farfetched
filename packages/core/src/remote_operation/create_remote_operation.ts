@@ -11,6 +11,7 @@ import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
 import { invalidDataError } from '../errors/create_error';
 import { InvalidDataError } from '../errors/type';
+import { ExecutionMeta } from '../misc/execution';
 import {
   normalizeSourced,
   normalizeStaticOrReactive,
@@ -43,6 +44,7 @@ function createRemoteOperation<
   contract,
   validate,
   mapData,
+  sources,
 }: {
   name: string;
   meta: Meta;
@@ -57,7 +59,21 @@ function createRemoteOperation<
     MappedData,
     MapDataSource
   >;
+  sources?: Array<Store<unknown>>;
 }): RemoteOperation<Params, MappedData, Error | InvalidDataError, Meta> {
+  let withInterruption = false;
+  const registerInterruption = () => {
+    withInterruption = true;
+  };
+
+  const fillData = createEvent<{
+    params: Params;
+    result: any;
+    meta: ExecutionMeta;
+  }>();
+
+  const resumeExecution = createEvent<{ params: Params }>();
+
   const applyContractFx = createContractApplier<Params, Data, ContractData>(
     contract
   );
@@ -84,10 +100,18 @@ function createRemoteOperation<
 
   // Signal-events
   const finished = {
-    success: createEvent<{ params: Params; data: MappedData }>(),
-    failure: createEvent<{ params: Params; error: Error | InvalidDataError }>(),
-    skip: createEvent<{ params: Params }>(),
-    finally: createEvent<{ params: Params }>(),
+    success: createEvent<{
+      params: Params;
+      data: MappedData;
+      meta: ExecutionMeta;
+    }>(),
+    failure: createEvent<{
+      params: Params;
+      error: Error | InvalidDataError;
+      meta: ExecutionMeta;
+    }>(),
+    skip: createEvent<{ params: Params; meta: ExecutionMeta }>(),
+    finally: createEvent<{ params: Params; meta: ExecutionMeta }>(),
   };
 
   // -- Main stores --
@@ -119,20 +143,46 @@ function createRemoteOperation<
     clock: start,
     filter: not($enabled),
     fn(params) {
-      return { params };
+      return {
+        params,
+        meta: { stopErrorPropagation: false, isFreshData: true },
+      };
     },
     target: finished.skip,
   });
 
   sample({
     clock: start,
-    filter: $enabled,
+    source: { enabled: $enabled },
+    filter: ({ enabled }) => enabled && !withInterruption,
+    fn: (_, params) => params,
     target: executeFx,
   });
 
-  sample({ clock: executeFx.done, target: applyContractFx });
+  sample({
+    clock: resumeExecution,
+    fn: ({ params }) => params,
+    target: executeFx,
+  });
+
+  sample({
+    clock: executeFx.done,
+    fn: ({ params, result }) => ({
+      params,
+      result,
+      meta: { stopErrorPropagation: false, isFreshData: true },
+    }),
+    target: fillData,
+  });
+
+  sample({ clock: fillData, target: applyContractFx });
   sample({
     clock: executeFx.fail,
+    fn: ({ error, params }) => ({
+      error,
+      params,
+      meta: { stopErrorPropagation: false, isFreshData: true },
+    }),
     target: finished.failure,
   });
 
@@ -153,6 +203,7 @@ function createRemoteOperation<
         // Extract original params, it is params of params
         params: params.params,
         validation,
+        meta: params.meta,
       }),
     }),
     {
@@ -168,30 +219,35 @@ function createRemoteOperation<
         clock: validDataRecieved.map(({ data, params }) => [data, params]),
       })
     ),
-    fn: (data, { params }) => ({
+    fn: (data, { params, meta }) => ({
       data,
       params,
+      meta,
     }),
     target: finished.success,
   });
 
   sample({
     clock: applyContractFx.fail,
+    filter: ({ params }) => !params.meta.stopErrorPropagation,
     fn: ({ error, params }) => ({
       error,
       // Extract original params, it is params of params
       params: params.params,
+      meta: params.meta,
     }),
     target: finished.failure,
   });
 
   sample({
     clock: invalidDataRecieved,
-    fn: ({ params, validation }) => ({
+    filter: ({ meta }) => !meta.stopErrorPropagation,
+    fn: ({ params, validation, meta }) => ({
       params,
       error: invalidDataError({
         validationErrors: unwrapValidationResult(validation),
       }),
+      meta,
     }),
     target: finished.failure,
   });
@@ -199,8 +255,8 @@ function createRemoteOperation<
   // -- Send finally --
   sample({
     clock: [finished.success, finished.failure, finished.skip],
-    fn({ params }) {
-      return { params };
+    fn({ params, meta }) {
+      return { params, meta };
     },
     target: finished.finally,
   });
@@ -213,7 +269,17 @@ function createRemoteOperation<
     $failed,
     $succeeded,
     $enabled,
-    __: { executeFx, meta, kind },
+    __: {
+      executeFx,
+      meta,
+      kind,
+      lowLevelAPI: {
+        sources: sources ?? [],
+        registerInterruption,
+        fillData,
+        resumeExecution,
+      },
+    },
   };
 }
 

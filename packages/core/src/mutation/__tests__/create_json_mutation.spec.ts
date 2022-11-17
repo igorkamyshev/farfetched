@@ -104,17 +104,19 @@ describe('createJsonMutation', () => {
     await allSettled(mutation.start, { scope });
 
     expect(listeners.onFailure).toHaveBeenCalled();
-    expect(listeners.onFailure).toHaveBeenCalledWith({
-      error: {
-        errorType: 'INVALID_DATA',
-        explanation:
-          'Response was considered as invalid against a given contract',
-        validationErrors: [
-          'Expected response status has to be one of [201], got 200',
-        ],
-      },
-      params: undefined,
-    });
+    expect(listeners.onFailure).toHaveBeenCalledWith(
+      expect.objectContaining({
+        error: {
+          errorType: 'INVALID_DATA',
+          explanation:
+            'Response was considered as invalid against a given contract',
+          validationErrors: [
+            'Expected response status has to be one of [201], got 200',
+          ],
+        },
+        params: undefined,
+      })
+    );
   });
 
   test('allow empty response', async () => {
@@ -135,9 +137,11 @@ describe('createJsonMutation', () => {
     await allSettled(mutation.start, { scope });
 
     expect(listeners.onSuccess).toHaveBeenCalled();
-    expect(listeners.onSuccess).toHaveBeenCalledWith({
-      data: null,
-      params: undefined,
-    });
+    expect(listeners.onSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: null,
+        params: undefined,
+      })
+    );
   });
 });

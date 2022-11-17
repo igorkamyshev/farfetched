@@ -1,8 +1,4 @@
-# `createMutation`
-
-::: info
-Introduced in v0.2.0.
-:::
+# `createMutation` <Badge type="tip" text="since v0.2.0" />
 
 ## Formulae
 

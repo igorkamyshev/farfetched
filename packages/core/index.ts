@@ -15,6 +15,13 @@ export { createJsonMutation } from './src/mutation/create_json_mutation';
 export { retry } from './src/retry/retry';
 export { exponentialDelay, linearDelay } from './src/retry/delay';
 
+export { cache } from './src/cache/cache';
+export { externalCache } from './src/cache/adapters/external';
+export { inMemoryCache } from './src/cache/adapters/in_memory';
+export { localStorageCache } from './src/cache/adapters/local_storage';
+export { sessionStorageCache } from './src/cache/adapters/session_storage';
+export { voidCache } from './src/cache/adapters/void';
+
 export { declareParams, type ParamsDeclaration } from './src/misc/params';
 export {
   type TwoArgsDynamicallySourcedField,
