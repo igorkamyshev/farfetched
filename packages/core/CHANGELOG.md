@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.3.2
+
+### Patch Changes
+
+- 072aae1: Handle null values in Sourced fields
+
 ## 0.3.1
 
 ### Patch Changes
