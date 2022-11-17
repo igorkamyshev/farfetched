@@ -13,6 +13,7 @@ Farfetched is under development now, before the first stable release we are goin
 ### v.0.5
 
 - DevTools interface
+
 ### v.0.6
 
 - Triggers API to mark data as stale and re-fetch on some declarative triggers.
