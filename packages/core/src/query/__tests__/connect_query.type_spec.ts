@@ -1,12 +1,10 @@
 /*
 -------- PREPARE ------
 */
-import { Array, Number, Record, Static, String, Runtype } from 'runtypes';
 import { createStore, Store, attach, Effect } from 'effector';
 import { expectType, expectError } from 'tsd';
 import { createQuery } from '../create_query';
 import { connectQuery } from '../connect_query';
-import { createMutation } from '../../mutation/create_mutation';
 
 interface InvokeArgs {
   [key: string]: unknown;
@@ -15,18 +13,15 @@ interface InvokeArgs {
 declare function invoke<T>(cmd: string, args?: InvokeArgs): Promise<T>;
 
 incorrect_source_inference_with_complex_types: {
-  const Item = Record({
-    id: Number,
-    name: String,
-    hours: Number,
-  }).asReadonly();
-
-  const ItemCrud = Item.omit('id');
-
-  const Items = Array(Item).asReadonly();
-
-  type ItemCrudT = Static<typeof ItemCrud>;
-  type ItemsT = Static<typeof Items>;
+  type ItemCrudT = {
+    readonly name: string;
+    readonly hours: number;
+  };
+  type ItemsT = readonly {
+    readonly id: number;
+    readonly name: string;
+    readonly hours: number;
+  }[];
 
   interface AddItemCommand {
     command: 'add_item';

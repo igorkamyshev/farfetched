@@ -6,11 +6,15 @@ Farfetched is under development now, before the first stable release we are goin
 
 ### v.0.4 Cheow Lan
 
-- DevTools interface
+- `update` operator
 
 ## Future releases
 
 ### v.0.5
+
+- DevTools interface
+
+### v.0.6
 
 - Triggers API to mark data as stale and re-fetch on some declarative triggers.
 - Add-on `@farfetched/web-api` with common triggers
@@ -21,11 +25,11 @@ Farfetched is under development now, before the first stable release we are goin
 - migrate Mutation API to Triggers API
 - migrate `connectQuery` to Triggers API
 
-### v.0.6
+### v.0.7
 
 - Pagination and infinite scroll
 
-### v.0.7
+### v.0.8
 
 - GraphQL add-on — `@farfetched/graphql`
   - `createGraphQLQuery`
@@ -34,7 +38,7 @@ Farfetched is under development now, before the first stable release we are goin
   - import, parsing, and usage of schema
   - automatic optimistic update for Query based on Mutation and schema
 
-### v.0.8
+### v.0.9
 
 - WebSocket
 - Server Sent Events

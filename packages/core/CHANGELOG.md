@@ -1,5 +1,34 @@
 # @farfetched/core
 
+## 0.3.2
+
+### Patch Changes
+
+- 072aae1: Handle null values in Sourced fields
+
+## 0.3.1
+
+### Patch Changes
+
+- 7498a4a: Remove dependency added by mistake — `runtypes`
+
+## 0.3.0
+
+### Minor Changes
+
+- d1b5f5a: Add `cache` operator
+- d1b5f5a: Allow passing Time as a `delay` in `retry`
+- d1b5f5a: Add `sessionStorageCache` adapter
+- d1b5f5a: Add option `initialData` for `createJsonQuery`
+- d1b5f5a: Add option `initialData` for `createQuery`
+- d1b5f5a: Allow using `retry` with Mutation
+- d1b5f5a: Allow setting initial data for _Query_
+- d1b5f5a: Add `inMemoryCache` adapter
+- d1b5f5a: Support custom serialization for `$data` in Query with Effector 22.4
+- d1b5f5a: Add `voidCache` adapter
+- d1b5f5a: Add `localStorageCache` adapter
+- d1b5f5a: Add `externalCache` adapter
+
 ## 0.2.6
 
 ### Patch Changes
