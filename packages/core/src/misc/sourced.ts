@@ -2,9 +2,9 @@ import { combine, createStore, Event, is, sample, Store } from 'effector';
 
 // -- Main case --
 
-type Callback<Data, Result> = (data: Data) => Result;
+export type Callback<Data, Result> = (data: Data) => Result;
 
-type CallbackWithSource<Data, Result, Source> = {
+export type CallbackWithSource<Data, Result, Source> = {
   source: Store<Source>;
   fn: (data: Data, source: Source) => Result;
 };

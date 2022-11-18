@@ -136,8 +136,8 @@ optional_validation_field: {
       request: { url: '', method: 'GET' },
       response: {
         contract,
-        validate: (data, params) => {
-          expectType<number>(data);
+        validate: ({ result, params }) => {
+          expectType<number>(result);
           expectType<void>(params);
 
           return true;
@@ -151,8 +151,8 @@ optional_validation_field: {
         contract,
         validate: {
           source: createStore<boolean>(false),
-          fn: (data, params, s) => {
-            expectType<number>(data);
+          fn: ({ result, params }, s) => {
+            expectType<number>(result);
             expectType<void>(params);
             expectType<boolean>(s);
 
@@ -171,8 +171,8 @@ optional_validation_field: {
       request: { url: '', method: 'GET' },
       response: {
         contract,
-        validate: (data, params) => {
-          expectType<number>(data);
+        validate: ({ result, params }) => {
+          expectType<number>(result);
           expectType<string>(params);
 
           return true;
@@ -187,8 +187,8 @@ optional_validation_field: {
         contract,
         validate: {
           source: createStore<boolean>(false),
-          fn: (data, params, s) => {
-            expectType<number>(data);
+          fn: ({ result, params }, s) => {
+            expectType<number>(result);
             expectType<string>(params);
             expectType<boolean>(s);
 
