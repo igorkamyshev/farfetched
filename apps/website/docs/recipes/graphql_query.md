@@ -127,7 +127,7 @@ const languageQuery = createJsonQuery({
     url: '/api/language',
     method: 'GET',
   },
-  response: { mapData: (data) => data.language.code },
+  response: { mapData: ({ result }) => result.language.code },
 });
 
 // Query is created by custom factory
@@ -147,7 +147,7 @@ const countriesQuery = createGraphQLQuery({
       }),
     },
   },
-  response: { mapData: (data) => data.countries },
+  response: { mapData: ({ result }) => result.countries },
 });
 
 // They can be used together

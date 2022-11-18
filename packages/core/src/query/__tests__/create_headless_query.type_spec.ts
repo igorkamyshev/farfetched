@@ -11,7 +11,7 @@ contract: {
 
   const numberQuery = createHeadlessQuery({
     contract: numberContract,
-    mapData: (v) => v,
+    mapData: ({ result }) => result,
   });
 
   expectType<Query<unknown, number, unknown | number>>(numberQuery);
@@ -20,7 +20,7 @@ contract: {
 
   const stringQuery = createHeadlessQuery({
     contract: stringContract,
-    mapData: (v) => v,
+    mapData: ({ result }) => result,
   });
 
   expectType<Query<unknown, string, unknown | number>>(stringQuery);
@@ -29,14 +29,14 @@ contract: {
 mapData_callback: {
   const numberQuery = createHeadlessQuery({
     contract: unknownContract,
-    mapData: (data, params) => 12,
+    mapData: ({ result, params }) => 12,
   });
 
   expectType<Query<unknown, number, unknown>>(numberQuery);
 
   const objectQuery = createHeadlessQuery({
     contract: unknownContract,
-    mapData: (data, params) => ({ response: 12 }),
+    mapData: ({ result, params }) => ({ response: 12 }),
   });
 
   expectType<Query<unknown, { response: number }, unknown>>(objectQuery);
@@ -47,7 +47,7 @@ mapData_callback_source: {
     contract: unknownContract,
     mapData: {
       source: createStore(0),
-      fn: (data, params, source) => {
+      fn: ({ result, params }, source) => {
         expectType<number>(source);
         return 12;
       },
@@ -60,7 +60,7 @@ mapData_callback_source: {
     contract: unknownContract,
     mapData: {
       source: createStore({ response: 12 }),
-      fn: (data, params, source) => {
+      fn: ({ result, params }, source) => {
         expectType<{ response: number }>(source);
         return source;
       },

@@ -10,7 +10,7 @@ describe('remote_data/query/json.fetching', () => {
       isData: (raw: unknown): raw is unknown => true,
       getErrorMessages: () => [],
     },
-    mapData: <T>(v: T) => v,
+    mapData: ({ result }) => result,
   };
 
   // Does not matter

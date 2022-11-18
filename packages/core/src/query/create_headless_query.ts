@@ -3,10 +3,7 @@ import { reset as resetMany } from 'patronum';
 
 import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
-import {
-  TwoArgsDynamicallySourcedField,
-  StaticOrReactive,
-} from '../misc/sourced';
+import { StaticOrReactive, DynamicallySourcedField } from '../misc/sourced';
 import { createRemoteOperation } from '../remote_operation/create_remote_operation';
 import { serializationForSideStore } from '../serialization/serizalize_for_side_store';
 import { Serialize } from '../serialization/type';
@@ -47,9 +44,8 @@ function createHeadlessQuery<
 }: {
   initialData?: Initial;
   contract: Contract<Response, ContractData>;
-  mapData: TwoArgsDynamicallySourcedField<
-    ContractData,
-    Params,
+  mapData: DynamicallySourcedField<
+    { result: ContractData; params: Params },
     MappedData,
     MapDataSource
   >;

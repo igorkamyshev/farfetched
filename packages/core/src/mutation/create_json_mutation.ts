@@ -5,12 +5,11 @@ import { InvalidDataError } from '../errors/type';
 import { ApiRequestError, HttpMethod } from '../fetch/api';
 import { createJsonApiRequest, Json } from '../fetch/json';
 import { FetchApiRecord } from '../misc/fetch_api';
-import { identity } from '../misc/identity';
 import { ParamsDeclaration } from '../misc/params';
 import {
+  DynamicallySourcedField,
   normalizeSourced,
   SourcedField,
-  TwoArgsDynamicallySourcedField,
 } from '../misc/sourced';
 import { Validator } from '../validation/type';
 import {
@@ -95,9 +94,8 @@ function createJsonMutation<
   > & {
     response: {
       contract: Contract<unknown, Data>;
-      mapData: TwoArgsDynamicallySourcedField<
-        Data,
-        Params,
+      mapData: DynamicallySourcedField<
+        { result: Data; params: Params },
         TransformedData,
         DataSource
       >;
@@ -159,9 +157,8 @@ function createJsonMutation<
   > & {
     response: {
       contract: Contract<unknown, Data>;
-      mapData: TwoArgsDynamicallySourcedField<
-        Data,
-        void,
+      mapData: DynamicallySourcedField<
+        { result: Data; params: void },
         TransformedData,
         DataSource
       >;
@@ -207,7 +204,7 @@ function createJsonMutation(config: any): Mutation<any, any, any> {
 
   const headlessMutation = createHeadlessMutation({
     contract: config.response.contract ?? unknownContract,
-    mapData: config.response.mapData ?? identity,
+    mapData: config.response.mapData ?? (({ result }) => result),
     validate: config.response.validate,
     enabled: config.enabled,
     name: config.name,

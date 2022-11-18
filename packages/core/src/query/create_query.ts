@@ -7,8 +7,7 @@ import {
 import { Query } from './type';
 import { Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
-import { identity } from '../misc/identity';
-import { TwoArgsDynamicallySourcedField } from '../misc/sourced';
+import { DynamicallySourcedField } from '../misc/sourced';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
 import { resolveExecuteEffect } from '../misc/execute_effect';
@@ -82,9 +81,8 @@ function createQuery<
 >(
   config: {
     effect: Effect<Params, Response, Error>;
-    mapData: TwoArgsDynamicallySourcedField<
-      Response,
-      Params,
+    mapData: DynamicallySourcedField<
+      { result: Response; params: Params },
       MappedData,
       MapDataSource
     >;
@@ -103,9 +101,8 @@ function createQuery<
   config: {
     initialData: MappedData;
     effect: Effect<Params, Response, Error>;
-    mapData: TwoArgsDynamicallySourcedField<
-      Response,
-      Params,
+    mapData: DynamicallySourcedField<
+      { result: Response; params: Params },
       MappedData,
       MapDataSource
     >;
@@ -126,9 +123,8 @@ function createQuery<
   config: {
     effect: Effect<Params, Response, Error>;
     contract: Contract<Response, ContractData>;
-    mapData: TwoArgsDynamicallySourcedField<
-      ContractData,
-      Params,
+    mapData: DynamicallySourcedField<
+      { result: ContractData; params: Params },
       MappedData,
       MapDataSource
     >;
@@ -149,9 +145,8 @@ function createQuery<
     initialData: MappedData;
     effect: Effect<Params, Response, Error>;
     contract: Contract<Response, ContractData>;
-    mapData: TwoArgsDynamicallySourcedField<
-      ContractData,
-      Params,
+    mapData: DynamicallySourcedField<
+      { result: ContractData; params: Params },
       MappedData,
       MapDataSource
     >;
@@ -185,7 +180,7 @@ function createQuery<
   >({
     initialData: config.initialData ?? null,
     contract: config.contract ?? unknownContract,
-    mapData: config.mapData ?? identity,
+    mapData: config.mapData ?? (({ result }) => result),
     enabled: config.enabled,
     validate: config.validate,
     name: config.name,

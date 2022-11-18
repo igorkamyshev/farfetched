@@ -212,8 +212,8 @@ mapData: {
       },
       response: {
         contract,
-        mapData: (data, params) => {
-          expectType<number>(data);
+        mapData: ({ result, params }) => {
+          expectType<number>(result);
           expectType<string>(params);
 
           return false;
@@ -235,8 +235,8 @@ mapData: {
         contract,
         mapData: {
           source: createStore(false),
-          fn: (data, params, soruce) => {
-            expectType<number>(data);
+          fn: ({ result, params }, soruce) => {
+            expectType<number>(result);
             expectType<string>(params);
             expectType<boolean>(soruce);
 
@@ -259,8 +259,8 @@ mapData: {
       },
       response: {
         contract,
-        mapData: (data, params) => {
-          expectType<number>(data);
+        mapData: ({ result, params }) => {
+          expectType<number>(result);
           expectType<void>(params);
 
           return false;
@@ -281,8 +281,8 @@ mapData: {
         contract,
         mapData: {
           source: createStore(false),
-          fn: (data, params, soruce) => {
-            expectType<number>(data);
+          fn: ({ result, params }, soruce) => {
+            expectType<number>(result);
             expectType<void>(params);
             expectType<boolean>(soruce);
 
