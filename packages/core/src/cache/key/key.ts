@@ -2,7 +2,7 @@ import { Event, sample } from 'effector';
 
 import { Query } from '../../query/type';
 import {
-  RemoteOperationData,
+  RemoteOperationResult,
   RemoteOperationParams,
 } from '../../remote_operation/type';
 import { sha1 } from '../lib/hash';
@@ -11,7 +11,7 @@ export function enrichFinishedSuccessWithKey<Q extends Query<any, any, any>>(
   query: Q
 ): Event<{
   params: RemoteOperationParams<Q>;
-  data: RemoteOperationData<Q>;
+  result: RemoteOperationResult<Q>;
   key: string;
 }> {
   const queryDataSid = querySid(query);
@@ -19,9 +19,9 @@ export function enrichFinishedSuccessWithKey<Q extends Query<any, any, any>>(
   return sample({
     clock: query.finished.success,
     source: query.__.lowLevelAPI.sources,
-    fn: (sources, { params, data }) => ({
+    fn: (sources, { params, result }) => ({
       params,
-      data,
+      result,
       key: createKey({ sid: queryDataSid, params, sources }),
     }),
   });

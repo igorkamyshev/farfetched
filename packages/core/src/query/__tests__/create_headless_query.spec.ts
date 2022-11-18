@@ -37,7 +37,7 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(scope.getState(query.$error)).toBeNull();
     expect(listeners.onSuccess).toHaveBeenCalledTimes(1);
     expect(listeners.onSuccess).toHaveBeenCalledWith(
-      expect.objectContaining({ params: 42, data: 42 })
+      expect.objectContaining({ params: 42, result: 42 })
     );
 
     expect(listeners.onSkip).not.toHaveBeenCalled();
@@ -250,7 +250,7 @@ describe('core/createHeadlessQuery with contract', () => {
     expect(listeners.onSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
         params: 42,
-        data: extractedData,
+        result: extractedData,
       })
     );
   });

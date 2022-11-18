@@ -49,7 +49,7 @@ describe('remote_data/query/json.response.success', () => {
 
     expect(watcher.listeners.onSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: response,
+        result: response,
       })
     );
     expect(watcher.listeners.onSuccess).toHaveBeenCalledTimes(1);
@@ -82,7 +82,7 @@ describe('remote_data/query/json.response.success', () => {
     expect(watcher.listeners.onSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
         params: undefined,
-        data: mapped,
+        result: mapped,
       })
     );
     expect(watcher.listeners.onSuccess).toHaveBeenCalledTimes(1);
