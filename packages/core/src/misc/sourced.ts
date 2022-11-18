@@ -2,9 +2,9 @@ import { combine, createStore, Event, is, sample, Store } from 'effector';
 
 // -- Main case --
 
-export type Callback<Data, Result> = (data: Data) => Result;
+type Callback<Data, Result> = (data: Data) => Result;
 
-export type CallbackWithSource<Data, Result, Source> = {
+type CallbackWithSource<Data, Result, Source> = {
   source: Store<Source>;
   fn: (data: Data, source: Source) => Result;
 };
@@ -13,23 +13,23 @@ export type DynamicallySourcedField<Data, Result, Source> =
   | Callback<Data, Result>
   | CallbackWithSource<Data, Result, Source>;
 
-type SourcedField<Data, Result, Source> =
+export type SourcedField<Data, Result, Source> =
   | Result
   | Store<Result>
   | Callback<Data, Result>
   | CallbackWithSource<Data, Result, Source>;
 
-function normalizeSourced<Data, Result, Source>(config: {
+export function normalizeSourced<Data, Result, Source>(config: {
   field: SourcedField<Data, Result, Source>;
   clock: Event<Data>;
 }): Store<Result>;
 
-function normalizeSourced<Data, Result, Source>(config: {
+export function normalizeSourced<Data, Result, Source>(config: {
   field: SourcedField<Data, Result, Source>;
   source: Store<Data>;
 }): Store<Result>;
 
-function normalizeSourced<Data, Result, Source>({
+export function normalizeSourced<Data, Result, Source>({
   field,
   clock,
   source,
@@ -93,78 +93,16 @@ function normalizeSourced<Data, Result, Source>({
   return $target;
 }
 
-// -- Extended case --
-
-type CallbackTwoArgs<FirstData, SecondData, Result> = (
-  arg1: FirstData,
-  arg2: SecondData
-) => Result;
-
-type CallbackTwoArgsWithSource<FirstData, SecondData, Result, Source> = {
-  source: Store<Source>;
-  fn: (arg1: FirstData, arg2: SecondData, source: Source) => Result;
-};
-
-type TwoArgsDynamicallySourcedField<FirstData, SecondData, Result, Source> =
-  | CallbackTwoArgs<FirstData, SecondData, Result>
-  | CallbackTwoArgsWithSource<FirstData, SecondData, Result, Source>;
-
-type ReducedField<FirstData, SecondData, Result, Source> = {
-  field: SourcedField<[FirstData, SecondData], Result, Source>;
-  clock: Event<[FirstData, SecondData]>;
-};
-
-function reduceTwoArgs<FirstData, SecondData, Result, Source = void>(config: {
-  field: TwoArgsDynamicallySourcedField<FirstData, SecondData, Result, Source>;
-  clock: Event<[FirstData, SecondData]>;
-}): ReducedField<FirstData, SecondData, Result, Source>;
-
-function reduceTwoArgs<FirstData, SecondData, Result, Source = void>({
-  field,
-  clock,
-}: {
-  field: any;
-  clock: Event<[FirstData, SecondData]>;
-}): ReducedField<FirstData, SecondData, Result, Source> {
-  if (typeof field === 'function') {
-    const callbackField = field as CallbackTwoArgs<
-      FirstData,
-      SecondData,
-      Result
-    >;
-
-    return {
-      field: ([data, params]) => callbackField(data, params),
-      clock,
-    };
-  }
-
-  const callbackField = field as CallbackTwoArgsWithSource<
-    FirstData,
-    SecondData,
-    Result,
-    Source
-  >;
-
-  return {
-    clock,
-    field: {
-      source: callbackField.source,
-      fn: ([data, params], source) => callbackField.fn(data, params, source),
-    },
-  };
-}
-
 // -- Static ot reactive case
 
-type StaticOrReactive<T> = T | Store<Exclude<T, undefined>>;
+export type StaticOrReactive<T> = T | Store<Exclude<T, undefined>>;
 
-function normalizeStaticOrReactive<T>(v: StaticOrReactive<T>): Store<T>;
-function normalizeStaticOrReactive<T>(
+export function normalizeStaticOrReactive<T>(v: StaticOrReactive<T>): Store<T>;
+export function normalizeStaticOrReactive<T>(
   v?: StaticOrReactive<T>
 ): Store<Exclude<T, undefined> | null>;
 
-function normalizeStaticOrReactive<T>(
+export function normalizeStaticOrReactive<T>(
   v?: StaticOrReactive<T>
 ): Store<Exclude<T, undefined> | null> {
   if (!v) {
@@ -181,14 +119,3 @@ function normalizeStaticOrReactive<T>(
     serialize: 'ignore',
   });
 }
-
-// -- Exports --
-
-export {
-  type SourcedField,
-  normalizeSourced,
-  type TwoArgsDynamicallySourcedField,
-  reduceTwoArgs,
-  type StaticOrReactive,
-  normalizeStaticOrReactive,
-};

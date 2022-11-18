@@ -14,8 +14,8 @@ Config fields:
 - `delay`: _[Sourced](/api/primitives/sourced) [Time](/api/primitives/time)_ with an amount of milliseconds to wait before retrying
 - `filter`: _[Sourced](/api/primitives/sourced) boolean_ with a predicate to decide whether to retry or not
 - `mapParams?`: optional mapper for the [_Query_](/api/primitives/query) parameters mapping before the next retry, available overloads:
-  - `(params, { attempt }) => mapped`
-  - `{ source: Store, fn: (params, { attempt }, source) => mapped }`
+  - `({ params, meta: { attempt, maxAttempts } }) => mapped`
+  - `{ source: Store, fn: ({ params, meta: { attempt, maxAttempts } }, source) => mapped }`
 - `otherwise?`: [_Event_](https://effector.dev/docs/api/effector/event) or [_Effect_](https://effector.dev/docs/api/effector/effect), that will be called after the last attempt if the [_Query_](/api/primitives/query) is still failed
 
 ## Build-in delays

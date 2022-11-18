@@ -1,7 +1,7 @@
 import { allSettled, createEvent, createStore, fork } from 'effector';
 import { describe, test, expect } from 'vitest';
 
-import { normalizeSourced, reduceTwoArgs } from '../sourced';
+import { normalizeSourced } from '../sourced';
 
 describe('normalizeSourced (with clock)', () => {
   test('handle simple value', async () => {
@@ -213,52 +213,5 @@ describe('normalizeSourced (with source)', () => {
 
     await allSettled($source, { scope, params: 'second' });
     expect(scope.getState($normalized)).toBe('call_second');
-  });
-});
-
-describe('reduceTwoArgs', () => {
-  test('handle callback', async () => {
-    const clock = createEvent<[string, string]>();
-
-    const $normalized = normalizeSourced(
-      reduceTwoArgs({
-        field: (data, params) => data + params,
-        clock,
-      })
-    );
-
-    const scope = fork();
-
-    expect(scope.getState($normalized)).toBeNull();
-    await allSettled(clock, { scope, params: ['FIRST', 'params'] });
-    expect(scope.getState($normalized)).toBe('FIRSTparams');
-
-    await allSettled(clock, { scope, params: ['SECOND', 'other'] });
-    expect(scope.getState($normalized)).toBe('SECONDother');
-  });
-
-  test('handle callback with source', async () => {
-    const $source = createStore('source');
-
-    const clock = createEvent<[string, string]>();
-
-    const $normalized = normalizeSourced(
-      reduceTwoArgs({
-        field: {
-          source: $source,
-          fn: (data, params, source) => data + params + source,
-        },
-        clock,
-      })
-    );
-
-    const scope = fork();
-
-    await allSettled(clock, { scope, params: ['FIRST', 'params'] });
-    expect(scope.getState($normalized)).toBe('FIRSTparamssource');
-
-    await allSettled($source, { scope, params: 'new source' });
-    await allSettled(clock, { scope, params: ['SECOND', 'other'] });
-    expect(scope.getState($normalized)).toBe('SECONDothernew source');
   });
 });

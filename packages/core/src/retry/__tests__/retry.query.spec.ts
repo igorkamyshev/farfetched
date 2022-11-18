@@ -102,9 +102,7 @@ describe('retry with query', () => {
       handler,
     });
 
-    const mapParams = vi.fn(
-      ({ params }, { attempt }) => `${params} ${attempt}`
-    );
+    const mapParams = vi.fn(({ params, meta }) => `${params} ${meta.attempt}`);
 
     retry(query, {
       times: 3,
@@ -127,31 +125,31 @@ describe('retry with query', () => {
         [
           {
             "error": [Error: Sorry],
+            "meta": {
+              "attempt": 1,
+              "maxAttempts": 3,
+            },
             "params": "Initial",
           },
-          {
-            "attempt": 1,
-            "maxAttempts": 3,
-          },
         ],
         [
           {
             "error": [Error: Sorry],
+            "meta": {
+              "attempt": 2,
+              "maxAttempts": 3,
+            },
             "params": "Initial 1",
           },
-          {
-            "attempt": 2,
-            "maxAttempts": 3,
-          },
         ],
         [
           {
             "error": [Error: Sorry],
+            "meta": {
+              "attempt": 3,
+              "maxAttempts": 3,
+            },
             "params": "Initial 1 2",
-          },
-          {
-            "attempt": 3,
-            "maxAttempts": 3,
           },
         ],
       ]
