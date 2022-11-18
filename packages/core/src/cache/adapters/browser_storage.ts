@@ -1,6 +1,6 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
-import { delay } from 'patronum';
 
+import { delay } from '../../patronus/delay';
 import { parseTime } from '../../misc/time';
 import { createAdapter } from './instance';
 import { attachObservability } from './observability';
@@ -63,7 +63,7 @@ export function browserStorageCache(
     if (maxAge) {
       sample({
         clock: delay({
-          source: sample({
+          clock: sample({
             clock: setItemFx.done,
             filter: ({ params }) => params.key !== META_KEY,
           }),

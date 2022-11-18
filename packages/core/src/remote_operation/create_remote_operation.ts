@@ -6,7 +6,8 @@ import {
   split,
   Store,
 } from 'effector';
-import { not } from 'patronum';
+
+import { not } from '../patronus/not';
 import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
 import { invalidDataError } from '../errors/create_error';

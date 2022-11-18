@@ -1,7 +1,7 @@
 import { combine, merge, sample } from 'effector';
-import { every } from 'patronum';
 
-import { postpone } from '../misc/postpone';
+import { every } from '../patronus/every';
+import { postpone } from '../patronus/postpone';
 import { isQuery, Query } from '../query/type';
 import {
   RemoteOperationResult,

@@ -5,8 +5,9 @@ import {
   createStore,
   sample,
 } from 'effector';
-import { delay, time } from 'patronum';
 
+import { time } from '../../patronus/time';
+import { delay } from '../../patronus/delay';
 import { parseTime } from '../../misc/time';
 import { createAdapter } from './instance';
 import { attachObservability } from './observability';
@@ -75,7 +76,7 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
 
   if (maxAge) {
     delay({
-      source: saveValue,
+      clock: saveValue,
       timeout: parseTime(maxAge),
       target: itemExpired,
     });
