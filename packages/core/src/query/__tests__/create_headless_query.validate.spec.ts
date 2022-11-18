@@ -3,11 +3,13 @@ import { describe, test, expect } from 'vitest';
 
 import { unknownContract } from '../../contract/unknown_contract';
 import { invalidDataError } from '../../errors/create_error';
-import { identity } from '../../misc/identity';
 import { createHeadlessQuery } from '../create_headless_query';
 
 describe('core/createHeadlessQuery with validate', () => {
-  const defaultConfig = { contract: unknownContract, mapData: identity };
+  const defaultConfig = {
+    contract: unknownContract,
+    mapData: ({ result }) => result,
+  };
   const defaultHandler = () => 'Random string';
 
   test('throw error for invalid result (string)', async () => {

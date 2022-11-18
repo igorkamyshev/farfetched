@@ -11,7 +11,7 @@ params_mapData: {
     initialData: '14',
     request: { url: 'https://example.com', method: 'GET' },
     response: {
-      mapData: (data) => data.toString(),
+      mapData: ({ result }) => result.toString(),
       contract: {} as Contract<unknown, number>,
     },
   });
@@ -37,7 +37,7 @@ no_params_mapData: {
     initialData: '14',
     request: { url: 'https://example.com', method: 'GET' },
     response: {
-      mapData: (data) => data.toString(),
+      mapData: ({ result }) => result.toString(),
       contract: {} as Contract<unknown, number>,
     },
   });

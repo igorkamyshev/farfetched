@@ -9,6 +9,10 @@ export type CallbackWithSource<Data, Result, Source> = {
   fn: (data: Data, source: Source) => Result;
 };
 
+export type DynamicallySourcedField<Data, Result, Source> =
+  | Callback<Data, Result>
+  | CallbackWithSource<Data, Result, Source>;
+
 type SourcedField<Data, Result, Source> =
   | Result
   | Store<Result>

@@ -4,9 +4,9 @@ import { Contract } from '../contract/type';
 import { createJsonApiRequest, Json } from '../fetch/json';
 import { ApiRequestError, HttpMethod } from '../fetch/api';
 import {
-  TwoArgsDynamicallySourcedField,
   SourcedField,
   normalizeSourced,
+  DynamicallySourcedField,
 } from '../misc/sourced';
 import { type ParamsDeclaration } from '../misc/params';
 import { Query } from './type';
@@ -16,7 +16,6 @@ import {
   SharedQueryFactoryConfig,
 } from './create_headless_query';
 import { unknownContract } from '../contract/unknown_contract';
-import { identity } from '../misc/identity';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
 
@@ -96,9 +95,8 @@ function createJsonQuery<
   > & {
     response: {
       contract: Contract<unknown, Data>;
-      mapData: TwoArgsDynamicallySourcedField<
-        Data,
-        Params,
+      mapData: DynamicallySourcedField<
+        { result: Data; params: Params },
         TransformedData,
         DataSource
       >;
@@ -130,9 +128,8 @@ function createJsonQuery<
     initialData?: TransformedData;
     response: {
       contract: Contract<unknown, Data>;
-      mapData: TwoArgsDynamicallySourcedField<
-        Data,
-        Params,
+      mapData: DynamicallySourcedField<
+        { result: Data; params: Params },
         TransformedData,
         DataSource
       >;
@@ -219,9 +216,8 @@ function createJsonQuery<
   > & {
     response: {
       contract: Contract<unknown, Data>;
-      mapData: TwoArgsDynamicallySourcedField<
-        Data,
-        void,
+      mapData: DynamicallySourcedField<
+        { result: Data; params: void },
         TransformedData,
         DataSource
       >;
@@ -251,9 +247,8 @@ function createJsonQuery<
     initialData?: TransformedData;
     response: {
       contract: Contract<unknown, Data>;
-      mapData: TwoArgsDynamicallySourcedField<
-        Data,
-        void,
+      mapData: DynamicallySourcedField<
+        { result: Data; params: void },
         TransformedData,
         DataSource
       >;
@@ -359,7 +354,7 @@ function createJsonQuery(config: any) {
   >({
     initialData: config.initialData,
     contract: config.response.contract ?? unknownContract,
-    mapData: config.response.mapData ?? identity,
+    mapData: config.response.mapData ?? (({ result }) => result),
     validate: config.response.validate,
     enabled: config.enabled,
     name: config.name,

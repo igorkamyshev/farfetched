@@ -13,11 +13,10 @@ import { invalidDataError } from '../errors/create_error';
 import { InvalidDataError } from '../errors/type';
 import { ExecutionMeta } from '../misc/execution';
 import {
+  DynamicallySourcedField,
   normalizeSourced,
   normalizeStaticOrReactive,
-  reduceTwoArgs,
   StaticOrReactive,
-  TwoArgsDynamicallySourcedField,
 } from '../misc/sourced';
 import { FetchingStatus } from '../status/type';
 import { checkValidationResult } from '../validation/check_validation_result';
@@ -53,9 +52,8 @@ function createRemoteOperation<
   enabled?: StaticOrReactive<boolean>;
   contract: Contract<Data, ContractData>;
   validate?: Validator<ContractData, Params, ValidationSource>;
-  mapData: TwoArgsDynamicallySourcedField<
-    ContractData,
-    Params,
+  mapData: DynamicallySourcedField<
+    { result: ContractData; params: Params },
     MappedData,
     MapDataSource
   >;
@@ -196,8 +194,8 @@ function createRemoteOperation<
           params: params.params, // Extract original params, it is params of params
         })),
       }),
-      fn: (validation, { params, result: data }) => ({
-        data,
+      fn: (validation, { params, result }) => ({
+        result,
         // Extract original params, it is params of params
         params: params.params,
         validation,
@@ -211,12 +209,10 @@ function createRemoteOperation<
 
   sample({
     clock: validDataRecieved,
-    source: normalizeSourced(
-      reduceTwoArgs({
-        field: mapData,
-        clock: validDataRecieved.map(({ data, params }) => [data, params]),
-      })
-    ),
+    source: normalizeSourced({
+      field: mapData,
+      clock: validDataRecieved,
+    }),
     fn: (result, { params, meta }) => ({
       result,
       params,

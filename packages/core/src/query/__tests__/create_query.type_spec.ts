@@ -92,7 +92,10 @@ effect_mapData: {
     effect: createEffect(() => 12),
     mapData: {
       source: createStore(12),
-      fn: (data: number, params: void, source: number) => 'string',
+      fn: (
+        { result, params }: { result: number; params: void },
+        source: number
+      ) => 'string',
     },
   });
 
@@ -113,7 +116,10 @@ effect_contract_mapData: {
     contract: unknownContract,
     mapData: {
       source: createStore(12),
-      fn: (data: unknown, params: void, source: number): string => 'string',
+      fn: (
+        { result, params }: { result: unknown; params: void },
+        source: number
+      ): string => 'string',
     },
   });
 

@@ -4,13 +4,12 @@ import { describe, test, expect, vi } from 'vitest';
 
 import { createHeadlessMutation } from '../create_headless_mutation';
 import { unknownContract } from '../../contract/unknown_contract';
-import { identity } from '../../misc/identity';
 
 describe('createHeadlessMutation', () => {
   test('start triggers executeFx', async () => {
     const mutation = createHeadlessMutation({
       contract: unknownContract,
-      mapData: identity,
+      mapData: ({ result }) => result,
     });
 
     const mockFn = vi.fn();
@@ -26,7 +25,7 @@ describe('createHeadlessMutation', () => {
   test('finished.success triggers after executeFx.done', async () => {
     const mutation = createHeadlessMutation({
       contract: unknownContract,
-      mapData: identity,
+      mapData: ({ result }) => result,
     });
 
     const scope = fork({
@@ -55,7 +54,7 @@ describe('createHeadlessMutation', () => {
     const mutation = createHeadlessMutation({
       contract: unknownContract,
       enabled: false,
-      mapData: identity,
+      mapData: ({ result }) => result,
     });
 
     const scope = fork({
@@ -81,7 +80,7 @@ describe('createHeadlessMutation', () => {
         isData: (_: any): _ is any => false,
         getErrorMessages: () => ['Test error'],
       },
-      mapData: identity,
+      mapData: ({ result }) => result,
     });
 
     const scope = fork({
@@ -110,7 +109,7 @@ describe('createHeadlessMutation', () => {
     const mutation = createHeadlessMutation({
       contract: unknownContract,
       validate: (_: any) => ['Test error'],
-      mapData: identity,
+      mapData: ({ result }) => result,
     });
 
     const scope = fork({
@@ -138,7 +137,7 @@ describe('createHeadlessMutation', () => {
   test('use mapped data', async () => {
     const mutation = createHeadlessMutation({
       contract: unknownContract,
-      mapData: (data) => (data as any) + 1,
+      mapData: ({ result }) => (result as any) + 1,
     });
 
     const scope = fork({

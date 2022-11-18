@@ -47,8 +47,8 @@ describe('remote_data/query/json.response.map_data', () => {
       request,
       response: {
         contract: unknownContract,
-        mapData: (data, params) => {
-          expect(data).toBe(response);
+        mapData: ({ result, params }) => {
+          expect(result).toBe(response);
           expect(params).toBe('caller params');
 
           return transformed;
@@ -78,8 +78,8 @@ describe('remote_data/query/json.response.map_data', () => {
         contract: unknownContract,
         mapData: {
           source: $source,
-          fn: (data, params, source) => {
-            expect(data).toBe(response);
+          fn: ({ result }, source) => {
+            expect(result).toBe(response);
             expect(source).toBe('first');
 
             return transformed;

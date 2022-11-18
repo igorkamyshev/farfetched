@@ -9,7 +9,6 @@ import { Contract } from '../contract/type';
 import { Mutation } from './type';
 import { resolveExecuteEffect } from '../misc/execute_effect';
 import { unknownContract } from '../contract/unknown_contract';
-import { identity } from '../misc/identity';
 
 // Overload: Only handler
 function createMutation<Params, Data>(
@@ -42,7 +41,7 @@ function createMutation(
     name: config.name,
     enabled: config.enabled,
     contract: config.contract ?? unknownContract,
-    mapData: identity,
+    mapData: ({ result }) => result,
   });
 
   mutation.__.executeFx.use(resolveExecuteEffect(config));
