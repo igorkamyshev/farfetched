@@ -23,12 +23,7 @@ export { sessionStorageCache } from './src/cache/adapters/session_storage';
 export { voidCache } from './src/cache/adapters/void';
 
 export { declareParams, type ParamsDeclaration } from './src/misc/params';
-export {
-  type TwoArgsDynamicallySourcedField,
-  type SourcedField,
-  normalizeSourced,
-  reduceTwoArgs,
-} from './src/misc/sourced';
+export { type SourcedField, normalizeSourced } from './src/misc/sourced';
 export { type ValidationResult, type Validator } from './src/validation/type';
 
 export { type Json, type JsonObject } from './src/fetch/json';
