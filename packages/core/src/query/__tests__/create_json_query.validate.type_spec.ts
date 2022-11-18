@@ -16,9 +16,9 @@ no_params: {
     },
     response: {
       contract: numberContract,
-      validate: (a, b) => {
-        expectType<number>(a);
-        expectType<void>(b);
+      validate: ({ result, params }) => {
+        expectType<number>(result);
+        expectType<void>(params);
         return true;
       },
     },
@@ -34,9 +34,9 @@ no_params: {
       contract: numberContract,
       validate: {
         source: createStore(false),
-        fn: (a, b, s) => {
-          expectType<number>(a);
-          expectType<void>(b);
+        fn: ({ result, params }, s) => {
+          expectType<number>(result);
+          expectType<void>(params);
           expectType<boolean>(s);
           return true;
         },
@@ -57,9 +57,9 @@ params: {
     },
     response: {
       contract: numberContract,
-      validate: (a, b) => {
-        expectType<number>(a);
-        expectType<string>(b);
+      validate: ({ result, params }) => {
+        expectType<number>(result);
+        expectType<string>(params);
         return true;
       },
     },
@@ -76,9 +76,9 @@ params: {
       contract: numberContract,
       validate: {
         source: createStore(false),
-        fn: (a, b, s) => {
-          expectType<number>(a);
-          expectType<string>(b);
+        fn: ({ result, params }, s) => {
+          expectType<number>(result);
+          expectType<string>(params);
           expectType<boolean>(s);
           return true;
         },

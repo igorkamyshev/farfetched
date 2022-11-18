@@ -189,15 +189,13 @@ function createRemoteOperation<
   const { validDataRecieved, __: invalidDataRecieved } = split(
     sample({
       clock: applyContractFx.done,
-      source: normalizeSourced(
-        reduceTwoArgs({
-          field: validate ?? validValidator,
-          clock: applyContractFx.done.map(({ result, params }) => [
-            result,
-            params.params, // Extract original params, it is params of params
-          ]),
-        })
-      ),
+      source: normalizeSourced({
+        field: validate ?? validValidator,
+        clock: applyContractFx.done.map(({ result, params }) => ({
+          result,
+          params: params.params, // Extract original params, it is params of params
+        })),
+      }),
       fn: (validation, { params, result: data }) => ({
         data,
         // Extract original params, it is params of params
