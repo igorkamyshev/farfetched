@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.3.4
+
+### Patch Changes
+
+- ffee151: Do not throw error on initializing stage for browser-only cache adapters in node-env
+
 ## 0.3.3
 
 ### Patch Changes
