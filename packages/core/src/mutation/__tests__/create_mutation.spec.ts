@@ -21,7 +21,7 @@ describe('createMutation', () => {
 
     expect(handler).toHaveBeenNthCalledWith(1, 42);
     expect(listeners.onSuccess).toBeCalledWith(
-      expect.objectContaining({ params: 42, data: 'data' })
+      expect.objectContaining({ params: 42, result: 'data' })
     );
 
     await allSettled(mutation.start, { scope, params: 24 });
@@ -48,7 +48,7 @@ describe('createMutation', () => {
 
     expect(handler).toHaveBeenNthCalledWith(1, 42);
     expect(listeners.onSuccess).toBeCalledWith(
-      expect.objectContaining({ params: 42, data: 'data' })
+      expect.objectContaining({ params: 42, result: 'data' })
     );
 
     await allSettled(mutation.start, { scope, params: 24 });

@@ -102,7 +102,7 @@ function createRemoteOperation<
   const finished = {
     success: createEvent<{
       params: Params;
-      data: MappedData;
+      result: MappedData;
       meta: ExecutionMeta;
     }>(),
     failure: createEvent<{
@@ -219,8 +219,8 @@ function createRemoteOperation<
         clock: validDataRecieved.map(({ data, params }) => [data, params]),
       })
     ),
-    fn: (data, { params, meta }) => ({
-      data,
+    fn: (result, { params, meta }) => ({
+      result,
       params,
       meta,
     }),

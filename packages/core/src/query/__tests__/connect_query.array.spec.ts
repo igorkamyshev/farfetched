@@ -101,7 +101,7 @@ describe('remote_data/connect_query', () => {
           ids: ['one', 'two'],
           language: 'RU',
         },
-        data: childResposne,
+        result: childResposne,
       })
     );
 
@@ -112,7 +112,7 @@ describe('remote_data/connect_query', () => {
           ids: ['one', 'two'],
           language: 'RU',
         },
-        data: childResposne,
+        result: childResposne,
       })
     );
 

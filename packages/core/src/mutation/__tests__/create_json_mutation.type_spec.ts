@@ -111,7 +111,7 @@ extract_data_type_from_contarct: {
     response: { contract },
   });
 
-  expectType<Event<{ data: number; params: void; meta: ExecutionMeta }>>(
+  expectType<Event<{ result: number; params: void; meta: ExecutionMeta }>>(
     mutation.finished.success
   );
 }
@@ -221,7 +221,7 @@ mapData: {
       },
     });
 
-    expectType<Event<{ data: boolean; params: string; meta: ExecutionMeta }>>(
+    expectType<Event<{ result: boolean; params: string; meta: ExecutionMeta }>>(
       mutationOne.finished.success
     );
 
@@ -246,7 +246,7 @@ mapData: {
       },
     });
 
-    expectType<Event<{ data: boolean; params: string; meta: ExecutionMeta }>>(
+    expectType<Event<{ result: boolean; params: string; meta: ExecutionMeta }>>(
       mutationOne.finished.success
     );
   }
@@ -268,7 +268,7 @@ mapData: {
       },
     });
 
-    expectType<Event<{ data: boolean; params: void; meta: ExecutionMeta }>>(
+    expectType<Event<{ result: boolean; params: void; meta: ExecutionMeta }>>(
       mutationOne.finished.success
     );
 
@@ -292,7 +292,7 @@ mapData: {
       },
     });
 
-    expectType<Event<{ data: boolean; params: void; meta: ExecutionMeta }>>(
+    expectType<Event<{ result: boolean; params: void; meta: ExecutionMeta }>>(
       mutationOne.finished.success
     );
   }

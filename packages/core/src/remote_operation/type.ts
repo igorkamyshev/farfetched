@@ -31,7 +31,7 @@ interface RemoteOperation<Params, Data, Error, Meta> {
   /** Set of events that represent end of query */
   finished: {
     /** Query was successfully ended, data will be passed as a payload */
-    success: Event<{ params: Params; data: Data; meta: ExecutionMeta }>;
+    success: Event<{ params: Params; result: Data; meta: ExecutionMeta }>;
     /** Query was failed, error will be passed as a payload */
     failure: Event<{ params: Params; error: Error; meta: ExecutionMeta }>;
     /** Query execution was skipped due to `enabled` field in config */
@@ -87,8 +87,8 @@ interface RemoteOperation<Params, Data, Error, Meta> {
   };
 }
 
-type RemoteOperationData<Q extends RemoteOperation<any, any, any, any>> =
-  EventPayload<Q['finished']['success']>['data'];
+type RemoteOperationResult<Q extends RemoteOperation<any, any, any, any>> =
+  EventPayload<Q['finished']['success']>['result'];
 type RemoteOperationError<Q extends RemoteOperation<any, any, any, any>> =
   EventPayload<Q['finished']['failure']>['error'];
 type RemoteOperationParams<Q extends RemoteOperation<any, any, any, any>> =
@@ -96,7 +96,7 @@ type RemoteOperationParams<Q extends RemoteOperation<any, any, any, any>> =
 
 export {
   type RemoteOperation,
-  type RemoteOperationData,
+  type RemoteOperationResult,
   type RemoteOperationError,
   type RemoteOperationParams,
 };

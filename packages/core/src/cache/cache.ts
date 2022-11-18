@@ -70,10 +70,10 @@ function saveToCache<Q extends Query<any, any, any>>(
   sample({
     clock: doneWithKey,
     source: adapter.__.$instance,
-    fn: (instance, { key, data }) => ({
+    fn: (instance, { key, result }) => ({
       instance,
       key,
-      value: data,
+      value: result,
     }),
     target: putCachedValueFx,
   });

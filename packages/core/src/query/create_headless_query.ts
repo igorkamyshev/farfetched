@@ -109,7 +109,7 @@ function createHeadlessQuery<
   sample({ clock: operation.finished.success, fn: () => null, target: $error });
   sample({
     clock: operation.finished.success,
-    fn: ({ data }) => data,
+    fn: ({ result }) => result,
     target: $data,
   });
 

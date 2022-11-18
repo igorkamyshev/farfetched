@@ -4,7 +4,7 @@ import { every } from 'patronum';
 import { postpone } from '../misc/postpone';
 import { isQuery, Query } from '../query/type';
 import {
-  RemoteOperationData,
+  RemoteOperationResult,
   RemoteOperationParams,
 } from '../remote_operation/type';
 
@@ -21,14 +21,14 @@ function connectQuery<Sources, Target extends Query<any, any, any>>(
       ? NonExtendable
       : Sources extends Query<any, any, any>
       ? {
-          fn: (sources: RemoteOperationData<Sources>) => {
+          fn: (sources: RemoteOperationResult<Sources>) => {
             params: RemoteOperationParams<Target>;
           };
         }
       : Sources extends Record<string, Query<any, any, any>>
       ? {
           fn: (sources: {
-            [index in keyof Sources]: RemoteOperationData<Sources[index]>;
+            [index in keyof Sources]: RemoteOperationResult<Sources[index]>;
           }) => { params: RemoteOperationParams<Target> };
         }
       : NonExtendable

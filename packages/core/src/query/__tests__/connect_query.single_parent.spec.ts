@@ -66,7 +66,7 @@ describe('remote_data/connect_query', () => {
         params: {
           language: 'RU',
         },
-        data: childResposne,
+        result: childResposne,
       })
     );
     expect(fetchContentMock).toHaveBeenCalledWith(

@@ -92,7 +92,7 @@ describe('remote_data/connect_query', () => {
     expect(childWatcher.listeners.onSuccess).toHaveBeenCalledTimes(1);
     expect(childWatcher.listeners.onSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: 'content_1',
+        result: 'content_1',
         params: { ids: 'block_1', language: 'language_1' },
       })
     );
@@ -104,7 +104,7 @@ describe('remote_data/connect_query', () => {
     expect(childWatcher.listeners.onSuccess).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({
-        data: 'content_2',
+        result: 'content_2',
         params: { ids: 'block_1', language: 'language_2' },
       })
     );
