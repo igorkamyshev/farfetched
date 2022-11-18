@@ -20,7 +20,7 @@ interface CacheParametersDefaulted {
   purge?: Event<void>;
 }
 
-export function cache<Q extends Query<any, any, any>>(
+export function cache<Q extends Query<any, any, any, any>>(
   query: Q,
   params?: CacheParameters
 ): void {
