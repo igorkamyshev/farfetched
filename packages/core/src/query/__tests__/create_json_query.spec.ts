@@ -27,4 +27,14 @@ describe('createJsonQuery', () => {
 
     expect(isQuery(query)).toBeTruthy();
   });
+
+  test('use initialData as initial $data', async () => {
+    const query = createJsonQuery({
+      initialData: 14,
+      request,
+      response,
+    });
+
+    expect(query.$data.getState()).toBe(14);
+  });
 });

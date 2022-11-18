@@ -1,4 +1,5 @@
 import { Effect, Event, EventPayload, Store } from 'effector';
+import { ExecutionMeta } from '../misc/execution';
 
 import { FetchingStatus } from '../status/type';
 
@@ -30,13 +31,13 @@ interface RemoteOperation<Params, Data, Error, Meta> {
   /** Set of events that represent end of query */
   finished: {
     /** Query was successfully ended, data will be passed as a payload */
-    success: Event<{ params: Params; data: Data }>;
+    success: Event<{ params: Params; data: Data; meta: ExecutionMeta }>;
     /** Query was failed, error will be passed as a payload */
-    failure: Event<{ params: Params; error: Error }>;
+    failure: Event<{ params: Params; error: Error; meta: ExecutionMeta }>;
     /** Query execution was skipped due to `enabled` field in config */
-    skip: Event<{ params: Params }>;
+    skip: Event<{ params: Params; meta: ExecutionMeta }>;
     /** Query was ended, it merges `success`, `error` and `skip` */
-    finally: Event<{ params: Params }>;
+    finally: Event<{ params: Params; meta: ExecutionMeta }>;
   };
   /**
    * DO NOT USE THIS FIELD IN PRODUCTION
@@ -66,7 +67,23 @@ interface RemoteOperation<Params, Data, Error, Meta> {
      * Meta information about operation and its configuration.
      */
     meta: Meta;
+    /**
+     * Distinguish different kinds of operations
+     */
     kind: unknown;
+    /**
+     * Low-level API, it can be changed anytime without any notice!
+     */
+    lowLevelAPI: {
+      sources: Array<Store<unknown>>;
+      registerInterruption: () => void;
+      fillData: Event<{
+        params: Params;
+        result: unknown;
+        meta: ExecutionMeta;
+      }>;
+      resumeExecution: Event<{ params: Params }>;
+    };
   };
 }
 

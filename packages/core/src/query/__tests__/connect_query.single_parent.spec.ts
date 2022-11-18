@@ -61,12 +61,14 @@ describe('remote_data/connect_query', () => {
     await allSettled(languagesQ.start, { scope, params: {} });
 
     expect(childWatcher.listeners.onSuccess).toBeCalledTimes(1);
-    expect(childWatcher.listeners.onSuccess).toBeCalledWith({
-      params: {
-        language: 'RU',
-      },
-      data: childResposne,
-    });
+    expect(childWatcher.listeners.onSuccess).toBeCalledWith(
+      expect.objectContaining({
+        params: {
+          language: 'RU',
+        },
+        data: childResposne,
+      })
+    );
     expect(fetchContentMock).toHaveBeenCalledWith(
       expect.objectContaining({ language: 'RU' })
     );

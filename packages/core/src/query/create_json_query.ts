@@ -107,6 +107,45 @@ function createJsonQuery<
   }
 ): Query<Params, TransformedData, ApiRequestError | Error | InvalidDataError>;
 
+function createJsonQuery<
+  Params,
+  Data,
+  TransformedData,
+  Error,
+  BodySource = void,
+  QuerySource = void,
+  HeadersSource = void,
+  UrlSource = void,
+  DataSource = void,
+  ValidationSource = void
+>(
+  config: BaseJsonQueryConfigWithParams<
+    Params,
+    TransformedData,
+    BodySource,
+    QuerySource,
+    HeadersSource,
+    UrlSource
+  > & {
+    initialData?: TransformedData;
+    response: {
+      contract: Contract<unknown, Data>;
+      mapData: TwoArgsDynamicallySourcedField<
+        Data,
+        Params,
+        TransformedData,
+        DataSource
+      >;
+      validate?: Validator<TransformedData, Params, ValidationSource>;
+    };
+  }
+): Query<
+  Params,
+  TransformedData,
+  ApiRequestError | Error | InvalidDataError,
+  TransformedData
+>;
+
 // params + no mapData
 function createJsonQuery<
   Params,
@@ -132,6 +171,32 @@ function createJsonQuery<
     };
   }
 ): Query<Params, Data, ApiRequestError | Error | InvalidDataError>;
+
+function createJsonQuery<
+  Params,
+  Data,
+  Error,
+  BodySource = void,
+  QuerySource = void,
+  HeadersSource = void,
+  UrlSource = void,
+  ValidationSource = void
+>(
+  config: BaseJsonQueryConfigWithParams<
+    Params,
+    Data,
+    BodySource,
+    QuerySource,
+    HeadersSource,
+    UrlSource
+  > & {
+    initialData?: Data;
+    response: {
+      contract: Contract<unknown, Data>;
+      validate?: Validator<Data, Params, ValidationSource>;
+    };
+  }
+): Query<Params, Data, ApiRequestError | Error | InvalidDataError, Data>;
 
 // No params + mapData
 function createJsonQuery<
@@ -165,6 +230,43 @@ function createJsonQuery<
   }
 ): Query<void, TransformedData, ApiRequestError | Error | InvalidDataError>;
 
+function createJsonQuery<
+  Data,
+  TransformedData,
+  Error,
+  BodySource = void,
+  QuerySource = void,
+  HeadersSource = void,
+  UrlSource = void,
+  DataSource = void,
+  ValidationSource = void
+>(
+  config: BaseJsonQueryConfigNoParams<
+    TransformedData,
+    BodySource,
+    QuerySource,
+    HeadersSource,
+    UrlSource
+  > & {
+    initialData?: TransformedData;
+    response: {
+      contract: Contract<unknown, Data>;
+      mapData: TwoArgsDynamicallySourcedField<
+        Data,
+        void,
+        TransformedData,
+        DataSource
+      >;
+      validate?: Validator<TransformedData, void, ValidationSource>;
+    };
+  }
+): Query<
+  void,
+  TransformedData,
+  ApiRequestError | Error | InvalidDataError,
+  TransformedData
+>;
+
 // No params + no mapData
 function createJsonQuery<
   Data,
@@ -189,6 +291,30 @@ function createJsonQuery<
   }
 ): Query<void, Data, ApiRequestError | Error | InvalidDataError>;
 
+function createJsonQuery<
+  Data,
+  Error,
+  BodySource = void,
+  QuerySource = void,
+  HeadersSource = void,
+  UrlSource = void,
+  ValidationSource = void
+>(
+  config: BaseJsonQueryConfigNoParams<
+    Data,
+    BodySource,
+    QuerySource,
+    HeadersSource,
+    UrlSource
+  > & {
+    initialData?: Data;
+    response: {
+      contract: Contract<unknown, Data>;
+      validate?: Validator<Data, void, ValidationSource>;
+    };
+  }
+): Query<void, Data, ApiRequestError | Error | InvalidDataError, Data>;
+
 // -- Implementation --
 
 function createJsonQuery(config: any) {
@@ -198,37 +324,56 @@ function createJsonQuery(config: any) {
     concurrency: { strategy: 'TAKE_LATEST' },
   });
 
-  const headlessQuery = createHeadlessQuery<any, any, any, any, any, any, any>({
+  // Connections
+  const internalStart = createEvent<any>();
+
+  const url = normalizeSourced({
+    field: config.request.url,
+    clock: internalStart,
+  });
+
+  const body = normalizeSourced({
+    field: config.request.body,
+    clock: internalStart,
+  });
+
+  const headers = normalizeSourced({
+    field: config.request.headers,
+    clock: internalStart,
+  });
+
+  const query = normalizeSourced({
+    field: config.request.query,
+    clock: internalStart,
+  });
+
+  const headlessQuery = createHeadlessQuery<
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >({
+    initialData: config.initialData,
     contract: config.response.contract ?? unknownContract,
     mapData: config.response.mapData ?? identity,
     validate: config.response.validate,
     enabled: config.enabled,
     name: config.name,
     serialize: config.serialize,
+    sources: [url, body, headers, query],
   });
-
-  // Connections
-  const internalStart = createEvent<any>();
 
   headlessQuery.__.executeFx.use(
     attach({
       source: {
-        url: normalizeSourced({
-          field: config.request.url,
-          clock: internalStart,
-        }),
-        body: normalizeSourced({
-          field: config.request.body,
-          clock: internalStart,
-        }),
-        headers: normalizeSourced({
-          field: config.request.headers,
-          clock: internalStart,
-        }),
-        query: normalizeSourced({
-          field: config.request.query,
-          clock: internalStart,
-        }),
+        url,
+        body,
+        headers,
+        query,
       },
       effect: requestFx,
     })

@@ -1,8 +1,9 @@
 import { Effect, Event } from 'effector';
 import { expectType } from 'tsd';
+
 import { Contract } from '../../contract/type';
 import { InvalidDataError } from '../../errors/type';
-
+import { ExecutionMeta } from '../../misc/execution';
 import { createMutation } from '../create_mutation';
 
 params_data_from_handler: {
@@ -11,7 +12,7 @@ params_data_from_handler: {
   });
 
   expectType<Event<number>>(mutation.start);
-  expectType<Event<{ params: number; data: string }>>(
+  expectType<Event<{ params: number; data: string; meta: ExecutionMeta }>>(
     mutation.finished.success
   );
 }
@@ -24,10 +25,10 @@ params_data_error_from_effect: {
   });
 
   expectType<Event<number>>(mutation.start);
-  expectType<Event<{ params: number; data: string }>>(
+  expectType<Event<{ params: number; data: string; meta: ExecutionMeta }>>(
     mutation.finished.success
   );
-  expectType<Event<{ params: number; error: boolean }>>(
+  expectType<Event<{ params: number; error: boolean; meta: ExecutionMeta }>>(
     mutation.finished.failure
   );
 }
@@ -37,10 +38,14 @@ effect_and_contract: {
   const contract: Contract<unknown, string> = {} as any;
 
   const mutation = createMutation({ effect, contract });
-  expectType<Event<{ params: number; data: string }>>(
+  expectType<Event<{ params: number; data: string; meta: ExecutionMeta }>>(
     mutation.finished.success
   );
-  expectType<Event<{ params: number; error: boolean | InvalidDataError }>>(
-    mutation.finished.failure
-  );
+  expectType<
+    Event<{
+      params: number;
+      error: boolean | InvalidDataError;
+      meta: ExecutionMeta;
+    }>
+  >(mutation.finished.failure);
 }

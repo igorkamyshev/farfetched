@@ -1,10 +1,35 @@
 import { allSettled, createEvent, createStore, fork } from 'effector';
-import { describe, test, expect, vi } from 'vitest';
+import {
+  describe,
+  test,
+  expect,
+  vi,
+  beforeAll,
+  afterAll,
+  afterEach,
+} from 'vitest';
 
 import { createQuery } from '../../query/create_query';
 import { retry } from '../retry';
 
-describe('retry', () => {
+describe('retry (deprecated form)', () => {
+  const errorMock = vi.fn();
+  let originalError: any;
+
+  beforeAll(() => {
+    originalError = console.error;
+    console.error = errorMock;
+  });
+
+  afterAll(() => {
+    console.error = originalError;
+  });
+
+  afterEach(() => {
+    expect(errorMock).toBeCalledTimes(1);
+    errorMock.mockClear();
+  });
+
   test('starts query after failure with same args by default', async () => {
     const handler = vi.fn().mockRejectedValue(new Error('Sorry'));
     const query = createQuery({
@@ -232,7 +257,9 @@ describe('retry', () => {
     await allSettled(query.start, { scope });
 
     expect(handler).toBeCalledTimes(1);
-    expect(filter).toBeCalledWith({ params: undefined, error: queryError });
+    expect(filter).toBeCalledWith(
+      expect.objectContaining({ params: undefined, error: queryError })
+    );
   });
 
   test('calls otherwise event after all retries', async () => {

@@ -8,6 +8,9 @@ import {
 } from 'effector';
 import { delay } from 'patronum';
 
+import { Time, parseTime } from '../misc/time';
+import { deprecationWarning } from '../deprectaion/warning';
+
 import {
   normalizeSourced,
   normalizeStaticOrReactive,
@@ -16,34 +19,27 @@ import {
   StaticOrReactive,
   TwoArgsDynamicallySourcedField,
 } from '../misc/sourced';
-import { Query } from '../query/type';
+import { isQuery, Query } from '../query/type';
 import {
+  RemoteOperation,
   RemoteOperationError,
   RemoteOperationParams,
 } from '../remote_operation/type';
 import { RetryMeta } from './type';
 
-type FailInfo<Q extends Query<any, any, any>> = {
+type FailInfo<Q extends RemoteOperation<any, any, any, any>> = {
   params: RemoteOperationParams<Q>;
   error: RemoteOperationError<Q>;
 };
 
-function retry<
-  Q extends Query<any, any, any>,
+interface RetryConfig<
+  Q extends RemoteOperation<any, any, any, any>,
   DelaySource = unknown,
   FilterSource = unknown,
   MapParamsSource = unknown
->({
-  query,
-  times,
-  delay: timeout,
-  filter,
-  mapParams,
-  otherwise,
-}: {
-  query: Q;
+> {
   times: StaticOrReactive<number>;
-  delay: SourcedField<RetryMeta, number, DelaySource>;
+  delay: SourcedField<RetryMeta, Time, DelaySource>;
   filter?: SourcedField<FailInfo<Q>, boolean, FilterSource>;
   mapParams?: TwoArgsDynamicallySourcedField<
     FailInfo<Q>,
@@ -52,7 +48,44 @@ function retry<
     MapParamsSource
   >;
   otherwise?: Event<FailInfo<Q>>;
-}): void {
+}
+
+export function retry<
+  Q extends RemoteOperation<any, any, any, any>,
+  DelaySource = unknown,
+  FilterSource = unknown,
+  MapParamsSource = unknown
+>(
+  operation: Q,
+  config: RetryConfig<Q, DelaySource, FilterSource, MapParamsSource>
+): void;
+
+/**
+ * @deprecated since v0.3.0
+ *
+ * use retry(query, config) instead
+ */
+export function retry<
+  Q extends Query<any, any, any>,
+  DelaySource = unknown,
+  FilterSource = unknown,
+  MapParamsSource = unknown
+>(
+  config: {
+    query: Q;
+  } & RetryConfig<Q, DelaySource, FilterSource, MapParamsSource>
+): void;
+
+export function retry(operationOrConfig: any, maybeConfig?: any): void {
+  const {
+    operation,
+    times,
+    delay: timeout,
+    filter,
+    mapParams,
+    otherwise,
+  } = parseRetryConfig(operationOrConfig, maybeConfig);
+
   const $maxAttempts = normalizeStaticOrReactive(times);
   const $attempt = createStore(1, {
     serialize: 'ignore',
@@ -66,14 +99,14 @@ function retry<
 
   const { planNextAttempt, __: retriesAreOver } = split(
     sample({
-      clock: query.finished.failure,
+      clock: operation.finished.failure,
       source: {
         maxAttempts: $maxAttempts,
         attempt: $attempt,
       },
       filter: normalizeSourced({
         field: filter ?? true,
-        clock: query.finished.failure,
+        clock: operation.finished.failure,
       }),
       fn: ({ attempt, maxAttempts }, { params, error }) => ({
         params,
@@ -90,29 +123,51 @@ function retry<
         clock: planNextAttempt,
         source: normalizeSourced(
           reduceTwoArgs({
-            field: mapParams ?? (({ params }: FailInfo<Q>) => params),
+            field: mapParams ?? (({ params }) => params),
             clock: planNextAttempt.map(({ params, error, meta }) => [
               { params, error },
               meta,
             ]),
           })
         ),
-      }) as Event<any>, // TODO: why types is not inferred correctly?
+      }),
       timeout: normalizeSourced({
         field: timeout,
         source: $meta,
-      }),
+      }).map(parseTime),
     }),
-    target: [newAttempt, query.start],
+    target: [newAttempt, operation.start],
   });
 
   $attempt
     .on(newAttempt, (attempt) => attempt + 1)
-    .reset(query.finished.success);
+    .reset(operation.finished.success);
 
   if (otherwise) {
     sample({ clock: retriesAreOver, target: otherwise });
   }
 }
 
-export { retry };
+function parseRetryConfig<
+  Q extends RemoteOperation<any, any, any, any>,
+  DelaySource = unknown,
+  FilterSource = unknown,
+  MapParamsSource = unknown
+>(
+  operationOrConfig: any,
+  maybeConfig: any
+): RetryConfig<Q, DelaySource, FilterSource, MapParamsSource> & {
+  operation: Q;
+} {
+  if (isQuery(operationOrConfig.query)) {
+    deprecationWarning(
+      'retry({ query, /* ... */ }) is deprecated',
+      'use retry(query, { /* ... */ }) instead'
+    );
+    const { query, ...restConfig } = operationOrConfig;
+
+    return { ...restConfig, operation: query };
+  }
+
+  return { ...maybeConfig, operation: operationOrConfig };
+}

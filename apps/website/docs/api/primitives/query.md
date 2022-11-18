@@ -6,9 +6,10 @@ Representation of a piece of remote data.
 
 ```ts
 const query: Query<Params, Data, Error>;
+const query: Query<Params, Data, Error, InitialData>; // InitialData is allowed since v0.3.0
 
 // Stores
-query.$data; // Store<Data | null>
+query.$data; // Store<Data | InitialData>
 query.$error; // Store<Error | null>
 query.$status; // Store<'initial' | 'pending' | 'done' | 'fail'>
 query.$pending; // Store<boolean>

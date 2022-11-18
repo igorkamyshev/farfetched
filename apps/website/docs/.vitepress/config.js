@@ -101,7 +101,8 @@ export default withMermaid(
                     text: 'Dependent Queries',
                     link: '/tutorial/dependent_queries',
                   },
-                  { text: 'Retries', link: '/tutorial/query_retry' },
+                  { text: 'Retries', link: '/tutorial/retries' },
+                  { text: 'Caching', link: '/tutorial/caching' },
                 ],
               },
               {
@@ -154,6 +155,7 @@ export default withMermaid(
             items: [
               { text: 'connectQuery', link: '/api/operators/connect_query' },
               { text: 'retry', link: '/api/operators/retry' },
+              { text: 'cache', link: '/api/operators/cache' },
             ],
           },
           {
@@ -235,6 +237,7 @@ export default withMermaid(
                 text: 'Data flow in Remote Operation',
                 link: '/recipes/data_flow',
               },
+              { text: 'Automated cache', link: '/recipes/cache' },
             ],
           },
         ],
@@ -263,6 +266,7 @@ export default withMermaid(
             text: 'Releases',
             collapsible: false,
             items: [
+              { text: 'v0.3 Sirinat', link: '/releases/0-3' },
               { text: 'v0.2 Laem Promthep', link: '/releases/0-2' },
               { text: 'v0.1 Samet Nangshe', link: '/releases/0-1' },
             ],
