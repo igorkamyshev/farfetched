@@ -8,7 +8,7 @@ import { CacheAdapter, CacheAdapterOptions } from './type';
 
 export function browserStorageCache(
   config: {
-    storage: Storage;
+    storage: () => Storage;
   } & CacheAdapterOptions
 ): CacheAdapter {
   const { storage, observability } = config;
@@ -189,12 +189,12 @@ export function browserStorageCache(
   // -- storage effects
 
   const setItemFx = createEffect((params: { key: string; value: string }) => {
-    storage.setItem(params.key, params.value);
+    storage().setItem(params.key, params.value);
   });
 
-  const getItemFx = createEffect((key: string) => storage.getItem(key));
+  const getItemFx = createEffect((key: string) => storage().getItem(key));
 
-  const removeItemFx = createEffect((key: string) => storage.removeItem(key));
+  const removeItemFx = createEffect((key: string) => storage().removeItem(key));
 
   // public
   return storageCache();
