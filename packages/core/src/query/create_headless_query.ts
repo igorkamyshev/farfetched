@@ -1,5 +1,4 @@
 import { createStore, sample, createEvent, Store } from 'effector';
-import { reset as resetMany } from 'patronum';
 
 import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
@@ -134,9 +133,14 @@ function createHeadlessQuery<
 
   // -- Reset state --
 
-  resetMany({
+  sample({
     clock: reset,
-    target: [$data, $error, $stale, operation.$status],
+    target: [
+      $data.reinit!,
+      $error.reinit!,
+      $stale.reinit!,
+      operation.$status.reinit!,
+    ],
   });
 
   return {

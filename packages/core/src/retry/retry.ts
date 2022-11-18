@@ -6,8 +6,8 @@ import {
   sample,
   split,
 } from 'effector';
-import { delay } from 'patronum';
 
+import { delay } from '../patronus/delay';
 import { Time, parseTime } from '../misc/time';
 
 import {
@@ -96,7 +96,7 @@ export function retry<
 
   sample({
     clock: delay({
-      source: sample({
+      clock: sample({
         clock: planNextAttempt,
         source: normalizeSourced(
           reduceTwoArgs({

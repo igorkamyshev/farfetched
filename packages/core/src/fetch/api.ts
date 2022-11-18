@@ -1,6 +1,6 @@
 import { attach, createEffect, createEvent, Event, sample } from 'effector';
 
-import { abortable, AbortContext } from '../misc/abortable';
+import { abortable, AbortContext } from '../patronus/abortable';
 import { anySignal } from '../misc/any_signal';
 import { normalizeStaticOrReactive, StaticOrReactive } from '../misc/sourced';
 import { TimeoutController } from '../misc/timeout_abort_controller';
