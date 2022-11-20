@@ -19,7 +19,7 @@ import {
   normalizeStaticOrReactive,
   StaticOrReactive,
 } from '../misc/sourced';
-import { FetchingStatus } from '../status/type';
+import { FetchingStatus } from '../libs/patronus/status';
 import { checkValidationResult } from '../validation/check_validation_result';
 import { Validator } from '../validation/type';
 import { unwrapValidationResult } from '../validation/unwrap_validation_result';

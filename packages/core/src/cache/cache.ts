@@ -6,7 +6,7 @@ import { RemoteOperationParams } from '../remote_operation/type';
 import { inMemoryCache } from './adapters/in_memory';
 import { CacheAdapter, CacheAdapterInstance } from './adapters/type';
 import { enrichFinishedSuccessWithKey, enrichStartWithKey } from './key/key';
-import { parseTime, Time } from '../misc/time';
+import { parseTime, Time } from '../libs/date-nfs/time';
 
 interface CacheParameters {
   adapter?: CacheAdapter;

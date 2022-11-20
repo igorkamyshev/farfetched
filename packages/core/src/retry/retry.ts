@@ -8,7 +8,7 @@ import {
 } from 'effector';
 
 import { delay } from '../libs/patronus/delay';
-import { Time, parseTime } from '../misc/time';
+import { Time, parseTime } from '../libs/date-nfs/time';
 
 import {
   DynamicallySourcedField,

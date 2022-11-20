@@ -8,7 +8,7 @@ import {
 
 import { time } from '../../libs/patronus/time';
 import { delay } from '../../libs/patronus/delay';
-import { parseTime } from '../../misc/time';
+import { parseTime } from '../../libs/date-nfs/time';
 import { createAdapter } from './instance';
 import { attachObservability } from './observability';
 import { CacheAdapter, CacheAdapterOptions } from './type';

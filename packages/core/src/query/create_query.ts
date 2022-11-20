@@ -187,7 +187,7 @@ function createQuery<
     serialize: config.serialize,
   });
 
-  query.__.executeFx.use(resolveExecuteEffect<Params, Response, Error>(config));
+  query.__.executeFx.use(resolveExecuteEffect(config));
 
   return query;
 }

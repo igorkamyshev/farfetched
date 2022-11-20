@@ -4,8 +4,8 @@ import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
 import { StaticOrReactive, DynamicallySourcedField } from '../misc/sourced';
 import { createRemoteOperation } from '../remote_operation/create_remote_operation';
-import { serializationForSideStore } from '../serialization/serizalize_for_side_store';
-import { Serialize } from '../serialization/type';
+import { serializationForSideStore } from '../libs/patronus/serialization';
+import { Serialize } from '../libs/patronus/serialization';
 import { Validator } from '../validation/type';
 import { Query, QueryMeta, QuerySymbol } from './type';
 
