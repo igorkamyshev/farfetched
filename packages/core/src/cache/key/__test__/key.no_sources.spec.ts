@@ -2,7 +2,7 @@ import { allSettled, fork } from 'effector';
 import { describe, test, vi, expect } from 'vitest';
 import { firstArg } from '@farfetched/test-utils';
 
-import { withFactory } from '../../../misc/sid';
+import { withFactory } from '../../../libs/patronus';
 import { createQuery } from '../../../query/create_query';
 import { enrichStartWithKey } from '../key';
 

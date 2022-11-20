@@ -4,11 +4,11 @@ import { Contract } from '../contract/type';
 import { createJsonApiRequest, Json } from '../fetch/json';
 import { ApiRequestError, HttpMethod } from '../fetch/api';
 import {
-  SourcedField,
   normalizeSourced,
-  DynamicallySourcedField,
-} from '../misc/sourced';
-import { type ParamsDeclaration } from '../misc/params';
+  type SourcedField,
+  type DynamicallySourcedField,
+} from '../libs/patronus';
+import { type ParamsDeclaration } from '../remote_operation/params';
 import { Query } from './type';
 import { FetchApiRecord } from '../fetch/lib';
 import {

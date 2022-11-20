@@ -5,12 +5,12 @@ import { InvalidDataError } from '../errors/type';
 import { ApiRequestError, HttpMethod } from '../fetch/api';
 import { createJsonApiRequest, Json } from '../fetch/json';
 import { FetchApiRecord } from '../fetch/lib';
-import { ParamsDeclaration } from '../misc/params';
+import { ParamsDeclaration } from '../remote_operation/params';
 import {
   DynamicallySourcedField,
   normalizeSourced,
   SourcedField,
-} from '../misc/sourced';
+} from '../libs/patronus';
 import { Validator } from '../validation/type';
 import {
   createHeadlessMutation,

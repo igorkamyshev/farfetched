@@ -1,6 +1,7 @@
 import { Store, Event } from 'effector';
+
 import { RemoteOperation } from '../remote_operation/type';
-import { Serialize } from '../libs/patronus/serialization';
+import { type Serialize } from '../libs/patronus';
 
 const QuerySymbol = Symbol('Query');
 

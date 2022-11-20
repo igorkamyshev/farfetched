@@ -1,7 +1,7 @@
 import { Effect, Event, EventPayload, Store } from 'effector';
-import { ExecutionMeta } from '../misc/execution';
 
-import { FetchingStatus } from '../libs/patronus/status';
+import { type ExecutionMeta } from './execution_meta';
+import { type FetchingStatus } from '../libs/patronus';
 
 interface RemoteOperation<Params, Data, Error, Meta> {
   /**

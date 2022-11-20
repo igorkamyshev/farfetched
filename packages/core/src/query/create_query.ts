@@ -7,10 +7,10 @@ import {
 import { Query } from './type';
 import { Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
-import { DynamicallySourcedField } from '../misc/sourced';
+import { type DynamicallySourcedField } from '../libs/patronus';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
-import { resolveExecuteEffect } from '../misc/execute_effect';
+import { resolveExecuteEffect } from '../remote_operation/resolve_execute_effect';
 
 // Overload: Only handler
 function createQuery<Params, Response>(

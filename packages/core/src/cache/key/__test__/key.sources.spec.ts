@@ -3,9 +3,9 @@ import { fork, allSettled, createStore, combine } from 'effector';
 import { firstArg } from '@farfetched/test-utils';
 
 import { createJsonQuery } from '../../../query/create_json_query';
-import { withFactory } from '../../../misc/sid';
+import { withFactory } from '../../../libs/patronus';
 import { unknownContract } from '../../../contract/unknown_contract';
-import { declareParams } from '../../../misc/params';
+import { declareParams } from '../../../remote_operation/params';
 import { FetchApiRecord } from '../../../fetch/lib';
 import { enrichStartWithKey } from '../key';
 

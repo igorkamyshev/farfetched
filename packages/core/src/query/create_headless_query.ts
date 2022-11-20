@@ -2,10 +2,13 @@ import { createStore, sample, createEvent, Store } from 'effector';
 
 import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
-import { StaticOrReactive, DynamicallySourcedField } from '../misc/sourced';
 import { createRemoteOperation } from '../remote_operation/create_remote_operation';
-import { serializationForSideStore } from '../libs/patronus/serialization';
-import { Serialize } from '../libs/patronus/serialization';
+import {
+  serializationForSideStore,
+  type Serialize,
+  type StaticOrReactive,
+  type DynamicallySourcedField,
+} from '../libs/patronus';
 import { Validator } from '../validation/type';
 import { Query, QueryMeta, QuerySymbol } from './type';
 

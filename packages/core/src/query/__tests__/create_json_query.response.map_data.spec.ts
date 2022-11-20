@@ -4,7 +4,7 @@ import { describe, test, expect, vi } from 'vitest';
 
 import { unknownContract } from '../../contract/unknown_contract';
 import { createJsonQuery } from '../create_json_query';
-import { declareParams } from '../../misc/params';
+import { declareParams } from '../../remote_operation/params';
 import { Contract } from '../../contract/type';
 
 describe('remote_data/query/json.response.map_data', () => {

@@ -7,19 +7,19 @@ import {
   Store,
 } from 'effector';
 
-import { not } from '../libs/patronus/not';
+import {
+  not,
+  normalizeSourced,
+  normalizeStaticOrReactive,
+  type DynamicallySourcedField,
+  type StaticOrReactive,
+  type FetchingStatus,
+} from '../libs/patronus';
 import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
 import { invalidDataError } from '../errors/create_error';
 import { InvalidDataError } from '../errors/type';
-import { ExecutionMeta } from '../misc/execution';
-import {
-  DynamicallySourcedField,
-  normalizeSourced,
-  normalizeStaticOrReactive,
-  StaticOrReactive,
-} from '../misc/sourced';
-import { FetchingStatus } from '../libs/patronus/status';
+import { ExecutionMeta } from './execution_meta';
 import { checkValidationResult } from '../validation/check_validation_result';
 import { Validator } from '../validation/type';
 import { unwrapValidationResult } from '../validation/unwrap_validation_result';

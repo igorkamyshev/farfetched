@@ -1,7 +1,7 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
 
-import { delay } from '../../libs/patronus/delay';
-import { parseTime } from '../../libs/date-nfs/time';
+import { delay } from '../../libs/patronus';
+import { parseTime } from '../../libs/date-nfs';
 import { createAdapter } from './instance';
 import { attachObservability } from './observability';
 import { CacheAdapter, CacheAdapterOptions } from './type';

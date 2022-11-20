@@ -7,16 +7,16 @@ import {
   split,
 } from 'effector';
 
-import { delay } from '../libs/patronus/delay';
-import { Time, parseTime } from '../libs/date-nfs/time';
-
 import {
-  DynamicallySourcedField,
+  delay,
   normalizeSourced,
   normalizeStaticOrReactive,
-  SourcedField,
-  StaticOrReactive,
-} from '../misc/sourced';
+  type DynamicallySourcedField,
+  type SourcedField,
+  type StaticOrReactive,
+} from '../libs/patronus';
+import { Time, parseTime } from '../libs/date-nfs';
+
 import {
   RemoteOperation,
   RemoteOperationError,

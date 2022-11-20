@@ -8,7 +8,7 @@ import {
   EventAsReturnType,
 } from 'effector';
 
-import { normalizeStaticOrReactive } from '../../misc/sourced';
+import { normalizeStaticOrReactive } from './sourced';
 
 export function delay<T>({
   clock,

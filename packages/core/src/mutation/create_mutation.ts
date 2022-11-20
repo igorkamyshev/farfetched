@@ -7,7 +7,7 @@ import {
 import { InvalidDataError } from '../errors/type';
 import { Contract } from '../contract/type';
 import { Mutation } from './type';
-import { resolveExecuteEffect } from '../misc/execute_effect';
+import { resolveExecuteEffect } from '../remote_operation/resolve_execute_effect';
 import { unknownContract } from '../contract/unknown_contract';
 
 // Overload: Only handler

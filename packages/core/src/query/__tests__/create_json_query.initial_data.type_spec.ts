@@ -1,7 +1,7 @@
 import { expectType } from 'tsd';
 
 import { Contract } from '../../contract/type';
-import { declareParams } from '../../misc/params';
+import { declareParams } from '../../remote_operation/params';
 import { createJsonQuery } from '../create_json_query';
 import { Query } from '../type';
 

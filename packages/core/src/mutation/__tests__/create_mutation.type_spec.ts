@@ -3,7 +3,7 @@ import { expectType } from 'tsd';
 
 import { Contract } from '../../contract/type';
 import { InvalidDataError } from '../../errors/type';
-import { ExecutionMeta } from '../../misc/execution';
+import { ExecutionMeta } from '../../remote_operation/execution_meta';
 import { createMutation } from '../create_mutation';
 
 params_data_from_handler: {

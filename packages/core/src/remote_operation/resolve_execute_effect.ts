@@ -1,5 +1,4 @@
 import { createEffect, Effect, is } from 'effector';
-import { InvalidConfigException } from './config';
 
 export function resolveExecuteEffect<Params, Response, Error = unknown>(
   config:
@@ -17,4 +16,10 @@ export function resolveExecuteEffect<Params, Response, Error = unknown>(
   throw new InvalidConfigException(
     'handler or effect must be passed to the config'
   );
+}
+
+class InvalidConfigException extends Error {
+  constructor(message: string) {
+    super(message);
+  }
 }

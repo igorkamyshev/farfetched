@@ -22,8 +22,8 @@ export { localStorageCache } from './src/cache/adapters/local_storage';
 export { sessionStorageCache } from './src/cache/adapters/session_storage';
 export { voidCache } from './src/cache/adapters/void';
 
-export { declareParams, type ParamsDeclaration } from './src/misc/params';
-export { type SourcedField, normalizeSourced } from './src/misc/sourced';
+export { type SourcedField, normalizeSourced } from './src/libs/patronus';
+export { declareParams, type ParamsDeclaration } from './src/remote_operation/params';
 export { type ValidationResult, type Validator } from './src/validation/type';
 
 export { type Json, type JsonObject } from './src/fetch/json';

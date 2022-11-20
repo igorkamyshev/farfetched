@@ -1,4 +1,4 @@
-import { DynamicallySourcedField } from '../misc/sourced';
+import { type DynamicallySourcedField } from '../libs/patronus';
 
 type ValidationResult = boolean | string | string[];
 

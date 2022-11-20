@@ -7,7 +7,7 @@ import {
   ExclusiveRequestConfigShared,
   StaticOnlyRequestConfig,
 } from './api';
-import { normalizeStaticOrReactive } from '../misc/sourced';
+import { normalizeStaticOrReactive } from '../libs/patronus';
 import { mergeRecords } from './lib';
 
 type Json =

@@ -1,12 +1,12 @@
 import { createEffect, Event, sample, split } from 'effector';
 
-import { time } from '../libs/patronus/time';
+import { time } from '../libs/patronus';
 import { Query } from '../query/type';
 import { RemoteOperationParams } from '../remote_operation/type';
 import { inMemoryCache } from './adapters/in_memory';
 import { CacheAdapter, CacheAdapterInstance } from './adapters/type';
 import { enrichFinishedSuccessWithKey, enrichStartWithKey } from './key/key';
-import { parseTime, Time } from '../libs/date-nfs/time';
+import { parseTime, Time } from '../libs/date-nfs';
 
 interface CacheParameters {
   adapter?: CacheAdapter;

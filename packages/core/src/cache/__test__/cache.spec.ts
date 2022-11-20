@@ -4,12 +4,12 @@ import { setTimeout } from 'timers/promises';
 import { describe, vi, expect, test } from 'vitest';
 
 import { Contract } from '../../contract/type';
-import { withFactory } from '../../misc/sid';
+import { withFactory } from '../../libs/patronus';
 import { createQuery } from '../../query/create_query';
 import { inMemoryCache } from '../adapters/in_memory';
 import { cache } from '../cache';
 import { sha1 } from '../lib/hash';
-import { parseTime } from '../../libs/date-nfs/time';
+import { parseTime } from '../../libs/date-nfs';
 
 describe('cache', () => {
   test('use value from cache on second call, revalidate', async () => {
