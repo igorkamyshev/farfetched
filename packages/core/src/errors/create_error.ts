@@ -13,7 +13,7 @@ import {
   TimeoutError,
 } from './type';
 
-function invalidDataError({
+export function invalidDataError({
   validationErrors,
 }: {
   validationErrors: string[];
@@ -25,7 +25,7 @@ function invalidDataError({
   };
 }
 
-function timeoutError({ timeout }: { timeout: number }): TimeoutError {
+export function timeoutError({ timeout }: { timeout: number }): TimeoutError {
   return {
     errorType: TIMEOUT,
     explanation: 'Request was cancelled due to timeout',
@@ -33,14 +33,14 @@ function timeoutError({ timeout }: { timeout: number }): TimeoutError {
   };
 }
 
-function abortError(): AbortError {
+export function abortError(): AbortError {
   return {
     errorType: ABORT,
     explanation: 'Request was cancelled due to concurrency policy',
   };
 }
 
-function preparationError({
+export function preparationError({
   response,
   reason,
 }: {
@@ -55,7 +55,7 @@ function preparationError({
   };
 }
 
-function httpError({
+export function httpError({
   status,
   statusText,
   response,
@@ -73,19 +73,14 @@ function httpError({
   };
 }
 
-function networkError({ reason }: { reason: string | null }): NetworkError {
+export function networkError({
+  reason,
+}: {
+  reason: string | null;
+}): NetworkError {
   return {
     errorType: NETWORK,
     explanation: 'Request was failed due to network problems',
     reason,
   };
 }
-
-export {
-  invalidDataError,
-  timeoutError,
-  abortError,
-  preparationError,
-  httpError,
-  networkError,
-};

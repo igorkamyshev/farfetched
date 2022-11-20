@@ -1,6 +1,6 @@
 import { ValidationResult } from './type';
 
-function unwrapValidationResult(result: ValidationResult): string[] {
+export function unwrapValidationResult(result: ValidationResult): string[] {
   if (result === true) {
     return [];
   }
@@ -19,5 +19,3 @@ function unwrapValidationResult(result: ValidationResult): string[] {
 
   return result;
 }
-
-export { unwrapValidationResult };

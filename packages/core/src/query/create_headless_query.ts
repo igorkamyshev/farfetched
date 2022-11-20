@@ -2,14 +2,17 @@ import { createStore, sample, createEvent, Store } from 'effector';
 
 import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
-import { StaticOrReactive, DynamicallySourcedField } from '../misc/sourced';
 import { createRemoteOperation } from '../remote_operation/create_remote_operation';
-import { serializationForSideStore } from '../serialization/serizalize_for_side_store';
-import { Serialize } from '../serialization/type';
+import {
+  serializationForSideStore,
+  type Serialize,
+  type StaticOrReactive,
+  type DynamicallySourcedField,
+} from '../libs/patronus';
 import { Validator } from '../validation/type';
 import { Query, QueryMeta, QuerySymbol } from './type';
 
-interface SharedQueryFactoryConfig<Data, Initial = Data> {
+export interface SharedQueryFactoryConfig<Data, Initial = Data> {
   name?: string;
   enabled?: StaticOrReactive<boolean>;
   serialize?: Serialize<Data | Initial>;
@@ -22,7 +25,7 @@ interface SharedQueryFactoryConfig<Data, Initial = Data> {
  * const headlessQuery = createHeadlessQuery()
  * headlessQuery.__.executeFx.use(someHandler)
  */
-function createHeadlessQuery<
+export function createHeadlessQuery<
   Params,
   Response,
   Error,
@@ -151,6 +154,3 @@ function createHeadlessQuery<
     ...operation,
   };
 }
-
-export { createHeadlessQuery };
-export type { SharedQueryFactoryConfig, Serialize };

@@ -1,8 +1,7 @@
 import { combine, merge, sample } from 'effector';
 
-import { mapValues } from '../misc/map_values';
-import { every } from '../patronus/every';
-import { postpone } from '../patronus/postpone';
+import { mapValues } from '../libs/lohyphen';
+import { every, postpone } from '../libs/patronus';
 import { isQuery, Query } from '../query/type';
 import {
   RemoteOperationResult,
@@ -13,7 +12,7 @@ type NonExtendable = {
   [K in string]: never;
 };
 
-function connectQuery<Sources, Target extends Query<any, any, any>>(
+export function connectQuery<Sources, Target extends Query<any, any, any>>(
   args: {
     source: Sources;
     target: Target | [...Target[]];
@@ -46,7 +45,7 @@ function connectQuery<Sources, Target extends Query<any, any, any>>(
   const parents: Array<Query<any, any, any>> = singleParentMode
     ? [source]
     : Object.values(source as any);
-  const mapperFn: (args: any) => { params?: any } = args?.fn;
+  const mapperFn = args?.fn as (args: any) => { params?: any };
 
   // Helper untis
   const anyParentStarted = merge(parents.map((query) => query.start));
@@ -90,5 +89,3 @@ function connectQuery<Sources, Target extends Query<any, any, any>>(
     target: children.map((t) => t.start),
   });
 }
-
-export { connectQuery };

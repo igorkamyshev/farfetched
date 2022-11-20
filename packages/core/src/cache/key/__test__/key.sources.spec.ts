@@ -2,11 +2,11 @@ import { describe, vi, expect, test } from 'vitest';
 import { fork, allSettled, createStore, combine } from 'effector';
 import { firstArg } from '@farfetched/test-utils';
 
+import { withFactory } from '../../../libs/patronus';
 import { createJsonQuery } from '../../../query/create_json_query';
-import { withFactory } from '../../../misc/sid';
 import { unknownContract } from '../../../contract/unknown_contract';
-import { declareParams } from '../../../misc/params';
-import { FetchApiRecord } from '../../../misc/fetch_api';
+import { declareParams } from '../../../remote_operation/params';
+import { FetchApiRecord } from '../../../fetch/lib';
 import { enrichStartWithKey } from '../key';
 
 describe('key, sourced, createJsonQuery', () => {

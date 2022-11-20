@@ -3,10 +3,10 @@
  */
 
 import { allSettled, createEvent, fork, scopeBind } from 'effector';
-import { withFactory } from 'packages/core/src/misc/sid';
 import { setTimeout } from 'timers/promises';
 import { describe, beforeEach, test, expect, vi } from 'vitest';
 
+import { withFactory } from '../../../libs/patronus';
 import { inMemoryCache } from '../in_memory';
 import { localStorageCache } from '../local_storage';
 import { sessionStorageCache } from '../session_storage';

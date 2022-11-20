@@ -15,6 +15,4 @@ type WithFactory = <R>({
   fn: () => R;
 }) => R;
 
-const withFactory = withFastoryRow as WithFactory;
-
-export { withFactory };
+export const withFactory = withFastoryRow as WithFactory;

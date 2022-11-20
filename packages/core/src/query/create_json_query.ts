@@ -4,13 +4,13 @@ import { Contract } from '../contract/type';
 import { createJsonApiRequest, Json } from '../fetch/json';
 import { ApiRequestError, HttpMethod } from '../fetch/api';
 import {
-  SourcedField,
   normalizeSourced,
-  DynamicallySourcedField,
-} from '../misc/sourced';
-import { type ParamsDeclaration } from '../misc/params';
+  type SourcedField,
+  type DynamicallySourcedField,
+} from '../libs/patronus';
+import { type ParamsDeclaration } from '../remote_operation/params';
 import { Query } from './type';
-import { FetchApiRecord } from '../misc/fetch_api';
+import { FetchApiRecord } from '../fetch/lib';
 import {
   createHeadlessQuery,
   SharedQueryFactoryConfig,
@@ -73,7 +73,7 @@ interface BaseJsonQueryConfigWithParams<
 // -- Overloads
 
 // params + mapData
-function createJsonQuery<
+export function createJsonQuery<
   Params,
   Data,
   TransformedData,
@@ -105,7 +105,7 @@ function createJsonQuery<
   }
 ): Query<Params, TransformedData, ApiRequestError | Error | InvalidDataError>;
 
-function createJsonQuery<
+export function createJsonQuery<
   Params,
   Data,
   TransformedData,
@@ -144,7 +144,7 @@ function createJsonQuery<
 >;
 
 // params + no mapData
-function createJsonQuery<
+export function createJsonQuery<
   Params,
   Data,
   Error,
@@ -169,7 +169,7 @@ function createJsonQuery<
   }
 ): Query<Params, Data, ApiRequestError | Error | InvalidDataError>;
 
-function createJsonQuery<
+export function createJsonQuery<
   Params,
   Data,
   Error,
@@ -196,7 +196,7 @@ function createJsonQuery<
 ): Query<Params, Data, ApiRequestError | Error | InvalidDataError, Data>;
 
 // No params + mapData
-function createJsonQuery<
+export function createJsonQuery<
   Data,
   TransformedData,
   Error,
@@ -226,7 +226,7 @@ function createJsonQuery<
   }
 ): Query<void, TransformedData, ApiRequestError | Error | InvalidDataError>;
 
-function createJsonQuery<
+export function createJsonQuery<
   Data,
   TransformedData,
   Error,
@@ -263,7 +263,7 @@ function createJsonQuery<
 >;
 
 // No params + no mapData
-function createJsonQuery<
+export function createJsonQuery<
   Data,
   Error,
   BodySource = void,
@@ -286,7 +286,7 @@ function createJsonQuery<
   }
 ): Query<void, Data, ApiRequestError | Error | InvalidDataError>;
 
-function createJsonQuery<
+export function createJsonQuery<
   Data,
   Error,
   BodySource = void,
@@ -311,8 +311,7 @@ function createJsonQuery<
 ): Query<void, Data, ApiRequestError | Error | InvalidDataError, Data>;
 
 // -- Implementation --
-
-function createJsonQuery(config: any) {
+export function createJsonQuery(config: any) {
   // Basement
   const requestFx = createJsonApiRequest({
     request: { method: config.request.method, credentials: 'same-origin' },
@@ -381,5 +380,3 @@ function createJsonQuery(config: any) {
     __: { ...headlessQuery.__, executeFx: requestFx },
   };
 }
-
-export { createJsonQuery };

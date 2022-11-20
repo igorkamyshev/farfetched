@@ -1,11 +1,9 @@
-import { DynamicallySourcedField } from '../misc/sourced';
+import { type DynamicallySourcedField } from '../libs/patronus';
 
-type ValidationResult = boolean | string | string[];
+export type ValidationResult = boolean | string | string[];
 
-type Validator<Data, Params, ValidationSource> = DynamicallySourcedField<
+export type Validator<Data, Params, ValidationSource> = DynamicallySourcedField<
   { result: Data; params: Params },
   ValidationResult,
   ValidationSource
 >;
-
-export { Validator, ValidationResult };

@@ -6,9 +6,8 @@ import {
   sample,
 } from 'effector';
 
-import { time } from '../../patronus/time';
-import { delay } from '../../patronus/delay';
-import { parseTime } from '../../misc/time';
+import { time, delay } from '../../libs/patronus';
+import { parseTime } from '../../libs/date-nfs';
 import { createAdapter } from './instance';
 import { attachObservability } from './observability';
 import { CacheAdapter, CacheAdapterOptions } from './type';

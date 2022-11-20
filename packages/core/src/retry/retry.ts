@@ -7,17 +7,16 @@ import {
   split,
 } from 'effector';
 
-import { delay } from '../patronus/delay';
-import { Time, parseTime } from '../misc/time';
-
 import {
+  delay,
   normalizeSourced,
   normalizeStaticOrReactive,
-  reduceTwoArgs,
-  SourcedField,
-  StaticOrReactive,
-  TwoArgsDynamicallySourcedField,
-} from '../misc/sourced';
+  type DynamicallySourcedField,
+  type SourcedField,
+  type StaticOrReactive,
+} from '../libs/patronus';
+import { Time, parseTime } from '../libs/date-nfs';
+
 import {
   RemoteOperation,
   RemoteOperationError,
@@ -39,9 +38,8 @@ interface RetryConfig<
   times: StaticOrReactive<number>;
   delay: SourcedField<RetryMeta, Time, DelaySource>;
   filter?: SourcedField<FailInfo<Q>, boolean, FilterSource>;
-  mapParams?: TwoArgsDynamicallySourcedField<
-    FailInfo<Q>,
-    RetryMeta,
+  mapParams?: DynamicallySourcedField<
+    FailInfo<Q> & { meta: RetryMeta },
     RemoteOperationParams<Q>,
     MapParamsSource
   >;
@@ -98,15 +96,14 @@ export function retry<
     clock: delay({
       clock: sample({
         clock: planNextAttempt,
-        source: normalizeSourced(
-          reduceTwoArgs({
-            field: (mapParams ?? (({ params }: any) => params)) as any,
-            clock: planNextAttempt.map(({ params, error, meta }) => [
-              { params, error },
-              meta,
-            ]),
-          })
-        ),
+        source: normalizeSourced({
+          field: (mapParams ?? (({ params }: any) => params)) as any,
+          clock: planNextAttempt.map(({ params, error, meta }) => ({
+            params,
+            error,
+            meta,
+          })),
+        }),
       }),
       timeout: normalizeSourced({
         field: timeout,

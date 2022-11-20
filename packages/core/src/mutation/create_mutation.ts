@@ -7,24 +7,24 @@ import {
 import { InvalidDataError } from '../errors/type';
 import { Contract } from '../contract/type';
 import { Mutation } from './type';
-import { resolveExecuteEffect } from '../misc/execute_effect';
+import { resolveExecuteEffect } from '../remote_operation/resolve_execute_effect';
 import { unknownContract } from '../contract/unknown_contract';
 
 // Overload: Only handler
-function createMutation<Params, Data>(
+export function createMutation<Params, Data>(
   config: {
     handler: (params: Params) => Promise<Data>;
   } & SharedMutationFactoryConfig
 ): Mutation<Params, Data, unknown>;
 
 // Overload: Only effect
-function createMutation<Params, Data, Error>(
+export function createMutation<Params, Data, Error>(
   config: {
     effect: Effect<Params, Data, Error>;
   } & SharedMutationFactoryConfig
 ): Mutation<Params, Data, Error>;
 
-function createMutation<Params, Data, ContractData extends Data, Error>(
+export function createMutation<Params, Data, ContractData extends Data, Error>(
   config: {
     effect: Effect<Params, Data, Error>;
     contract: Contract<Data, ContractData>;
@@ -32,7 +32,7 @@ function createMutation<Params, Data, ContractData extends Data, Error>(
 ): Mutation<Params, ContractData, Error | InvalidDataError>;
 
 // -- Implementation --
-function createMutation(
+export function createMutation(
   // Use any because of overloads
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config: any
@@ -48,5 +48,3 @@ function createMutation(
 
   return mutation;
 }
-
-export { createMutation };

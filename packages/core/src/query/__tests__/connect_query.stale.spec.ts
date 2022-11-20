@@ -2,7 +2,7 @@ import { allSettled, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
 import { unknownContract } from '../../contract/unknown_contract';
-import { withFactory } from '../../misc/sid';
+import { withFactory } from '../../libs/patronus';
 import { connectQuery } from '../connect_query';
 import { createHeadlessQuery } from '../create_headless_query';
 

@@ -1,4 +1,4 @@
-import { randomNumber } from '../misc/random';
+import { randomNumber } from '../libs/lohyphen';
 import { RetryMeta } from './type';
 
 interface DelayOptions {
@@ -9,13 +9,16 @@ const defaultOptions = {
   randomize: { spread: 0 },
 };
 
-function linearDelay(base: number, opts: DelayOptions = defaultOptions) {
+export function linearDelay(base: number, opts: DelayOptions = defaultOptions) {
   return function ({ attempt }: RetryMeta) {
     return base * attempt + randomAddition(opts);
   };
 }
 
-function exponentialDelay(base: number, opts: DelayOptions = defaultOptions) {
+export function exponentialDelay(
+  base: number,
+  opts: DelayOptions = defaultOptions
+) {
   return function ({ attempt }: RetryMeta) {
     return base ** attempt + randomAddition(opts);
   };
@@ -26,5 +29,3 @@ function randomAddition({ randomize }: DelayOptions) {
 
   return randomNumber({ min: -spread, max: spread });
 }
-
-export { exponentialDelay, linearDelay };

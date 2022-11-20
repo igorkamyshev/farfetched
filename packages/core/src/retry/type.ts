@@ -1,5 +1,3 @@
-interface RetryMeta {
+export interface RetryMeta {
   attempt: number;
 }
-
-export { type RetryMeta };

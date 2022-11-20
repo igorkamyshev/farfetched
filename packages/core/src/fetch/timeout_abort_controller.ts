@@ -2,7 +2,7 @@
  * Inlined library
  * https://github.com/jacobheun/timeout-abort-controller/
  */
-class TimeoutController extends AbortController {
+export class TimeoutController extends AbortController {
   private readonly timer: ReturnType<typeof setTimeout>;
 
   constructor(readonly timeout: number) {
@@ -24,5 +24,3 @@ class TimeoutController extends AbortController {
     clearTimeout(this.timer);
   }
 }
-
-export { TimeoutController };

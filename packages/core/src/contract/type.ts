@@ -1,4 +1,4 @@
-interface Contract<Raw, Data extends Raw> {
+export interface Contract<Raw, Data extends Raw> {
   /**
    * Checks if Response is some Data
    */
@@ -9,5 +9,3 @@ interface Contract<Raw, Data extends Raw> {
    */
   getErrorMessages: (prepared: Raw) => string[];
 }
-
-export { type Contract };

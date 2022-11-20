@@ -4,7 +4,7 @@
  * Inlined library
  * https://github.com/jacobheun/any-signal
  */
-function anySignal(
+export function anySignal(
   ...signals: Array<AbortSignal | null | undefined>
 ): AbortSignal {
   const controller = new AbortController();
@@ -29,4 +29,3 @@ function anySignal(
 
   return controller.signal;
 }
-export { anySignal };

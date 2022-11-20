@@ -7,26 +7,26 @@ import {
   Store,
 } from 'effector';
 
-import { not } from '../patronus/not';
+import {
+  not,
+  normalizeSourced,
+  normalizeStaticOrReactive,
+  type DynamicallySourcedField,
+  type StaticOrReactive,
+  type FetchingStatus,
+} from '../libs/patronus';
 import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
 import { invalidDataError } from '../errors/create_error';
 import { InvalidDataError } from '../errors/type';
-import { ExecutionMeta } from '../misc/execution';
-import {
-  DynamicallySourcedField,
-  normalizeSourced,
-  normalizeStaticOrReactive,
-  StaticOrReactive,
-} from '../misc/sourced';
-import { FetchingStatus } from '../status/type';
+import { ExecutionMeta } from './type';
 import { checkValidationResult } from '../validation/check_validation_result';
 import { Validator } from '../validation/type';
 import { unwrapValidationResult } from '../validation/unwrap_validation_result';
 import { validValidator } from '../validation/valid_validator';
 import { RemoteOperation } from './type';
 
-function createRemoteOperation<
+export function createRemoteOperation<
   Params,
   Data,
   ContractData extends Data,
@@ -277,5 +277,3 @@ function createRemoteOperation<
     },
   };
 }
-
-export { createRemoteOperation };
