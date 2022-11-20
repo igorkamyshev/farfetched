@@ -12,7 +12,7 @@ import {
 import { Validator } from '../validation/type';
 import { Query, QueryMeta, QuerySymbol } from './type';
 
-interface SharedQueryFactoryConfig<Data, Initial = Data> {
+export interface SharedQueryFactoryConfig<Data, Initial = Data> {
   name?: string;
   enabled?: StaticOrReactive<boolean>;
   serialize?: Serialize<Data | Initial>;
@@ -25,7 +25,7 @@ interface SharedQueryFactoryConfig<Data, Initial = Data> {
  * const headlessQuery = createHeadlessQuery()
  * headlessQuery.__.executeFx.use(someHandler)
  */
-function createHeadlessQuery<
+export function createHeadlessQuery<
   Params,
   Response,
   Error,
@@ -154,6 +154,3 @@ function createHeadlessQuery<
     ...operation,
   };
 }
-
-export { createHeadlessQuery };
-export type { SharedQueryFactoryConfig, Serialize };

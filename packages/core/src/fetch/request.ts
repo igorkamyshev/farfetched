@@ -9,7 +9,11 @@ import { fetchFx } from './fetch';
  * + it throws error if response status is 4XX/5XX
  * + it throws serializable NetworkError instead of TypeError
  */
-const requestFx = createEffect<Request, Response, NetworkError | HttpError>({
+export const requestFx = createEffect<
+  Request,
+  Response,
+  NetworkError | HttpError
+>({
   handler: async (request) => {
     const response = await fetchFx(request).catch((cause) => {
       throw networkError({ reason: cause?.message ?? null });
@@ -27,5 +31,3 @@ const requestFx = createEffect<Request, Response, NetworkError | HttpError>({
   },
   sid: 'ff.requestFx',
 });
-
-export { requestFx };

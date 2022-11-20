@@ -1,10 +1,9 @@
-type FetchApiRecord = Record<string, string | string[] | number>;
-type CleanFetchApiRecord = Record<string, string | string[]>;
+export type FetchApiRecord = Record<string, string | string[] | number>;
 
-function mergeRecords(
+export function mergeRecords(
   ...records: (FetchApiRecord | undefined | null)[]
 ): FetchApiRecord {
-  const final: CleanFetchApiRecord = {};
+  const final: Record<string, string | string[]> = {};
 
   for (const item of records) {
     if (typeof item !== 'object') {
@@ -22,7 +21,7 @@ function mergeRecords(
   return final;
 }
 
-function formatHeaders(headersRecord: FetchApiRecord): Headers {
+export function formatHeaders(headersRecord: FetchApiRecord): Headers {
   const headers = new Headers();
   for (const [key, value] of Object.entries(headersRecord)) {
     const cleanValue = clearValue(value);
@@ -39,7 +38,7 @@ function formatHeaders(headersRecord: FetchApiRecord): Headers {
   return headers;
 }
 
-function formatUrl(url: string, queryRecord: FetchApiRecord): string {
+export function formatUrl(url: string, queryRecord: FetchApiRecord): string {
   const query = new URLSearchParams();
   for (const [key, value] of Object.entries(queryRecord)) {
     const cleanValue = clearValue(value);
@@ -67,5 +66,3 @@ function clearValue(value: string | string[] | number): string | string[] {
 
   return value;
 }
-
-export { formatUrl, formatHeaders, mergeRecords, type FetchApiRecord };

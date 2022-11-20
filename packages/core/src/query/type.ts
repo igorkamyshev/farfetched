@@ -3,9 +3,9 @@ import { Store, Event } from 'effector';
 import { RemoteOperation } from '../remote_operation/type';
 import { type Serialize } from '../libs/patronus';
 
-const QuerySymbol = Symbol('Query');
+export const QuerySymbol = Symbol('Query');
 
-interface QueryMeta<Data, InitialData> {
+export interface QueryMeta<Data, InitialData> {
   /**
    * This field is used to determine how to serialize data in various cases:
    * - transfer state from server to client during SSR
@@ -14,7 +14,7 @@ interface QueryMeta<Data, InitialData> {
   serialize: Serialize<Data | InitialData>;
 }
 
-interface Query<Params, Data, Error, InitialData = null>
+export interface Query<Params, Data, Error, InitialData = null>
   extends RemoteOperation<Params, Data, Error, QueryMeta<Data, InitialData>> {
   /**
    * The reactive value of the latest received data.
@@ -36,8 +36,6 @@ interface Query<Params, Data, Error, InitialData = null>
   reset: Event<void>;
 }
 
-function isQuery(value: any): value is Query<any, any, any> {
+export function isQuery(value: any): value is Query<any, any, any> {
   return value?.__?.kind === QuerySymbol;
 }
-
-export { type Query, type QueryMeta, QuerySymbol, isQuery };

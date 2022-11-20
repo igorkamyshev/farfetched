@@ -3,7 +3,7 @@ import { Effect, Event, EventPayload, Store } from 'effector';
 import { type ExecutionMeta } from './execution_meta';
 import { type FetchingStatus } from '../libs/patronus';
 
-interface RemoteOperation<Params, Data, Error, Meta> {
+export interface RemoteOperation<Params, Data, Error, Meta> {
   /**
    * Reactive current request status
    *
@@ -87,16 +87,12 @@ interface RemoteOperation<Params, Data, Error, Meta> {
   };
 }
 
-type RemoteOperationResult<Q extends RemoteOperation<any, any, any, any>> =
-  EventPayload<Q['finished']['success']>['result'];
-type RemoteOperationError<Q extends RemoteOperation<any, any, any, any>> =
-  EventPayload<Q['finished']['failure']>['error'];
-type RemoteOperationParams<Q extends RemoteOperation<any, any, any, any>> =
-  EventPayload<Q['start']>;
-
-export {
-  type RemoteOperation,
-  type RemoteOperationResult,
-  type RemoteOperationError,
-  type RemoteOperationParams,
-};
+export type RemoteOperationResult<
+  Q extends RemoteOperation<any, any, any, any>
+> = EventPayload<Q['finished']['success']>['result'];
+export type RemoteOperationError<
+  Q extends RemoteOperation<any, any, any, any>
+> = EventPayload<Q['finished']['failure']>['error'];
+export type RemoteOperationParams<
+  Q extends RemoteOperation<any, any, any, any>
+> = EventPayload<Q['start']>;

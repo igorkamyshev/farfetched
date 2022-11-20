@@ -26,7 +26,7 @@ import { unwrapValidationResult } from '../validation/unwrap_validation_result';
 import { validValidator } from '../validation/valid_validator';
 import { RemoteOperation } from './type';
 
-function createRemoteOperation<
+export function createRemoteOperation<
   Params,
   Data,
   ContractData extends Data,
@@ -277,5 +277,3 @@ function createRemoteOperation<
     },
   };
 }
-
-export { createRemoteOperation };

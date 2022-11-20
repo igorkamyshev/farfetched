@@ -5,7 +5,7 @@ import { InvalidDataError } from '../errors/type';
 import { ExecutionMeta } from '../remote_operation/execution_meta';
 import { Contract } from './type';
 
-function createContractApplier<Params, Raw, Data extends Raw>(
+export function createContractApplier<Params, Raw, Data extends Raw>(
   contract: Contract<Raw, Data>
 ): Effect<
   { params: Params; result: Raw; meta: ExecutionMeta },
@@ -32,5 +32,3 @@ function createContractApplier<Params, Raw, Data extends Raw>(
 
   return applyContractFx;
 }
-
-export { createContractApplier };

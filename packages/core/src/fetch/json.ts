@@ -10,7 +10,7 @@ import {
 import { normalizeStaticOrReactive } from '../libs/patronus';
 import { mergeRecords } from './lib';
 
-type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -18,7 +18,7 @@ type Json =
   | { [property: string]: Json }
   | Json[];
 
-type JsonObject = Record<string, Json>;
+export type JsonObject = Record<string, Json>;
 
 interface ExclusiveRequestConfig extends ExclusiveRequestConfigShared {
   body?: Json;
@@ -34,7 +34,7 @@ interface JsonApiConfig<R extends CreationRequestConfig>
   response?: { status?: { expected: number | number[] } };
 }
 
-function createJsonApiRequest<R extends CreationRequestConfig>(
+export function createJsonApiRequest<R extends CreationRequestConfig>(
   config: JsonApiConfig<R>
 ) {
   // Add default application/json header to every request
@@ -79,5 +79,3 @@ function createJsonApiRequest<R extends CreationRequestConfig>(
 
   return jsonApiCallFx;
 }
-
-export { createJsonApiRequest, type Json, type JsonObject };

@@ -12,7 +12,7 @@ type NonExtendable = {
   [K in string]: never;
 };
 
-function connectQuery<Sources, Target extends Query<any, any, any>>(
+export function connectQuery<Sources, Target extends Query<any, any, any>>(
   args: {
     source: Sources;
     target: Target | [...Target[]];
@@ -89,5 +89,3 @@ function connectQuery<Sources, Target extends Query<any, any, any>>(
     target: children.map((t) => t.start),
   });
 }
-
-export { connectQuery };
