@@ -153,7 +153,7 @@ const countriesQuery = createGraphQLQuery({
 // They can be used together
 connectQuery({
   source: languageQuery,
-  fn(language) {
+  fn({ result: language }) {
     return { params: { language } };
   },
   target: countriesQuery,

@@ -39,7 +39,7 @@ describe('remote_data/connect_query', () => {
   connectQuery({
     source: languagesQ,
     fn(language) {
-      return { params: { language } };
+      return { params: { language: language.result } };
     },
     target: contentQ,
   });
