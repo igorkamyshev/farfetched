@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 
-import { mergeRecords } from '../fetch_api';
+import { mergeRecords } from '../../fetch/lib';
 
 describe('mergeRecords', () => {
   test('empty to empty object', () => {

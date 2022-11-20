@@ -7,7 +7,7 @@ import {
   split,
 } from 'effector';
 
-import { delay } from '../patronus/delay';
+import { delay } from '../libs/patronus/delay';
 import { Time, parseTime } from '../misc/time';
 
 import {

@@ -1,7 +1,7 @@
 import { allSettled, createEvent, createStore, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
-import { postpone } from '../../patronus/postpone';
+import { postpone } from '../postpone';
 
 describe('postpone', () => {
   test('fire event immediately if until is true', async () => {

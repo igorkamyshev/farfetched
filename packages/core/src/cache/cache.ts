@@ -1,6 +1,6 @@
 import { createEffect, Event, sample, split } from 'effector';
 
-import { time } from '../patronus/time';
+import { time } from '../libs/patronus/time';
 import { Query } from '../query/type';
 import { RemoteOperationParams } from '../remote_operation/type';
 import { inMemoryCache } from './adapters/in_memory';

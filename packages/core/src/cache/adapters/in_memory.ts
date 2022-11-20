@@ -6,8 +6,8 @@ import {
   sample,
 } from 'effector';
 
-import { time } from '../../patronus/time';
-import { delay } from '../../patronus/delay';
+import { time } from '../../libs/patronus/time';
+import { delay } from '../../libs/patronus/delay';
 import { parseTime } from '../../misc/time';
 import { createAdapter } from './instance';
 import { attachObservability } from './observability';

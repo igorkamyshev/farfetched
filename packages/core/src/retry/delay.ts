@@ -1,4 +1,4 @@
-import { randomNumber } from '../misc/random';
+import { randomNumber } from '../libs/lohyphen/random';
 import { RetryMeta } from './type';
 
 interface DelayOptions {

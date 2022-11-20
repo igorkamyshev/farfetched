@@ -1,6 +1,6 @@
 import { attach, createEffect, createEvent, Event, sample } from 'effector';
 
-import { abortable, AbortContext } from '../patronus/abortable';
+import { abortable, AbortContext } from '../libs/patronus/abortable';
 import { anySignal } from '../misc/any_signal';
 import { normalizeStaticOrReactive, StaticOrReactive } from '../misc/sourced';
 import { TimeoutController } from '../misc/timeout_abort_controller';
@@ -10,7 +10,7 @@ import {
   mergeRecords,
   formatHeaders,
   type FetchApiRecord,
-} from '../misc/fetch_api';
+} from './lib';
 import { requestFx } from './request';
 import {
   AbortError,

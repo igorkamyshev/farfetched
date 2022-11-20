@@ -1,6 +1,6 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
 
-import { delay } from '../../patronus/delay';
+import { delay } from '../../libs/patronus/delay';
 import { parseTime } from '../../misc/time';
 import { createAdapter } from './instance';
 import { attachObservability } from './observability';

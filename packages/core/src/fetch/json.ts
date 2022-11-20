@@ -8,7 +8,7 @@ import {
   StaticOnlyRequestConfig,
 } from './api';
 import { normalizeStaticOrReactive } from '../misc/sourced';
-import { mergeRecords } from '../misc/fetch_api';
+import { mergeRecords } from './lib';
 
 type Json =
   | string

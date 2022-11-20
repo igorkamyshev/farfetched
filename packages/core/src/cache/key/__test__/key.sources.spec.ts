@@ -6,7 +6,7 @@ import { createJsonQuery } from '../../../query/create_json_query';
 import { withFactory } from '../../../misc/sid';
 import { unknownContract } from '../../../contract/unknown_contract';
 import { declareParams } from '../../../misc/params';
-import { FetchApiRecord } from '../../../misc/fetch_api';
+import { FetchApiRecord } from '../../../fetch/lib';
 import { enrichStartWithKey } from '../key';
 
 describe('key, sourced, createJsonQuery', () => {

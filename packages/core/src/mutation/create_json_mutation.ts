@@ -4,7 +4,7 @@ import { unknownContract } from '../contract/unknown_contract';
 import { InvalidDataError } from '../errors/type';
 import { ApiRequestError, HttpMethod } from '../fetch/api';
 import { createJsonApiRequest, Json } from '../fetch/json';
-import { FetchApiRecord } from '../misc/fetch_api';
+import { FetchApiRecord } from '../fetch/lib';
 import { ParamsDeclaration } from '../misc/params';
 import {
   DynamicallySourcedField,

@@ -1,8 +1,8 @@
 import { combine, merge, sample } from 'effector';
 
-import { mapValues } from '../misc/map_values';
-import { every } from '../patronus/every';
-import { postpone } from '../patronus/postpone';
+import { mapValues } from '../libs/lohyphen/map_values';
+import { every } from '../libs/patronus/every';
+import { postpone } from '../libs/patronus/postpone';
 import { isQuery, Query } from '../query/type';
 import {
   RemoteOperationResult,

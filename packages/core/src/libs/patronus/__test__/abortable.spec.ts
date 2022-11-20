@@ -1,7 +1,7 @@
 import { is, createEvent, fork, allSettled, scopeBind } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
-import { abortError } from '../../errors/create_error';
+import { abortError } from '../../../errors/create_error';
 import { abortable } from '../abortable';
 
 describe('lib/effector-abortable', () => {

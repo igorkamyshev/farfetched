@@ -10,7 +10,7 @@ import {
 } from '../misc/sourced';
 import { type ParamsDeclaration } from '../misc/params';
 import { Query } from './type';
-import { FetchApiRecord } from '../misc/fetch_api';
+import { FetchApiRecord } from '../fetch/lib';
 import {
   createHeadlessQuery,
   SharedQueryFactoryConfig,
