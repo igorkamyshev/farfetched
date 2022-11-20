@@ -45,7 +45,7 @@ import { connectQuery } from '@farfetched/core';
 
 connectQuery({
   source: characterQuery,
-  fn(character) {
+  fn({ result: character }) {
     return { params: { originUrl: character.origin.url } };
   },
   target: originQuery,
@@ -107,7 +107,7 @@ To determine that data in the [Query](/api/primitives/query) is outdated (e.g. b
 ```ts
 connectQuery({
   source: characterQuery,
-  fn(character) {
+  fn({ result: character }) {
     return { params: { originUrl: character.origin.url } };
   },
   target: [originQuery, originDetailsQuery],
@@ -126,7 +126,12 @@ All children [Queries](/api/primitives/query) have to have the same parameters i
 connectQuery({
   source: { character: characterQuery, language: languageQuery },
   fn({ character, language }) {
-    return { params: { originUrl: character.origin.url, language } };
+    return {
+      params: {
+        originUrl: character.result.origin.url,
+        language: language.result,
+      },
+    };
   },
   target: originQuery,
 });
