@@ -2,9 +2,10 @@ import { allSettled, fork } from 'effector';
 import { watchEffect } from '@farfetched/test-utils';
 import { describe, test, expect } from 'vitest';
 
+import { httpError } from '../../errors/create_error';
+
 import { fetchFx } from '../fetch';
 import { requestFx } from '../request';
-import { httpError } from '../../errors/create_error';
 
 describe('fetch/request', () => {
   describe('status codes', () => {

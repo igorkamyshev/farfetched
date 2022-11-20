@@ -6,16 +6,7 @@ import {
   normalizeStaticOrReactive,
   StaticOrReactive,
 } from '../libs/patronus';
-import { anySignal } from './any_signal';
-import { TimeoutController } from './timeout_abort_controller';
 import { NonOptionalKeys } from '../libs/lohyphen';
-import {
-  formatUrl,
-  mergeRecords,
-  formatHeaders,
-  type FetchApiRecord,
-} from './lib';
-import { requestFx } from './request';
 import {
   AbortError,
   HttpError,
@@ -28,6 +19,15 @@ import {
   preparationError,
   invalidDataError,
 } from '../errors/create_error';
+import { anySignal } from './any_signal';
+import { TimeoutController } from './timeout_abort_controller';
+import {
+  formatUrl,
+  mergeRecords,
+  formatHeaders,
+  type FetchApiRecord,
+} from './lib';
+import { requestFx } from './request';
 
 export type HttpMethod =
   | 'HEAD'

@@ -1,6 +1,5 @@
 import { Effect, Event, EventPayload, Store } from 'effector';
 
-import { type ExecutionMeta } from './execution_meta';
 import { type FetchingStatus } from '../libs/patronus';
 
 export interface RemoteOperation<Params, Data, Error, Meta> {
@@ -96,3 +95,8 @@ export type RemoteOperationError<
 export type RemoteOperationParams<
   Q extends RemoteOperation<any, any, any, any>
 > = EventPayload<Q['start']>;
+
+export interface ExecutionMeta {
+  stopErrorPropagation: boolean;
+  isFreshData: boolean;
+}

@@ -1,7 +1,7 @@
 import { createEffect } from 'effector';
+
 import { HttpError, NetworkError } from '../errors/type';
 import { httpError, networkError } from '../errors/create_error';
-
 import { fetchFx } from './fetch';
 
 /**

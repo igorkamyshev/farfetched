@@ -2,7 +2,7 @@ import { createEffect, Effect } from 'effector';
 
 import { invalidDataError } from '../errors/create_error';
 import { InvalidDataError } from '../errors/type';
-import { ExecutionMeta } from '../remote_operation/execution_meta';
+import { ExecutionMeta } from '../remote_operation/type';
 import { Contract } from './type';
 
 export function createContractApplier<Params, Raw, Data extends Raw>(

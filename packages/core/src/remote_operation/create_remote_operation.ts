@@ -19,7 +19,7 @@ import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
 import { invalidDataError } from '../errors/create_error';
 import { InvalidDataError } from '../errors/type';
-import { ExecutionMeta } from './execution_meta';
+import { ExecutionMeta } from './type';
 import { checkValidationResult } from '../validation/check_validation_result';
 import { Validator } from '../validation/type';
 import { unwrapValidationResult } from '../validation/unwrap_validation_result';

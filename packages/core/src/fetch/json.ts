@@ -1,5 +1,6 @@
 import { combine } from 'effector';
 
+import { normalizeStaticOrReactive } from '../libs/patronus';
 import {
   ApiConfigShared,
   createApiRequest,
@@ -7,7 +8,6 @@ import {
   ExclusiveRequestConfigShared,
   StaticOnlyRequestConfig,
 } from './api';
-import { normalizeStaticOrReactive } from '../libs/patronus';
 import { mergeRecords } from './lib';
 
 export type Json =

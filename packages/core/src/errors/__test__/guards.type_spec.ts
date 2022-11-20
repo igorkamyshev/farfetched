@@ -1,7 +1,7 @@
 import { sample } from 'effector';
 
-import { isHttpError } from '../guards';
 import { Query } from '../../query/type';
+import { isHttpError } from '../guards';
 
 const error: unknown = {};
 

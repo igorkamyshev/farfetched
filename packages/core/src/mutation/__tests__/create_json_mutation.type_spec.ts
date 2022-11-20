@@ -3,7 +3,7 @@ import { expectType } from 'tsd';
 
 import { Contract } from '../../contract/type';
 import { unknownContract } from '../../contract/unknown_contract';
-import { ExecutionMeta } from '../../remote_operation/execution_meta';
+import { ExecutionMeta } from '../../remote_operation/type';
 import { declareParams } from '../../remote_operation/params';
 import { createJsonMutation } from '../create_json_mutation';
 

@@ -3,9 +3,9 @@ import { setTimeout } from 'timers/promises';
 import { watchEffect } from '@farfetched/test-utils';
 import { describe, test, expect, vi } from 'vitest';
 
+import { abortError } from '../../errors/create_error';
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
-import { abortError } from '../../errors/create_error';
 
 describe('remote_data/transport/api.abort.signal', () => {
   // Does not matter
