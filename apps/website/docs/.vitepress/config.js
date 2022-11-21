@@ -229,6 +229,13 @@ export default withMermaid(
             ],
           },
           {
+            text: 'Case studies',
+            collapsible: true,
+            items: [
+              { text: 'Feature flags service', link: '/recipes/feature_flags' },
+            ],
+          },
+          {
             text: 'Deep dive',
             collapsible: true,
             items: [
