@@ -1,8 +1,4 @@
-# Mutation
-
-::: info
-Introduced in v0.2.0.
-:::
+# Mutation <Badge type="tip" text="since v0.2.0" />
 
 Representation of a mutation of remote data.
 

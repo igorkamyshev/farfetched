@@ -1,12 +1,12 @@
 {
   "name": "@farfetched/core",
-  "version": "0.2.5",
+  "version": "0.3.4",
   "type": "commonjs",
   "dependencies": {
     "patronum": "^1.10.2",
     "@farfetched/misc": "0.1.2"
   },
   "peerDependencies": {
-    "effector": "^22.3.0"
+    "effector": "^22.4.0"
   }
 }

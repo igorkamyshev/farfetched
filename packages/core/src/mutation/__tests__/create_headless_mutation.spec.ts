@@ -38,13 +38,17 @@ describe('createHeadlessMutation', () => {
     await allSettled(mutation.start, { scope, params: 42 });
 
     expect(listeners.onSuccess).toHaveBeenCalledTimes(1);
-    expect(listeners.onSuccess).toHaveBeenCalledWith({ params: 42, data: 42 });
+    expect(listeners.onSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({ params: 42, data: 42 })
+    );
 
     expect(listeners.onSkip).not.toHaveBeenCalled();
     expect(listeners.onFailure).not.toHaveBeenCalled();
 
     expect(listeners.onFinally).toHaveBeenCalledTimes(1);
-    expect(listeners.onFinally).toHaveBeenCalledWith({ params: 42 });
+    expect(listeners.onFinally).toHaveBeenCalledWith(
+      expect.objectContaining({ params: 42 })
+    );
   });
 
   test('skip disabled mutation', async () => {
@@ -64,7 +68,9 @@ describe('createHeadlessMutation', () => {
 
     expect(scope.getState(mutation.$enabled)).toBe(false);
     expect(listeners.onSkip).toHaveBeenCalledTimes(1);
-    expect(listeners.onSkip).toHaveBeenCalledWith({ params: 42 });
+    expect(listeners.onSkip).toHaveBeenCalledWith(
+      expect.objectContaining({ params: 42 })
+    );
     expect(listeners.onSuccess).not.toHaveBeenCalled();
     expect(listeners.onFailure).not.toHaveBeenCalled();
   });
@@ -87,15 +93,17 @@ describe('createHeadlessMutation', () => {
     await allSettled(mutation.start, { scope, params: 42 });
 
     expect(listeners.onFailure).toHaveBeenCalledTimes(1);
-    expect(listeners.onFailure).toHaveBeenCalledWith({
-      params: 42,
-      error: {
-        errorType: 'INVALID_DATA',
-        explanation:
-          'Response was considered as invalid against a given contract',
-        validationErrors: ['Test error'],
-      },
-    });
+    expect(listeners.onFailure).toHaveBeenCalledWith(
+      expect.objectContaining({
+        params: 42,
+        error: {
+          errorType: 'INVALID_DATA',
+          explanation:
+            'Response was considered as invalid against a given contract',
+          validationErrors: ['Test error'],
+        },
+      })
+    );
   });
 
   test('fail on validation fail', async () => {
@@ -114,15 +122,17 @@ describe('createHeadlessMutation', () => {
     await allSettled(mutation.start, { scope, params: 42 });
 
     expect(listeners.onFailure).toHaveBeenCalledTimes(1);
-    expect(listeners.onFailure).toHaveBeenCalledWith({
-      params: 42,
-      error: {
-        errorType: 'INVALID_DATA',
-        explanation:
-          'Response was considered as invalid against a given contract',
-        validationErrors: ['Test error'],
-      },
-    });
+    expect(listeners.onFailure).toHaveBeenCalledWith(
+      expect.objectContaining({
+        params: 42,
+        error: {
+          errorType: 'INVALID_DATA',
+          explanation:
+            'Response was considered as invalid against a given contract',
+          validationErrors: ['Test error'],
+        },
+      })
+    );
   });
 
   test('use mapped data', async () => {
@@ -140,6 +150,8 @@ describe('createHeadlessMutation', () => {
     await allSettled(mutation.start, { scope, params: 42 });
 
     expect(listeners.onSuccess).toHaveBeenCalledTimes(1);
-    expect(listeners.onSuccess).toHaveBeenCalledWith({ params: 42, data: 43 });
+    expect(listeners.onSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({ params: 42, data: 43 })
+    );
   });
 });

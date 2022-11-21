@@ -119,3 +119,50 @@ effect_contract_mapData: {
 
   expectType<Query<void, string, Error | InvalidDataError>>(toSourceQuery);
 }
+
+initial_value: {
+  const handleQuery = createQuery({
+    initialData: 1,
+    handler: async (_: void) => 12,
+  });
+  expectType<Query<void, number, unknown, number>>(handleQuery);
+
+  const effectQuery = createQuery({
+    initialData: 1,
+    effect: createEffect((): number => 12),
+  });
+  expectType<Query<void, number, Error, number>>(effectQuery);
+
+  const effectContarctQuery = createQuery({
+    initialData: 1,
+    effect: createEffect<string, unknown, { effectError: boolean }>(),
+    contract: {} as Contract<unknown, number>,
+  });
+  expectType<
+    Query<
+      string,
+      number,
+      | { effectError: boolean } // from effect
+      | InvalidDataError, // from data.validate
+      number
+    >
+  >(effectContarctQuery);
+
+  const effectMapDataQuery = createQuery({
+    initialData: 12,
+    effect: createEffect(() => 12),
+    mapData: () => 12,
+  });
+  expectType<Query<void, number, Error, number>>(effectMapDataQuery);
+
+  const effectContractMapDataQuery = createQuery({
+    initialData: 42,
+    effect: createEffect(() => 12 as unknown),
+    contract: unknownContract,
+    mapData: () => 12,
+  });
+
+  expectType<Query<void, number, InvalidDataError | Error, number>>(
+    effectContractMapDataQuery
+  );
+}

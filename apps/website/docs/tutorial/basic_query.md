@@ -83,7 +83,7 @@ Farfetched provided a set of nice integrations to subscribe on [Query](/api/prim
 
 :::details Solid
 
-In Solid, you can use [`createQueryResource`](/integrations/solid/api/create-query-resource) to create a resource that will subscribe on [Query](/api/primitives/query) and provide its data to the component:
+In Solid, you can use [`createQueryResource`](/api/ui/solid) to create a resource that will subscribe on [Query](/api/primitives/query) and provide its data to the component:
 
 ```tsx
 import { createQueryResource } from '@farfetched/solid';
@@ -104,7 +104,7 @@ const Character = () => {
 
 ::: details React
 
-In React, you can use [`useQuery`](/integrations/react/api/use_query) hook to subscribe on [Query](/api/primitives/query) and get its data:
+In React, you can use [`useQuery`](/api/ui/react) hook to subscribe on [Query](/api/primitives/query) and get its data:
 
 ```tsx
 import { useQuery } from '@farfetched/react';

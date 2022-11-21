@@ -47,9 +47,11 @@ describe('remote_data/query/json.response.success', () => {
 
     expect(scope.getState(query.$data)).toBe(response);
 
-    expect(watcher.listeners.onSuccess).toHaveBeenCalledWith({
-      data: response,
-    });
+    expect(watcher.listeners.onSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: response,
+      })
+    );
     expect(watcher.listeners.onSuccess).toHaveBeenCalledTimes(1);
   });
 
@@ -77,10 +79,12 @@ describe('remote_data/query/json.response.success', () => {
     expect(scope.getState(query.$data)).toBe(mapped);
     expect(scope.getState(query.$error)).toBeNull();
 
-    expect(watcher.listeners.onSuccess).toHaveBeenCalledWith({
-      params: undefined,
-      data: mapped,
-    });
+    expect(watcher.listeners.onSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        params: undefined,
+        data: mapped,
+      })
+    );
     expect(watcher.listeners.onSuccess).toHaveBeenCalledTimes(1);
   });
 

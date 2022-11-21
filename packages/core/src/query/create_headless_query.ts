@@ -1,4 +1,4 @@
-import { createStore, sample, createEvent } from 'effector';
+import { createStore, sample, createEvent, Store } from 'effector';
 import { reset as resetMany } from 'patronum';
 
 import { Contract } from '../contract/type';
@@ -13,10 +13,10 @@ import { Serialize } from '../serialization/type';
 import { Validator } from '../validation/type';
 import { Query, QueryMeta, QuerySymbol } from './type';
 
-interface SharedQueryFactoryConfig<Data> {
+interface SharedQueryFactoryConfig<Data, Initial = Data> {
   name?: string;
   enabled?: StaticOrReactive<boolean>;
-  serialize?: Serialize<Data>;
+  serialize?: Serialize<Data | Initial>;
 }
 
 /**
@@ -33,15 +33,19 @@ function createHeadlessQuery<
   ContractData extends Response,
   MappedData,
   MapDataSource,
-  ValidationSource
+  ValidationSource,
+  Initial = null
 >({
+  initialData,
   contract,
   mapData,
   enabled,
   validate,
   name,
   serialize,
+  sources,
 }: {
+  initialData?: Initial;
   contract: Contract<Response, ContractData>;
   mapData: TwoArgsDynamicallySourcedField<
     ContractData,
@@ -50,10 +54,12 @@ function createHeadlessQuery<
     MapDataSource
   >;
   validate?: Validator<ContractData, Params, ValidationSource>;
-} & SharedQueryFactoryConfig<MappedData>): Query<
+  sources?: Array<Store<unknown>>;
+} & SharedQueryFactoryConfig<MappedData, Initial>): Query<
   Params,
   MappedData,
-  Error | InvalidDataError
+  Error | InvalidDataError,
+  Initial
 > {
   const queryName = name ?? 'unnamed';
 
@@ -63,7 +69,7 @@ function createHeadlessQuery<
     ContractData,
     MappedData,
     Error,
-    QueryMeta<MappedData>,
+    QueryMeta<MappedData, Initial>,
     MapDataSource,
     ValidationSource
   >({
@@ -75,16 +81,20 @@ function createHeadlessQuery<
     contract,
     validate,
     mapData,
+    sources,
   });
 
   const reset = createEvent();
 
   // -- Main stores --
-  const $data = createStore<MappedData | null>(null, {
-    sid: `ff.${queryName}.$data`,
-    name: `${queryName}.$data`,
-    serialize,
-  });
+  const $data = createStore<MappedData | Initial>(
+    initialData ?? (null as unknown as Initial),
+    {
+      sid: `ff.${queryName}.$data`,
+      name: `${queryName}.$data`,
+      serialize,
+    }
+  );
   const $error = createStore<Error | InvalidDataError | null>(null, {
     sid: `ff.${queryName}.$error`,
     name: `${queryName}.$error`,
@@ -103,7 +113,7 @@ function createHeadlessQuery<
     target: $data,
   });
 
-  sample({ clock: operation.finished.failure, fn: () => null, target: $data });
+  $data.reset(operation.finished.failure);
   sample({
     clock: operation.finished.failure,
     fn: ({ error }) => error,
@@ -111,11 +121,18 @@ function createHeadlessQuery<
   });
 
   // -- Handle stale
+
   sample({
     clock: operation.finished.finally,
-    fn() {
-      return false;
-    },
+    filter: ({ meta }) => !meta.isFreshData,
+    fn: () => true,
+    target: $stale,
+  });
+
+  sample({
+    clock: operation.finished.finally,
+    filter: ({ meta }) => meta.isFreshData,
+    fn: () => false,
     target: $stale,
   });
 

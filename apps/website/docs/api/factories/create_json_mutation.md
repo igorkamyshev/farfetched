@@ -1,8 +1,4 @@
-# `createJsonMutation`
-
-::: info
-Introduced in v0.2.0.
-:::
+# `createJsonMutation` <Badge type="tip" text="since v0.2.0" />
 
 ## Formulae
 

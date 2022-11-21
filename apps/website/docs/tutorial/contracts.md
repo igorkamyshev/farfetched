@@ -62,7 +62,7 @@ Even though Farfetched provides a way to create your own [_Contract_](/api/primi
 
 ### Runtypes
 
-We recommend using [Runtypes](https://github.com/pelotom/runtypes), it has first class TS-support, it is well-documented and has a lot of useful features. Farfetched provides [an integration to use Runtype as a Contract](/integrations/runtypes/).
+We recommend using [Runtypes](https://github.com/pelotom/runtypes), it has first class TS-support, it is well-documented and has a lot of useful features. Farfetched provides [an integration to use Runtype as a Contract](/api/contracts/runtypes).
 
 ```ts
 import { Number } from 'runtypes';

@@ -95,22 +95,26 @@ describe('remote_data/connect_query', () => {
     ]);
 
     expect(firstWatcher.listeners.onSuccess).toBeCalledTimes(1);
-    expect(firstWatcher.listeners.onSuccess).toBeCalledWith({
-      params: {
-        ids: ['one', 'two'],
-        language: 'RU',
-      },
-      data: childResposne,
-    });
+    expect(firstWatcher.listeners.onSuccess).toBeCalledWith(
+      expect.objectContaining({
+        params: {
+          ids: ['one', 'two'],
+          language: 'RU',
+        },
+        data: childResposne,
+      })
+    );
 
     expect(secondWatcher.listeners.onSuccess).toBeCalledTimes(1);
-    expect(secondWatcher.listeners.onSuccess).toBeCalledWith({
-      params: {
-        ids: ['one', 'two'],
-        language: 'RU',
-      },
-      data: childResposne,
-    });
+    expect(secondWatcher.listeners.onSuccess).toBeCalledWith(
+      expect.objectContaining({
+        params: {
+          ids: ['one', 'two'],
+          language: 'RU',
+        },
+        data: childResposne,
+      })
+    );
 
     expect(fetchContentMock).toHaveBeenCalledWith(
       expect.objectContaining({ language: 'RU', ids: ['one', 'two'] })

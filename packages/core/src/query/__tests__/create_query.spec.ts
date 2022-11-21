@@ -1,5 +1,5 @@
 import { allSettled, createEffect, fork } from 'effector';
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi } from 'vitest';
 
 import { createQuery } from '../create_query';
 
@@ -71,12 +71,56 @@ describe('core/createQuery/effect', () => {
     expect(scope.getState(query.$error)).toEqual(new Error('Second'));
     expect(scope.getState(query.$data)).toBeNull();
   });
-});
 
-// Case for non-TS users who forget to provide handler/effect
-test('core/createQuery/no-handler-or-effect', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  expect(() => createQuery({} as any)).toThrowErrorMatchingInlineSnapshot(
-    `"handler or effect must be passed to the config"`
-  );
+  // Case for non-TS users who forget to provide handler/effect
+  test('core/createQuery/no-handler-or-effect', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect(() => createQuery({} as any)).toThrowErrorMatchingInlineSnapshot(
+      `"handler or effect must be passed to the config"`
+    );
+  });
+
+  test('uses value from initialData as initial value of $data', async () => {
+    const query = createQuery({
+      initialData: 17,
+      handler: async () => 42,
+    });
+
+    const scope = fork();
+
+    expect(scope.getState(query.$data)).toBe(17);
+  });
+
+  test('uses value from initialData after reset as $data', async () => {
+    const query = createQuery({
+      initialData: 17,
+      handler: async (_: void) => 42,
+    });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope });
+    expect(scope.getState(query.$data)).toBe(42);
+
+    await allSettled(query.reset, { scope });
+    expect(scope.getState(query.$data)).toBe(17);
+  });
+
+  test('uses value from initialData after error as $data', async () => {
+    const query = createQuery({
+      initialData: 17,
+      handler: vi
+        .fn()
+        .mockResolvedValueOnce(42)
+        .mockRejectedValueOnce(new Error()),
+    });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope });
+    expect(scope.getState(query.$data)).toBe(42);
+
+    await allSettled(query.start, { scope });
+    expect(scope.getState(query.$data)).toBe(17);
+  });
 });

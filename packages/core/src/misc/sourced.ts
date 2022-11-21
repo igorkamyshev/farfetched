@@ -37,13 +37,13 @@ function normalizeSourced<Data, Result, Source>({
   let $target = createStore<any>(null, { serialize: 'ignore' });
 
   if (clock) {
-    if (!field) {
+    if (field === undefined) {
       // do nothing
     } else if (is.store(field)) {
       const $storeField = field as Store<Result>;
 
       sample({ clock, source: $storeField, target: $target });
-    } else if (field.source && field.fn) {
+    } else if (field?.source && field?.fn) {
       const callbackField = field as CallbackWithSource<Data, Result, Source>;
 
       sample({
@@ -65,13 +65,13 @@ function normalizeSourced<Data, Result, Source>({
 
   if (source) {
     const $source = source as Store<Data>;
-    if (!field) {
+    if (field === undefined) {
       // do nothing
     } else if (is.store(field)) {
       const $storeField = field as Store<Result>;
 
       $target = $storeField;
-    } else if (field.source && field.fn) {
+    } else if (field?.source && field?.fn) {
       const callbackField = field as CallbackWithSource<Data, Result, Source>;
 
       $target = combine($source, callbackField.source, callbackField.fn);

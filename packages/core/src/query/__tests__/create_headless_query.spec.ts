@@ -36,13 +36,17 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(scope.getState(query.$data)).toBe(42);
     expect(scope.getState(query.$error)).toBeNull();
     expect(listeners.onSuccess).toHaveBeenCalledTimes(1);
-    expect(listeners.onSuccess).toHaveBeenCalledWith({ params: 42, data: 42 });
+    expect(listeners.onSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({ params: 42, data: 42 })
+    );
 
     expect(listeners.onSkip).not.toHaveBeenCalled();
     expect(listeners.onFailure).not.toHaveBeenCalled();
 
     expect(listeners.onFinally).toHaveBeenCalledTimes(1);
-    expect(listeners.onFinally).toHaveBeenCalledWith({ params: 42 });
+    expect(listeners.onFinally).toHaveBeenCalledWith(
+      expect.objectContaining({ params: 42 })
+    );
   });
 
   test('finished.failure triggers after executeFx.fail', async () => {
@@ -65,16 +69,20 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(scope.getState(query.$data)).toBeNull();
 
     expect(listeners.onFailure).toHaveBeenCalledTimes(1);
-    expect(listeners.onFailure).toHaveBeenCalledWith({
-      params: 42,
-      error: new Error('from mock'),
-    });
+    expect(listeners.onFailure).toHaveBeenCalledWith(
+      expect.objectContaining({
+        params: 42,
+        error: new Error('from mock'),
+      })
+    );
 
     expect(listeners.onSuccess).not.toHaveBeenCalled();
     expect(listeners.onSkip).not.toHaveBeenCalled();
 
     expect(listeners.onFinally).toHaveBeenCalledTimes(1);
-    expect(listeners.onFinally).toHaveBeenCalledWith({ params: 42 });
+    expect(listeners.onFinally).toHaveBeenCalledWith(
+      expect.objectContaining({ params: 42 })
+    );
   });
 
   test('skipped query has initial status', async () => {
@@ -207,10 +215,12 @@ describe('core/createHeadlessQuery with contract', () => {
     );
 
     expect(listeners.onFailure).toHaveBeenCalledTimes(1);
-    expect(listeners.onFailure).toHaveBeenCalledWith({
-      params: 42,
-      error: invalidDataError({ validationErrors: ['got it'] }),
-    });
+    expect(listeners.onFailure).toHaveBeenCalledWith(
+      expect.objectContaining({
+        params: 42,
+        error: invalidDataError({ validationErrors: ['got it'] }),
+      })
+    );
   });
 
   test('contract transforms data', async () => {
@@ -237,10 +247,12 @@ describe('core/createHeadlessQuery with contract', () => {
     expect(scope.getState(query.$data)).toEqual(extractedData);
 
     expect(listeners.onSuccess).toHaveBeenCalledTimes(1);
-    expect(listeners.onSuccess).toHaveBeenCalledWith({
-      params: 42,
-      data: extractedData,
-    });
+    expect(listeners.onSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        params: 42,
+        data: extractedData,
+      })
+    );
   });
 
   test('contract receives response (for data)', async () => {
@@ -344,7 +356,9 @@ describe('core/createHeadlessQuery enabled', () => {
 
     expect(scope.getState(query.$enabled)).toBe(false);
     expect(watcher.listeners.onSkip).toBeCalledTimes(1);
-    expect(watcher.listeners.onSkip).toBeCalledWith({ params: {} });
+    expect(watcher.listeners.onSkip).toBeCalledWith(
+      expect.objectContaining({ params: {} })
+    );
   });
 
   test('reset', async () => {
