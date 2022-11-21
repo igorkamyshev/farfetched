@@ -45,7 +45,7 @@ export function connectQuery<Sources, Target extends Query<any, any, any>>(
   const parents: Array<Query<any, any, any>> = singleParentMode
     ? [source]
     : Object.values(source as any);
-  const mapperFn: (args: any) => { params?: any } = args?.fn;
+  const mapperFn = args?.fn as (args: any) => { params?: any };
 
   // Helper untis
   const anyParentStarted = merge(parents.map((query) => query.start));
