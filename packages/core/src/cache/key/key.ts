@@ -17,9 +17,9 @@ export function enrichFinishedSuccessWithKey<Q extends Query<any, any, any>>(
   const queryDataSid = querySid(query);
 
   return sample({
-    clock: query.finished.success,
+    clock: query.__.lowLevelAPI.validatedSuccessfully,
     source: query.__.lowLevelAPI.sources,
-    fn: (sources, { params, data }) => ({
+    fn: (sources, { params, result: data }) => ({
       params,
       data,
       key: createKey({ sid: queryDataSid, params, sources }),
