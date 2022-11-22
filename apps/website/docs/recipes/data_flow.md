@@ -68,7 +68,7 @@ Failed response stops the data-flow and returns control to the user-land code th
 
 ### Response parsing
 
-This stage could be performed by internal Farfetched parsers. In case of parsing error, the data-flow stops and returns control to the user-land code through `.finished.failed` [_Event_](https://effector.dev/docs/api/effector/event). Otherwise, the data-flow continues and passes control to the next step — contract application.
+Specific factories of Farfetched performs this stage internally, based on a use-case they were created for. In case of parsing error, the data-flow stops and returns control to the user-land code through `.finished.failed` [_Event_](https://effector.dev/docs/api/effector/event). Otherwise, the data-flow continues and passes control to the next step — contract application.
 
 ::: details JSON example
 
