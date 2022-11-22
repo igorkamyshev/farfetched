@@ -42,10 +42,6 @@ sequenceDiagram
 
 There are two types of factories for _Remote Operations_: **basic** and **specific**. **Basic** factories are used to create _Remote Operations_ with a more control of data-flow in user-land, while **specific** factories are used to create _Remote Operations_ with a more control of data-flow in the library.
 
-::: tip
-Data-flow control is a boring and complex task, so it is recommended to use **specific** factories in many cases to delegate this task to the library.
-:::
-
 ### Basic factories
 
 - [`createQuery`](/api/factories/create_query)
@@ -53,12 +49,16 @@ Data-flow control is a boring and complex task, so it is recommended to use **sp
 
 ### Specific factories
 
+::: tip
+Data-flow control is a boring and complex task, so it is recommended to use **specific** factories in many cases to delegate this task to the library.
+:::
+
 - [`createJsonQuery`](/api/factories/create_json_query)
 - [`createJsonMutation`](/api/factories/create_json_mutation)
 
 ## Data-flow in specific factories
 
-Since only **specific** factories are allows Farfetched to have a full control of data-flow, in the following articles we will use only them. **Basic** factories work in the same way, but they require more attention from the user.
+Since only **specific** factories are allows Farfetched to have a full control of data-flow, in the following articles we will take a closer look to them. **Basic** factories work in the same way, but they require more attention from the user.
 
 ### Request-response cycle
 
@@ -98,7 +98,7 @@ const userQuery = createJsonQuery({
   response: {
     validate: {
       source: $session,
-      fn: (data, _params, sessionToken) => data.userId !== session.userId,
+      fn: (result, _params, sessionToken) => result.userId !== session.userId,
     },
   },
 });
@@ -106,12 +106,39 @@ const userQuery = createJsonQuery({
 
 ### Data mapping
 
-This is optional stage.
+This is optional stage. So, you can define a mapper to transform the response to the desired format.
+
+::: warning
+Data mappers have to be pure function, so they are not allowed to throw an error. If the mapper throws an error, the data-flow stops immediately without any error handling.
+:::
+
+Since mapper is a [_Sourced_](/api/primitives/sourced), it's possible to add some extra data from the application to the mapping process. For example, it could be a current language:
+
+```ts
+const $language = createStore<string>('EN');
+
+const userQuery = createJsonQuery({
+  //...
+  response: {
+    mapData: {
+      source: $language,
+      fn: (result, _params, language) => ({
+        ...result,
+        name: result.name.translations[language],
+      }),
+    },
+  },
+});
+```
 
 ## Data-flow in basic factories
 
-Same but different.
+**Basic factories** are used to create _Remote Operations_ with a more control of data-flow in user-land. In this case, the user-land code have to describe **request-response cycle** and **response parsing** stages. Other stages could be handled by the library, but it is not required for **basic factories**.
 
-## Error handling
+## Summary
 
-If any of the stages fails, the _Remote Operation_ is considered failed, [_Event_](https://effector.dev/docs/api/effector/event) `.finished.failed` is triggered, and the error is passed to the event payload.
+In this article, we have learned how data-flow works under the hood in _Remote operations_. We have also learned about two types of factories and how they differ from each other. Key points:
+
+- **Basic factories** are used to create _Remote Operations_ with a more control of data-flow in user-land.
+- **Specific factories** are used to create _Remote Operations_ with a more control of data-flow in the library.
+- Prefer **specific factories** in many cases to delegate data-flow control to the library.
