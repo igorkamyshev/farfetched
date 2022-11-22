@@ -40,7 +40,9 @@ sequenceDiagram
 
 ## Basic and specific factories
 
-There are two types of factories for _Remote Operations_: **basic** and **specific**. **Basic** factories are used to create _Remote Operations_ with a more control of data-flow in user-land, while **specific** factories are used to create _Remote Operations_ with a more control of data-flow in the library.
+There are two types of factories for _Remote Operations_: **basic** and **specific**. **Basic** factories are used to create _Remote Operations_ with a more control of data-flow in user-land, while **specific** factories are used to create _Remote Operations_ with a more control of data-flow in the library. **Specific** factories are built on top of **basic** ones and are providing better DX for more specific use-cases.
+
+E.g. quite often API is basically HTTP-endpoint, which responses to you with some JSON — Farfetched provides you `createJsonQuery` for this case. This factory hides complexity under the declarative API and handles a lot of edge-cases for you
 
 ### Basic factories
 
