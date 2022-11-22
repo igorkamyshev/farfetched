@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.3.5
+
+### Patch Changes
+
+- 7cc84da: Fix incorrect cache saving in `cache` on _Query_ with `mapData`
+
 ## 0.3.4
 
 ### Patch Changes
