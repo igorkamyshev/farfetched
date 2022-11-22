@@ -177,18 +177,10 @@ describe('cache', () => {
     await allSettled(query.start, { scope });
     await allSettled(query.start, { scope });
 
-    expect(mapData.mock.calls).toMatchInlineSnapshot(`
-      [
-        [
-          1,
-          undefined,
-        ],
-        [
-          1,
-          undefined,
-        ],
-      ]
-    `);
+    expect(mapData.mock.calls).toEqual([
+      [expect.objectContaining({ result: 1 })],
+      [expect.objectContaining({ result: 1 })],
+    ]);
   });
 
   test('purge value after purge call', async () => {
