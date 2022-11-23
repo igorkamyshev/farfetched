@@ -1,6 +1,3 @@
-/*
--------- PREPARE ------
-*/
 import { createStore, Store, attach, Effect } from 'effector';
 import { expectType, expectError } from 'tsd';
 import { createQuery } from '../create_query';
@@ -96,10 +93,10 @@ incorrect_source_inference_with_complex_types: {
     source: getItemsQuery,
     target: getAnotherQuery,
     fn(sources) {
-      expectType<ItemsT>(sources);
+      expectType<ItemsT>(sources.result);
       return {
         params: {
-          id: sources[0].id,
+          id: sources.result[0].id,
         },
       };
     },

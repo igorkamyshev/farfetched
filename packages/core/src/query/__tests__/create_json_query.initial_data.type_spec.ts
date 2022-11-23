@@ -1,7 +1,7 @@
 import { expectType } from 'tsd';
 
 import { Contract } from '../../contract/type';
-import { declareParams } from '../../misc/params';
+import { declareParams } from '../../remote_operation/params';
 import { createJsonQuery } from '../create_json_query';
 import { Query } from '../type';
 
@@ -11,7 +11,7 @@ params_mapData: {
     initialData: '14',
     request: { url: 'https://example.com', method: 'GET' },
     response: {
-      mapData: (data) => data.toString(),
+      mapData: ({ result }) => result.toString(),
       contract: {} as Contract<unknown, number>,
     },
   });
@@ -37,7 +37,7 @@ no_params_mapData: {
     initialData: '14',
     request: { url: 'https://example.com', method: 'GET' },
     response: {
-      mapData: (data) => data.toString(),
+      mapData: ({ result }) => result.toString(),
       contract: {} as Contract<unknown, number>,
     },
   });

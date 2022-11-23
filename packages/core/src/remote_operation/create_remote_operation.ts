@@ -6,27 +6,27 @@ import {
   split,
   Store,
 } from 'effector';
-import { not } from 'patronum';
+
+import {
+  not,
+  normalizeSourced,
+  normalizeStaticOrReactive,
+  type DynamicallySourcedField,
+  type StaticOrReactive,
+  type FetchingStatus,
+} from '../libs/patronus';
 import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
 import { invalidDataError } from '../errors/create_error';
 import { InvalidDataError } from '../errors/type';
-import { ExecutionMeta } from '../misc/execution';
-import {
-  normalizeSourced,
-  normalizeStaticOrReactive,
-  reduceTwoArgs,
-  StaticOrReactive,
-  TwoArgsDynamicallySourcedField,
-} from '../misc/sourced';
-import { FetchingStatus } from '../status/type';
+import { ExecutionMeta } from './type';
 import { checkValidationResult } from '../validation/check_validation_result';
 import { Validator } from '../validation/type';
 import { unwrapValidationResult } from '../validation/unwrap_validation_result';
 import { validValidator } from '../validation/valid_validator';
 import { RemoteOperation } from './type';
 
-function createRemoteOperation<
+export function createRemoteOperation<
   Params,
   Data,
   ContractData extends Data,
@@ -53,9 +53,8 @@ function createRemoteOperation<
   enabled?: StaticOrReactive<boolean>;
   contract: Contract<Data, ContractData>;
   validate?: Validator<ContractData, Params, ValidationSource>;
-  mapData: TwoArgsDynamicallySourcedField<
-    ContractData,
-    Params,
+  mapData: DynamicallySourcedField<
+    { result: ContractData; params: Params },
     MappedData,
     MapDataSource
   >;
@@ -106,7 +105,7 @@ function createRemoteOperation<
   const finished = {
     success: createEvent<{
       params: Params;
-      data: MappedData;
+      result: MappedData;
       meta: ExecutionMeta;
     }>(),
     failure: createEvent<{
@@ -193,17 +192,15 @@ function createRemoteOperation<
   const { validDataRecieved, __: invalidDataRecieved } = split(
     sample({
       clock: applyContractFx.done,
-      source: normalizeSourced(
-        reduceTwoArgs({
-          field: validate ?? validValidator,
-          clock: applyContractFx.done.map(({ result, params }) => [
-            result,
-            params.params, // Extract original params, it is params of params
-          ]),
-        })
-      ),
-      fn: (validation, { params, result: data }) => ({
-        data,
+      source: normalizeSourced({
+        field: validate ?? validValidator,
+        clock: applyContractFx.done.map(({ result, params }) => ({
+          result,
+          params: params.params, // Extract original params, it is params of params
+        })),
+      }),
+      fn: (validation, { params, result }) => ({
+        result,
         // Extract original params, it is params of params
         params: params.params,
         validation,
@@ -215,22 +212,16 @@ function createRemoteOperation<
     }
   );
 
-  sample({
-    clock: validDataRecieved,
-    fn: ({ params, data }) => ({ params, result: data }),
-    target: validatedSuccessfully,
-  });
+  sample({ clock: validDataRecieved, target: validatedSuccessfully });
 
   sample({
     clock: validDataRecieved,
-    source: normalizeSourced(
-      reduceTwoArgs({
-        field: mapData,
-        clock: validDataRecieved.map(({ data, params }) => [data, params]),
-      })
-    ),
-    fn: (data, { params, meta }) => ({
-      data,
+    source: normalizeSourced({
+      field: mapData,
+      clock: validDataRecieved,
+    }),
+    fn: (result, { params, meta }) => ({
+      result,
       params,
       meta,
     }),
@@ -293,5 +284,3 @@ function createRemoteOperation<
     },
   };
 }
-
-export { createRemoteOperation };

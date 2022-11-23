@@ -1,17 +1,12 @@
 import { attach, createEffect, createEvent, Event, sample } from 'effector';
 
-import { abortable, AbortContext } from '../misc/abortable';
-import { anySignal } from '../misc/any_signal';
-import { normalizeStaticOrReactive, StaticOrReactive } from '../misc/sourced';
-import { TimeoutController } from '../misc/timeout_abort_controller';
-import { NonOptionalKeys } from '../misc/ts';
 import {
-  formatUrl,
-  mergeRecords,
-  formatHeaders,
-  type FetchApiRecord,
-} from '../misc/fetch_api';
-import { requestFx } from './request';
+  abortable,
+  AbortContext,
+  normalizeStaticOrReactive,
+  StaticOrReactive,
+} from '../libs/patronus';
+import { NonOptionalKeys } from '../libs/lohyphen';
 import {
   AbortError,
   HttpError,
@@ -24,8 +19,17 @@ import {
   preparationError,
   invalidDataError,
 } from '../errors/create_error';
+import { anySignal } from './any_signal';
+import { TimeoutController } from './timeout_abort_controller';
+import {
+  formatUrl,
+  mergeRecords,
+  formatHeaders,
+  type FetchApiRecord,
+} from './lib';
+import { requestFx } from './request';
 
-type HttpMethod =
+export type HttpMethod =
   | 'HEAD'
   | 'GET'
   | 'POST'
@@ -34,31 +38,32 @@ type HttpMethod =
   | 'DELETE'
   | 'QUERY';
 
-type RequestBody = Blob | BufferSource | FormData | string;
+export type RequestBody = Blob | BufferSource | FormData | string;
 
 // These settings can be defined only statically
-interface StaticOnlyRequestConfig<B> {
+export interface StaticOnlyRequestConfig<B> {
   method: StaticOrReactive<HttpMethod>;
   mapBody(body: B): RequestBody;
 }
 
 // These settings can be defined once — statically or dynamically
-interface ExclusiveRequestConfigShared {
+export interface ExclusiveRequestConfigShared {
   url: string;
   credentials: RequestCredentials;
 }
 
-interface ExclusiveRequestConfig<B> extends ExclusiveRequestConfigShared {
+export interface ExclusiveRequestConfig<B>
+  extends ExclusiveRequestConfigShared {
   body?: B;
 }
 
 // These settings can be defined twice — both statically and dynamically, they will be merged
-interface InclusiveRequestConfig {
+export interface InclusiveRequestConfig {
   query?: FetchApiRecord;
   headers?: FetchApiRecord;
 }
 
-type CreationRequestConfigShared<E> = {
+export type CreationRequestConfigShared<E> = {
   [key in keyof E]?: StaticOrReactive<E[key]>;
 } & {
   [key in keyof InclusiveRequestConfig]?: StaticOrReactive<
@@ -91,7 +96,7 @@ interface ApiConfigResponse<P> {
   };
 }
 
-interface ApiConfigShared {
+export interface ApiConfigShared {
   /**
    * Rules to handle concurrent executions of the same request
    */
@@ -129,14 +134,14 @@ interface ApiConfig<B, R extends CreationRequestConfig<B>, P>
   response: ApiConfigResponse<P>;
 }
 
-type ApiRequestError =
+export type ApiRequestError =
   | AbortError
   | TimeoutError
   | PreparationError
   | NetworkError
   | HttpError;
 
-function createApiRequest<
+export function createApiRequest<
   R extends CreationRequestConfig<B>,
   P,
   B = RequestBody
@@ -308,16 +313,3 @@ function createApiRequest<
 
   return boundAbortableApiRequestFx;
 }
-
-export {
-  createApiRequest,
-  type HttpMethod,
-  type RequestBody,
-  type ApiConfigShared,
-  type CreationRequestConfigShared,
-  type ExclusiveRequestConfigShared,
-  type ExclusiveRequestConfig,
-  type InclusiveRequestConfig,
-  type StaticOnlyRequestConfig,
-  type ApiRequestError,
-};

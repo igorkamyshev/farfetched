@@ -6,20 +6,17 @@ import {
   sample,
   split,
 } from 'effector';
-import { delay } from 'patronum';
-
-import { Time, parseTime } from '../misc/time';
-import { deprecationWarning } from '../deprectaion/warning';
 
 import {
+  delay,
   normalizeSourced,
   normalizeStaticOrReactive,
-  reduceTwoArgs,
-  SourcedField,
-  StaticOrReactive,
-  TwoArgsDynamicallySourcedField,
-} from '../misc/sourced';
-import { isQuery, Query } from '../query/type';
+  type DynamicallySourcedField,
+  type SourcedField,
+  type StaticOrReactive,
+} from '../libs/patronus';
+import { Time, parseTime } from '../libs/date-nfs';
+
 import {
   RemoteOperation,
   RemoteOperationError,
@@ -41,9 +38,8 @@ interface RetryConfig<
   times: StaticOrReactive<number>;
   delay: SourcedField<RetryMeta, Time, DelaySource>;
   filter?: SourcedField<FailInfo<Q>, boolean, FilterSource>;
-  mapParams?: TwoArgsDynamicallySourcedField<
-    FailInfo<Q>,
-    RetryMeta,
+  mapParams?: DynamicallySourcedField<
+    FailInfo<Q> & { meta: RetryMeta },
     RemoteOperationParams<Q>,
     MapParamsSource
   >;
@@ -57,35 +53,14 @@ export function retry<
   MapParamsSource = unknown
 >(
   operation: Q,
-  config: RetryConfig<Q, DelaySource, FilterSource, MapParamsSource>
-): void;
-
-/**
- * @deprecated since v0.3.0
- *
- * use retry(query, config) instead
- */
-export function retry<
-  Q extends Query<any, any, any>,
-  DelaySource = unknown,
-  FilterSource = unknown,
-  MapParamsSource = unknown
->(
-  config: {
-    query: Q;
-  } & RetryConfig<Q, DelaySource, FilterSource, MapParamsSource>
-): void;
-
-export function retry(operationOrConfig: any, maybeConfig?: any): void {
-  const {
-    operation,
+  {
     times,
     delay: timeout,
     filter,
     mapParams,
     otherwise,
-  } = parseRetryConfig(operationOrConfig, maybeConfig);
-
+  }: RetryConfig<Q, DelaySource, FilterSource, MapParamsSource>
+): void {
   const $maxAttempts = normalizeStaticOrReactive(times);
   const $attempt = createStore(1, {
     serialize: 'ignore',
@@ -105,7 +80,7 @@ export function retry(operationOrConfig: any, maybeConfig?: any): void {
         attempt: $attempt,
       },
       filter: normalizeSourced({
-        field: filter ?? true,
+        field: (filter ?? true) as any,
         clock: operation.finished.failure,
       }),
       fn: ({ attempt, maxAttempts }, { params, error }) => ({
@@ -119,17 +94,16 @@ export function retry(operationOrConfig: any, maybeConfig?: any): void {
 
   sample({
     clock: delay({
-      source: sample({
+      clock: sample({
         clock: planNextAttempt,
-        source: normalizeSourced(
-          reduceTwoArgs({
-            field: mapParams ?? (({ params }) => params),
-            clock: planNextAttempt.map(({ params, error, meta }) => [
-              { params, error },
-              meta,
-            ]),
-          })
-        ),
+        source: normalizeSourced({
+          field: (mapParams ?? (({ params }: any) => params)) as any,
+          clock: planNextAttempt.map(({ params, error, meta }) => ({
+            params,
+            error,
+            meta,
+          })),
+        }),
       }),
       timeout: normalizeSourced({
         field: timeout,
@@ -146,28 +120,4 @@ export function retry(operationOrConfig: any, maybeConfig?: any): void {
   if (otherwise) {
     sample({ clock: retriesAreOver, target: otherwise });
   }
-}
-
-function parseRetryConfig<
-  Q extends RemoteOperation<any, any, any, any>,
-  DelaySource = unknown,
-  FilterSource = unknown,
-  MapParamsSource = unknown
->(
-  operationOrConfig: any,
-  maybeConfig: any
-): RetryConfig<Q, DelaySource, FilterSource, MapParamsSource> & {
-  operation: Q;
-} {
-  if (isQuery(operationOrConfig.query)) {
-    deprecationWarning(
-      'retry({ query, /* ... */ }) is deprecated',
-      'use retry(query, { /* ... */ }) instead'
-    );
-    const { query, ...restConfig } = operationOrConfig;
-
-    return { ...restConfig, operation: query };
-  }
-
-  return { ...maybeConfig, operation: operationOrConfig };
 }

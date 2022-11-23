@@ -2,7 +2,7 @@ import { allSettled, createStore, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
 import { createJsonQuery } from '../create_json_query';
-import { declareParams } from '../../misc/params';
+import { declareParams } from '../../remote_operation/params';
 import { unknownContract } from '../../contract/unknown_contract';
 
 describe('remote_data/query/json.request.url', () => {

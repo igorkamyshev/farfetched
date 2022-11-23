@@ -45,7 +45,6 @@ importers:
       mermaid: '8'
       node-html-markdown: ^1.2.0
       nx: 14.7.5
-      patronum: ^1.10.2
       prettier: ^2.6.2
       react: 18.2.0
       react-dom: 18.2.0
@@ -75,7 +74,6 @@ importers:
       effector-solid: 0.22.6_iudkbrkizgf6r5wa7tpffcrddm
       history: 5.3.0
       mermaid: 8.14.0
-      patronum: 1.10.2_effector@22.4.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-router-dom: 6.4.2_biqbaboplfbrettd7655fr4n2y
@@ -136,10 +134,8 @@ importers:
   packages/core:
     specifiers:
       '@farfetched/misc': 0.1.2
-      patronum: ^1.10.2
     dependencies:
       '@farfetched/misc': link:../misc
-      patronum: 1.10.2
 
   packages/misc:
     specifiers: {}
@@ -10136,20 +10132,6 @@ packages:
   /pathval/1.1.1:
     resolution: {integrity: sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==}
     dev: true
-
-  /patronum/1.10.2:
-    resolution: {integrity: sha512-GjongQq5EaaLdBZlVNn3jj3nJB3qGjsMM01dp6i3iWjf+ULVn8B/Op9riRSODvGoGGiI3JV09Z7A0k92QXiMvg==}
-    peerDependencies:
-      effector: ^22.1.2
-    dev: false
-
-  /patronum/1.10.2_effector@22.4.0:
-    resolution: {integrity: sha512-GjongQq5EaaLdBZlVNn3jj3nJB3qGjsMM01dp6i3iWjf+ULVn8B/Op9riRSODvGoGGiI3JV09Z7A0k92QXiMvg==}
-    peerDependencies:
-      effector: ^22.1.2
-    dependencies:
-      effector: 22.4.0
-    dev: false
 
   /picocolors/1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}

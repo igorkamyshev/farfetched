@@ -2,7 +2,7 @@ import { createStore } from 'effector';
 import { expectType } from 'tsd';
 
 import { createJsonQuery } from '../create_json_query';
-import { declareParams } from '../../misc/params';
+import { declareParams } from '../../remote_operation/params';
 import { unknownContract } from '../../contract/unknown_contract';
 
 no_params: {

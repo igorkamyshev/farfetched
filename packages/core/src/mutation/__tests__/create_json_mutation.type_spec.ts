@@ -3,8 +3,8 @@ import { expectType } from 'tsd';
 
 import { Contract } from '../../contract/type';
 import { unknownContract } from '../../contract/unknown_contract';
-import { ExecutionMeta } from '../../misc/execution';
-import { declareParams } from '../../misc/params';
+import { ExecutionMeta } from '../../remote_operation/type';
+import { declareParams } from '../../remote_operation/params';
 import { createJsonMutation } from '../create_json_mutation';
 
 no_params: {
@@ -111,7 +111,7 @@ extract_data_type_from_contarct: {
     response: { contract },
   });
 
-  expectType<Event<{ data: number; params: void; meta: ExecutionMeta }>>(
+  expectType<Event<{ result: number; params: void; meta: ExecutionMeta }>>(
     mutation.finished.success
   );
 }
@@ -136,8 +136,8 @@ optional_validation_field: {
       request: { url: '', method: 'GET' },
       response: {
         contract,
-        validate: (data, params) => {
-          expectType<number>(data);
+        validate: ({ result, params }) => {
+          expectType<number>(result);
           expectType<void>(params);
 
           return true;
@@ -151,8 +151,8 @@ optional_validation_field: {
         contract,
         validate: {
           source: createStore<boolean>(false),
-          fn: (data, params, s) => {
-            expectType<number>(data);
+          fn: ({ result, params }, s) => {
+            expectType<number>(result);
             expectType<void>(params);
             expectType<boolean>(s);
 
@@ -171,8 +171,8 @@ optional_validation_field: {
       request: { url: '', method: 'GET' },
       response: {
         contract,
-        validate: (data, params) => {
-          expectType<number>(data);
+        validate: ({ result, params }) => {
+          expectType<number>(result);
           expectType<string>(params);
 
           return true;
@@ -187,8 +187,8 @@ optional_validation_field: {
         contract,
         validate: {
           source: createStore<boolean>(false),
-          fn: (data, params, s) => {
-            expectType<number>(data);
+          fn: ({ result, params }, s) => {
+            expectType<number>(result);
             expectType<string>(params);
             expectType<boolean>(s);
 
@@ -212,8 +212,8 @@ mapData: {
       },
       response: {
         contract,
-        mapData: (data, params) => {
-          expectType<number>(data);
+        mapData: ({ result, params }) => {
+          expectType<number>(result);
           expectType<string>(params);
 
           return false;
@@ -221,7 +221,7 @@ mapData: {
       },
     });
 
-    expectType<Event<{ data: boolean; params: string; meta: ExecutionMeta }>>(
+    expectType<Event<{ result: boolean; params: string; meta: ExecutionMeta }>>(
       mutationOne.finished.success
     );
 
@@ -235,8 +235,8 @@ mapData: {
         contract,
         mapData: {
           source: createStore(false),
-          fn: (data, params, soruce) => {
-            expectType<number>(data);
+          fn: ({ result, params }, soruce) => {
+            expectType<number>(result);
             expectType<string>(params);
             expectType<boolean>(soruce);
 
@@ -246,7 +246,7 @@ mapData: {
       },
     });
 
-    expectType<Event<{ data: boolean; params: string; meta: ExecutionMeta }>>(
+    expectType<Event<{ result: boolean; params: string; meta: ExecutionMeta }>>(
       mutationOne.finished.success
     );
   }
@@ -259,8 +259,8 @@ mapData: {
       },
       response: {
         contract,
-        mapData: (data, params) => {
-          expectType<number>(data);
+        mapData: ({ result, params }) => {
+          expectType<number>(result);
           expectType<void>(params);
 
           return false;
@@ -268,7 +268,7 @@ mapData: {
       },
     });
 
-    expectType<Event<{ data: boolean; params: void; meta: ExecutionMeta }>>(
+    expectType<Event<{ result: boolean; params: void; meta: ExecutionMeta }>>(
       mutationOne.finished.success
     );
 
@@ -281,8 +281,8 @@ mapData: {
         contract,
         mapData: {
           source: createStore(false),
-          fn: (data, params, soruce) => {
-            expectType<number>(data);
+          fn: ({ result, params }, soruce) => {
+            expectType<number>(result);
             expectType<void>(params);
             expectType<boolean>(soruce);
 
@@ -292,7 +292,7 @@ mapData: {
       },
     });
 
-    expectType<Event<{ data: boolean; params: void; meta: ExecutionMeta }>>(
+    expectType<Event<{ result: boolean; params: void; meta: ExecutionMeta }>>(
       mutationOne.finished.success
     );
   }
