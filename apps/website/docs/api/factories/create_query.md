@@ -83,7 +83,7 @@ A valid data is passed to `mapData` callback as well as original parameters of t
 const languagesQuery = createQuery({
   effect: fetchLanguagesFx,
   contract: languagesContract,
-  mapData(languages, params) {
+  mapData({ result: languages, params }) {
     return {
       availableLanguages: languages,
       languageCanBeSelected: languages.length > 1,
@@ -113,7 +113,7 @@ const languagesQuery = createQuery({
   mapData: {
     // Current value of $minimalLanguagesCount will be passed to `fn` as a third argument
     source: $minimalLanguagesCount,
-    fn(languages, params, minimalLanguagesCount) {
+    fn({ result: languages, params }, minimalLanguagesCount) {
       return {
         availableLanguages: languages,
         languageCanBeSelected: languages.length > minimalLanguagesCount,

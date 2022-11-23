@@ -139,7 +139,7 @@ describe('createJsonMutation', () => {
     expect(listeners.onSuccess).toHaveBeenCalled();
     expect(listeners.onSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: null,
+        result: null,
         params: undefined,
       })
     );

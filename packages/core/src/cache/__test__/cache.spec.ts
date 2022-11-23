@@ -3,13 +3,13 @@ import { allSettled, createEffect, createEvent, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, vi, expect, test } from 'vitest';
 
+import { withFactory } from '../../libs/patronus';
+import { parseTime } from '../../libs/date-nfs';
 import { Contract } from '../../contract/type';
-import { withFactory } from '../../misc/sid';
 import { createQuery } from '../../query/create_query';
 import { inMemoryCache } from '../adapters/in_memory';
 import { cache } from '../cache';
 import { sha1 } from '../lib/hash';
-import { parseTime } from '../../misc/time';
 
 describe('cache', () => {
   test('use value from cache on second call, revalidate', async () => {
@@ -157,6 +157,30 @@ describe('cache', () => {
     // Value from cache is not a number, did not put it to cache
     expect(scope.getState(query.$data)).toEqual(null);
     expect(scope.getState(query.$stale)).toBeFalsy();
+  });
+
+  test('save value to cache before mapData call', async () => {
+    const mapData = vi.fn((n) => n + 1);
+    const query = withFactory({
+      fn: () =>
+        createQuery({
+          effect: createEffect(() => 1),
+          mapData,
+        }),
+      sid: '1',
+    });
+
+    cache(query, { staleAfter: '10min' });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope });
+    await allSettled(query.start, { scope });
+
+    expect(mapData.mock.calls).toEqual([
+      [expect.objectContaining({ result: 1 })],
+      [expect.objectContaining({ result: 1 })],
+    ]);
   });
 
   test('purge value after purge call', async () => {

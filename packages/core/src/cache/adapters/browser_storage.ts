@@ -1,14 +1,14 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
-import { delay } from 'patronum';
 
-import { parseTime } from '../../misc/time';
+import { delay } from '../../libs/patronus';
+import { parseTime } from '../../libs/date-nfs';
 import { createAdapter } from './instance';
 import { attachObservability } from './observability';
 import { CacheAdapter, CacheAdapterOptions } from './type';
 
 export function browserStorageCache(
   config: {
-    storage: Storage;
+    storage: () => Storage;
   } & CacheAdapterOptions
 ): CacheAdapter {
   const { storage, observability } = config;
@@ -63,7 +63,7 @@ export function browserStorageCache(
     if (maxAge) {
       sample({
         clock: delay({
-          source: sample({
+          clock: sample({
             clock: setItemFx.done,
             filter: ({ params }) => params.key !== META_KEY,
           }),
@@ -189,12 +189,12 @@ export function browserStorageCache(
   // -- storage effects
 
   const setItemFx = createEffect((params: { key: string; value: string }) => {
-    storage.setItem(params.key, params.value);
+    storage().setItem(params.key, params.value);
   });
 
-  const getItemFx = createEffect((key: string) => storage.getItem(key));
+  const getItemFx = createEffect((key: string) => storage().getItem(key));
 
-  const removeItemFx = createEffect((key: string) => storage.removeItem(key));
+  const removeItemFx = createEffect((key: string) => storage().removeItem(key));
 
   // public
   return storageCache();

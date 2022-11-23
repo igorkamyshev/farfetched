@@ -136,7 +136,7 @@ const characterQuery = createQuery({
 retry(characterQuery, {
   times: 5,
   delay: 500,
-  mapParams: ({ params, error }, { attempt }) => ({
+  mapParams: ({ params, error, attempt }) => ({
     ...params,
     attempt: attempt,
   }),

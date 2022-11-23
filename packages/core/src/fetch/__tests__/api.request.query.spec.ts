@@ -3,7 +3,7 @@ import { describe, test, expect, vi } from 'vitest';
 
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
-import { FetchApiRecord } from '../../misc/fetch_api';
+import { FetchApiRecord } from '../lib';
 
 describe('fetch/api.request.query', () => {
   // Does not matter

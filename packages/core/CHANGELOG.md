@@ -1,5 +1,17 @@
 # @farfetched/core
 
+## 0.3.4
+
+### Patch Changes
+
+- ffee151: Do not throw error on initializing stage for browser-only cache adapters in node-env
+
+## 0.3.3
+
+### Patch Changes
+
+- 733c0dd: Fix incorrect typings of `cache` operator for Query with initial data
+
 ## 0.3.2
 
 ### Patch Changes

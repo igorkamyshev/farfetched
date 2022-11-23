@@ -1,19 +1,18 @@
 import { createStore, sample, createEvent, Store } from 'effector';
-import { reset as resetMany } from 'patronum';
 
 import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
-import {
-  TwoArgsDynamicallySourcedField,
-  StaticOrReactive,
-} from '../misc/sourced';
 import { createRemoteOperation } from '../remote_operation/create_remote_operation';
-import { serializationForSideStore } from '../serialization/serizalize_for_side_store';
-import { Serialize } from '../serialization/type';
+import {
+  serializationForSideStore,
+  type Serialize,
+  type StaticOrReactive,
+  type DynamicallySourcedField,
+} from '../libs/patronus';
 import { Validator } from '../validation/type';
 import { Query, QueryMeta, QuerySymbol } from './type';
 
-interface SharedQueryFactoryConfig<Data, Initial = Data> {
+export interface SharedQueryFactoryConfig<Data, Initial = Data> {
   name?: string;
   enabled?: StaticOrReactive<boolean>;
   serialize?: Serialize<Data | Initial>;
@@ -26,7 +25,7 @@ interface SharedQueryFactoryConfig<Data, Initial = Data> {
  * const headlessQuery = createHeadlessQuery()
  * headlessQuery.__.executeFx.use(someHandler)
  */
-function createHeadlessQuery<
+export function createHeadlessQuery<
   Params,
   Response,
   Error,
@@ -47,9 +46,8 @@ function createHeadlessQuery<
 }: {
   initialData?: Initial;
   contract: Contract<Response, ContractData>;
-  mapData: TwoArgsDynamicallySourcedField<
-    ContractData,
-    Params,
+  mapData: DynamicallySourcedField<
+    { result: ContractData; params: Params },
     MappedData,
     MapDataSource
   >;
@@ -109,7 +107,7 @@ function createHeadlessQuery<
   sample({ clock: operation.finished.success, fn: () => null, target: $error });
   sample({
     clock: operation.finished.success,
-    fn: ({ data }) => data,
+    fn: ({ result }) => result,
     target: $data,
   });
 
@@ -138,9 +136,14 @@ function createHeadlessQuery<
 
   // -- Reset state --
 
-  resetMany({
+  sample({
     clock: reset,
-    target: [$data, $error, $stale, operation.$status],
+    target: [
+      $data.reinit!,
+      $error.reinit!,
+      $stale.reinit!,
+      operation.$status.reinit!,
+    ],
   });
 
   return {
@@ -151,6 +154,3 @@ function createHeadlessQuery<
     ...operation,
   };
 }
-
-export { createHeadlessQuery };
-export type { SharedQueryFactoryConfig, Serialize };

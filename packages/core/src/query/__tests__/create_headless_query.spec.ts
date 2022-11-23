@@ -6,13 +6,12 @@ import { createDefer } from '@farfetched/misc';
 
 import { createHeadlessQuery } from '../create_headless_query';
 import { unknownContract } from '../../contract/unknown_contract';
-import { identity } from '../../misc/identity';
 import { invalidDataError } from '../../errors/create_error';
 
 describe('core/createHeadlessQuery without contract', () => {
   const query = createHeadlessQuery({
     contract: unknownContract,
-    mapData: identity,
+    mapData: ({ result }) => result,
   });
 
   test('start triggers executeFx', async () => {
@@ -37,7 +36,7 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(scope.getState(query.$error)).toBeNull();
     expect(listeners.onSuccess).toHaveBeenCalledTimes(1);
     expect(listeners.onSuccess).toHaveBeenCalledWith(
-      expect.objectContaining({ params: 42, data: 42 })
+      expect.objectContaining({ params: 42, result: 42 })
     );
 
     expect(listeners.onSkip).not.toHaveBeenCalled();
@@ -89,7 +88,7 @@ describe('core/createHeadlessQuery without contract', () => {
     const disabledQuery = createHeadlessQuery({
       enabled: false,
       contract: unknownContract,
-      mapData: identity,
+      mapData: ({ result }) => result,
     });
 
     const scope = fork({ handlers: [[disabledQuery.__.executeFx, vi.fn()]] });
@@ -201,7 +200,7 @@ describe('core/createHeadlessQuery with contract', () => {
         isData: (raw): raw is unknown => false,
         getErrorMessages: () => ['got it'],
       },
-      mapData: identity,
+      mapData: ({ result }) => result,
     });
 
     const scope = fork({ handlers: [[query.__.executeFx, vi.fn()]] });
@@ -231,7 +230,7 @@ describe('core/createHeadlessQuery with contract', () => {
         isData: (raw): raw is unknown => true,
         getErrorMessages: () => [],
       },
-      mapData: identity,
+      mapData: ({ result }) => result,
     });
 
     const scope = fork({
@@ -250,7 +249,7 @@ describe('core/createHeadlessQuery with contract', () => {
     expect(listeners.onSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
         params: 42,
-        data: extractedData,
+        result: extractedData,
       })
     );
   });
@@ -265,7 +264,7 @@ describe('core/createHeadlessQuery with contract', () => {
         isData: (raw): raw is unknown => false,
         getErrorMessages: validate,
       },
-      mapData: identity,
+      mapData: ({ result }) => result,
     });
 
     const scope = fork({
@@ -287,8 +286,8 @@ describe('core/createHeadlessQuery with contract and', () => {
 
     const query = createHeadlessQuery({
       contract: unknownContract,
-      mapData(data, params) {
-        expect(data).toBe(rawRata);
+      mapData({ result, params }) {
+        expect(result).toBe(rawRata);
         expect(params).toBe(passedParams);
         return mappedData;
       },
@@ -312,7 +311,7 @@ describe('core/createHeadlessQuery with contract and', () => {
       contract: unknownContract,
       mapData: {
         source: $source,
-        fn: (data, params, source) => {
+        fn: ({ result, params }, source) => {
           expect(source).toBe('first');
           return mappedData;
         },
@@ -333,7 +332,7 @@ describe('core/createHeadlessQuery enabled', () => {
   test('enabled by default', () => {
     const query = createHeadlessQuery({
       contract: unknownContract,
-      mapData: identity,
+      mapData: ({ result }) => result,
     });
 
     const scope = fork({ handlers: [[query.__.executeFx, vi.fn()]] });
@@ -344,7 +343,7 @@ describe('core/createHeadlessQuery enabled', () => {
   test('skip execution on disabled query', async () => {
     const query = createHeadlessQuery({
       contract: unknownContract,
-      mapData: identity,
+      mapData: ({ result }) => result,
       enabled: false,
     });
 
@@ -364,7 +363,7 @@ describe('core/createHeadlessQuery enabled', () => {
   test('reset', async () => {
     const query = createHeadlessQuery({
       contract: unknownContract,
-      mapData: identity,
+      mapData: ({ result }) => result,
       enabled: false,
     });
 

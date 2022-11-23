@@ -4,9 +4,9 @@ import { describe, test, expect, vi } from 'vitest';
 
 import { watchEffect } from '@farfetched/test-utils';
 
+import { timeoutError } from '../../errors/create_error';
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
-import { timeoutError } from '../../errors/create_error';
 
 describe('fetch/api.abort.timeout', () => {
   // Does not matter

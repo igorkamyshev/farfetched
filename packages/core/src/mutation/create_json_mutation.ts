@@ -4,14 +4,13 @@ import { unknownContract } from '../contract/unknown_contract';
 import { InvalidDataError } from '../errors/type';
 import { ApiRequestError, HttpMethod } from '../fetch/api';
 import { createJsonApiRequest, Json } from '../fetch/json';
-import { FetchApiRecord } from '../misc/fetch_api';
-import { identity } from '../misc/identity';
-import { ParamsDeclaration } from '../misc/params';
+import { FetchApiRecord } from '../fetch/lib';
+import { ParamsDeclaration } from '../remote_operation/params';
 import {
+  DynamicallySourcedField,
   normalizeSourced,
   SourcedField,
-  TwoArgsDynamicallySourcedField,
-} from '../misc/sourced';
+} from '../libs/patronus';
 import { Validator } from '../validation/type';
 import {
   createHeadlessMutation,
@@ -73,7 +72,7 @@ interface BaseJsonMutationConfigWithParams<
 // -- Overloads
 
 // params + mapData
-function createJsonMutation<
+export function createJsonMutation<
   Params,
   Data,
   TransformedData,
@@ -95,9 +94,8 @@ function createJsonMutation<
   > & {
     response: {
       contract: Contract<unknown, Data>;
-      mapData: TwoArgsDynamicallySourcedField<
-        Data,
-        Params,
+      mapData: DynamicallySourcedField<
+        { result: Data; params: Params },
         TransformedData,
         DataSource
       >;
@@ -112,7 +110,7 @@ function createJsonMutation<
 >;
 
 // params + no mapData
-function createJsonMutation<
+export function createJsonMutation<
   Params,
   Data,
   Error,
@@ -139,7 +137,7 @@ function createJsonMutation<
 ): Mutation<Params, Data, ApiRequestError | Error | InvalidDataError>;
 
 // No params + mapData
-function createJsonMutation<
+export function createJsonMutation<
   Data,
   TransformedData,
   Error,
@@ -159,9 +157,8 @@ function createJsonMutation<
   > & {
     response: {
       contract: Contract<unknown, Data>;
-      mapData: TwoArgsDynamicallySourcedField<
-        Data,
-        void,
+      mapData: DynamicallySourcedField<
+        { result: Data; params: void },
         TransformedData,
         DataSource
       >;
@@ -172,7 +169,7 @@ function createJsonMutation<
 ): Mutation<void, TransformedData, ApiRequestError | Error | InvalidDataError>;
 
 // No params + no mapData
-function createJsonMutation<
+export function createJsonMutation<
   Data,
   Error,
   BodySource = void,
@@ -197,8 +194,7 @@ function createJsonMutation<
 ): Mutation<void, Data, ApiRequestError | Error | InvalidDataError>;
 
 // -- Implementation --
-
-function createJsonMutation(config: any): Mutation<any, any, any> {
+export function createJsonMutation(config: any): Mutation<any, any, any> {
   const requestFx = createJsonApiRequest({
     request: { method: config.request.method, credentials: 'same-origin' },
     concurrency: { strategy: 'TAKE_EVERY' },
@@ -207,7 +203,7 @@ function createJsonMutation(config: any): Mutation<any, any, any> {
 
   const headlessMutation = createHeadlessMutation({
     contract: config.response.contract ?? unknownContract,
-    mapData: config.response.mapData ?? identity,
+    mapData: config.response.mapData ?? (({ result }) => result),
     validate: config.response.validate,
     enabled: config.enabled,
     name: config.name,
@@ -250,5 +246,3 @@ function createJsonMutation(config: any): Mutation<any, any, any> {
     __: { ...headlessMutation.__, executeFx: requestFx },
   };
 }
-
-export { createJsonMutation };

@@ -3,8 +3,7 @@ import { allSettled, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
 import { unknownContract } from '../../contract/unknown_contract';
-import { identity } from '../../misc/identity';
-import { withFactory } from '../../misc/sid';
+import { withFactory } from '../../libs/patronus';
 import { connectQuery } from '../connect_query';
 import { createHeadlessQuery } from '../create_headless_query';
 
@@ -14,8 +13,8 @@ describe('remote_data/connect_query', () => {
     fn: () =>
       createHeadlessQuery({
         contract: unknownContract,
-        mapData(data) {
-          return data as string;
+        mapData({ result }) {
+          return result as string;
         },
       }),
   });
@@ -25,8 +24,8 @@ describe('remote_data/connect_query', () => {
     fn: () =>
       createHeadlessQuery({
         contract: unknownContract,
-        mapData(data) {
-          return data as Array<string>;
+        mapData({ result }) {
+          return result as Array<string>;
         },
       }),
   });
@@ -44,14 +43,14 @@ describe('remote_data/connect_query', () => {
         unknown
       >({
         contract: unknownContract,
-        mapData: identity,
+        mapData: ({ result }) => result,
       }),
   });
 
   connectQuery({
     source: { language: languagesQ, blocks: blocksQ },
     fn({ language, blocks }) {
-      return { params: { language, ids: blocks } };
+      return { params: { language: language.result, ids: blocks.result } };
     },
     target: contentQ,
   });
@@ -82,7 +81,7 @@ describe('remote_data/connect_query', () => {
           ids: ['one', 'two'],
           language: 'RU',
         },
-        data: childResposne,
+        result: childResposne,
       })
     );
     expect(fetchContentMock).toHaveBeenCalledWith(

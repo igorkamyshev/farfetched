@@ -23,10 +23,10 @@ query.start; // Event<Params>
 query.reset; // Event<void>, since v0.2.0
 
 // Events
-query.finished.success; // Event<Data>
-query.finished.failure; // Event<Error>
-query.finished.skip; // Event<void>
-query.finished.finally; // Event<void>
+query.finished.success; // Event<{ result: Data, params: Params }>
+query.finished.failure; // Event<{ error: Error, params: Params }>
+query.finished.skip; // Event<{ params: Params }>
+query.finished.finally; // Event<{ params: Params }>
 
 // Note: Store and Event are imported from 'effector' package
 ```

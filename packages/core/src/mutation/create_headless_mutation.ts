@@ -1,19 +1,16 @@
 import { createRemoteOperation } from '../remote_operation/create_remote_operation';
-import {
-  StaticOrReactive,
-  TwoArgsDynamicallySourcedField,
-} from '../misc/sourced';
+import { DynamicallySourcedField, StaticOrReactive } from '../libs/patronus';
 import { Mutation, MutationSymbol } from './type';
 import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
 
-interface SharedMutationFactoryConfig {
+export interface SharedMutationFactoryConfig {
   name?: string;
   enabled?: StaticOrReactive<boolean>;
 }
 
-function createHeadlessMutation<
+export function createHeadlessMutation<
   Params,
   Data,
   ContractData extends Data,
@@ -30,9 +27,8 @@ function createHeadlessMutation<
 }: SharedMutationFactoryConfig & {
   contract: Contract<Data, ContractData>;
   validate?: Validator<ContractData, Params, ValidationSource>;
-  mapData: TwoArgsDynamicallySourcedField<
-    ContractData,
-    Params,
+  mapData: DynamicallySourcedField<
+    { result: ContractData; params: Params },
     MappedData,
     MapDataSource
   >;
@@ -61,5 +57,3 @@ function createHeadlessMutation<
 
   return operation;
 }
-
-export { type SharedMutationFactoryConfig, createHeadlessMutation };

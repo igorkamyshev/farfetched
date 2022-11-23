@@ -5,7 +5,7 @@ export function sessionStorageCache(
   config?: CacheAdapterOptions
 ): CacheAdapter {
   return browserStorageCache({
-    storage: sessionStorage,
+    storage: () => sessionStorage,
     ...config,
   });
 }
