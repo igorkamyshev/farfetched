@@ -159,6 +159,38 @@ describe('cache', () => {
     expect(scope.getState(query.$stale)).toBeFalsy();
   });
 
+  test('save value to cache before mapData call', async () => {
+    const mapData = vi.fn((n) => n + 1);
+    const query = withFactory({
+      fn: () =>
+        createQuery({
+          effect: createEffect(() => 1),
+          mapData,
+        }),
+      sid: '1',
+    });
+
+    cache(query, { staleAfter: '10min' });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope });
+    await allSettled(query.start, { scope });
+
+    expect(mapData.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          1,
+          undefined,
+        ],
+        [
+          1,
+          undefined,
+        ],
+      ]
+    `);
+  });
+
   test('purge value after purge call', async () => {
     let index = 1;
     const handler = vi.fn(async (p: void) =>

@@ -73,6 +73,10 @@ function createRemoteOperation<
   }>();
 
   const resumeExecution = createEvent<{ params: Params }>();
+  const validatedSuccessfully = createEvent<{
+    params: Params;
+    result: unknown;
+  }>();
 
   const applyContractFx = createContractApplier<Params, Data, ContractData>(
     contract
@@ -213,6 +217,12 @@ function createRemoteOperation<
 
   sample({
     clock: validDataRecieved,
+    fn: ({ params, data }) => ({ params, result: data }),
+    target: validatedSuccessfully,
+  });
+
+  sample({
+    clock: validDataRecieved,
     source: normalizeSourced(
       reduceTwoArgs({
         field: mapData,
@@ -276,6 +286,7 @@ function createRemoteOperation<
       lowLevelAPI: {
         sources: sources ?? [],
         registerInterruption,
+        validatedSuccessfully,
         fillData,
         resumeExecution,
       },
