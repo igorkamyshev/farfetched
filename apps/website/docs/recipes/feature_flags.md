@@ -1,3 +1,7 @@
+---
+outline: [2, 3]
+---
+
 # Feature flags service
 
 Let's talk about feature flags. Feature flags are a way to enable or disable a feature in your application. They are used to testing new features, to roll out new features to a subset of users, or to disable a feature in case of an emergency.
@@ -43,17 +47,19 @@ sample({
 
 Sure!
 
+`createStore` creates [_Store_](https://effector.dev/docs/api/effector/store). It's a place where you can store a value and subscribe to changes.
+
 ```ts
 const $dynamicFaviconEnabled = createStore(false);
 ```
 
-`createStore` creates [_Store_](https://effector.dev/docs/api/effector/store). It's a place where you can store a value and subscribe to changes.
+`createEvent` creates [_Event_](https://effector.dev/docs/api/effector/event). It's a way to send a signal and notify subscribers.
 
 ```ts
 const somethingHappened = createEvent();
 ```
 
-`createEvent` creates [_Event_](https://effector.dev/docs/api/effector/event). It's a way to send a signal and notify subscribers.
+`createEffect` creates [_Effect_](https://effector.dev/docs/api/effector/effect). It's a way to perform a side effect, like sending a request to the server or changing favicon.
 
 ```ts
 const changeFaviconFx = createEffect({
@@ -64,7 +70,7 @@ const changeFaviconFx = createEffect({
 });
 ```
 
-`createEffect` creates [_Effect_](https://effector.dev/docs/api/effector/effect). It's a way to perform a side effect, like sending a request to the server or changing favicon.
+`sample` creates connection between `somethingHappened` and `changeFaviconFx`. It means that `changeFaviconFx` will be called when `somethingHappened` happened only if `$dynamicFaviconEnabled` contains `true`.
 
 ```ts
 sample({
@@ -74,8 +80,33 @@ sample({
 });
 ```
 
-`sample` creates connection between `somethingHappened` and `changeFaviconFx`. It means that `changeFaviconFx` will be called when `somethingHappened` happened only if `$dynamicFaviconEnabled` contains `true`.
-
 :::
 
 So, it's time to designs portable and reusable feature flags service for the whole application that will be used by all developers in our frontend team!
+
+## Design
+
+Let's list all the requirements:
+
+1. Fetch the value of the feature flag from the server after the feature module is initialized and batch requests to the feature flags server to make it more efficient.
+2. Pass some application context to the feature flags server, so it can decide which value to return.
+3. Allow using default value for the feature flag before the real one is loaded or in case of an error. Also, we need a way to distinguish between the default value and the real one in the application.
+4. Validate the value of the feature flag on the client side to prevent unexpected structure that can break the application.
+
+Bonus requirement: let's make it friendly for application developers. They should not care about the implementation details of the feature flags service and be able to use it independently in different products inside the application.
+
+## Implementation
+
+### Fetching (and batching)
+
+### Context passing
+
+### Friendly API
+
+### Default value
+
+### Validation
+
+## Integration
+
+## Conclusion
