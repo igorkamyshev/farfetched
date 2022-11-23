@@ -141,6 +141,6 @@ const userQuery = createJsonQuery({
 
 In this article, we have learned how data-flow works under the hood in _Remote operations_. We have also learned about two types of factories and how they differ from each other. Key points:
 
-- **Basic factories** are used to create _Remote Operations_ with a more control of data-flow in user-land.
-- **Specific factories** are used to create _Remote Operations_ with a more control of data-flow in the library.
+- **Basic factories** are used to create _Remote Operations_ with a more control of data-flow in user-land, which allows you to have a very granular control over _Remote Operation_ behavior.
+- **Specific factories** are used to create _Remote Operations_ with a more control of data-flow being in the library, which creates a better DX for you.
 - Prefer **specific factories** in many cases to delegate data-flow control to the library.
