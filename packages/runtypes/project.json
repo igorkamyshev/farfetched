@@ -72,5 +72,6 @@
       ]
     }
   },
+  "implicitDependencies": ["!test-utils"],
   "tags": []
 }
