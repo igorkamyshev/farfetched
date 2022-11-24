@@ -1,9 +1,0 @@
-{
-  "executors": {
-    "tsd": {
-      "implementation": "./impl.js",
-      "schema": "./schema.json",
-      "description": "Runs `tsd`"
-    }
-  }
-}
