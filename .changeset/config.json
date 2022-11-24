@@ -7,10 +7,10 @@
       "skipCI": false
     }
   ],
-  "fixed": [],
+  "fixed": [["@farfetched/*"]],
   "linked": [],
   "access": "public",
   "baseBranch": "origin/master",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": ["@farfetched/test-utils"]
 }
