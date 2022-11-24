@@ -17,7 +17,7 @@ const blockQuery = createQuery({
 
     return response.json();
   }),
-  validate: ({ result }, { id }) => result.id === id,
+  validate: ({ result, params }) => result.id === params.id,
 });
 ```
 
