@@ -12,7 +12,11 @@ Farfetched provides a way to [`cache`](/api/operators/cache) the result of the [
 
 Internal implementation of this guarantee is a pretty simple. Farfetched is based on [Do not trust remote data](/statements/never_trust) principle, so it uses [_Contract_](/api/primitives/contract) and [_Validator_](/api/primitives/validator) to validate the data from the remote source.
 
-Same [_Contract_](/api/primitives/contract) and [_Validator_](/api/primitives/validator) are used to validate the cached data. If the cached data is valid, it is saved to the [_Query_](/api/primitives/query). Otherwise, the cached data is ignored, and the [_Query_](/api/primitives/query) is updated with the new data from the remote source.
+::: tip
+Read more detailed description of data-flow in [Data flow in Remote Operation](/recipes/data_flow) article.
+:::
+
+`cache` operator pushes the data to the [_Query_](/api/primitives/query) right after the **response parsing** stage of the data-flow. It means, same [_Contract_](/api/primitives/contract) and [_Validator_](/api/primitives/validator) are used to validate the cached data as any other data from the regular remote source. If the cached data is valid, it is saved to the [_Query_](/api/primitives/query). Otherwise, the cached data is ignored, and the [_Query_](/api/primitives/query) is updated with the new data from the remote source.
 
 ::: info
 User-land code can't access the cached data directly. It is only available through the [_Query_](/api/primitives/query) object. So, invalid cached data is not exposed to the user.

@@ -3,6 +3,18 @@
   "sourceRoot": "packages/runtypes/src",
   "projectType": "library",
   "targets": {
+    "pack": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/typepack.mjs --package runtypes"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    },
     "build": {
       "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
@@ -24,7 +36,7 @@
       "dependsOn": [
         {
           "projects": "self",
-          "target": "build"
+          "target": "pack"
         }
       ]
     },
