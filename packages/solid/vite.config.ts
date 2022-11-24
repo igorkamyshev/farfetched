@@ -8,6 +8,7 @@ export default defineConfig({
     globals: true,
     setupFiles: './test.setup.ts',
     typecheck: { ignoreSourceErrors: true },
+    passWithNoTests: true,
   },
   resolve: {
     conditions: ['browser'],

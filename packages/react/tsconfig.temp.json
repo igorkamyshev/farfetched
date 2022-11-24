@@ -1,0 +1,61 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": true,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": false,
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": [
+      "es2022",
+      "dom"
+    ],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": "../..",
+    "paths": {
+      "@farfetched/core": [
+        "packages/core/index.ts"
+      ],
+      "@farfetched/react": [
+        "packages/react/index.ts"
+      ],
+      "@farfetched/runtypes": [
+        "packages/runtypes/index.ts"
+      ],
+      "@farfetched/solid": [
+        "packages/solid/index.ts"
+      ],
+      "@farfetched/test-utils": [
+        "packages/test-utils/index.ts"
+      ],
+      "@farfetched/zod": [
+        "packages/zod/index.ts"
+      ]
+    },
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "emitDeclarationOnly": false,
+    "incremental": true,
+    "tsBuildInfoFile": "/Users/igorkamyshev/Code/Personal/farfetched/node_modules/.pnpm/vitest@0.25.3_jsdom@20.0.1/node_modules/vitest/dist/tsconfig.tmp.tsbuildinfo"
+  },
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ],
+  "files": [],
+  "include": [
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx"
+  ]
+}
