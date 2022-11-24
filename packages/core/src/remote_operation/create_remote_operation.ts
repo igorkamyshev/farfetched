@@ -72,6 +72,10 @@ export function createRemoteOperation<
   }>();
 
   const resumeExecution = createEvent<{ params: Params }>();
+  const validatedSuccessfully = createEvent<{
+    params: Params;
+    result: unknown;
+  }>();
 
   const applyContractFx = createContractApplier<Params, Data, ContractData>(
     contract
@@ -223,6 +227,12 @@ export function createRemoteOperation<
   });
 
   sample({
+    clock: validDataRecieved,
+    fn: ({ result, params }) => ({ result, params }),
+    target: validatedSuccessfully,
+  });
+
+  sample({
     clock: applyContractFx.fail,
     filter: ({ params }) => !params.meta.stopErrorPropagation,
     fn: ({ error, params }) => ({
@@ -271,6 +281,7 @@ export function createRemoteOperation<
       lowLevelAPI: {
         sources: sources ?? [],
         registerInterruption,
+        validatedSuccessfully,
         fillData,
         resumeExecution,
       },
