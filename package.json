@@ -52,6 +52,8 @@
     "nx": "14.7.5",
     "prettier": "^2.6.2",
     "react-test-renderer": "18.2.0",
+    "rollup": "^3.4.0",
+    "rollup-plugin-dts": "^5.0.0",
     "semver-parser": "^4.0.1",
     "size-limit": "^7.0.8",
     "solid-testing-library": "^0.3.0",
