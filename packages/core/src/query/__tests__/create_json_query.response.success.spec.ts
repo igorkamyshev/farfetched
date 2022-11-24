@@ -1,9 +1,9 @@
 import { allSettled, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { watchRemoteOperation } from '@farfetched/test-utils';
-import { createDefer } from '@farfetched/misc';
 import { describe, test, expect, vi } from 'vitest';
 
+import { createDefer } from '../../libs/lohyphen';
 import { unknownContract } from '../../contract/unknown_contract';
 import { createJsonQuery } from '../create_json_query';
 

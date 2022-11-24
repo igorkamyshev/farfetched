@@ -9,9 +9,9 @@ import { render, cleanup, screen } from 'solid-testing-library';
 import { Provider } from 'effector-solid';
 import { createMutation, createQuery } from '@farfetched/core';
 import { allPrevSettled } from '@farfetched/test-utils';
-import { createDefer } from '@farfetched/misc';
 import { setTimeout } from 'timers/promises';
 
+import { createDefer } from '../defer';
 import { createQueryResource } from '../create_query_resource';
 
 describe('createQueryResource', () => {

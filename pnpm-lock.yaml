@@ -136,12 +136,6 @@ importers:
       vue: 3.2.37
 
   packages/core:
-    specifiers:
-      '@farfetched/misc': 0.1.2
-    dependencies:
-      '@farfetched/misc': link:../misc
-
-  packages/misc:
     specifiers: {}
 
   packages/react:
@@ -151,10 +145,7 @@ importers:
     specifiers: {}
 
   packages/solid:
-    specifiers:
-      '@farfetched/misc': 0.1.2
-    dependencies:
-      '@farfetched/misc': link:../misc
+    specifiers: {}
 
   packages/test-utils:
     specifiers: {}

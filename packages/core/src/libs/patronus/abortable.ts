@@ -7,8 +7,8 @@ import {
   createStore,
   createEffect,
 } from 'effector';
-import { createDefer, Defer } from '@farfetched/misc';
 
+import { createDefer, type Defer } from '../../libs/lohyphen';
 import { abortError } from '../../errors/create_error';
 import { AbortError } from '../../errors/type';
 
