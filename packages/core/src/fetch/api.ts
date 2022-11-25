@@ -1,4 +1,11 @@
-import { attach, createEffect, createEvent, Event, sample } from 'effector';
+import {
+  attach,
+  createEffect,
+  createEvent,
+  createStore,
+  Event,
+  sample,
+} from 'effector';
 
 import {
   abortable,
@@ -18,6 +25,7 @@ import {
   timeoutError,
   preparationError,
   invalidDataError,
+  abortError,
 } from '../errors/create_error';
 import { anySignal } from './any_signal';
 import { TimeoutController } from './timeout_abort_controller';
@@ -105,10 +113,11 @@ export interface ApiConfigShared {
      * Auto-cancelation strategy
      * - `TAKE_EVERY` will not cancel any requests
      * - `TAKE_LATEST` will cancel all but the latest request
+     * - `TAKE_FIRST` will ignore all but the first request
      *
      * @default "TAKE_EVERY"
      */
-    strategy?: 'TAKE_LATEST' | 'TAKE_EVERY';
+    strategy?: 'TAKE_LATEST' | 'TAKE_EVERY' | 'TAKE_FIRST';
   };
 
   /**
@@ -152,10 +161,13 @@ export function createApiRequest<
 
   const prepareFx = createEffect(config.response.extract);
 
+  const $haveToBeAborted = createStore(false, { serialize: 'ignore' });
+
   const apiRequestFx = createEffect<
     DynamicRequestConfig<B> &
       AbortContext & { timeoutController: TimeoutController | null } & {
         method: HttpMethod;
+        haveToBeAborted: boolean;
       },
     ApiRequestResult,
     ApiRequestError
@@ -169,12 +181,16 @@ export function createApiRequest<
       body,
       onAbort,
       timeoutController,
+      haveToBeAborted,
     }) => {
-      // This abort controller uses for `abortable`, it cancell all requests
       const abortController = new AbortController();
       onAbort(() => {
         abortController.abort();
       });
+
+      if (haveToBeAborted) {
+        throw abortError();
+      }
 
       const mappedBody = body ? config.request.mapBody(body) : null;
 
@@ -233,6 +249,7 @@ export function createApiRequest<
       credentials: normalizeStaticOrReactive(config.request.credentials),
       body: normalizeStaticOrReactive(config.request.body),
       timeout: normalizeStaticOrReactive(config.abort?.timeout),
+      haveToBeAborted: $haveToBeAborted,
     },
     mapParams(dynamicConfig: ApiRequestParams & AbortContext, staticConfig) {
       // Exclusive settings
@@ -258,7 +275,7 @@ export function createApiRequest<
       const headers = mergeRecords(staticConfig.headers, dynamicConfig.headers);
 
       // Other settings
-      const { method } = staticConfig;
+      const { method, haveToBeAborted } = staticConfig;
       const { onAbort } = dynamicConfig;
 
       // This abort controller uses for timeout, it cancell only one request
@@ -276,6 +293,7 @@ export function createApiRequest<
         body,
         onAbort,
         timeoutController,
+        haveToBeAborted,
       };
     },
     effect: apiRequestFx,
@@ -303,6 +321,18 @@ export function createApiRequest<
   switch (config.concurrency?.strategy) {
     case 'TAKE_LATEST':
       sample({ clock: boundAbortableApiRequestFx, target: abortSignal });
+      break;
+    case 'TAKE_FIRST':
+      sample({
+        clock: apiRequestFx,
+        fn: () => true,
+        target: $haveToBeAborted,
+      });
+      sample({
+        clock: boundAbortableApiRequestFx.finally,
+        fn: () => false,
+        target: $haveToBeAborted,
+      });
       break;
     case 'TAKE_EVERY':
       // Do not have to do anything here
