@@ -95,9 +95,53 @@ Let's list all the requirements:
 
 Bonus requirement: let's make it friendly for application developers. They should not care about the implementation details of the feature flags service and be able to use it independently in different products inside the application.
 
+So, to meet these requirements, we need to create a function that will accept configuration of the particular feature flag (when we have to fetch it, what is the default value, etc.) and return something that can be used in the application.
+
+```ts
+const { $value: $dynamicFaviconEnabled } = createFlag({
+  /* ... */
+});
+```
+
+::: tip Why does a function return object with `$value` field instead of single `$value`?
+
+For now, we use only `$value` in the application, but we can add more fields in the future. For example, we can add `$loading` field that will be `true` while the value is loading and `false` otherwise. So, in general, it's a good practice to return an object from a factory instead of a single value. It allows us to add more fields in the future without breaking the API.
+
+We do the same for `createFlag` arguments by passing an object instead of a list of arguments. It allows us to add more fields in the future without breaking the API.
+
+:::
+
 ## Implementation
 
-### Fetching (and batching)
+Let's split our implementation into two parts:
+
+- internal implementation that will handle fetching, context passing, etc.
+- public API that will be available in user-land
+
+### Fetching
+
+First we have to create [_Query_](/api/primitives/query) to receive information about feature flags from remote source.
+
+```ts
+import { createJsonQuery, declareParams } from '@farfetched/core';
+
+const featureFlagsQuery = createJsonQuery({
+  params: declareParams<{ flagKeys: string[] }>(),
+  request: {
+    method: 'POST',
+    url: 'https://flagr.salo.com/',
+  },
+  response: {
+    contract: flagrResponseContract,
+  },
+});
+```
+
+::: info
+
+In this receipt [Flagr](https://github.com/openflagr/flagr) is used as a feature flags service, but it affects only fetching section, so you can you whatever you want.
+
+:::
 
 ### Context passing
 
