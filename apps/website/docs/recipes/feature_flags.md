@@ -250,6 +250,10 @@ function createFlagrRequestBody(flagKeys, context) {
 
 ### Friendly API
 
+::: info
+The internal implementation is written just on top level, it will be shared between all `createFlag` calls.
+:::
+
 So, we have an internal implementation that handles fetching, context passing, etc. Now we need to create a public API that will be available in user-land.
 
 ```ts
