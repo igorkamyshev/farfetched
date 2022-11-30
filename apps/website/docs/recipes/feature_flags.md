@@ -29,11 +29,9 @@ import { createEvent, createEffect, sample } from 'effector';
 
 const somethingHappened = createEvent();
 
-const changeFaviconFx = createEffect({
-  handler: () => {
-    const fav = document.querySelector('[rel="icon"][type="image/svg+xml"]');
-    fav.href = 'other-favicon.svg';
-  },
+const changeFaviconFx = createEffect(() => {
+  const fav = document.querySelector('[rel="icon"][type="image/svg+xml"]');
+  fav.href = 'other-favicon.svg';
 });
 
 sample({
@@ -62,11 +60,9 @@ const somethingHappened = createEvent();
 `createEffect` creates [_Effect_](https://effector.dev/docs/api/effector/effect). It's a way to perform a side effect, like sending a request to the server or changing favicon.
 
 ```ts
-const changeFaviconFx = createEffect({
-  handler: () => {
-    const fav = document.querySelector('[rel="icon"][type="image/svg+xml"]');
-    fav.href = 'other-favicon.svg';
-  },
+const changeFaviconFx = createEffect(() => {
+  const fav = document.querySelector('[rel="icon"][type="image/svg+xml"]');
+  fav.href = 'other-favicon.svg';
 });
 ```
 
@@ -111,6 +107,29 @@ We do the same for `createFlag` arguments by passing an object instead of a list
 
 :::
 
+It's time to find out arguments of the `createFlag` function.
+
+1. `key` — a unique key of the feature flag. It's used to identify the feature flag in the feature flags server.
+2. `fetchOn` — we need to know when to fetch the feature flag. It can be an event or list of events. For example, we can fetch the value of the feature flag when the application is initialized.
+3. `defaultValue` — we need to know what is the default value of the feature flag. It will be used before the real value is loaded or in case of an error.
+4. `contract` — we need to know how to check the value of the feature flag. It will be used to prevent unexpected structure that can break the application. Since Farfetched has a built-in [structure to do it](/api/primitives/contract), we can use it here.
+
+```ts
+import { runtypeContract } from '@farftehced/runtypes';
+import { Boolean } from 'runtypes';
+
+const { $value: $dynamicFaviconEnabled } = createFlag({
+  key: 'exp-dynamic-favicon',
+  defaultValue: false,
+  contract: runtypeContract(Boolean),
+  fetchOn: applicationInitialized,
+});
+```
+
+::: tip
+We use `runtypes` as a library for creating [_Contracts_](/api/primitives/contract) there. However, you can use any library you want. Read more in [the tutorial](/tutorial/contracts).
+:::
+
 ## Implementation
 
 Let's split our implementation into two parts:
@@ -130,6 +149,7 @@ const featureFlagsQuery = createJsonQuery({
   request: {
     method: 'POST',
     url: 'https://flagr.salo.com/',
+    body: /* TODO: formulate request's body */,
   },
   response: {
     contract: flagrResponseContract,
@@ -143,14 +163,247 @@ In this receipt [Flagr](https://github.com/openflagr/flagr) is used as a feature
 
 :::
 
+We use `createJsonQuery` to create a query that will send a request to the feature flags server and receive a response in JSON format. We use `declareParams` to declare that the query accepts an object with `flagKeys` field. It's a list of feature flags keys that we want to receive from the server.
+
+Let's add a rule to start the [_Query_](/api/primitives/query):
+
+```ts
+import { createEvent, createStore } from 'effector';
+
+// We will use this event in `createFlag` function to register new keys
+const registerNewKey = createEvent<string>();
+
+// Let's store all registered keys for the application
+const $requiredKeys = createStore<string[]>([]).on(
+  registerNewKey,
+  (keys, key) => [...keys, key]
+);
+
+// We will trigger it in `createFlag` function to start fetching of the feature flag
+const performRequest = createEvent();
+
+// Connect all together
+sample({
+  // every time when performRequest is triggered
+  clock: performRequest,
+  // take all $requiredKeys
+  source: $requiredKeys,
+  // transform them into an object with a single `flagKeys` field
+  fn: (flagKeys) => ({ flagKeys }),
+  // and start featureFlagsQuery with it
+  target: featureFlagsQuery.start,
+});
+```
+
+That's it! Now we can start the query when we need to fetch the value of the feature flag.
+
 ### Context passing
+
+For sure, we need to pass some application context to the feature flags server, so it can decide which value to return. For example, we can pass the user ID or preferred language to the server to decide whether to enable the feature flag for the user or not.
+
+```ts
+import { combine } from 'effector';
+
+// External stores that we want to pass to the feature flags server
+// it have to be filled outside of the feature flags service
+const $userId = createStore<string | null>(null);
+const $language = createStore<string | null>(null);
+
+// Let's combine all external stores into a request context
+const $ctx = combine({ userId: $userId, language: $language });
+
+// And use it in the request body
+const featureFlagsQuery = createJsonQuery({
+  params: declareParams<{ flagKeys: string[] }>(),
+  request: {
+    method: 'POST',
+    url: 'https://flagr.salo.com/',
+    body: {
+      source: $ctx,
+      fn: ({ flagsKeys }, ctx) => createFlagrRequestBody(flagsKeys, ctx),
+    },
+  },
+  response: {
+    contract: flagrResponseContract,
+  },
+});
+```
+
+::: details What is `createFlagrRequestBody`?
+`createFlagrRequestBody` is a function that creates a request body for Flagr. If you use another service, you can have to a function that creates a request body for it.
+
+```ts
+function createFlagrRequestBody(flagKeys, context) {
+  return {
+    entities: [
+      {
+        entityID: context.userId,
+        entityContext: context,
+      },
+    ],
+    flagKeys,
+  };
+}
+```
+
+:::
 
 ### Friendly API
 
+So, we have an internal implementation that handles fetching, context passing, etc. Now we need to create a public API that will be available in user-land.
+
+```ts
+const { $value: $dynamicFaviconEnabled } = createFlag({
+  key: 'exp-dynamic-favicon',
+  defaultValue: false,
+  contract: runtypeContract(Boolean),
+  fetchOn: applicationInitialized,
+});
+```
+
+Let's start with a simple function that registers a new feature:
+
+```ts
+import { sample } from 'effector';
+
+function createFlag({ key, requestOn }) {
+  sample({
+    // every time when requestOn is triggered
+    clock: requestOn,
+    // take a key
+    fn: () => key,
+    // and register it
+    target: registerNewKey,
+  });
+}
+```
+
+Now, we have to add a fetching logic:
+
+```ts
+import { sample } from 'effector';
+
+function createFlag({ key, requestOn }) {
+  // ...
+
+  sample({
+    // every time when requestOn is triggered
+    clock: requestOn,
+    // perform fetching
+    target: performRequest,
+  });
+}
+```
+
+The last thing we need to do is to return a store with a value of the feature flag:
+
+```ts
+function createFlag({ key, requestOn }) {
+  // ...
+
+  // find patricular flag
+  const $value = featureFlagsQuery.$data.map(
+    (data) => data.find((flag) => flag.flagKey === key) ?? null
+  );
+
+  return { $value };
+}
+```
+
+That's it, now let's do some fine-tuning for the `createFlag` function.
+
 ### Default value
+
+Because of `?? null` in the previous example, we will receive `null` if the feature flag is not found. It's not what we want, so we have to add a default value:
+
+```ts
+function createFlag({ key, requestOn, defaultValue }) {
+  // ...
+
+  const $value = featureFlagsQuery.$data.map(
+    (data) =>
+      // Use defaultValue if the feature flag is not found
+      data.find((flag) => flag.flagKey === key) ?? defaultValue
+  );
+
+  return { $value };
+}
+```
 
 ### Validation
 
-## Integration
+The last but not the least thing we have to do is to validate the value of the feature flag. For example, we can receive a string from the server, but we expect a boolean value in our application, so, it will be a runtime error. To prevent it, we can use a [_Contract_](/api/primitives/contract)
+
+```ts
+function createFlag({ key, requestOn, defaultValue, contract }) {
+  // ...
+
+  const $value = featureFlagsQuery.$data
+    .map((data) => data.find((flag) => flag.flagKey === key) ?? defaultValue)
+    .map((value) => {
+      // Check if the value is valid
+      if (contarct.isData(value)) {
+        // if it's valid, return it
+        return value;
+      } else {
+        // otherwise, return a default value
+        return defaultValue;
+      }
+    });
+
+  return { $value };
+}
+```
+
+Of course, it can be improved a bit. For example, we can use `getErrorMessages` method of the [_Contract_](/api/primitives/contract) to get a list of errors and log them to the console. But it's out of the scope of this article.
+
+### Integration
+
+Now, we have a feature flags service. Let's integrate it with our application.
+
+```ts
+import { createEvent, createEffect, sample } from 'effector';
+import { runtypeContract } from '@farfetched/runtypes';
+import { Boolean } from 'runtypes';
+
+// Do not forget to call it after application initialization
+const applicationInitialized = createEvent();
+
+const { $value: $dynamicFaviconEnabled } = createFlag({
+  key: 'exp-dynamic-favicon',
+  defaultValue: false,
+  contract: runtypeContract(Boolean),
+  fetchOn: applicationInitialized,
+});
+
+const somethingHappened = createEvent();
+
+const changeFaviconFx = createEffect(() => {
+  const fav = document.querySelector('[rel="icon"][type="image/svg+xml"]');
+  fav.href = 'other-favicon.svg';
+});
+
+sample({
+  clock: somethingHappened,
+  filter: $dynamicFaviconEnabled,
+  target: changeFaviconFx,
+});
+```
+
+### What else?
+
+That's it, we have a feature flags service. But it's only a part of the story. There are a lot of things that can be improved:
+
+- retry logic to the `featureFlagsQuery` with a [`retry`](/api/operators/retry) operator
+- caching of the `featureFlagsQuery` with a [`cache`](/api/operators/cache) operator
+- error handing and logging
+- request batching with
+- ...
 
 ## Conclusion
+
+We have created a feature flags service with Effector and Farfetched. It's not a complete solution, but it's a good start. Key points of this article:
+
+- use [_Query_](/api/primitives/query) to fetch data from the remote source
+- use [_Contract_](/api/primitives/contract) because [you must not trust remote data](/statements/never_trust)
+- hide internal implementation details from end users by creating a friendly API and custom factories
