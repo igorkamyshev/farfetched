@@ -1,4 +1,5 @@
 import { Event, sample } from 'effector';
+import stringify from 'fast-json-stable-stringify';
 
 import { Query } from '../../query/type';
 import {
@@ -51,7 +52,7 @@ function createKey({
   params: unknown;
   sources: unknown[];
 }): string {
-  return sha1(sid + JSON.stringify(params) + JSON.stringify(sources));
+  return sha1(stringify({ params, sources, sid }));
 }
 
 function querySid(query: Query<any, any, any>) {
