@@ -397,7 +397,7 @@ That's it, we have a feature flags service. But it's only a part of the story. T
 - retry logic to the `featureFlagsQuery` with a [`retry`](/api/operators/retry) operator
 - caching of the `featureFlagsQuery` with a [`cache`](/api/operators/cache) operator
 - error handing and logging
-- request batching with
+- request batching
 - ...
 
 ## Conclusion
