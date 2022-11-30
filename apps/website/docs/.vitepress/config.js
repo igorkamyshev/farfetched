@@ -226,6 +226,10 @@ export default withMermaid(
                   },
                 ],
               },
+              {
+                text: 'Vite',
+                link: '/recipes/vite',
+              },
             ],
           },
           {
