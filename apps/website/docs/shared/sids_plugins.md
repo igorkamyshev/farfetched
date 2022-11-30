@@ -57,3 +57,7 @@ Now just modify your `.swcrc` config to enable installed plugin:
 :::info
 Read more about `@effector/swc-plugin` configuration in the [plugin documentation](https://github.com/effector/swc-plugin).
 :::
+
+**Vite**
+
+If you are using [Vite](https://vitejs.dev/), please read [the recipe about it](/recipes/vite).
