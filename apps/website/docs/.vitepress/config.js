@@ -120,6 +120,30 @@ export default withMermaid(
               },
             ],
           },
+          {
+            text: 'Solid',
+            collapsed: true,
+            collapsible: true,
+            items: [{ text: 'Get started', link: '/tutorial/solid/' }],
+          },
+          {
+            text: 'Vue',
+            collapsed: true,
+            collapsible: true,
+            items: [{ text: 'Get started', link: '/tutorial/vue/' }],
+          },
+          {
+            text: 'Svelte',
+            collapsed: true,
+            collapsible: true,
+            items: [{ text: 'Get started', link: '/tutorial/svelte/' }],
+          },
+          {
+            text: 'React',
+            collapsed: true,
+            collapsible: true,
+            items: [{ text: 'Get started', link: '/tutorial/react/' }],
+          },
         ],
         '/api': [
           {
