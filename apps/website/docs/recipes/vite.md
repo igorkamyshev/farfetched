@@ -8,7 +8,27 @@ Farfetched does not require any special configuration for Vite for basic usage. 
 
 ## Babel
 
-1. Add [`vite-plugin-babel`](https://github.com/owlsdepartment/vite-plugin-babel) to your project:
+1. Install required dependencies:
+
+with `pnpm`
+
+```sh
+pnpm install --dev vite-plugin-babel
+```
+
+with `yarn`
+
+```sh
+yarn add --dev vite-plugin-babel
+```
+
+with `npm`
+
+```sh
+npm install --dev vite-plugin-babel
+```
+
+2. Add [`vite-plugin-babel`](https://github.com/owlsdepartment/vite-plugin-babel) to your project:
 
 ```ts
 // vite.config.ts
@@ -24,7 +44,7 @@ export default defineConfig({
 });
 ```
 
-2. Set up `effector/babel-plugin` in your Babel config:
+3. Set up `effector/babel-plugin` in your Babel config:
 
 ```json
 // .babelrc
@@ -56,7 +76,29 @@ export default defineConfig({
 
 ## SWC
 
-[SWC](https://swc.rs) is a blazing fast alternative to Babel. If you want to use it, you need to install [`unplugin-swc`](https://github.com/egoist/unplugin-swc) and [`@effector/swc-plugin`](https://github.com/effector/swc-plugin) and set up the plugin in your config:
+> [SWC](https://swc.rs) is a blazing fast alternative to Babel.
+
+1. Install required dependencies:
+
+with `pnpm`
+
+```sh
+pnpm install --dev unplugin-swc @effector/swc-plugin @swc/core
+```
+
+with `yarn`
+
+```sh
+yarn add --dev unplugin-swc @effector/swc-plugin @swc/core
+```
+
+with `npm`
+
+```sh
+npm install --dev unplugin-swc @effector/swc-plugin @swc/core
+```
+
+2. Add [`unplugin-swc`](https://github.com/egoist/unplugin-swc) and [`@effector/swc-plugin`](https://github.com/effector/swc-plugin) to your config:
 
 ```ts
 // vite.config.ts
