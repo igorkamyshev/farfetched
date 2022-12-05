@@ -117,3 +117,16 @@ export default defineConfig({
   ],
 });
 ```
+
+## Disable HMR
+
+Effector does not support HMR [yet](https://github.com/effector/effector/issues/674). So, it's better to disable HMR for now to avoid unexpected behavior.
+
+```ts
+// vite.config.ts
+export default defineConfig({
+  server: {
+    hmr: false,
+  },
+});
+```
