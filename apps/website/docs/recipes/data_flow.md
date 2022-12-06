@@ -82,7 +82,7 @@ For example, if some when in the future `JSON.parse` will be considered as a bot
 
 ### Contract application
 
-**Specific factories** require explicit [_Contract_](/api/primitives/contract) because they [consider the response as `unknown` by default](/statements/never_trust). So, the user-land code have to describe the contract of the response or explicitly use `unkownContarct` to preserve the `unknown` type.
+**Specific factories** require explicit [_Contract_](/api/primitives/contract) because they [consider the response as `unknown` by default](/statements/never_trust). So, the user-land code have to describe the contract of the response or explicitly use `unkownContract` to preserve the `unknown` type.
 
 If parsed data does not satisfy the [_Contract_](/api/primitives/contract), the data-flow stops and returns control to the user-land code through `.finished.failed` [_Event_](https://effector.dev/docs/api/effector/event) with an error-message that is returned from the [_Contract_](/api/primitives/contract). Otherwise, the data-flow continues and passes control to the next step — validation.
 

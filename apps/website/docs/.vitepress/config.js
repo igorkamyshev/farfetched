@@ -226,6 +226,17 @@ export default withMermaid(
                   },
                 ],
               },
+              {
+                text: 'Vite',
+                link: '/recipes/vite',
+              },
+            ],
+          },
+          {
+            text: 'Case studies',
+            collapsible: true,
+            items: [
+              { text: 'Feature flags service', link: '/recipes/feature_flags' },
             ],
           },
           {

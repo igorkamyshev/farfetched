@@ -113,7 +113,7 @@ describe('cache', () => {
   });
 
   test('ignore value that does not satisfy contract', async () => {
-    const numberContarct: Contract<unknown, number> = {
+    const numberContract: Contract<unknown, number> = {
       isData: (x): x is number => typeof x === 'number',
       getErrorMessages: () => ['Not a number'],
     };
@@ -124,7 +124,7 @@ describe('cache', () => {
           effect: createEffect(() =>
             setTimeout(1000).then(() => 12 as unknown)
           ),
-          contract: numberContarct,
+          contract: numberContract,
         }),
       sid: '1',
     });

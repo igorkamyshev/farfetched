@@ -19,19 +19,19 @@ Read more about `effector/babel-plugin` configuration in the [Effector's documen
 with `pnpm`
 
 ```sh
-pnpm install @effector/swc-plugin @swc/core
+pnpm install --dev @effector/swc-plugin @swc/core
 ```
 
 with `yarn`
 
 ```sh
-yarn add @effector/swc-plugin @swc/core
+yarn add --dev @effector/swc-plugin @swc/core
 ```
 
 with `npm`
 
 ```sh
-npm install @effector/swc-plugin @swc/core
+npm install --dev @effector/swc-plugin @swc/core
 ```
 
 Now just modify your `.swcrc` config to enable installed plugin:
@@ -50,3 +50,7 @@ Now just modify your `.swcrc` config to enable installed plugin:
 :::info
 Read more about `@effector/swc-plugin` configuration in the [plugin documentation](https://github.com/effector/swc-plugin).
 :::
+
+**Vite**
+
+If you are using [Vite](https://vitejs.dev/), please read [the recipe about it](/recipes/vite).
