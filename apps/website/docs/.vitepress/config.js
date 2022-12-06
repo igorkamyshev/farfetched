@@ -124,7 +124,13 @@ export default withMermaid(
             text: 'Solid',
             collapsed: true,
             collapsible: true,
-            items: [{ text: 'Get started', link: '/tutorial/solid/' }],
+            items: [
+              { text: 'Get started', link: '/tutorial/solid/' },
+              {
+                text: 'Use a Query in UI',
+                link: '/tutorial/solid/query',
+              },
+            ],
           },
           {
             text: 'Vue',
