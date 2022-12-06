@@ -1,5 +1,4 @@
-import { allSettled, createStore, fork, Store } from 'effector';
-import { expectType } from 'tsd';
+import { allSettled, createStore, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
 import { unknownContract } from '../../contract/unknown_contract';
@@ -35,7 +34,6 @@ describe('remote_data/query/json.response.map_data', () => {
 
     await allSettled(query.start, { scope });
 
-    expectType<Store<string | null>>(query.$data);
     expect(scope.getState(query.$data)).toBe(response);
   });
 
