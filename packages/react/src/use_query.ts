@@ -1,10 +1,10 @@
 import { type Query } from '@farfetched/core';
 import { useUnit } from 'effector-react';
 
-function useQuery<Params, Data, Error>(
-  query: Query<Params, Data, Error>
+function useQuery<Params, Data, Error, InitialData>(
+  query: Query<Params, Data, Error, InitialData>
 ): {
-  data: Data | null;
+  data: Data | InitialData;
   error: Error | null;
   stale: boolean;
   pending: boolean;
