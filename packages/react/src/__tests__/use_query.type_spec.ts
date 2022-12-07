@@ -29,3 +29,30 @@ function ComponentStart() {
 
   return null;
 }
+
+function ComponentVoidStartWithInitialData() {
+  const { data, error, pending, start } = useQuery(
+    {} as Query<void, number, string, number>
+  );
+
+  expectAssignable<() => void>(start);
+  expectType<number>(data);
+  expectType<string | null>(error);
+  expectType<boolean>(pending);
+
+  return null;
+}
+
+function ComponentStartWithInitialData() {
+  const { data, error, pending, start } = useQuery(
+    {} as Query<{ limit: string }, number, string, number>
+  );
+
+  expectType<(params: { limit: string }) => void>(start);
+  expectNotAssignable<() => void>(start);
+  expectType<number>(data);
+  expectType<string | null>(error);
+  expectType<boolean>(pending);
+
+  return null;
+}
