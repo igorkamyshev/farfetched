@@ -1,5 +1,12 @@
 # @farfetched/core
 
+## 0.4.1
+
+### Patch Changes
+
+- 9fb4ead: Export DynamicallySourcedField type
+- b175216: Export FetchingStatus type
+
 ## 0.4.0
 
 ### Minor Changes
