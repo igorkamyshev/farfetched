@@ -1,6 +1,6 @@
-import { combine, merge, sample } from 'effector';
+import { combine, createStore, Event, merge, sample } from 'effector';
 
-import { mapValues } from '../libs/lohyphen';
+import { mapValues, zipObject } from '../libs/lohyphen';
 import { every, postpone } from '../libs/patronus';
 import { isQuery, Query } from '../query/type';
 import {
@@ -21,7 +21,10 @@ export function connectQuery<Sources, Target extends Query<any, any, any>>(
       ? NonExtendable
       : Sources extends Query<any, any, any>
       ? {
-          fn: (sources: { result: RemoteOperationResult<Sources> }) => {
+          fn: (sources: {
+            result: RemoteOperationResult<Sources>;
+            params: RemoteOperationParams<Sources>;
+          }) => {
             params: RemoteOperationParams<Target>;
           };
         }
@@ -30,6 +33,7 @@ export function connectQuery<Sources, Target extends Query<any, any, any>>(
           fn: (sources: {
             [index in keyof Sources]: {
               result: RemoteOperationResult<Sources[index]>;
+              params: RemoteOperationParams<Sources[index]>;
             };
           }) => { params: RemoteOperationParams<Target> };
         }
@@ -62,6 +66,31 @@ export function connectQuery<Sources, Target extends Query<any, any, any>>(
     ? source.$data
     : combine(mapValues(source as any, (query) => query.$data));
 
+  const $allParentParamsDictionary = createStore<any>(null, {
+    serialize: 'ignore',
+  });
+  if (singleParentMode) {
+    sample({
+      clock: source.finished.success,
+      fn: ({ params }) => params,
+      target: $allParentParamsDictionary,
+    });
+  } else {
+    for (const [parentName, parentFinishedSuccess] of Object.entries(
+      mapValues(source as any, (query) => query.finished.success)
+    )) {
+      sample({
+        clock: parentFinishedSuccess as Event<{ params: any }>,
+        source: $allParentParamsDictionary,
+        fn: (latestParams, { params }) => ({
+          ...latestParams,
+          [parentName]: params,
+        }),
+        target: $allParentParamsDictionary,
+      });
+    }
+  }
+
   // Relations
   sample({
     clock: anyParentStarted,
@@ -76,12 +105,15 @@ export function connectQuery<Sources, Target extends Query<any, any, any>>(
       clock: anyParentSuccessfullyFinished,
       until: $allParentsHaveData,
     }),
-    source: $allParentDataDictionary,
-    fn(data: any) {
+    source: {
+      data: $allParentDataDictionary,
+      params: $allParentParamsDictionary,
+    },
+    fn({ data, params }) {
       const mapped = mapperFn?.(
         singleParentMode
-          ? { result: data }
-          : mapValues(data, (result) => ({ result }))
+          ? { result: data, params }
+          : zipObject({ result: data, params })
       );
 
       return mapped?.params ?? null;

@@ -6,7 +6,7 @@ import { withFactory } from '../../libs/patronus';
 import { connectQuery } from '../connect_query';
 import { createHeadlessQuery } from '../create_headless_query';
 
-describe('remote_data/connect_query stale', () => {
+describe('connectQuery $stale in target', () => {
   const languagesQ = withFactory({
     sid: '1',
     fn: () =>

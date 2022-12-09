@@ -7,7 +7,7 @@ import { withFactory } from '../../libs/patronus';
 import { connectQuery } from '../connect_query';
 import { createHeadlessQuery } from '../create_headless_query';
 
-describe('remote_data/connect_query', () => {
+describe('connectQuery with single parent', () => {
   const languagesQ = withFactory({
     sid: '1',
     fn: () =>

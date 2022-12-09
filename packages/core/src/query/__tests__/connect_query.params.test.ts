@@ -7,7 +7,7 @@ import { withFactory } from '../../libs/patronus';
 import { connectQuery } from '../connect_query';
 import { createHeadlessQuery } from '../create_headless_query';
 
-describe('remote_data/connect_query', () => {
+describe('connectQuery and target with params', () => {
   const languagesQ = withFactory({
     sid: '1',
     fn: () =>
@@ -55,7 +55,7 @@ describe('remote_data/connect_query', () => {
     target: contentQ,
   });
 
-  test('execute child with daat from parents', async () => {
+  test('execute child with data from parents', async () => {
     const childResposne = Symbol('response');
     const fetchContentMock = vi.fn(() => childResposne);
 
