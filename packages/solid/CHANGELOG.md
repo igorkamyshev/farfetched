@@ -1,5 +1,16 @@
 # @farfetched/solid
 
+## 0.4.0
+
+### Minor Changes
+
+- d92411c: Sync versions of all packages
+
+### Patch Changes
+
+- 8bb8bce: Get rid of @farfetched/misc, inline functions
+- 3280ab9: Hide private types from published package
+
 ## 0.2.2
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @farfetched/react
 
+## 0.4.0
+
+### Minor Changes
+
+- d92411c: Sync versions of all packages
+
+### Patch Changes
+
+- b352718: Allow in use initialData type in `useQuery`
+- 3280ab9: Hide private types from published package
+
 ## 0.2.1
 
 ### Patch Changes
