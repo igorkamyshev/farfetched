@@ -28,7 +28,11 @@ export { sessionStorageCache } from './src/cache/adapters/session_storage';
 export { voidCache } from './src/cache/adapters/void';
 
 // Exposed libs
-export { type SourcedField, normalizeSourced } from './src/libs/patronus';
+export {
+  type SourcedField,
+  normalizeSourced,
+  type DynamicallySourcedField,
+} from './src/libs/patronus';
 export { type FetchingStatus } from './src/libs/patronus';
 
 // RemoteOperation public API
