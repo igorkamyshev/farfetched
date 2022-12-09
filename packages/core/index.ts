@@ -29,6 +29,7 @@ export { voidCache } from './src/cache/adapters/void';
 
 // Exposed libs
 export { type SourcedField, normalizeSourced } from './src/libs/patronus';
+export { type FetchingStatus } from './src/libs/patronus';
 
 // RemoteOperation public API
 export {
