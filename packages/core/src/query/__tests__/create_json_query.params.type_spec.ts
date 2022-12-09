@@ -1,112 +1,117 @@
-import { Event } from 'effector';
-import { expectType } from 'tsd';
+import { describe, test, expectTypeOf } from 'vitest';
 
 import { createJsonQuery } from '../create_json_query';
-import { declareParams } from '../../misc/params';
+import { declareParams } from '../../remote_operation/params';
 import { Contract } from '../../contract/type';
 
-// Does not matter
-const response = {
-  contract: {} as Contract<unknown, unknown>,
-  mapData: <T>(v: T) => v,
-};
+describe('createJsonQuery', () => {
+  describe('params', () => {
+    // Does not matter
+    const response = {
+      contract: {} as Contract<unknown, unknown>,
+      mapData: <T>(v: T) => v,
+    };
 
-// Does not matter
-const request = {
-  url: 'http://api.salo.com',
-  method: 'GET' as const,
-};
+    // Does not matter
+    const request = {
+      url: 'http://api.salo.com',
+      method: 'GET' as const,
+    };
 
-no_params_no_mapData: {
-  const query = createJsonQuery({
-    request,
-    response,
+    test('no params, no mapData', () => {
+      const query = createJsonQuery({
+        request,
+        response,
+      });
+
+      expectTypeOf(query.start).toBeCallableWith();
+    });
+
+    test('no params, mapData', () => {
+      const query = createJsonQuery({
+        request,
+        response: {
+          ...response,
+          mapData() {
+            // Does not matter
+            return 1;
+          },
+        },
+      });
+
+      expectTypeOf(query.start).toBeCallableWith();
+    });
+
+    test('params, no mapData', () => {
+      const queryWithString = createJsonQuery({
+        params: declareParams<string>(),
+        request,
+        response,
+      });
+
+      expectTypeOf(queryWithString.start).toBeCallableWith('string');
+
+      const queryWithStringOrNumber = createJsonQuery({
+        params: declareParams<string | number>(),
+        request,
+        response,
+      });
+
+      expectTypeOf(queryWithStringOrNumber.start).toBeCallableWith('string');
+      expectTypeOf(queryWithStringOrNumber.start).toBeCallableWith(12);
+
+      const queryWithObject = createJsonQuery({
+        params: declareParams<{ at: Date }>(),
+        request,
+        response,
+      });
+
+      expectTypeOf(queryWithObject.start).toBeCallableWith({ at: new Date() });
+    });
+
+    test('params, mapData', () => {
+      const queryWithString = createJsonQuery({
+        params: declareParams<string>(),
+        request,
+        response: {
+          ...response,
+          mapData() {
+            // Does not matter
+            return 1;
+          },
+        },
+      });
+
+      expectTypeOf(queryWithString.start).toBeCallableWith('string');
+
+      const queryWithStringOrNumber = createJsonQuery({
+        params: declareParams<string | number>(),
+        request,
+        response: {
+          ...response,
+          mapData() {
+            // Does not matter
+            return 1;
+          },
+        },
+      });
+
+      expectTypeOf(queryWithStringOrNumber.start).toBeCallableWith('string');
+      expectTypeOf(queryWithStringOrNumber.start).toBeCallableWith(12);
+
+      const queryWithObject = createJsonQuery({
+        params: declareParams<{ at: Date }>(),
+        request,
+        response: {
+          ...response,
+          mapData() {
+            // Does not matter
+            return 1;
+          },
+        },
+      });
+
+      expectTypeOf(queryWithObject.start).toBeCallableWith({ at: new Date() });
+    });
   });
-
-  expectType<Event<void>>(query.start);
-}
-
-no_params_mapData: {
-  const query = createJsonQuery({
-    request,
-    response: {
-      ...response,
-      mapData() {
-        // Does not matter
-        return 1;
-      },
-    },
-  });
-
-  expectType<Event<void>>(query.start);
-}
-
-params_no_mapData: {
-  const queryWithString = createJsonQuery({
-    params: declareParams<string>(),
-    request,
-    response,
-  });
-
-  expectType<Event<string>>(queryWithString.start);
-
-  const queryWithStringOrNumber = createJsonQuery({
-    params: declareParams<string | number>(),
-    request,
-    response,
-  });
-
-  expectType<Event<string | number>>(queryWithStringOrNumber.start);
-
-  const queryWithObject = createJsonQuery({
-    params: declareParams<{ at: Date }>(),
-    request,
-    response,
-  });
-
-  expectType<Event<{ at: Date }>>(queryWithObject.start);
-}
-
-params_no_mapData: {
-  const queryWithString = createJsonQuery({
-    params: declareParams<string>(),
-    request,
-    response: {
-      ...response,
-      mapData() {
-        // Does not matter
-        return 1;
-      },
-    },
-  });
-
-  expectType<Event<string>>(queryWithString.start);
-
-  const queryWithStringOrNumber = createJsonQuery({
-    params: declareParams<string | number>(),
-    request,
-    response: {
-      ...response,
-      mapData() {
-        // Does not matter
-        return 1;
-      },
-    },
-  });
-
-  expectType<Event<string | number>>(queryWithStringOrNumber.start);
-
-  const queryWithObject = createJsonQuery({
-    params: declareParams<{ at: Date }>(),
-    request,
-    response: {
-      ...response,
-      mapData() {
-        // Does not matter
-        return 1;
-      },
-    },
-  });
-
-  expectType<Event<{ at: Date }>>(queryWithObject.start);
-}
+});

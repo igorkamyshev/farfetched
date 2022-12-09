@@ -2,4 +2,4 @@
 '@farfetched/react': patch
 ---
 
-Add type test for new cases
+Allow in use initialData type in `useQuery`
