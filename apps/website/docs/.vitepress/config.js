@@ -277,6 +277,7 @@ export default withMermaid(
             text: 'Releases',
             collapsible: false,
             items: [
+              { text: 'v0.5 Chew Lan', link: '/releases/0-5' },
               { text: 'v0.4 Cleanup', link: '/releases/0-4' },
               { text: 'v0.3 Sirinat', link: '/releases/0-3' },
               { text: 'v0.2 Laem Promthep', link: '/releases/0-2' },
