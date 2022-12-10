@@ -1,10 +1,10 @@
 import { combine, merge, sample } from 'effector';
-import { every } from 'patronum';
 
-import { postpone } from '../misc/postpone';
+import { mapValues } from '../libs/lohyphen';
+import { every, postpone } from '../libs/patronus';
 import { isQuery, Query } from '../query/type';
 import {
-  RemoteOperationData,
+  RemoteOperationResult,
   RemoteOperationParams,
 } from '../remote_operation/type';
 
@@ -12,7 +12,7 @@ type NonExtendable = {
   [K in string]: never;
 };
 
-function connectQuery<Sources, Target extends Query<any, any, any>>(
+export function connectQuery<Sources, Target extends Query<any, any, any>>(
   args: {
     source: Sources;
     target: Target | [...Target[]];
@@ -21,14 +21,16 @@ function connectQuery<Sources, Target extends Query<any, any, any>>(
       ? NonExtendable
       : Sources extends Query<any, any, any>
       ? {
-          fn: (sources: RemoteOperationData<Sources>) => {
+          fn: (sources: { result: RemoteOperationResult<Sources> }) => {
             params: RemoteOperationParams<Target>;
           };
         }
       : Sources extends Record<string, Query<any, any, any>>
       ? {
           fn: (sources: {
-            [index in keyof Sources]: RemoteOperationData<Sources[index]>;
+            [index in keyof Sources]: {
+              result: RemoteOperationResult<Sources[index]>;
+            };
           }) => { params: RemoteOperationParams<Target> };
         }
       : NonExtendable
@@ -40,10 +42,10 @@ function connectQuery<Sources, Target extends Query<any, any, any>>(
 
   // Participants
   const children = Array.isArray(target) ? target : [target];
-  const parents = singleParentMode ? [source] : Object.values(source);
-  const parentsEntries: [string, Query<any, any, any>][] = singleParentMode
-    ? [['singleParent', source as Query<any, any, any>]]
-    : Object.entries(source);
+  const parents: Array<Query<any, any, any>> = singleParentMode
+    ? [source]
+    : Object.values(source as any);
+  const mapperFn = args?.fn as (args: any) => { params?: any };
 
   // Helper untis
   const anyParentStarted = merge(parents.map((query) => query.start));
@@ -58,12 +60,7 @@ function connectQuery<Sources, Target extends Query<any, any, any>>(
 
   const $allParentDataDictionary = singleParentMode
     ? source.$data
-    : combine(
-        parentsEntries.reduce(
-          (prev, [key, query]) => ({ ...prev, [key]: query.$data }),
-          {}
-        )
-      );
+    : combine(mapValues(source as any, (query) => query.$data));
 
   // Relations
   sample({
@@ -81,10 +78,14 @@ function connectQuery<Sources, Target extends Query<any, any, any>>(
     }),
     source: $allParentDataDictionary,
     fn(data: any) {
-      return (args as any)?.fn?.(data)?.params ?? null;
+      const mapped = mapperFn?.(
+        singleParentMode
+          ? { result: data }
+          : mapValues(data, (result) => ({ result }))
+      );
+
+      return mapped?.params ?? null;
     },
     target: children.map((t) => t.start),
   });
 }
-
-export { connectQuery };

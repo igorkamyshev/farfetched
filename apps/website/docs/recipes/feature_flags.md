@@ -346,7 +346,7 @@ function createFlag({ key, requestOn, defaultValue, contract }) {
     .map((data) => data.find((flag) => flag.flagKey === key) ?? defaultValue)
     .map((value) => {
       // Check if the value is valid
-      if (contarct.isData(value)) {
+      if (contract.isData(value)) {
         // if it's valid, return it
         return value;
       } else {

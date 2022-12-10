@@ -7,20 +7,19 @@ import {
 import { Query } from './type';
 import { Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
-import { identity } from '../misc/identity';
-import { TwoArgsDynamicallySourcedField } from '../misc/sourced';
+import { type DynamicallySourcedField } from '../libs/patronus';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
-import { resolveExecuteEffect } from '../misc/execute_effect';
+import { resolveExecuteEffect } from '../remote_operation/resolve_execute_effect';
 
 // Overload: Only handler
-function createQuery<Params, Response>(
+export function createQuery<Params, Response>(
   config: {
     handler: (p: Params) => Promise<Response>;
   } & SharedQueryFactoryConfig<Response>
 ): Query<Params, Response, unknown>;
 
-function createQuery<Params, Response>(
+export function createQuery<Params, Response>(
   config: {
     initialData: Response;
     handler: (p: Params) => Promise<Response>;
@@ -28,13 +27,13 @@ function createQuery<Params, Response>(
 ): Query<Params, Response, unknown, Response>;
 
 // Overload: Only effect
-function createQuery<Params, Response, Error>(
+export function createQuery<Params, Response, Error>(
   config: {
     effect: Effect<Params, Response, Error>;
   } & SharedQueryFactoryConfig<Response>
 ): Query<Params, Response, Error>;
 
-function createQuery<Params, Response, Error>(
+export function createQuery<Params, Response, Error>(
   config: {
     initialData: Response;
     effect: Effect<Params, Response, Error>;
@@ -42,7 +41,7 @@ function createQuery<Params, Response, Error>(
 ): Query<Params, Response, Error, Response>;
 
 // Overload: Effect and Contract
-function createQuery<
+export function createQuery<
   Params,
   Response,
   Error,
@@ -56,7 +55,7 @@ function createQuery<
   } & SharedQueryFactoryConfig<ContractData>
 ): Query<Params, ContractData, Error | InvalidDataError>;
 
-function createQuery<
+export function createQuery<
   Params,
   Response,
   Error,
@@ -72,7 +71,7 @@ function createQuery<
 ): Query<Params, ContractData, Error | InvalidDataError, ContractData>;
 
 // Overload: Effect and MapData
-function createQuery<
+export function createQuery<
   Params,
   Response,
   Error,
@@ -82,9 +81,8 @@ function createQuery<
 >(
   config: {
     effect: Effect<Params, Response, Error>;
-    mapData: TwoArgsDynamicallySourcedField<
-      Response,
-      Params,
+    mapData: DynamicallySourcedField<
+      { result: Response; params: Params },
       MappedData,
       MapDataSource
     >;
@@ -92,7 +90,7 @@ function createQuery<
   } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error>;
 
-function createQuery<
+export function createQuery<
   Params,
   Response,
   Error,
@@ -103,9 +101,8 @@ function createQuery<
   config: {
     initialData: MappedData;
     effect: Effect<Params, Response, Error>;
-    mapData: TwoArgsDynamicallySourcedField<
-      Response,
-      Params,
+    mapData: DynamicallySourcedField<
+      { result: Response; params: Params },
       MappedData,
       MapDataSource
     >;
@@ -114,7 +111,7 @@ function createQuery<
 ): Query<Params, MappedData, Error, MappedData>;
 
 // Overload: Effect, Contract and MapData
-function createQuery<
+export function createQuery<
   Params,
   Response,
   Error,
@@ -126,9 +123,8 @@ function createQuery<
   config: {
     effect: Effect<Params, Response, Error>;
     contract: Contract<Response, ContractData>;
-    mapData: TwoArgsDynamicallySourcedField<
-      ContractData,
-      Params,
+    mapData: DynamicallySourcedField<
+      { result: ContractData; params: Params },
       MappedData,
       MapDataSource
     >;
@@ -136,7 +132,7 @@ function createQuery<
   } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error | InvalidDataError>;
 
-function createQuery<
+export function createQuery<
   Params,
   Response,
   Error,
@@ -149,9 +145,8 @@ function createQuery<
     initialData: MappedData;
     effect: Effect<Params, Response, Error>;
     contract: Contract<Response, ContractData>;
-    mapData: TwoArgsDynamicallySourcedField<
-      ContractData,
-      Params,
+    mapData: DynamicallySourcedField<
+      { result: ContractData; params: Params },
       MappedData,
       MapDataSource
     >;
@@ -160,7 +155,7 @@ function createQuery<
 ): Query<Params, MappedData, Error | InvalidDataError, MappedData>;
 
 // -- Implementation --
-function createQuery<
+export function createQuery<
   Params,
   Response,
   Error,
@@ -185,16 +180,14 @@ function createQuery<
   >({
     initialData: config.initialData ?? null,
     contract: config.contract ?? unknownContract,
-    mapData: config.mapData ?? identity,
+    mapData: config.mapData ?? (({ result }) => result),
     enabled: config.enabled,
     validate: config.validate,
     name: config.name,
     serialize: config.serialize,
   });
 
-  query.__.executeFx.use(resolveExecuteEffect<Params, Response, Error>(config));
+  query.__.executeFx.use(resolveExecuteEffect(config));
 
   return query;
 }
-
-export { createQuery };

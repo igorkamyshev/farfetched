@@ -1,5 +1,31 @@
 # @farfetched/core
 
+## 0.4.1
+
+### Patch Changes
+
+- 9fb4ead: Export DynamicallySourcedField type
+- b175216: Export FetchingStatus type
+
+## 0.4.0
+
+### Minor Changes
+
+- 77a3832: Decrease bundle size by 36 percent
+- a413bf9: Get rid of patronum, inline required functions
+- 1638921: Change signature of mapper in `mapData` to be consistent with `.finished.*` _Events_
+- d6ab20b: Change signature of Validator to be consistent with `.finished.*` _Events_
+- dbd6fee: Change signature of `.finished.success` to be consistent with `.done` of _Effect_
+- d92411c: Sync versions of all packages
+- 6521bc7: Change signature of mapper in `connectQuery` to add more info about parents in future
+- f6fbc4f: Remove deprecated overload of `retry`
+- 90102e8: Add `TAKE_FIRST` strategy in concurrency settings of internal createApiRequest
+
+### Patch Changes
+
+- 8bb8bce: Get rid of @farfetched/misc, inline functions
+- 3280ab9: Hide private types from published package
+
 ## 0.3.5
 
 ### Patch Changes

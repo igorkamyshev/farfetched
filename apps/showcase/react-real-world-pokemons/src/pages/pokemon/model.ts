@@ -21,10 +21,12 @@ const pokemonQuery = createJsonQuery({
   },
   response: {
     contract: runtypeContract(Pokemon),
-    mapData: ({ sprites, ...data }) => ({
-      ...data,
-      avatarUrl: sprites.front_default,
-    }),
+    mapData({ result: { sprites, ...data } }) {
+      return {
+        ...data,
+        avatarUrl: sprites.front_default,
+      };
+    },
   },
 });
 
@@ -54,6 +56,8 @@ sample({
 
 connectQuery({
   source: pokemonQuery,
-  fn: ({ species }) => ({ params: { id: urlToId(species.url) } }),
+  fn: ({ result: pokemon }) => ({
+    params: { id: urlToId(pokemon.species.url) },
+  }),
   target: speciesQuery,
 });

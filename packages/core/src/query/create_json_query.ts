@@ -4,19 +4,18 @@ import { Contract } from '../contract/type';
 import { createJsonApiRequest, Json } from '../fetch/json';
 import { ApiRequestError, HttpMethod } from '../fetch/api';
 import {
-  TwoArgsDynamicallySourcedField,
-  SourcedField,
   normalizeSourced,
-} from '../misc/sourced';
-import { type ParamsDeclaration } from '../misc/params';
+  type SourcedField,
+  type DynamicallySourcedField,
+} from '../libs/patronus';
+import { type ParamsDeclaration } from '../remote_operation/params';
 import { Query } from './type';
-import { FetchApiRecord } from '../misc/fetch_api';
+import { FetchApiRecord } from '../fetch/lib';
 import {
   createHeadlessQuery,
   SharedQueryFactoryConfig,
 } from './create_headless_query';
 import { unknownContract } from '../contract/unknown_contract';
-import { identity } from '../misc/identity';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
 
@@ -74,7 +73,7 @@ interface BaseJsonQueryConfigWithParams<
 // -- Overloads
 
 // params + mapData
-function createJsonQuery<
+export function createJsonQuery<
   Params,
   Data,
   TransformedData,
@@ -96,9 +95,8 @@ function createJsonQuery<
   > & {
     response: {
       contract: Contract<unknown, Data>;
-      mapData: TwoArgsDynamicallySourcedField<
-        Data,
-        Params,
+      mapData: DynamicallySourcedField<
+        { result: Data; params: Params },
         TransformedData,
         DataSource
       >;
@@ -107,7 +105,7 @@ function createJsonQuery<
   }
 ): Query<Params, TransformedData, ApiRequestError | Error | InvalidDataError>;
 
-function createJsonQuery<
+export function createJsonQuery<
   Params,
   Data,
   TransformedData,
@@ -130,9 +128,8 @@ function createJsonQuery<
     initialData?: TransformedData;
     response: {
       contract: Contract<unknown, Data>;
-      mapData: TwoArgsDynamicallySourcedField<
-        Data,
-        Params,
+      mapData: DynamicallySourcedField<
+        { result: Data; params: Params },
         TransformedData,
         DataSource
       >;
@@ -147,7 +144,7 @@ function createJsonQuery<
 >;
 
 // params + no mapData
-function createJsonQuery<
+export function createJsonQuery<
   Params,
   Data,
   Error,
@@ -172,7 +169,7 @@ function createJsonQuery<
   }
 ): Query<Params, Data, ApiRequestError | Error | InvalidDataError>;
 
-function createJsonQuery<
+export function createJsonQuery<
   Params,
   Data,
   Error,
@@ -199,7 +196,7 @@ function createJsonQuery<
 ): Query<Params, Data, ApiRequestError | Error | InvalidDataError, Data>;
 
 // No params + mapData
-function createJsonQuery<
+export function createJsonQuery<
   Data,
   TransformedData,
   Error,
@@ -219,9 +216,8 @@ function createJsonQuery<
   > & {
     response: {
       contract: Contract<unknown, Data>;
-      mapData: TwoArgsDynamicallySourcedField<
-        Data,
-        void,
+      mapData: DynamicallySourcedField<
+        { result: Data; params: void },
         TransformedData,
         DataSource
       >;
@@ -230,7 +226,7 @@ function createJsonQuery<
   }
 ): Query<void, TransformedData, ApiRequestError | Error | InvalidDataError>;
 
-function createJsonQuery<
+export function createJsonQuery<
   Data,
   TransformedData,
   Error,
@@ -251,9 +247,8 @@ function createJsonQuery<
     initialData?: TransformedData;
     response: {
       contract: Contract<unknown, Data>;
-      mapData: TwoArgsDynamicallySourcedField<
-        Data,
-        void,
+      mapData: DynamicallySourcedField<
+        { result: Data; params: void },
         TransformedData,
         DataSource
       >;
@@ -268,7 +263,7 @@ function createJsonQuery<
 >;
 
 // No params + no mapData
-function createJsonQuery<
+export function createJsonQuery<
   Data,
   Error,
   BodySource = void,
@@ -291,7 +286,7 @@ function createJsonQuery<
   }
 ): Query<void, Data, ApiRequestError | Error | InvalidDataError>;
 
-function createJsonQuery<
+export function createJsonQuery<
   Data,
   Error,
   BodySource = void,
@@ -316,8 +311,7 @@ function createJsonQuery<
 ): Query<void, Data, ApiRequestError | Error | InvalidDataError, Data>;
 
 // -- Implementation --
-
-function createJsonQuery(config: any) {
+export function createJsonQuery(config: any) {
   // Basement
   const requestFx = createJsonApiRequest({
     request: { method: config.request.method, credentials: 'same-origin' },
@@ -359,7 +353,7 @@ function createJsonQuery(config: any) {
   >({
     initialData: config.initialData,
     contract: config.response.contract ?? unknownContract,
-    mapData: config.response.mapData ?? identity,
+    mapData: config.response.mapData ?? (({ result }) => result),
     validate: config.response.validate,
     enabled: config.enabled,
     name: config.name,
@@ -386,5 +380,3 @@ function createJsonQuery(config: any) {
     __: { ...headlessQuery.__, executeFx: requestFx },
   };
 }
-
-export { createJsonQuery };

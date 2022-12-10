@@ -1,17 +1,19 @@
-import { attach, createEffect, createEvent, Event, sample } from 'effector';
-
-import { abortable, AbortContext } from '../misc/abortable';
-import { anySignal } from '../misc/any_signal';
-import { normalizeStaticOrReactive, StaticOrReactive } from '../misc/sourced';
-import { TimeoutController } from '../misc/timeout_abort_controller';
-import { NonOptionalKeys } from '../misc/ts';
 import {
-  formatUrl,
-  mergeRecords,
-  formatHeaders,
-  type FetchApiRecord,
-} from '../misc/fetch_api';
-import { requestFx } from './request';
+  attach,
+  createEffect,
+  createEvent,
+  createStore,
+  Event,
+  sample,
+} from 'effector';
+
+import {
+  abortable,
+  AbortContext,
+  normalizeStaticOrReactive,
+  StaticOrReactive,
+} from '../libs/patronus';
+import { NonOptionalKeys } from '../libs/lohyphen';
 import {
   AbortError,
   HttpError,
@@ -23,9 +25,19 @@ import {
   timeoutError,
   preparationError,
   invalidDataError,
+  abortError,
 } from '../errors/create_error';
+import { anySignal } from './any_signal';
+import { TimeoutController } from './timeout_abort_controller';
+import {
+  formatUrl,
+  mergeRecords,
+  formatHeaders,
+  type FetchApiRecord,
+} from './lib';
+import { requestFx } from './request';
 
-type HttpMethod =
+export type HttpMethod =
   | 'HEAD'
   | 'GET'
   | 'POST'
@@ -34,31 +46,32 @@ type HttpMethod =
   | 'DELETE'
   | 'QUERY';
 
-type RequestBody = Blob | BufferSource | FormData | string;
+export type RequestBody = Blob | BufferSource | FormData | string;
 
 // These settings can be defined only statically
-interface StaticOnlyRequestConfig<B> {
+export interface StaticOnlyRequestConfig<B> {
   method: StaticOrReactive<HttpMethod>;
   mapBody(body: B): RequestBody;
 }
 
 // These settings can be defined once — statically or dynamically
-interface ExclusiveRequestConfigShared {
+export interface ExclusiveRequestConfigShared {
   url: string;
   credentials: RequestCredentials;
 }
 
-interface ExclusiveRequestConfig<B> extends ExclusiveRequestConfigShared {
+export interface ExclusiveRequestConfig<B>
+  extends ExclusiveRequestConfigShared {
   body?: B;
 }
 
 // These settings can be defined twice — both statically and dynamically, they will be merged
-interface InclusiveRequestConfig {
+export interface InclusiveRequestConfig {
   query?: FetchApiRecord;
   headers?: FetchApiRecord;
 }
 
-type CreationRequestConfigShared<E> = {
+export type CreationRequestConfigShared<E> = {
   [key in keyof E]?: StaticOrReactive<E[key]>;
 } & {
   [key in keyof InclusiveRequestConfig]?: StaticOrReactive<
@@ -91,7 +104,7 @@ interface ApiConfigResponse<P> {
   };
 }
 
-interface ApiConfigShared {
+export interface ApiConfigShared {
   /**
    * Rules to handle concurrent executions of the same request
    */
@@ -100,10 +113,11 @@ interface ApiConfigShared {
      * Auto-cancelation strategy
      * - `TAKE_EVERY` will not cancel any requests
      * - `TAKE_LATEST` will cancel all but the latest request
+     * - `TAKE_FIRST` will ignore all but the first request
      *
      * @default "TAKE_EVERY"
      */
-    strategy?: 'TAKE_LATEST' | 'TAKE_EVERY';
+    strategy?: 'TAKE_LATEST' | 'TAKE_EVERY' | 'TAKE_FIRST';
   };
 
   /**
@@ -129,14 +143,14 @@ interface ApiConfig<B, R extends CreationRequestConfig<B>, P>
   response: ApiConfigResponse<P>;
 }
 
-type ApiRequestError =
+export type ApiRequestError =
   | AbortError
   | TimeoutError
   | PreparationError
   | NetworkError
   | HttpError;
 
-function createApiRequest<
+export function createApiRequest<
   R extends CreationRequestConfig<B>,
   P,
   B = RequestBody
@@ -147,10 +161,13 @@ function createApiRequest<
 
   const prepareFx = createEffect(config.response.extract);
 
+  const $haveToBeAborted = createStore(false, { serialize: 'ignore' });
+
   const apiRequestFx = createEffect<
     DynamicRequestConfig<B> &
       AbortContext & { timeoutController: TimeoutController | null } & {
         method: HttpMethod;
+        haveToBeAborted: boolean;
       },
     ApiRequestResult,
     ApiRequestError
@@ -164,12 +181,16 @@ function createApiRequest<
       body,
       onAbort,
       timeoutController,
+      haveToBeAborted,
     }) => {
-      // This abort controller uses for `abortable`, it cancell all requests
       const abortController = new AbortController();
       onAbort(() => {
         abortController.abort();
       });
+
+      if (haveToBeAborted) {
+        throw abortError();
+      }
 
       const mappedBody = body ? config.request.mapBody(body) : null;
 
@@ -228,6 +249,7 @@ function createApiRequest<
       credentials: normalizeStaticOrReactive(config.request.credentials),
       body: normalizeStaticOrReactive(config.request.body),
       timeout: normalizeStaticOrReactive(config.abort?.timeout),
+      haveToBeAborted: $haveToBeAborted,
     },
     mapParams(dynamicConfig: ApiRequestParams & AbortContext, staticConfig) {
       // Exclusive settings
@@ -253,7 +275,7 @@ function createApiRequest<
       const headers = mergeRecords(staticConfig.headers, dynamicConfig.headers);
 
       // Other settings
-      const { method } = staticConfig;
+      const { method, haveToBeAborted } = staticConfig;
       const { onAbort } = dynamicConfig;
 
       // This abort controller uses for timeout, it cancell only one request
@@ -271,6 +293,7 @@ function createApiRequest<
         body,
         onAbort,
         timeoutController,
+        haveToBeAborted,
       };
     },
     effect: apiRequestFx,
@@ -299,6 +322,18 @@ function createApiRequest<
     case 'TAKE_LATEST':
       sample({ clock: boundAbortableApiRequestFx, target: abortSignal });
       break;
+    case 'TAKE_FIRST':
+      sample({
+        clock: apiRequestFx,
+        fn: () => true,
+        target: $haveToBeAborted,
+      });
+      sample({
+        clock: boundAbortableApiRequestFx.finally,
+        fn: () => false,
+        target: $haveToBeAborted,
+      });
+      break;
     case 'TAKE_EVERY':
       // Do not have to do anything here
       break;
@@ -308,16 +343,3 @@ function createApiRequest<
 
   return boundAbortableApiRequestFx;
 }
-
-export {
-  createApiRequest,
-  type HttpMethod,
-  type RequestBody,
-  type ApiConfigShared,
-  type CreationRequestConfigShared,
-  type ExclusiveRequestConfigShared,
-  type ExclusiveRequestConfig,
-  type InclusiveRequestConfig,
-  type StaticOnlyRequestConfig,
-  type ApiRequestError,
-};
