@@ -4,8 +4,7 @@
   "type": "commonjs",
   "dependencies": {
     "patronum": "^1.10.2",
-    "@farfetched/misc": "0.1.2",
-    "fast-json-stable-stringify": "2.1.0"
+    "@farfetched/misc": "0.1.2"
   },
   "peerDependencies": {
     "effector": "^22.4.0"

@@ -1,5 +1,4 @@
 import { Event, sample } from 'effector';
-import stringify from 'fast-json-stable-stringify';
 
 import { Query } from '../../query/type';
 import {
@@ -7,6 +6,7 @@ import {
   RemoteOperationParams,
 } from '../../remote_operation/type';
 import { sha1 } from '../lib/hash';
+import { stableStringify } from '../lib/stable_stringify';
 
 export function enrichFinishedSuccessWithKey<Q extends Query<any, any, any>>(
   query: Q
@@ -52,7 +52,10 @@ function createKey({
   params: unknown;
   sources: unknown[];
 }): string {
-  return sha1(stringify({ params, sources, sid }));
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const stableString = stableStringify({ params, sources, sid })!;
+
+  return sha1(stableString);
 }
 
 function querySid(query: Query<any, any, any>) {
