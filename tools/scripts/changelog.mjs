@@ -76,7 +76,12 @@ function mergeChangelogs(packages) {
         ([v1], [v2]) => -compareSemVer(v1, v2)
       )) {
         currentLog.push(['header', { level: 4 }, version]);
-        for (const [type, items] of Object.entries(versionChanges)) {
+
+        const versionChangesEntries = Object.entries(versionChanges);
+        if (versionChangesEntries.length === 0) {
+          currentLog.push(['para'], 'Technical release');
+        }
+        for (const [type, items] of versionChangesEntries) {
           currentLog.push(['para', ['strong', type]], ...items);
         }
       }
