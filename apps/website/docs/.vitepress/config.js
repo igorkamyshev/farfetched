@@ -154,6 +154,7 @@ export default withMermaid(
             text: 'Operators',
             items: [
               { text: 'connectQuery', link: '/api/operators/connect_query' },
+              { text: 'udpate', link: '/api/operators/update' },
               { text: 'retry', link: '/api/operators/retry' },
               { text: 'cache', link: '/api/operators/cache' },
             ],
