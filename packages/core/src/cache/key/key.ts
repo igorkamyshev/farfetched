@@ -43,6 +43,8 @@ export function enrichStartWithKey<Q extends Query<any, any, any>>(
   });
 }
 
+let uniqueCacheId = 0;
+
 function createKey({
   sid,
   params,
@@ -52,10 +54,18 @@ function createKey({
   params: unknown;
   sources: unknown[];
 }): string {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const stableString = stableStringify({ params, sources, sid })!;
+  try {
+    const stableString = stableStringify({ params, sources, sid })!;
 
-  return sha1(stableString);
+    return sha1(stableString);
+  } catch (e) {
+    console.warn(
+      `Can't generate cache key. Probably you passed non-serializable value as params.`,
+      e
+    );
+
+    return `${uniqueCacheId++}`;
+  }
 }
 
 function querySid(query: Query<any, any, any>) {

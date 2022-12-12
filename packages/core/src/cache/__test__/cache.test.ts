@@ -204,10 +204,57 @@ describe('cache', () => {
 
     // Do not await
     allSettled(query.start, { scope });
-    // But wait for next tick becuase of async adapter's nature
+    // But wait for next tick because of async adapter's nature
     await setTimeout(1);
 
     // Value from cache not found
+    expect(scope.getState(query.$data)).toEqual(null);
+    expect(scope.getState(query.$stale)).toBeFalsy();
+
+    await allPrevSettled(scope);
+
+    // After refetch, it's new value
+    expect(scope.getState(query.$data)).toEqual(2);
+    expect(scope.getState(query.$stale)).toBeFalsy();
+
+    expect(handler).toBeCalledTimes(2);
+  });
+
+  test('works with non-serializable params', async () => {
+    const logSpy = vi
+      .spyOn(global.console, 'warn')
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      .mockImplementation(() => {});
+    let index = 1;
+
+    const mockFn = vi.fn();
+
+    const handler = vi.fn(async (_: typeof mockFn) =>
+      setTimeout(1000).then(() => index++)
+    );
+
+    const query = withFactory({ fn: () => createQuery({ handler }), sid: '1' });
+
+    cache(query);
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope, params: mockFn });
+
+    expect(scope.getState(query.$data)).toEqual(1);
+    expect(logSpy).toHaveBeenLastCalledWith(
+      `Can't generate cache key. Probably you passed non-serializable value as params.`,
+      expect.any(TypeError)
+    );
+
+    await allSettled(query.reset, { scope });
+
+    // Do not await
+    allSettled(query.start, { scope, params: mockFn });
+    // But wait for next tick because of async adapter's nature
+    await setTimeout(1);
+
+    // Value from cache
     expect(scope.getState(query.$data)).toEqual(null);
     expect(scope.getState(query.$stale)).toBeFalsy();
 
