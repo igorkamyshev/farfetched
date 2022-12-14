@@ -51,7 +51,11 @@ function createKey({
   params: unknown;
   sources: unknown[];
 }): string | null {
-  return sha1(sid + JSON.stringify(params) + JSON.stringify(sources));
+  try {
+    return sha1(sid + JSON.stringify(params) + JSON.stringify(sources));
+  } catch (e) {
+    return null;
+  }
 }
 
 function querySid(query: Query<any, any, any>) {
