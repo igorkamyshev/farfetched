@@ -13,7 +13,7 @@ export function enrichFinishedSuccessWithKey<Q extends Query<any, any, any>>(
 ): Event<{
   params: RemoteOperationParams<Q>;
   result: RemoteOperationResult<Q>;
-  key: string;
+  key: string | null;
 }> {
   const queryDataSid = querySid(query);
 
@@ -30,7 +30,7 @@ export function enrichFinishedSuccessWithKey<Q extends Query<any, any, any>>(
 
 export function enrichStartWithKey<Q extends Query<any, any, any>>(
   query: Q
-): Event<{ params: RemoteOperationParams<Q>; key: string }> {
+): Event<{ params: RemoteOperationParams<Q>; key: string | null }> {
   const queryDataSid = querySid(query);
 
   return sample({
@@ -43,8 +43,6 @@ export function enrichStartWithKey<Q extends Query<any, any, any>>(
   });
 }
 
-let uniqueCacheId = 0;
-
 function createKey({
   sid,
   params,
@@ -53,7 +51,7 @@ function createKey({
   sid: string;
   params: unknown;
   sources: unknown[];
-}): string {
+}): string | null {
   try {
     const stableString = stableStringify({ params, sources, sid })!;
 
@@ -64,7 +62,7 @@ function createKey({
       e
     );
 
-    return `${uniqueCacheId++}`;
+    return null;
   }
 }
 
