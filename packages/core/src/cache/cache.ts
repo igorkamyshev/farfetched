@@ -110,14 +110,17 @@ function pickFromCache<Q extends Query<any, any, any>>(
   const $now = time({ clock: pickCachedValueFx });
 
   // TODO: allow to subscribe on __ to log invalid key error
-  const { startWithKey } = split(enrichStartWithKey(query), {
-    startWithKey: (
-      p
-    ): p is {
-      params: RemoteOperationParams<Q>;
-      key: string;
-    } => p.key !== null,
-  });
+  const { startWithKey, __: startWithoutKey } = split(
+    enrichStartWithKey(query),
+    {
+      startWithKey: (
+        p
+      ): p is {
+        params: RemoteOperationParams<Q>;
+        key: string;
+      } => p.key !== null,
+    }
+  );
 
   sample({
     clock: startWithKey,
@@ -157,8 +160,11 @@ function pickFromCache<Q extends Query<any, any, any>>(
   });
 
   sample({
-    clock: [foundStale, notFound],
-    fn: ({ params }) => ({ params: params.params }),
+    clock: [
+      foundStale.map(({ params }) => params),
+      notFound.map(({ params }) => params),
+      startWithoutKey,
+    ],
     target: query.__.lowLevelAPI.resumeExecution,
   });
 }

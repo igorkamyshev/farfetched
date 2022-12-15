@@ -56,12 +56,7 @@ function createKey({
     const stableString = stableStringify({ params, sources, sid })!;
 
     return sha1(stableString);
-  } catch (e) {
-    console.warn(
-      `Can't generate cache key. Probably you passed non-serializable value as params.`,
-      e
-    );
-
+  } catch (e: unknown) {
     return null;
   }
 }

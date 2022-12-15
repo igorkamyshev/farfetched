@@ -242,10 +242,6 @@ describe('cache', () => {
     await allSettled(query.start, { scope, params: mockFn });
 
     expect(scope.getState(query.$data)).toEqual(1);
-    expect(logSpy).toHaveBeenLastCalledWith(
-      `Can't generate cache key. Probably you passed non-serializable value as params.`,
-      expect.any(TypeError)
-    );
 
     await allSettled(query.reset, { scope });
 
@@ -265,5 +261,24 @@ describe('cache', () => {
     expect(scope.getState(query.$stale)).toBeFalsy();
 
     expect(handler).toBeCalledTimes(2);
+  });
+
+  test('ignore null-key', async () => {
+    // params cannot be serialized
+    const params: any = {};
+    const internal = { params };
+    params['some'] = internal;
+
+    const handler = vi.fn(async (p: any) => 1);
+    const query = withFactory({ fn: () => createQuery({ handler }), sid: '1' });
+
+    const purge = createEvent();
+
+    cache(query, { purge });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope, params });
+    expect(scope.getState(query.$data)).toEqual(1);
   });
 });
