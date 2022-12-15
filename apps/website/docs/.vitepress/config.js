@@ -65,6 +65,7 @@ export default withMermaid(
               text: 'Releases',
               link: '/releases/',
             },
+            { text: 'Effector', link: 'https://effector.dev' },
           ],
         },
       ],
