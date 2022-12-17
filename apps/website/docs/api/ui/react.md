@@ -1,5 +1,9 @@
 # Farfetched and React
 
+::: warning Deprecation notice
+Deprecated since v0.5, just use `useUnit` from `effector-react` instead of `useQuery` and `useMutation` 🪄
+:::
+
 Integration is distributed as a separate package, you have to install it and its peer dependency before usage:
 
 ::: code-group
