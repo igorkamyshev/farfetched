@@ -121,6 +121,16 @@ export default withMermaid(
               },
             ],
           },
+          {
+            text: 'React',
+            collapsible: true,
+            collapsed: true,
+            items: [
+              { text: 'Get started', link: '/tutorial/react/' },
+              { text: 'Suspense', link: '/tutorial/react/suspense' },
+              { text: 'SSR and Testing', link: '/tutorial/react/scope' },
+            ],
+          },
         ],
         '/api': [
           {

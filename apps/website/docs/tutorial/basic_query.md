@@ -125,6 +125,8 @@ const Character = () => {
 };
 ```
 
+Read more in [React-specific](/tutorial/react/) tutorial.
+
 :::
 
 To extract error from [Query](/api/primitives/query), you can subscribe on `.$error` or use your favorite integration as well.
