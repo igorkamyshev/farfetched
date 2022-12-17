@@ -2,23 +2,20 @@
 
 Integration is distributed as a separate package, you have to install it and its peer dependencies before usage
 
-with `pnpm`
+::: code-group
 
-```sh
+```sh [pnpm]
 pnpm install zod @farfetched/zod
 ```
 
-with `yarn`
-
-```sh
+```sh [yarn]
 yarn add zod @farfetched/zod
 ```
 
-with `npm`
-
-```sh
+```sh [npm]
 npm install zod @farfetched/zod
 ```
+:::
 
 ## `zodContract`
 

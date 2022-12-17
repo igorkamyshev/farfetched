@@ -204,7 +204,7 @@ describe('cache', () => {
 
     // Do not await
     allSettled(query.start, { scope });
-    // But wait for next tick becuase of async adapter's nature
+    // But wait for next tick because of async adapter's nature
     await setTimeout(1);
 
     // Value from cache not found
@@ -218,5 +218,67 @@ describe('cache', () => {
     expect(scope.getState(query.$stale)).toBeFalsy();
 
     expect(handler).toBeCalledTimes(2);
+  });
+
+  test('works with non-serializable params', async () => {
+    const logSpy = vi
+      .spyOn(global.console, 'warn')
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      .mockImplementation(() => {});
+    let index = 1;
+
+    const mockFn = vi.fn();
+
+    const handler = vi.fn(async (_: typeof mockFn) =>
+      setTimeout(1000).then(() => index++)
+    );
+
+    const query = withFactory({ fn: () => createQuery({ handler }), sid: '1' });
+
+    cache(query);
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope, params: mockFn });
+
+    expect(scope.getState(query.$data)).toEqual(1);
+
+    await allSettled(query.reset, { scope });
+
+    // Do not await
+    allSettled(query.start, { scope, params: mockFn });
+    // But wait for next tick because of async adapter's nature
+    await setTimeout(1);
+
+    // Value from cache
+    expect(scope.getState(query.$data)).toEqual(null);
+    expect(scope.getState(query.$stale)).toBeFalsy();
+
+    await allPrevSettled(scope);
+
+    // After refetch, it's new value
+    expect(scope.getState(query.$data)).toEqual(2);
+    expect(scope.getState(query.$stale)).toBeFalsy();
+
+    expect(handler).toBeCalledTimes(2);
+  });
+
+  test('ignore null-key', async () => {
+    // params cannot be serialized
+    const params: any = {};
+    const internal = { params };
+    params['some'] = internal;
+
+    const handler = vi.fn(async (p: any) => 1);
+    const query = withFactory({ fn: () => createQuery({ handler }), sid: '1' });
+
+    const purge = createEvent();
+
+    cache(query, { purge });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope, params });
+    expect(scope.getState(query.$data)).toEqual(1);
   });
 });

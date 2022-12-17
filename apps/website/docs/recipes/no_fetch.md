@@ -8,7 +8,7 @@ You can use [`createQuery`-factory](/api/factories/create_query.md) and passes y
 
 ```ts
 import { createQuery } from '@farfetched/core';
-import asxios from 'axios';
+import axios from 'axios';
 
 const usersQuery = createQuery({
   handler: () => axios.get('/users').then((res) => res.data),
@@ -29,9 +29,9 @@ You can use [`createMutation`-factory](/api/factories/create_mutation.md) and pa
 
 ```ts
 import { createMutation } from '@farfetched/core';
-import asxios from 'axios';
+import axios from 'axios';
 
-const loginMutation = createQuery({
+const loginMutation = createMutation({
   handler: ({ login, password }) =>
     axios.post('/login', { login, password }).then((res) => res.data),
 });

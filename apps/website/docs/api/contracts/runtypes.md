@@ -2,23 +2,21 @@
 
 Integration is distributed as a separate package, you have to install it and its peer dependencies before usage
 
-with `pnpm`
+::: code-group
 
-```sh
+```sh [pnpm]
 pnpm install runtypes @farfetched/runtypes
 ```
 
-with `yarn`
-
-```sh
+```sh [yarn]
 yarn add runtypes @farfetched/runtypes
 ```
 
-with `npm`
-
-```sh
+```sh [npm]
 npm install runtypes @farfetched/runtypes
 ```
+
+:::
 
 ## Showcases
 

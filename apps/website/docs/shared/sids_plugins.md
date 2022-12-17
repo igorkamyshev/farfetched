@@ -16,23 +16,21 @@ Read more about `effector/babel-plugin` configuration in the [Effector's documen
 
 [SWC](https://swc.rs) is a blazing fast alternative to Babel. If you are using it, you can install `@effector/swc-plugin` to get the same DX as with Babel.
 
-with `pnpm`
+::: code-group
 
-```sh
+```sh [pnpm]
 pnpm install --dev @effector/swc-plugin @swc/core
 ```
 
-with `yarn`
-
-```sh
+```sh [yarn]
 yarn add --dev @effector/swc-plugin @swc/core
 ```
 
-with `npm`
-
-```sh
+```sh [npm]
 npm install --dev @effector/swc-plugin @swc/core
 ```
+
+:::
 
 Now just modify your `.swcrc` config to enable installed plugin:
 

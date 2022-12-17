@@ -2,7 +2,10 @@ import { createEffect, Event, sample, split } from 'effector';
 
 import { time } from '../libs/patronus';
 import { parseTime, Time } from '../libs/date-nfs';
-import { RemoteOperationParams } from '../remote_operation/type';
+import {
+  RemoteOperationParams,
+  RemoteOperationResult,
+} from '../remote_operation/type';
 import { Query } from '../query/type';
 import { inMemoryCache } from './adapters/in_memory';
 import { CacheAdapter, CacheAdapterInstance } from './adapters/type';
@@ -65,7 +68,17 @@ function saveToCache<Q extends Query<any, any, any>>(
       value: unknown;
     }) => instance.set({ key, value })
   );
-  const doneWithKey = enrichFinishedSuccessWithKey(query);
+
+  // TODO: allow to subscribe on __ to log invalid key error
+  const { doneWithKey } = split(enrichFinishedSuccessWithKey(query), {
+    doneWithKey: (
+      p
+    ): p is {
+      params: RemoteOperationParams<Q>;
+      result: RemoteOperationResult<Q>;
+      key: string;
+    } => p.key !== null,
+  });
 
   sample({
     clock: doneWithKey,
@@ -94,9 +107,20 @@ function pickFromCache<Q extends Query<any, any, any>>(
     }) => instance.get({ key })
   );
 
-  const startWithKey = enrichStartWithKey(query);
-
   const $now = time({ clock: pickCachedValueFx });
+
+  // TODO: allow to subscribe on __ to log invalid key error
+  const { startWithKey, __: startWithoutKey } = split(
+    enrichStartWithKey(query),
+    {
+      startWithKey: (
+        p
+      ): p is {
+        params: RemoteOperationParams<Q>;
+        key: string;
+      } => p.key !== null,
+    }
+  );
 
   sample({
     clock: startWithKey,
@@ -136,8 +160,11 @@ function pickFromCache<Q extends Query<any, any, any>>(
   });
 
   sample({
-    clock: [foundStale, notFound],
-    fn: ({ params }) => ({ params: params.params }),
+    clock: [
+      foundStale.map(({ params }) => params),
+      notFound.map(({ params }) => params),
+      startWithoutKey,
+    ],
     target: query.__.lowLevelAPI.resumeExecution,
   });
 }
