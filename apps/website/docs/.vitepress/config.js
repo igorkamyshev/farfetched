@@ -122,6 +122,16 @@ export default withMermaid(
             ],
           },
           {
+            text: 'Solid',
+            collapsible: true,
+            collapsed: true,
+            items: [
+              { text: 'Get started', link: '/tutorial/solid/' },
+              { text: 'Suspense', link: '/tutorial/solid/suspense' },
+              { text: 'SSR and Testing', link: '/tutorial/solid/scope' },
+            ],
+          },
+          {
             text: 'React',
             collapsible: true,
             collapsed: true,

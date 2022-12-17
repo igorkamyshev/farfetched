@@ -98,6 +98,8 @@ const Character = () => {
     </Suspense>
   );
 };
+
+Read more in [Solid-specific](/tutorial/solid/) tutorial.
 ```
 
 :::
