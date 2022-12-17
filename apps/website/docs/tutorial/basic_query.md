@@ -104,13 +104,13 @@ const Character = () => {
 
 ::: details React
 
-In React, you can use [`useQuery`](/api/ui/react) hook to subscribe on [Query](/api/primitives/query) and get its data:
+In React, you can use [`useUnit`](https://effector.dev/docs/api/effector-react/useUnit) hook to subscribe on [Query](/api/primitives/query) and get its data:
 
 ```tsx
-import { useQuery } from '@farfetched/react';
+import { useUnit } from 'effector-react';
 
 const Character = () => {
-  const { data: character } = useQuery(characterQuery);
+  const { data: character } = useUnit(characterQuery);
 
   if (!character) {
     return <div>Loading...</div>;
