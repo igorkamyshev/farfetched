@@ -26,10 +26,10 @@ const pokemonListQuery = createJsonQuery({
     contract: runtypeContract(
       Record({ count: Number, results: Array(EntityLink) })
     ),
-    mapData(data) {
+    mapData({ result }) {
       return {
-        ...data,
-        results: data.results.map((result) => ({
+        ...result,
+        results: result.results.map((result) => ({
           ...result,
           id: urlToId(result.url),
         })),

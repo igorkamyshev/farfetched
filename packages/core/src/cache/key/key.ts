@@ -2,26 +2,27 @@ import { Event, sample } from 'effector';
 
 import { Query } from '../../query/type';
 import {
-  RemoteOperationData,
+  RemoteOperationResult,
   RemoteOperationParams,
 } from '../../remote_operation/type';
 import { sha1 } from '../lib/hash';
+import { stableStringify } from '../lib/stable_stringify';
 
 export function enrichFinishedSuccessWithKey<Q extends Query<any, any, any>>(
   query: Q
 ): Event<{
   params: RemoteOperationParams<Q>;
-  data: RemoteOperationData<Q>;
-  key: string;
+  result: RemoteOperationResult<Q>;
+  key: string | null;
 }> {
   const queryDataSid = querySid(query);
 
   return sample({
     clock: query.__.lowLevelAPI.validatedSuccessfully,
     source: query.__.lowLevelAPI.sources,
-    fn: (sources, { params, result: data }) => ({
+    fn: (sources, { params, result }) => ({
       params,
-      data,
+      result,
       key: createKey({ sid: queryDataSid, params, sources }),
     }),
   });
@@ -29,7 +30,7 @@ export function enrichFinishedSuccessWithKey<Q extends Query<any, any, any>>(
 
 export function enrichStartWithKey<Q extends Query<any, any, any>>(
   query: Q
-): Event<{ params: RemoteOperationParams<Q>; key: string }> {
+): Event<{ params: RemoteOperationParams<Q>; key: string | null }> {
   const queryDataSid = querySid(query);
 
   return sample({
@@ -50,8 +51,14 @@ function createKey({
   sid: string;
   params: unknown;
   sources: unknown[];
-}): string {
-  return sha1(sid + JSON.stringify(params) + JSON.stringify(sources));
+}): string | null {
+  try {
+    const stableString = stableStringify({ params, sources, sid })!;
+
+    return sha1(stableString);
+  } catch (e: unknown) {
+    return null;
+  }
 }
 
 function querySid(query: Query<any, any, any>) {

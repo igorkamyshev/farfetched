@@ -1,9 +1,8 @@
 import { Effect, Event, EventPayload, Store } from 'effector';
-import { ExecutionMeta } from '../misc/execution';
 
-import { FetchingStatus } from '../status/type';
+import { type FetchingStatus } from '../libs/patronus';
 
-interface RemoteOperation<Params, Data, Error, Meta> {
+export interface RemoteOperation<Params, Data, Error, Meta> {
   /**
    * Reactive current request status
    *
@@ -31,7 +30,7 @@ interface RemoteOperation<Params, Data, Error, Meta> {
   /** Set of events that represent end of query */
   finished: {
     /** Query was successfully ended, data will be passed as a payload */
-    success: Event<{ params: Params; data: Data; meta: ExecutionMeta }>;
+    success: Event<{ params: Params; result: Data; meta: ExecutionMeta }>;
     /** Query was failed, error will be passed as a payload */
     failure: Event<{ params: Params; error: Error; meta: ExecutionMeta }>;
     /** Query execution was skipped due to `enabled` field in config */
@@ -88,16 +87,17 @@ interface RemoteOperation<Params, Data, Error, Meta> {
   };
 }
 
-type RemoteOperationData<Q extends RemoteOperation<any, any, any, any>> =
-  EventPayload<Q['finished']['success']>['data'];
-type RemoteOperationError<Q extends RemoteOperation<any, any, any, any>> =
-  EventPayload<Q['finished']['failure']>['error'];
-type RemoteOperationParams<Q extends RemoteOperation<any, any, any, any>> =
-  EventPayload<Q['start']>;
+export type RemoteOperationResult<
+  Q extends RemoteOperation<any, any, any, any>
+> = EventPayload<Q['finished']['success']>['result'];
+export type RemoteOperationError<
+  Q extends RemoteOperation<any, any, any, any>
+> = EventPayload<Q['finished']['failure']>['error'];
+export type RemoteOperationParams<
+  Q extends RemoteOperation<any, any, any, any>
+> = EventPayload<Q['start']>;
 
-export {
-  type RemoteOperation,
-  type RemoteOperationData,
-  type RemoteOperationError,
-  type RemoteOperationParams,
-};
+export interface ExecutionMeta {
+  stopErrorPropagation: boolean;
+  isFreshData: boolean;
+}

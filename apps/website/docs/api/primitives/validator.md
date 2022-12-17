@@ -13,20 +13,21 @@ A _Validator_ have to respond with `ValidationResult` that could be one of the f
 
 ### Function
 
-_Validator_ can be a simple function that accepts `data` and `params` and returns `ValidationResult`.
+_Validator_ can be a simple function that accepts `{ result, params }` object and returns `ValidationResult`.
 
 ```ts
-const validator = (data, params): ValidationResult => data[params.id] !== null;
+const validator = ({ result, params }): ValidationResult =>
+  result[params.id] !== null;
 ```
 
 ### Function with external source
 
-_Validator_ can be an object with field `source` which is any [_Store_](https://effector.dev/docs/api/effector/store) and `fn` witch is a function that accepts `data`, `params`, value of `source` and returns `ValidationResult`.
+_Validator_ can be an object with field `source` which is any [_Store_](https://effector.dev/docs/api/effector/store) and `fn` witch is a function that accepts object `{ result, params }` and the value of `source` and returns `ValidationResult`.
 
 ```ts
 const validator = {
   source: $externalStore,
-  fn: (data, params, externalSource): ValidationResult =>
-    data[params.id] !== null && data[externalSource.id] !== null,
+  fn: ({ result, params }, externalSource): ValidationResult =>
+    result[params.id] !== null && result[externalSource.id] !== null,
 };
 ```

@@ -3,6 +3,18 @@
   "sourceRoot": "packages/core/src",
   "projectType": "library",
   "targets": {
+    "pack": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/typepack.mjs --package core"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    },
     "build": {
       "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
@@ -24,7 +36,7 @@
       "dependsOn": [
         {
           "projects": "self",
-          "target": "build"
+          "target": "pack"
         }
       ]
     },
@@ -50,13 +62,16 @@
       }
     },
     "typetest": {
-      "executor": "./tools/executors/tsd:tsd",
-      "inputs": ["{projectRoot}/**/*.type_spec.ts", "{projectRoot}/**/*.ts"]
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "pnpm vitest typecheck --run",
+        "cwd": "packages/core"
+      }
     },
     "size": {
       "executor": "./tools/executors/size-limit:size-limit",
       "options": {
-        "limit": "22 kB",
+        "limit": "15 kB",
         "outputPath": "dist/packages/core"
       },
       "dependsOn": [

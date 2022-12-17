@@ -1,4 +1,5 @@
 import { Event, sample } from 'effector';
+
 import { CacheAdapterInstance, CacheAdapterOptions } from './type';
 
 export function attachObservability({

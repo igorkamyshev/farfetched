@@ -4,7 +4,7 @@ If your project already uses [Babel](https://babeljs.io/), you do not have to in
 
 ```json
 {
-  "plugins": [["effector/babel-plugin", { "factories": ["@farfetched/core"] }]]
+  "plugins": ["effector/babel-plugin"]
 }
 ```
 
@@ -19,19 +19,19 @@ Read more about `effector/babel-plugin` configuration in the [Effector's documen
 with `pnpm`
 
 ```sh
-pnpm install @effector/swc-plugin @swc/core
+pnpm install --dev @effector/swc-plugin @swc/core
 ```
 
 with `yarn`
 
 ```sh
-yarn add @effector/swc-plugin @swc/core
+yarn add --dev @effector/swc-plugin @swc/core
 ```
 
 with `npm`
 
 ```sh
-npm install @effector/swc-plugin @swc/core
+npm install --dev @effector/swc-plugin @swc/core
 ```
 
 Now just modify your `.swcrc` config to enable installed plugin:
@@ -41,14 +41,7 @@ Now just modify your `.swcrc` config to enable installed plugin:
   "$schema": "https://json.schemastore.org/swcrc",
   "jsc": {
     "experimental": {
-      "plugins": [
-        [
-          "@effector/swc-plugin",
-          {
-            "factories": ["@farfetched/core"]
-          }
-        ]
-      ]
+      "plugins": ["@effector/swc-plugin"]
     }
   }
 }

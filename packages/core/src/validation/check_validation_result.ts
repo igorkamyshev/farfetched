@@ -1,6 +1,6 @@
 import { ValidationResult } from './type';
 
-function checkValidationResult(result: ValidationResult): boolean {
+export function checkValidationResult(result: ValidationResult): boolean {
   if (result === true) {
     return true;
   }
@@ -15,5 +15,3 @@ function checkValidationResult(result: ValidationResult): boolean {
 
   return false;
 }
-
-export { checkValidationResult };
