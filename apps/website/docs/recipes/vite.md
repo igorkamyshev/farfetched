@@ -10,23 +10,21 @@ Farfetched does not require any special configuration for Vite for basic usage. 
 
 1. Install required dependencies:
 
-with `pnpm`
+::: code-group
 
-```sh
+```sh [pnpm]
 pnpm install --dev vite-plugin-babel
 ```
 
-with `yarn`
-
-```sh
+```sh [yarn]
 yarn add --dev vite-plugin-babel
 ```
 
-with `npm`
-
-```sh
+```sh [npm]
 npm install --dev vite-plugin-babel
 ```
+
+:::
 
 2. Add [`vite-plugin-babel`](https://github.com/owlsdepartment/vite-plugin-babel) to your project:
 
@@ -80,23 +78,21 @@ export default defineConfig({
 
 1. Install required dependencies:
 
-with `pnpm`
+::: code-group
 
-```sh
+```sh [pnpm]
 pnpm install --dev unplugin-swc @effector/swc-plugin @swc/core
 ```
 
-with `yarn`
-
-```sh
+```sh [yarn]
 yarn add --dev unplugin-swc @effector/swc-plugin @swc/core
 ```
 
-with `npm`
-
-```sh
+```sh [npm]
 npm install --dev unplugin-swc @effector/swc-plugin @swc/core
 ```
+
+:::
 
 2. Add [`unplugin-swc`](https://github.com/egoist/unplugin-swc) and [`@effector/swc-plugin`](https://github.com/effector/swc-plugin) to your config:
 
