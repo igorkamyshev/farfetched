@@ -55,5 +55,14 @@ export function createHeadlessMutation<
     mapData,
   });
 
-  return operation;
+  // -- Protocols --
+
+  const unitShape = () => ({
+    pending: operation.$pending,
+    start: operation.start,
+  });
+
+  // -- Public API --
+
+  return { ...operation, '@@unitShape': unitShape };
 }

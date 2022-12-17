@@ -34,6 +34,13 @@ export interface Query<Params, Data, Error, InitialData = null>
   $stale: Store<boolean>;
   /** Event to reset the whole state of the query */
   reset: Event<void>;
+  '@@unitShape': () => {
+    data: Store<Data | InitialData>;
+    error: Store<Error | null>;
+    stale: Store<boolean>;
+    pending: Store<boolean>;
+    start: Event<Params>;
+  };
 }
 
 export function isQuery(value: any): value is Query<any, any, any> {
