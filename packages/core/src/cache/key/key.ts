@@ -6,6 +6,7 @@ import {
   RemoteOperationParams,
 } from '../../remote_operation/type';
 import { sha1 } from '../lib/hash';
+import { stableStringify } from '../lib/stable_stringify';
 
 export function enrichFinishedSuccessWithKey<Q extends Query<any, any, any>>(
   query: Q
@@ -52,8 +53,10 @@ function createKey({
   sources: unknown[];
 }): string | null {
   try {
-    return sha1(sid + JSON.stringify(params) + JSON.stringify(sources));
-  } catch (e) {
+    const stableString = stableStringify({ params, sources, sid })!;
+
+    return sha1(stableString);
+  } catch (e: unknown) {
     return null;
   }
 }
