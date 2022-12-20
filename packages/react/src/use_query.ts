@@ -1,6 +1,9 @@
 import { type Query } from '@farfetched/core';
 import { useUnit } from 'effector-react';
 
+/**
+ * @deprecated Use `useUnit` from 'effector-react` instead
+ */
 function useQuery<Params, Data, Error, InitialData>(
   query: Query<Params, Data, Error, InitialData>
 ): {
@@ -11,6 +14,9 @@ function useQuery<Params, Data, Error, InitialData>(
   start: (params: Params) => void;
 };
 
+/**
+ * @deprecated Use `useUnit` from 'effector-react` instead
+ */
 function useQuery(query: Query<any, any, any>) {
   const [data, stale, error, pending, start] = useUnit([
     query.$data,

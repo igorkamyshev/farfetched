@@ -2,23 +2,21 @@
 
 Integration is distributed as a separate package, you have to install it and its peer dependency before usage:
 
-with `pnpm`
+::: code-group
 
-```sh
+```sh [pnpm]
 pnpm install @farfetched/solid effector-solid
 ```
 
-with `yarn`
-
-```sh
+```sh [yarn]
 yarn add @farfetched/solid effector-solid
 ```
 
-with `npm`
-
-```sh
+```sh [npm]
 npm install @farfetched/solid effector-solid
 ```
+
+:::
 
 ## Showcases
 
@@ -48,6 +46,10 @@ function UserProfile() {
 ```
 
 ## `useMutation` <Badge type="tip" text="since v0.2.0" />
+
+::: warning Deprecation notice
+Deprecated since v0.5, just use `useUnit` from `effector-solid` instead 🪄
+:::
 
 Returns function to start [_Mutation_](/api/primitives/mutation).
 

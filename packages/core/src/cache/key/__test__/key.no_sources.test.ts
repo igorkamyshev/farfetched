@@ -97,6 +97,38 @@ describe('key, without sourced', () => {
     expect(firstArg(listener, 0).key).toBe(firstArg(listener, 1).key);
   });
 
+  test('same keys in different order for same params', async () => {
+    const query = withFactory({
+      fn: () =>
+        createQuery({
+          handler: async (p: { a: string; b: { values: number[] } }) => 1,
+        }),
+      sid: '1',
+    });
+
+    const startWithKey = enrichStartWithKey(query);
+
+    const listener = vi.fn();
+
+    startWithKey.watch(listener);
+
+    const scope = fork();
+
+    await allSettled(query.start, {
+      scope,
+      params: { a: 'str', b: { values: [1, 2] } },
+    });
+    await allSettled(query.start, {
+      scope,
+      params: { b: { values: [1, 2] }, a: 'str' },
+    });
+
+    expect(firstArg(listener, 0).key.length).toBeGreaterThanOrEqual(1);
+    expect(firstArg(listener, 1).key.length).toBeGreaterThanOrEqual(1);
+
+    expect(firstArg(listener, 0).key).toBe(firstArg(listener, 1).key);
+  });
+
   test('same keys for no params', async () => {
     const query = withFactory({
       fn: () => createQuery({ handler: async (p: void) => 1 }),

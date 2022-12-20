@@ -12,23 +12,21 @@
 
 First, you need to install Farfetched and its peer dependency:
 
-with `pnpm`
+::: code-group
 
-```sh
+```sh [pnpm]
 pnpm install @farfetched/core effector
 ```
 
-with `yarn`
-
-```sh
+```sh [yarn]
 yarn add @farfetched/core effector
 ```
 
-with `npm`
-
-```sh
+```sh [npm]
 npm install @farfetched/core effector
 ```
+
+:::
 
 :::info
 Farfetched declares Effector as a peer dependency to prevent two instances of Effector in the same application. Read more about relation between Farfetched and Effector in [the statement](/statements/effector).

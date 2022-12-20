@@ -6,13 +6,14 @@ import {
   RemoteOperationParams,
 } from '../../remote_operation/type';
 import { sha1 } from '../lib/hash';
+import { stableStringify } from '../lib/stable_stringify';
 
 export function enrichFinishedSuccessWithKey<Q extends Query<any, any, any>>(
   query: Q
 ): Event<{
   params: RemoteOperationParams<Q>;
   result: RemoteOperationResult<Q>;
-  key: string;
+  key: string | null;
 }> {
   const queryDataSid = querySid(query);
 
@@ -29,7 +30,7 @@ export function enrichFinishedSuccessWithKey<Q extends Query<any, any, any>>(
 
 export function enrichStartWithKey<Q extends Query<any, any, any>>(
   query: Q
-): Event<{ params: RemoteOperationParams<Q>; key: string }> {
+): Event<{ params: RemoteOperationParams<Q>; key: string | null }> {
   const queryDataSid = querySid(query);
 
   return sample({
@@ -50,8 +51,14 @@ function createKey({
   sid: string;
   params: unknown;
   sources: unknown[];
-}): string {
-  return sha1(sid + JSON.stringify(params) + JSON.stringify(sources));
+}): string | null {
+  try {
+    const stableString = stableStringify({ params, sources, sid })!;
+
+    return sha1(stableString);
+  } catch (e: unknown) {
+    return null;
+  }
 }
 
 function querySid(query: Query<any, any, any>) {
