@@ -7,15 +7,15 @@ Updates [_Query_](/api/primitives/query) after [_Mutation_](/api/primitives/quer
 ```ts
 import { update } from '@farfetched/core';
 
-update({ query, bySuccess, byFailure, mutation });
+update(query, { on, by: { success, failure } });
 ```
 
 ### Arguments
 
 - `query` - [_Query_](/api/primitives/query) to update
-- `bySuccess` - [a rule](#update-rule) to update the [_Query_](/api/primitives/query) on [_Mutation_](/api/primitives/mutation) success
-- `byFailure?` - [a rule](#update-rule) to update the [_Query_](/api/primitives/query) on [_Mutation_](/api/primitives/mutation) failure
-- `mutation` - [_Mutation_](/api/primitives/mutation) to subscribe to
+- `on` - [_Mutation_](/api/primitives/mutation) to subscribe to
+- `by.success` - [a rule](#update-rule) to update the [_Query_](/api/primitives/query) on [_Mutation_](/api/primitives/mutation) success
+- `by.failure?` - [a rule](#update-rule) to update the [_Query_](/api/primitives/query) on [_Mutation_](/api/primitives/mutation) failure
 
 ## Update rule
 
@@ -41,13 +41,14 @@ An update rule function accepts two arguments:
 
 ```ts
 type QueryState =
+  | null
   | {
       result: QueryResult;
-      params?: QueryParams;
+      params: QueryParams;
     }
   | {
       error: QueryError;
-      params?: QueryParams;
+      params: QueryParams;
     };
 
 type MutationState =
