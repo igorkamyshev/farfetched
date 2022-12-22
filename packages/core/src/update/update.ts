@@ -151,16 +151,15 @@ export function update<
   // -- Refetching
   const refetchQuery = createEvent<RemoteOperationParams<Q>>();
 
-  const { refetchQueryWithPreviousParams, refetchQueryWithNewParams } = split(
+  const {
+    __: refetchQueryWithPreviousParams,
+    withParams: refetchQueryWithNewParams,
+  } = split(
     merge([fillQueryData, fillQueryError])
       .map(({ refetch }) => refetch)
       .filter({ fn: (refetch): refetch is Refetch<Q> => Boolean(refetch) }),
     {
-      refetchQueryWithPreviousParams: (refetch): refetch is true =>
-        typeof refetch === 'boolean',
-      refetchQueryWithNewParams: (
-        refetch
-      ): refetch is { params: RemoteOperationParams<Q> } =>
+      withParams: (refetch): refetch is { params: RemoteOperationParams<Q> } =>
         typeof refetch === 'object' && 'params' in refetch,
     }
   );
