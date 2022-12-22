@@ -2,6 +2,7 @@ import {
   combine,
   createEvent,
   createStore,
+  merge,
   sample,
   split,
   Store,
@@ -28,6 +29,20 @@ type QueryState<Q extends Query<any, any, any, any>> =
     }
   | null;
 
+type Refetch<Q extends Query<any, any, any, any>> =
+  | boolean
+  | { params: RemoteOperationParams<Q> };
+
+type RuleResult<Q extends Query<any, any, any, any>> =
+  | {
+      result: RemoteOperationResult<Q>;
+      refetch?: Refetch<Q>;
+    }
+  | {
+      error: RemoteOperationError<Q>;
+      refetch?: Refetch<Q>;
+    };
+
 export function update<
   Q extends Query<any, any, any, any>,
   M extends Mutation<any, any, any>,
@@ -49,8 +64,7 @@ export function update<
             params: RemoteOperationParams<M>;
           };
         },
-        | { result: RemoteOperationResult<Q> }
-        | { error: RemoteOperationError<Q> },
+        RuleResult<Q>,
         BySuccessSource
       >;
       failure?: DynamicallySourcedField<
@@ -61,8 +75,7 @@ export function update<
             params: RemoteOperationParams<M>;
           };
         },
-        | { result: RemoteOperationResult<Q> }
-        | { error: RemoteOperationError<Q> },
+        RuleResult<Q>,
         ByFailureSource
       >;
     };
@@ -70,8 +83,14 @@ export function update<
 ): void {
   const $queryState = queryState(query);
 
-  const fillQueryData = createEvent<{ result: RemoteOperationResult<Q> }>();
-  const fillQueryError = createEvent<{ error: RemoteOperationError<Q> }>();
+  const fillQueryData = createEvent<{
+    result: RemoteOperationResult<Q>;
+    refetch?: Refetch<Q>;
+  }>();
+  const fillQueryError = createEvent<{
+    error: RemoteOperationError<Q>;
+    refetch?: Refetch<Q>;
+  }>();
 
   split({
     source: sample({
@@ -128,6 +147,42 @@ export function update<
     fn: ({ error }) => error,
     target: [query.$error, query.$data.reinit!],
   });
+
+  // -- Refetching
+  const refetchQuery = createEvent<RemoteOperationParams<Q>>();
+
+  const { refetchQueryWithPreviousParams, refetchQueryWithNewParams } = split(
+    merge([fillQueryData, fillQueryError])
+      .map(({ refetch }) => refetch)
+      .filter({ fn: (refetch): refetch is Refetch<Q> => Boolean(refetch) }),
+    {
+      refetchQueryWithPreviousParams: (refetch): refetch is true =>
+        typeof refetch === 'boolean',
+      refetchQueryWithNewParams: (
+        refetch
+      ): refetch is { params: RemoteOperationParams<Q> } =>
+        typeof refetch === 'object' && 'params' in refetch,
+    }
+  );
+
+  sample({
+    clock: [
+      refetchQueryWithNewParams,
+      sample({
+        clock: refetchQueryWithPreviousParams,
+        source: $queryState,
+        filter: Boolean,
+      }),
+    ],
+    fn: ({ params }) => params,
+    target: refetchQuery,
+  });
+
+  sample({
+    clock: refetchQuery,
+    target: query.start,
+  });
+  sample({ clock: refetchQuery, fn: () => true, target: query.$stale });
 }
 
 function queryState<Q extends Query<any, any, any, any>>(
