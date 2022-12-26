@@ -321,7 +321,7 @@ describe('update', () => {
         query: { error: 'original failure', params: 2 },
       })
     );
-  });;
+  });
 
   test('mutation (no params) state passes to rules', async () => {
     const query = createQuery({
