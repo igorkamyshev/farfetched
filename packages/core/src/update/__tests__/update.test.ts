@@ -196,4 +196,228 @@ describe('update', () => {
     expect(listeners.onStart).toHaveBeenNthCalledWith(3, 3); // refetch uses params from callback
     expect(scope.getState(query.$stale)).toBeFalsy();
   });
+
+  test('query (no params) state passes to rules', async () => {
+    const query = createQuery({
+      handler: vi
+        .fn()
+        .mockResolvedValueOnce('original result')
+        .mockRejectedValueOnce('original failure'),
+    });
+
+    const mutation = createMutation({
+      handler: vi
+        .fn()
+        .mockResolvedValueOnce('mutation success 1')
+        .mockRejectedValueOnce('mutation failure 1')
+        .mockResolvedValueOnce('mutation success 2')
+        .mockRejectedValueOnce('mutation failure 2')
+        .mockResolvedValueOnce('mutation success 3')
+        .mockRejectedValueOnce('mutation failure 3'),
+    });
+
+    const successRule = vi.fn().mockReturnValue({ error: 'bySuccess' });
+    const failureRule = vi.fn().mockReturnValue({ error: 'byFailure' });
+
+    update(query, {
+      on: mutation,
+      by: { success: successRule, failure: failureRule },
+    });
+
+    const scope = fork();
+
+    await allSettled(mutation.start, { scope });
+    expect(successRule).toBeCalledWith(
+      expect.objectContaining({
+        query: null,
+      })
+    );
+    await allSettled(query.reset, { scope });
+    await allSettled(mutation.start, { scope });
+    expect(failureRule).toBeCalledWith(
+      expect.objectContaining({
+        query: null,
+      })
+    );
+
+    // success run
+    await allSettled(query.start, { scope });
+    await allSettled(mutation.start, { scope });
+    expect(successRule).toBeCalledWith(
+      expect.objectContaining({
+        query: { result: 'original result', params: null },
+      })
+    );
+
+    // failed run
+    await allSettled(query.start, { scope });
+
+    await allSettled(mutation.start, { scope });
+    expect(failureRule).toBeCalledWith(
+      expect.objectContaining({
+        query: { error: 'original failure', params: null },
+      })
+    );
+  });
+
+  test('query (with params) state passes to rules', async () => {
+    const query = createQuery({
+      handler: vi
+        .fn()
+        .mockResolvedValueOnce('original result')
+        .mockRejectedValueOnce('original failure'),
+    });
+
+    const mutation = createMutation({
+      handler: vi
+        .fn()
+        .mockResolvedValueOnce('mutation success 1')
+        .mockRejectedValueOnce('mutation failure 1')
+        .mockResolvedValueOnce('mutation success 2')
+        .mockRejectedValueOnce('mutation failure 2')
+        .mockResolvedValueOnce('mutation success 3')
+        .mockRejectedValueOnce('mutation failure 3'),
+    });
+
+    const successRule = vi.fn().mockReturnValue({ error: 'bySuccess' });
+    const failureRule = vi.fn().mockReturnValue({ error: 'byFailure' });
+
+    update(query, {
+      on: mutation,
+      by: { success: successRule, failure: failureRule },
+    });
+
+    const scope = fork();
+
+    await allSettled(mutation.start, { scope });
+    expect(successRule).toBeCalledWith(
+      expect.objectContaining({
+        query: null,
+      })
+    );
+    await allSettled(query.reset, { scope });
+    await allSettled(mutation.start, { scope });
+    expect(failureRule).toBeCalledWith(
+      expect.objectContaining({
+        query: null,
+      })
+    );
+
+    // success run
+    await allSettled(query.start, { scope, params: 1 });
+    await allSettled(mutation.start, { scope });
+    expect(successRule).toBeCalledWith(
+      expect.objectContaining({
+        query: { result: 'original result', params: 1 },
+      })
+    );
+
+    // failed run
+    await allSettled(query.start, { scope, params: 2 });
+
+    await allSettled(mutation.start, { scope });
+    expect(failureRule).toBeCalledWith(
+      expect.objectContaining({
+        query: { error: 'original failure', params: 2 },
+      })
+    );
+  });;
+
+  test('mutation (no params) state passes to rules', async () => {
+    const query = createQuery({
+      handler: vi.fn().mockResolvedValue('original result'),
+    });
+
+    const mutation = createMutation({
+      handler: vi
+        .fn()
+        .mockResolvedValueOnce('mutation result')
+        .mockRejectedValueOnce('mutation failure'),
+    });
+
+    const successRule = vi.fn().mockReturnValue({ result: 'bySuccess' });
+    const failureRule = vi.fn().mockReturnValue({ error: 'byFailure' });
+
+    update(query, {
+      on: mutation,
+      by: { success: successRule, failure: failureRule },
+    });
+
+    const scope = fork();
+
+    // success run
+    await allSettled(mutation.start, { scope });
+    expect(successRule).toBeCalledWith(
+      expect.objectContaining({
+        mutation: { result: 'mutation result', params: null },
+      })
+    );
+    expect(successRule).toBeCalledWith(
+      expect.objectContaining({
+        mutation: { result: 'mutation result', params: null },
+      })
+    );
+
+    // failed run
+    await allSettled(mutation.start, { scope });
+    expect(failureRule).toBeCalledWith(
+      expect.objectContaining({
+        mutation: { error: 'mutation failure', params: null },
+      })
+    );
+    expect(failureRule).toBeCalledWith(
+      expect.objectContaining({
+        mutation: { error: 'mutation failure', params: null },
+      })
+    );
+  });
+
+  test('mutation (with params) state passes to rules', async () => {
+    const query = createQuery({
+      handler: vi.fn().mockResolvedValue('original result'),
+    });
+
+    const mutation = createMutation({
+      handler: vi
+        .fn()
+        .mockResolvedValueOnce('mutation result')
+        .mockRejectedValueOnce('mutation failure'),
+    });
+
+    const successRule = vi.fn().mockReturnValue({ result: 'bySuccess' });
+    const failureRule = vi.fn().mockReturnValue({ error: 'byFailure' });
+
+    update(query, {
+      on: mutation,
+      by: { success: successRule, failure: failureRule },
+    });
+
+    const scope = fork();
+
+    // success run
+    await allSettled(mutation.start, { scope, params: 1 });
+    expect(successRule).toBeCalledWith(
+      expect.objectContaining({
+        mutation: { result: 'mutation result', params: 1 },
+      })
+    );
+    expect(successRule).toBeCalledWith(
+      expect.objectContaining({
+        mutation: { result: 'mutation result', params: 1 },
+      })
+    );
+
+    // failed run
+    await allSettled(mutation.start, { scope, params: 2 });
+    expect(failureRule).toBeCalledWith(
+      expect.objectContaining({
+        mutation: { error: 'mutation failure', params: 2 },
+      })
+    );
+    expect(failureRule).toBeCalledWith(
+      expect.objectContaining({
+        mutation: { error: 'mutation failure', params: 2 },
+      })
+    );
+  });
 });

@@ -102,7 +102,7 @@ export function update<
           source: $queryState,
           fn: (query, { result, params }) => ({
             query,
-            mutation: { result, params },
+            mutation: { result, params: params ?? null },
           }),
         }),
       }),
@@ -124,7 +124,7 @@ export function update<
             source: $queryState,
             fn: (query, { error, params }) => ({
               query,
-              mutation: { error, params },
+              mutation: { error, params: params ?? null },
             }),
           }),
         }),
@@ -187,22 +187,24 @@ export function update<
 function queryState<Q extends Query<any, any, any, any>>(
   query: Q
 ): Store<QueryState<Q>> {
+  const $latestParams = createStore(null, { serialize: 'ignore' }).on(
+    query.finished.finally,
+    (_, { params }) => params
+  );
+
   return combine(
     {
       result: query.$data,
-      params: createStore(null, { serialize: 'ignore' }).on(
-        query.finished.finally,
-        (_, { params }) => params
-      ),
+      params: $latestParams,
       error: query.$error,
       failed: query.$failed,
     },
     ({ result, params, error, failed }): QueryState<Q> => {
-      if (!params) {
+      if (!result && !error) {
         return null;
       }
 
-      return failed ? { error, params } : { result, params };
+      return failed ? { error, params: params! } : { result, params: params! };
     }
   );
 }
