@@ -4,15 +4,11 @@ Farfetched is under development now, before the first stable release we are goin
 
 ## The next release
 
-### v.0.6
-
-- _Query_ and _Mutation_ cloning
-
-## Future releases
-
 ### v.0.7
 
 - DevTools interface
+
+## Future releases
 
 ### v.0.8
 
