@@ -15,7 +15,7 @@
 - e52935e: Do not stop _Query_ after trying to `cache` entry with invalid key
 - 41096d5: Decreased number of cache misses
 - d32d69f: Skip in-flight _Query_ and _Mutation_ while disabling
-- 41096d5: Fixed bug with trying to cache unserializable params https://github.com/igorkamyshev/farfetched/issues/156
+- 41096d5: Do not try to serialize unserializable params during `cache`
 
 ## 0.4.1
 
