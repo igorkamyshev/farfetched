@@ -102,6 +102,7 @@ export default withMermaid(
                     text: 'Dependent Queries',
                     link: '/tutorial/dependent_queries',
                   },
+                  { text: 'Update Query on Mutation', link: '/tutorial/update_query' },
                   { text: 'Retries', link: '/tutorial/retries' },
                   { text: 'Caching', link: '/tutorial/caching' },
                 ],
