@@ -146,11 +146,24 @@ export function createHeadlessQuery<
     ],
   });
 
+  // -- Protocols --
+
+  const unitShape = () => ({
+    data: $data,
+    error: $error,
+    stale: $stale,
+    pending: operation.$pending,
+    start: operation.start,
+  });
+
+  // -- Public API --
+
   return {
     $data,
     $error,
     $stale,
     reset,
     ...operation,
+    '@@unitShape': unitShape,
   };
 }

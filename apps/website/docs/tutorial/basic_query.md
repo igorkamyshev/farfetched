@@ -98,19 +98,21 @@ const Character = () => {
     </Suspense>
   );
 };
+
+Read more in [Solid-specific](/tutorial/solid/) tutorial.
 ```
 
 :::
 
 ::: details React
 
-In React, you can use [`useQuery`](/api/ui/react) hook to subscribe on [Query](/api/primitives/query) and get its data:
+In React, you can use [`useUnit`](https://effector.dev/docs/api/effector-react/useUnit) hook to subscribe on [Query](/api/primitives/query) and get its data:
 
 ```tsx
-import { useQuery } from '@farfetched/react';
+import { useUnit } from 'effector-react';
 
 const Character = () => {
-  const { data: character } = useQuery(characterQuery);
+  const { data: character } = useUnit(characterQuery);
 
   if (!character) {
     return <div>Loading...</div>;
@@ -124,6 +126,8 @@ const Character = () => {
   );
 };
 ```
+
+Read more in [React-specific](/tutorial/react/) tutorial.
 
 :::
 

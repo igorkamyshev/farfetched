@@ -175,6 +175,7 @@ export function createRemoteOperation<
       result,
       meta: { stopErrorPropagation: false, isFreshData: true },
     }),
+    filter: $enabled,
     target: fillData,
   });
 
@@ -186,6 +187,7 @@ export function createRemoteOperation<
       params,
       meta: { stopErrorPropagation: false, isFreshData: true },
     }),
+    filter: $enabled,
     target: finished.failure,
   });
 
@@ -255,6 +257,21 @@ export function createRemoteOperation<
       meta,
     }),
     target: finished.failure,
+  });
+
+  // Emit skip for disabling in-flight operation
+  sample({
+    clock: $enabled.updates,
+    source: start,
+    filter: not($enabled),
+    fn: (params) => ({
+      params,
+      meta: {
+        stopErrorPropagation: false,
+        isFreshData: false,
+      },
+    }),
+    target: finished.skip,
   });
 
   // -- Send finally --

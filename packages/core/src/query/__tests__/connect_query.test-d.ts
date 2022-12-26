@@ -3,6 +3,7 @@ import { describe, test, expectTypeOf } from 'vitest';
 
 import { createQuery } from '../create_query';
 import { connectQuery } from '../connect_query';
+import { Query } from '../type';
 
 describe('connectQuery', () => {
   test('correct source inference with complex types', () => {
@@ -87,7 +88,6 @@ describe('connectQuery', () => {
     */
     connectQuery({
       source: getItemsQuery,
-      target: getAnotherQuery,
       fn(sources) {
         expectTypeOf(sources.result).toEqualTypeOf<ItemsT>();
         // @ts-expect-error invalid type
@@ -99,10 +99,11 @@ describe('connectQuery', () => {
           },
         };
       },
+      target: getAnotherQuery,
     });
   });
 
-  test('wants fn when not voidtarget', () => {
+  test('wants fn when not void target', () => {
     const query1 = createQuery({
       handler: async (_: void) => ({
         id: 1,
@@ -128,6 +129,47 @@ describe('connectQuery', () => {
         query2,
       },
       target: queryTarget,
+    });
+  });
+
+  test('passes params types from source queries', () => {
+    const languageQuery = {} as Query<string[], string, unknown>;
+    const countryQuery = {} as Query<number[], string[], unknown>;
+
+    const someTargetQuery = {} as Query<unknown, unknown, unknown>;
+
+    connectQuery({
+      source: {
+        language: languageQuery,
+        country: countryQuery,
+      },
+      fn: ({ language, country }) => {
+        expectTypeOf(language.params).toEqualTypeOf<string[]>();
+        expectTypeOf(language.result).toEqualTypeOf<string>();
+
+        expectTypeOf(country.params).toEqualTypeOf<number[]>();
+        expectTypeOf(country.result).toEqualTypeOf<string[]>();
+
+        return { params: null as unknown };
+      },
+      target: someTargetQuery,
+    });
+  });
+
+  test('passes params types from single source query', () => {
+    const languageQuery = {} as Query<string[], string, unknown>;
+
+    const someTargetQuery = {} as Query<unknown, unknown, unknown>;
+
+    connectQuery({
+      source: languageQuery,
+      fn: (language) => {
+        expectTypeOf(language.params).toEqualTypeOf<string[]>();
+        expectTypeOf(language.result).toEqualTypeOf<string>();
+
+        return { params: null as unknown };
+      },
+      target: someTargetQuery,
     });
   });
 });

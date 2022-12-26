@@ -21,6 +21,10 @@ import { Validator } from '../validation/type';
 
 // -- Shared
 
+type ConcurrencyConfig = {
+  strategy?: 'TAKE_EVERY' | 'TAKE_FIRST' | 'TAKE_LATEST';
+};
+
 type RequestConfig<Params, BodySource, QuerySource, HeadersSource, UrlSource> =
   {
     url: SourcedField<Params, string, UrlSource>;
@@ -50,6 +54,7 @@ interface BaseJsonQueryConfigNoParams<
     HeadersSource,
     UrlSource
   >;
+  concurrency?: ConcurrencyConfig;
 }
 
 interface BaseJsonQueryConfigWithParams<
@@ -68,6 +73,7 @@ interface BaseJsonQueryConfigWithParams<
     HeadersSource,
     UrlSource
   >;
+  concurrency?: ConcurrencyConfig;
 }
 
 // -- Overloads
@@ -315,7 +321,7 @@ export function createJsonQuery(config: any) {
   // Basement
   const requestFx = createJsonApiRequest({
     request: { method: config.request.method, credentials: 'same-origin' },
-    concurrency: { strategy: 'TAKE_LATEST' },
+    concurrency: { strategy: config.concurrency?.strategy ?? 'TAKE_LATEST' },
   });
 
   // Connections

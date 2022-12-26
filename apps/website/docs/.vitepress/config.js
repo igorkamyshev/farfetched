@@ -102,6 +102,10 @@ export default withMermaid(
                     text: 'Dependent Queries',
                     link: '/tutorial/dependent_queries',
                   },
+                  {
+                    text: 'Update Query on Mutation',
+                    link: '/tutorial/update_query',
+                  },
                   { text: 'Retries', link: '/tutorial/retries' },
                   { text: 'Caching', link: '/tutorial/caching' },
                 ],
@@ -119,6 +123,26 @@ export default withMermaid(
                   },
                 ],
               },
+            ],
+          },
+          {
+            text: 'Solid',
+            collapsible: true,
+            collapsed: true,
+            items: [
+              { text: 'Get started', link: '/tutorial/solid/' },
+              { text: 'Suspense', link: '/tutorial/solid/suspense' },
+              { text: 'SSR and Testing', link: '/tutorial/solid/scope' },
+            ],
+          },
+          {
+            text: 'React',
+            collapsible: true,
+            collapsed: true,
+            items: [
+              { text: 'Get started', link: '/tutorial/react/' },
+              { text: 'Suspense', link: '/tutorial/react/suspense' },
+              { text: 'SSR and Testing', link: '/tutorial/react/scope' },
             ],
           },
         ],
@@ -155,6 +179,7 @@ export default withMermaid(
             text: 'Operators',
             items: [
               { text: 'connectQuery', link: '/api/operators/connect_query' },
+              { text: 'udpate', link: '/api/operators/update' },
               { text: 'retry', link: '/api/operators/retry' },
               { text: 'cache', link: '/api/operators/cache' },
             ],
@@ -278,7 +303,8 @@ export default withMermaid(
             text: 'Releases',
             collapsible: false,
             items: [
-              { text: 'v0.4 Cleanup', link: '/releases/0-4' },
+              { text: 'v0.5 Chew Lan', link: '/releases/0-5' },
+              { text: 'v0.4', link: '/releases/0-4' },
               { text: 'v0.3 Sirinat', link: '/releases/0-3' },
               { text: 'v0.2 Laem Promthep', link: '/releases/0-2' },
               { text: 'v0.1 Samet Nangshe', link: '/releases/0-1' },
