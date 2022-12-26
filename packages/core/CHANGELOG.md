@@ -1,5 +1,22 @@
 # @farfetched/core
 
+## 0.5.0
+
+### Minor Changes
+
+- 57abab2: Add config `concurrency.strategy` for `createJsonQuery` factory
+- dcbdcaa: Support more formats in _Time_
+- e914ba2: Add operator `update` to connect _Query_ and _Mutation_
+- 127f78a: Pass params of source _Queries_ to `fn` in `connectQuery`
+- e0802dd: Support `@@unitShape` protocol of Effector
+
+### Patch Changes
+
+- e52935e: Do not stop _Query_ after trying to `cache` entry with invalid key
+- 41096d5: Decreased number of cache misses
+- d32d69f: Skip in-flight _Query_ and _Mutation_ while disabling
+- 41096d5: Fixed bug with trying to cache unserializable params https://github.com/igorkamyshev/farfetched/issues/156
+
 ## 0.4.1
 
 ### Patch Changes

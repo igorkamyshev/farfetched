@@ -1,5 +1,11 @@
 # @farfetched/react
 
+## 0.5.0
+
+### Minor Changes
+
+- e0802dd: Deprecate `@farfetched/react` in favour of `@@unitShape` protocol
+
 ## 0.4.1
 
 ## 0.4.0
