@@ -5,35 +5,39 @@ import { characterQuery, characterRoute } from '../../entities/character';
 import { episodeListQuery } from '../../entities/episode';
 import { locationQuery } from '../../entities/location';
 import { urlToId } from '../../shared/id';
+import { TUrl } from '../../shared/url';
 
 const currentCharacterQuery = attachOperation(characterQuery);
-
-const originQuery = attachOperation(locationQuery);
+const currentLocationQuery = attachOperation(locationQuery, {
+  mapParams: (url: TUrl) => ({ id: urlToId(url) }),
+});
+const originQuery = attachOperation(locationQuery, {
+  mapParams: (url: TUrl) => ({ id: urlToId(url) }),
+});
+const characterEpisodesQuery = attachOperation(episodeListQuery, {
+  mapParams: (urls: TUrl[]) => ({ ids: urls.map(urlToId) }),
+});
 
 connectQuery({
   source: characterQuery,
   fn({ result: character }) {
-    return { params: { id: urlToId(character.origin.url) } };
+    return { params: character.origin.url };
   },
   target: originQuery,
 });
 
-const currentLocationQuery = attachOperation(locationQuery);
-
 connectQuery({
   source: characterQuery,
   fn({ result: character }) {
-    return { params: { id: urlToId(character.location.url) } };
+    return { params: character.location.url };
   },
   target: currentLocationQuery,
 });
 
-const characterEpisodesQuery = attachOperation(episodeListQuery);
-
 connectQuery({
   source: characterQuery,
   fn({ result: character }) {
-    return { params: { ids: character.episode.map(urlToId) } };
+    return { params: character.episode };
   },
   target: characterEpisodesQuery,
 });

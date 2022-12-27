@@ -4,15 +4,17 @@ import { sample } from 'effector';
 import { characterListQuery } from '../../entities/character';
 import { episodeQuery, episodeRoute } from '../../entities/episode';
 import { urlToId } from '../../shared/id';
+import { TUrl } from '../../shared/url';
 
-const cuurentEpisodeQuery = attachOperation(episodeQuery);
-
-const charactersInEpisodeQuery = attachOperation(characterListQuery);
+const curentEpisodeQuery = attachOperation(episodeQuery);
+const charactersInEpisodeQuery = attachOperation(characterListQuery, {
+  mapParams: (urls: TUrl[]) => ({ ids: urls.map(urlToId) }),
+});
 
 connectQuery({
-  source: cuurentEpisodeQuery,
+  source: curentEpisodeQuery,
   fn({ result: episode }) {
-    return { params: { ids: episode.characters.map(urlToId) } };
+    return { params: episode.characters };
   },
   target: charactersInEpisodeQuery,
 });
@@ -22,7 +24,7 @@ sample({
   fn({ params }) {
     return { id: params.episodeId };
   },
-  target: cuurentEpisodeQuery.start,
+  target: curentEpisodeQuery.start,
 });
 
-export { episodeRoute, cuurentEpisodeQuery, charactersInEpisodeQuery };
+export { episodeRoute, curentEpisodeQuery, charactersInEpisodeQuery };

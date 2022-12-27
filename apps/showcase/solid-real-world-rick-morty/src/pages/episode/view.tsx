@@ -3,10 +3,10 @@ import { Link } from 'atomic-router-solid';
 import { For, Show, Suspense } from 'solid-js';
 
 import { characterRoute } from '../../entities/character';
-import { charactersInEpisodeQuery, cuurentEpisodeQuery } from './model';
+import { charactersInEpisodeQuery, curentEpisodeQuery } from './model';
 
 function EpisodePage() {
-  const [episode] = createQueryResource(cuurentEpisodeQuery);
+  const [episode] = createQueryResource(curentEpisodeQuery);
   const [charactersInEpisode] = createQueryResource(charactersInEpisodeQuery);
 
   return (
