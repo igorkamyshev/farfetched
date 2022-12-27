@@ -1,22 +1,9 @@
-import { createJsonQuery, declareParams } from '@farfetched/core';
-import { runtypeContract } from '@farfetched/runtypes';
+import { attachOperation } from '@farfetched/core';
 import { sample } from 'effector';
-import { Array, Record } from 'runtypes';
 
-import { Episode, episodeListRoute, episodeUrl } from '../../entities/episode';
-import { Info } from '../../shared/info';
+import { episodeListRoute, episodePageQuery } from '../../entities/episode';
 
-const episodesQuery = createJsonQuery({
-  params: declareParams<{ page: number }>(),
-  request: {
-    url: episodeUrl(),
-    query: ({ page }) => ({ page }),
-    method: 'GET',
-  },
-  response: {
-    contract: runtypeContract(Record({ info: Info, results: Array(Episode) })),
-  },
-});
+const episodesQuery = attachOperation(episodePageQuery);
 
 const $currentPage = episodeListRoute.$params.map((params) => params.page ?? 1);
 

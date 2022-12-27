@@ -3,10 +3,10 @@ import { Link } from 'atomic-router-solid';
 import { For, Show, Suspense } from 'solid-js';
 
 import { characterRoute } from '../../entities/character';
-import { locationQuery, residentsQuery } from './model';
+import { currentLocationQuery, residentsQuery } from './model';
 
 function LocationPage() {
-  const [location] = createQueryResource(locationQuery);
+  const [location] = createQueryResource(currentLocationQuery);
   const [residents] = createQueryResource(residentsQuery);
 
   return (

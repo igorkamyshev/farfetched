@@ -1,44 +1,28 @@
-import { connectQuery, createJsonQuery, declareParams } from '@farfetched/core';
-import { runtypeContract } from '@farfetched/runtypes';
+import { attachOperation, connectQuery } from '@farfetched/core';
 import { sample } from 'effector';
-import { Array } from 'runtypes';
 
-import { Character, characterUrl } from '../../entities/character';
-import { Location, locationRoute, locationUrl } from '../../entities/location';
-import { TId, urlToId } from '../../shared/id';
+import { characterListQuery } from '../../entities/character';
+import { locationQuery, locationRoute } from '../../entities/location';
+import { urlToId } from '../../shared/id';
 
-const locationQuery = createJsonQuery({
-  params: declareParams<{ id: TId }>(),
-  request: {
-    url: ({ id }) => locationUrl({ id }),
-    method: 'GET',
-  },
-  response: { contract: runtypeContract(Location) },
-});
+const currentLocationQuery = attachOperation(locationQuery);
 
-const residentsQuery = createJsonQuery({
-  params: declareParams<{ ids: TId[] }>(),
-  request: {
-    url: ({ ids }) => characterUrl({ ids }),
-    method: 'GET',
-  },
-  response: { contract: runtypeContract(Array(Character)) },
-});
+const residentsQuery = attachOperation(characterListQuery);
 
 sample({
   clock: locationRoute.opened,
   fn({ params }) {
     return { id: params.locationId };
   },
-  target: locationQuery.start,
+  target: currentLocationQuery.start,
 });
 
 connectQuery({
-  source: locationQuery,
+  source: currentLocationQuery,
   fn({ result: location }) {
     return { params: { ids: location.residents.map(urlToId) } };
   },
   target: residentsQuery,
 });
 
-export { locationQuery, residentsQuery };
+export { currentLocationQuery, residentsQuery };

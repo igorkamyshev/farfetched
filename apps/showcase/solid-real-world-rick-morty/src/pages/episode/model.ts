@@ -1,32 +1,16 @@
-import { connectQuery, createJsonQuery, declareParams } from '@farfetched/core';
-import { runtypeContract } from '@farfetched/runtypes';
+import { attachOperation, connectQuery } from '@farfetched/core';
 import { sample } from 'effector';
-import { Array } from 'runtypes';
 
-import { Character, characterUrl } from '../../entities/character';
-import { Episode, episodeRoute, episodeUrl } from '../../entities/episode';
-import { TId, urlToId } from '../../shared/id';
+import { characterListQuery } from '../../entities/character';
+import { episodeQuery, episodeRoute } from '../../entities/episode';
+import { urlToId } from '../../shared/id';
 
-const episodeQuery = createJsonQuery({
-  params: declareParams<{ id: TId }>(),
-  request: {
-    url: ({ id }) => episodeUrl({ id }),
-    method: 'GET',
-  },
-  response: { contract: runtypeContract(Episode) },
-});
+const cuurentEpisodeQuery = attachOperation(episodeQuery);
 
-const charactersInEpisodeQuery = createJsonQuery({
-  params: declareParams<{ ids: TId[] }>(),
-  request: {
-    url: ({ ids }) => characterUrl({ ids }),
-    method: 'GET',
-  },
-  response: { contract: runtypeContract(Array(Character)) },
-});
+const charactersInEpisodeQuery = attachOperation(characterListQuery);
 
 connectQuery({
-  source: episodeQuery,
+  source: cuurentEpisodeQuery,
   fn({ result: episode }) {
     return { params: { ids: episode.characters.map(urlToId) } };
   },
@@ -38,7 +22,7 @@ sample({
   fn({ params }) {
     return { id: params.episodeId };
   },
-  target: episodeQuery.start,
+  target: cuurentEpisodeQuery.start,
 });
 
-export { episodeRoute, episodeQuery, charactersInEpisodeQuery };
+export { episodeRoute, cuurentEpisodeQuery, charactersInEpisodeQuery };
