@@ -200,10 +200,6 @@ export default withMermaid(
                 text: 'UI libraries',
                 items: [
                   {
-                    text: 'React',
-                    link: '/api/ui/react',
-                  },
-                  {
                     text: 'Solid',
                     link: '/api/ui/solid',
                   },
