@@ -1,6 +1,6 @@
 {
   "name": "@farfetched/core",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "type": "commonjs",
   "peerDependencies": {
     "effector": "^22.4.0"
