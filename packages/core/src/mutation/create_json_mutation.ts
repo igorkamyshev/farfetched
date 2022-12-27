@@ -1,4 +1,5 @@
-import { attach, createEvent, sample } from 'effector';
+import { attach, createEvent, Event, sample } from 'effector';
+
 import { Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
 import { InvalidDataError } from '../errors/type';
@@ -19,6 +20,10 @@ import {
 import { Mutation } from './type';
 
 // -- Shared --
+
+type ConcurrencyConfig = {
+  abort?: Event<void>;
+};
 
 type RequestConfig<Params, BodySource, QuerySource, HeadersSource, UrlSource> =
   {
@@ -49,6 +54,7 @@ interface BaseJsonMutationConfigNoParams<
     HeadersSource,
     UrlSource
   >;
+  concurrency?: ConcurrencyConfig;
 }
 
 interface BaseJsonMutationConfigWithParams<
@@ -67,6 +73,7 @@ interface BaseJsonMutationConfigWithParams<
     HeadersSource,
     UrlSource
   >;
+  concurrency?: ConcurrencyConfig;
 }
 
 // -- Overloads
@@ -199,6 +206,7 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
     request: { method: config.request.method, credentials: 'same-origin' },
     concurrency: { strategy: 'TAKE_EVERY' },
     response: { status: config.response.status },
+    abort: { clock: config.concurrency?.abort },
   });
 
   const headlessMutation = createHeadlessMutation({

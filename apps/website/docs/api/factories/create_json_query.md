@@ -35,6 +35,7 @@ Config fields:
     - `TAKE_EVERY` execute every request
     - `TAKE_FIRST` skip all requests if there is a pending one
     - `TAKE_LATEST` (**default value**) cancel all pending requests and execute the latest one
+  - `abort?`: [_Event_](https://effector.dev/docs/api/effector/event) after calling which all in-flight requests will be aborted
 
 ## Showcases
 
