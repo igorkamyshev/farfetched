@@ -7,9 +7,12 @@ import { NodeHtmlMarkdown } from 'node-html-markdown';
 import { parseSemVer, compareSemVer } from 'semver-parser';
 import { resolve } from 'node:path';
 
-const files = await promisify(glob)('packages/*/CHANGELOG.md', {
-  absolute: true,
-});
+const files = await promisify(glob)(
+  '{packages,deleted_packages}/*/CHANGELOG.md',
+  {
+    absolute: true,
+  }
+);
 
 const changelogs = await Promise.all(
   files.map((file) =>
