@@ -3,9 +3,9 @@
 <img align="right" width="174" height="180" title="Farfetched logotype"
      src="./apps/website/docs/public/logo.svg">
 
-![minified and gzipped size badge](https://badgen.net/bundlephobia/minzip/@farfetched/core)
-
 The advanced data fetching tool for web applications
+
+![minified and gzipped size badge](https://badgen.net/bundlephobia/minzip/@farfetched/core)
 
 ## Quick Features
 
