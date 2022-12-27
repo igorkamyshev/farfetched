@@ -4,6 +4,7 @@ import { Mutation, MutationSymbol } from './type';
 import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
+import { attach, Store } from 'effector';
 
 export interface SharedMutationFactoryConfig {
   name?: string;
@@ -18,21 +19,19 @@ export function createHeadlessMutation<
   Error,
   MapDataSource = void,
   ValidationSource = void
->({
-  name,
-  enabled,
-  contract,
-  validate,
-  mapData,
-}: SharedMutationFactoryConfig & {
-  contract: Contract<Data, ContractData>;
-  validate?: Validator<ContractData, Params, ValidationSource>;
-  mapData: DynamicallySourcedField<
-    { result: ContractData; params: Params },
-    MappedData,
-    MapDataSource
-  >;
-}): Mutation<Params, MappedData, Error | InvalidDataError> {
+>(
+  config: SharedMutationFactoryConfig & {
+    contract: Contract<Data, ContractData>;
+    validate?: Validator<ContractData, Params, ValidationSource>;
+    mapData: DynamicallySourcedField<
+      { result: ContractData; params: Params },
+      MappedData,
+      MapDataSource
+    >;
+  }
+): Mutation<Params, MappedData, Error | InvalidDataError> {
+  const { name, enabled, contract, validate, mapData } = config;
+
   const mutationName = name ?? 'unnamed';
 
   const operation = createRemoteOperation<
@@ -57,12 +56,36 @@ export function createHeadlessMutation<
 
   // -- Protocols --
 
-  const unitShape = () => ({
+  const unitShapeProtocol = () => ({
     pending: operation.$pending,
     start: operation.start,
   });
 
+  // Experimental API, won't be exposed as protocol for now
+  const attachProtocol = <NewParams, Source>({
+    source,
+    mapParams,
+  }: {
+    source: Store<Source>;
+    mapParams: (params: NewParams, source: Source) => Params;
+  }) => {
+    const attachedMutation = createHeadlessMutation(config);
+
+    const originalHandler = attach({
+      source,
+      mapParams,
+      effect: operation.__.executeFx,
+    });
+    attachedMutation.__.executeFx.use(originalHandler);
+
+    return attachedMutation;
+  };
+
   // -- Public API --
 
-  return { ...operation, '@@unitShape': unitShape };
+  return {
+    ...operation,
+    __: { ...operation.__, experimentalAPI: { attach: attachProtocol } },
+    '@@unitShape': unitShapeProtocol,
+  };
 }

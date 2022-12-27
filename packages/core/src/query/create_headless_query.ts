@@ -48,7 +48,7 @@ export function createHeadlessQuery<
   } & SharedQueryFactoryConfig<MappedData, Initial>
 ): Query<Params, MappedData, Error | InvalidDataError, Initial> {
   const {
-    initialData,
+    initialData: initialDataRaw,
     contract,
     mapData,
     enabled,
@@ -59,6 +59,8 @@ export function createHeadlessQuery<
   } = config;
 
   const queryName = name ?? 'unnamed';
+
+  const initialData = initialDataRaw ?? (null as unknown as Initial);
 
   const operation = createRemoteOperation<
     Params,
@@ -74,7 +76,7 @@ export function createHeadlessQuery<
     kind: QuerySymbol,
     serialize: serializationForSideStore(serialize),
     enabled,
-    meta: { serialize },
+    meta: { serialize, initialData },
     contract,
     validate,
     mapData,
@@ -84,14 +86,11 @@ export function createHeadlessQuery<
   const reset = createEvent();
 
   // -- Main stores --
-  const $data = createStore<MappedData | Initial>(
-    initialData ?? (null as unknown as Initial),
-    {
-      sid: `ff.${queryName}.$data`,
-      name: `${queryName}.$data`,
-      serialize,
-    }
-  );
+  const $data = createStore<MappedData | Initial>(initialData, {
+    sid: `ff.${queryName}.$data`,
+    name: `${queryName}.$data`,
+    serialize,
+  });
   const $error = createStore<Error | InvalidDataError | null>(null, {
     sid: `ff.${queryName}.$error`,
     name: `${queryName}.$error`,
@@ -155,6 +154,7 @@ export function createHeadlessQuery<
     start: operation.start,
   });
 
+  // Experimental API, won't be exposed as protocol for now
   const attachProtocol = <NewParams, Source>({
     source,
     mapParams,
@@ -171,7 +171,7 @@ export function createHeadlessQuery<
     });
     attachedQuery.__.executeFx.use(originalHandler);
 
-    return attachedQuery as any;
+    return attachedQuery;
   };
 
   // -- Public API --
@@ -182,7 +182,10 @@ export function createHeadlessQuery<
     $stale,
     reset,
     ...operation,
+    __: {
+      ...operation.__,
+      experimentalAPI: { attach: attachProtocol },
+    },
     '@@unitShape': unitShapeProtocol,
-    '@@attach': attachProtocol,
   };
 }

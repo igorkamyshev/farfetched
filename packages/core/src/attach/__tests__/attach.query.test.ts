@@ -2,6 +2,7 @@ import { allSettled, createStore, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
 import { createQuery } from '../../query/create_query';
+import { attachOperation } from '../attach';
 
 describe('attach for query', () => {
   test('execute original handler as handler', async () => {
@@ -10,10 +11,7 @@ describe('attach for query', () => {
       .mockResolvedValue('data from original query');
 
     const originalQuery = createQuery({ handler: originalHandler });
-    const attachedQuery = originalQuery['@@attach']({
-      source: createStore(null),
-      mapParams: (v: void) => v,
-    });
+    const attachedQuery = attachOperation(originalQuery);
 
     const scope = fork();
 
@@ -36,15 +34,8 @@ describe('attach for query', () => {
 
     const originalQuery = createQuery({ handler: originalHandler });
 
-    const firstQuery = originalQuery['@@attach']({
-      source: createStore(null),
-      mapParams: (v: void) => v,
-    });
-
-    const secondQuery = originalQuery['@@attach']({
-      source: createStore(null),
-      mapParams: (v: void) => v,
-    });
+    const firstQuery = attachOperation(originalQuery);
+    const secondQuery = attachOperation(originalQuery);
 
     const scope = fork();
 
@@ -61,8 +52,7 @@ describe('attach for query', () => {
       .mockResolvedValue('data from original query');
 
     const originalQuery = createQuery({ handler: originalHandler });
-    const attachedQuery = originalQuery['@@attach']({
-      source: createStore(null),
+    const attachedQuery = attachOperation(originalQuery, {
       mapParams: (v: number) => v * 2,
     });
 
@@ -85,7 +75,7 @@ describe('attach for query', () => {
     const $source = createStore(1);
 
     const originalQuery = createQuery({ handler: originalHandler });
-    const attachedQuery = originalQuery['@@attach']({
+    const attachedQuery = attachOperation(originalQuery, {
       source: $source,
       mapParams: (v: number, s) => s,
     });
