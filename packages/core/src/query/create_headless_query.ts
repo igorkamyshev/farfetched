@@ -1,4 +1,4 @@
-import { createStore, sample, createEvent, Store } from 'effector';
+import { createStore, sample, createEvent, Store, attach } from 'effector';
 
 import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
@@ -34,31 +34,30 @@ export function createHeadlessQuery<
   MapDataSource,
   ValidationSource,
   Initial = null
->({
-  initialData,
-  contract,
-  mapData,
-  enabled,
-  validate,
-  name,
-  serialize,
-  sources,
-}: {
-  initialData?: Initial;
-  contract: Contract<Response, ContractData>;
-  mapData: DynamicallySourcedField<
-    { result: ContractData; params: Params },
-    MappedData,
-    MapDataSource
-  >;
-  validate?: Validator<ContractData, Params, ValidationSource>;
-  sources?: Array<Store<unknown>>;
-} & SharedQueryFactoryConfig<MappedData, Initial>): Query<
-  Params,
-  MappedData,
-  Error | InvalidDataError,
-  Initial
-> {
+>(
+  config: {
+    initialData?: Initial;
+    contract: Contract<Response, ContractData>;
+    mapData: DynamicallySourcedField<
+      { result: ContractData; params: Params },
+      MappedData,
+      MapDataSource
+    >;
+    validate?: Validator<ContractData, Params, ValidationSource>;
+    sources?: Array<Store<unknown>>;
+  } & SharedQueryFactoryConfig<MappedData, Initial>
+): Query<Params, MappedData, Error | InvalidDataError, Initial> {
+  const {
+    initialData,
+    contract,
+    mapData,
+    enabled,
+    validate,
+    name,
+    serialize,
+    sources,
+  } = config;
+
   const queryName = name ?? 'unnamed';
 
   const operation = createRemoteOperation<
@@ -148,13 +147,32 @@ export function createHeadlessQuery<
 
   // -- Protocols --
 
-  const unitShape = () => ({
+  const unitShapeProtocol = () => ({
     data: $data,
     error: $error,
     stale: $stale,
     pending: operation.$pending,
     start: operation.start,
   });
+
+  const attachProtocol = <NewParams, Source>({
+    source,
+    mapParams,
+  }: {
+    source: Store<Source>;
+    mapParams: (params: NewParams, source: Source) => Params;
+  }) => {
+    const attachedQuery = createHeadlessQuery(config);
+
+    const originalHandler = attach({
+      source,
+      mapParams,
+      effect: operation.__.executeFx,
+    });
+    attachedQuery.__.executeFx.use(originalHandler);
+
+    return attachedQuery as any;
+  };
 
   // -- Public API --
 
@@ -164,6 +182,7 @@ export function createHeadlessQuery<
     $stale,
     reset,
     ...operation,
-    '@@unitShape': unitShape,
+    '@@unitShape': unitShapeProtocol,
+    '@@attach': attachProtocol,
   };
 }

@@ -41,6 +41,10 @@ export interface Query<Params, Data, Error, InitialData = null>
     pending: Store<boolean>;
     start: Event<Params>;
   };
+  '@@attach': <NewParams, Source>(config: {
+    source: Store<Source>;
+    mapParams: (params: NewParams, source: Source) => Params;
+  }) => Query<NewParams, Data, Error, InitialData>;
 }
 
 export function isQuery(value: any): value is Query<any, any, any> {
