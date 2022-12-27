@@ -1,6 +1,9 @@
 import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, createStore, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
+import { unknownContract } from '../../contract/unknown_contract';
+import { fetchFx } from '../../fetch/fetch';
+import { createJsonMutation } from '../../mutation/create_json_mutation';
 
 import { createMutation } from '../../mutation/create_mutation';
 import { attachOperation } from '../attach';
@@ -115,5 +118,23 @@ describe('attach for mutation', () => {
 
     expect(originalHandler).toBeCalledWith(11);
     expect(originalHandler).toBeCalledWith(55);
+  });
+
+  test('supports special factories', async () => {
+    const originalMutation = createJsonMutation({
+      request: { method: 'GET', url: 'https://api.salo.com' },
+      response: { contract: unknownContract },
+    });
+
+    const attachedMutation = attachOperation(originalMutation);
+
+    const fetchMock = vi.fn().mockRejectedValue(new Error('cannot'));
+
+    const scope = fork({ handlers: [[fetchFx, fetchMock]] });
+
+    await allSettled(attachedMutation.start, { scope });
+
+    expect(fetchMock).toBeCalledTimes(1);
+    expect(await fetchMock.mock.calls[0][0].url).toBe('https://api.salo.com/');
   });
 });

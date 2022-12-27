@@ -1,5 +1,8 @@
 import { allSettled, createStore, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
+import { unknownContract } from '../../contract/unknown_contract';
+import { fetchFx } from '../../fetch/fetch';
+import { createJsonQuery } from '../../query/create_json_query';
 
 import { createQuery } from '../../query/create_query';
 import { attachOperation } from '../attach';
@@ -92,5 +95,23 @@ describe('attach for query', () => {
 
     expect(originalHandler).toBeCalledWith(11);
     expect(originalHandler).toBeCalledWith(55);
+  });
+
+  test('supports special factories', async () => {
+    const originalQuery = createJsonQuery({
+      request: { method: 'GET', url: 'https://api.salo.com' },
+      response: { contract: unknownContract },
+    });
+
+    const attachedQuery = attachOperation(originalQuery);
+
+    const fetchMock = vi.fn().mockRejectedValue(new Error('cannot'));
+
+    const scope = fork({ handlers: [[fetchFx, fetchMock]] });
+
+    await allSettled(attachedQuery.start, { scope });
+
+    expect(fetchMock).toBeCalledTimes(1);
+    expect(await fetchMock.mock.calls[0][0].url).toBe('https://api.salo.com/');
   });
 });
