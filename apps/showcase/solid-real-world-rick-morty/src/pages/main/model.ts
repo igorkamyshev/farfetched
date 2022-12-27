@@ -8,7 +8,7 @@ import {
 
 const allCharactersQuery = attachOperation(characterPageQuery);
 
-// retry(allCharactersQuery, { times: 3, delay: exponentialDelay(50) });
+retry(allCharactersQuery, { times: 3, delay: exponentialDelay(50) });
 
 const $currentPage = characterListRoute.$params.map(
   (params) => params.page ?? 1
