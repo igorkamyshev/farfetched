@@ -179,7 +179,8 @@ export function update<
 
   sample({
     clock: refetchQuery,
-    target: query.start,
+    fn: (params) => ({ params }),
+    target: query.__.lowLevelAPI.resumeExecution,
   });
   sample({ clock: refetchQuery, fn: () => true, target: query.$stale });
 }
