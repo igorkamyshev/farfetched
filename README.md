@@ -1,5 +1,7 @@
 # Farfetched
 
+![minified and gzipped size badge](https://badgen.net/bundlephobia/minzip/@farfetched/core)
+
 <img align="right" width="174" height="180" title="Farfetched logotype"
      src="./apps/website/docs/public/logo.svg">
 
