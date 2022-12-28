@@ -1,70 +1,43 @@
-import { connectQuery, createJsonQuery, declareParams } from '@farfetched/core';
-import { runtypeContract } from '@farfetched/runtypes';
+import { attachOperation, connectQuery } from '@farfetched/core';
 import { sample } from 'effector';
-import { Array } from 'runtypes';
 
-import {
-  Character,
-  characterRoute,
-  characterUrl,
-} from '../../entities/character';
-import { Episode, episodeUrl } from '../../entities/episode';
-import { Location, locationUrl } from '../../entities/location';
-import { TId, urlToId } from '../../shared/id';
+import { characterQuery, characterRoute } from '../../entities/character';
+import { episodeListQuery } from '../../entities/episode';
+import { locationQuery } from '../../entities/location';
+import { urlToId } from '../../shared/id';
+import { TUrl } from '../../shared/url';
 
-const characterQuery = createJsonQuery({
-  params: declareParams<{ id: TId }>(),
-  request: {
-    url: ({ id }) => characterUrl({ id }),
-    method: 'GET',
-  },
-  response: { contract: runtypeContract(Character) },
+const currentCharacterQuery = attachOperation(characterQuery);
+const currentLocationQuery = attachOperation(locationQuery, {
+  mapParams: (url: TUrl) => ({ id: urlToId(url) }),
 });
-
-const originQuery = createJsonQuery({
-  params: declareParams<{ id: TId }>(),
-  request: { url: ({ id }) => locationUrl({ id }), method: 'GET' },
-  response: { contract: runtypeContract(Location) },
+const originQuery = attachOperation(locationQuery, {
+  mapParams: (url: TUrl) => ({ id: urlToId(url) }),
+});
+const characterEpisodesQuery = attachOperation(episodeListQuery, {
+  mapParams: (urls: TUrl[]) => ({ ids: urls.map(urlToId) }),
 });
 
 connectQuery({
   source: characterQuery,
   fn({ result: character }) {
-    return { params: { id: urlToId(character.origin.url) } };
+    return { params: character.origin.url };
   },
   target: originQuery,
 });
 
-const currentLocationQuery = createJsonQuery({
-  params: declareParams<{ id: TId }>(),
-  request: {
-    url: ({ id }) => locationUrl({ id }),
-    method: 'GET',
-  },
-  response: { contract: runtypeContract(Location) },
-});
-
 connectQuery({
   source: characterQuery,
   fn({ result: character }) {
-    return { params: { id: urlToId(character.location.url) } };
+    return { params: character.location.url };
   },
   target: currentLocationQuery,
 });
 
-const characterEpisodesQuery = createJsonQuery({
-  params: declareParams<{ ids: TId[] }>(),
-  request: {
-    url: ({ ids }) => episodeUrl({ ids }),
-    method: 'GET',
-  },
-  response: { contract: runtypeContract(Array(Episode)) },
-});
-
 connectQuery({
   source: characterQuery,
   fn({ result: character }) {
-    return { params: { ids: character.episode.map(urlToId) } };
+    return { params: character.episode };
   },
   target: characterEpisodesQuery,
 });
@@ -72,11 +45,11 @@ connectQuery({
 sample({
   clock: characterRoute.opened,
   fn: ({ params }) => ({ id: params.characterId }),
-  target: characterQuery.start,
+  target: currentCharacterQuery.start,
 });
 
 export {
-  characterQuery,
+  currentCharacterQuery,
   originQuery,
   currentLocationQuery,
   characterEpisodesQuery,

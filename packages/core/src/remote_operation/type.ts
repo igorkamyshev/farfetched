@@ -85,6 +85,12 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
       }>;
       resumeExecution: Event<{ params: Params }>;
     };
+    experimentalAPI?: {
+      attach: <Source, NewParams>(config: {
+        source: Store<Source>;
+        mapParams: (params: NewParams, source: Source) => Params;
+      }) => any;
+    };
   };
 }
 

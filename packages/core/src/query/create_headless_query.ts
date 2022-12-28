@@ -1,4 +1,4 @@
-import { createStore, sample, createEvent, Store } from 'effector';
+import { createStore, sample, createEvent, Store, attach } from 'effector';
 
 import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
@@ -34,34 +34,35 @@ export function createHeadlessQuery<
   MapDataSource,
   ValidationSource,
   Initial = null
->({
-  initialData,
-  contract,
-  mapData,
-  enabled,
-  validate,
-  name,
-  serialize,
-  sources,
-  paramsAreMeaningless,
-}: {
-  initialData?: Initial;
-  contract: Contract<Response, ContractData>;
-  mapData: DynamicallySourcedField<
-    { result: ContractData; params: Params },
-    MappedData,
-    MapDataSource
-  >;
-  validate?: Validator<ContractData, Params, ValidationSource>;
-  sources?: Array<Store<unknown>>;
-  paramsAreMeaningless?: boolean;
-} & SharedQueryFactoryConfig<MappedData, Initial>): Query<
-  Params,
-  MappedData,
-  Error | InvalidDataError,
-  Initial
-> {
+>(
+  config: {
+    initialData?: Initial;
+    contract: Contract<Response, ContractData>;
+    mapData: DynamicallySourcedField<
+      { result: ContractData; params: Params },
+      MappedData,
+      MapDataSource
+    >;
+    validate?: Validator<ContractData, Params, ValidationSource>;
+    sources?: Array<Store<unknown>>;
+    paramsAreMeaningless?: boolean;
+  } & SharedQueryFactoryConfig<MappedData, Initial>
+): Query<Params, MappedData, Error | InvalidDataError, Initial> {
+  const {
+    initialData: initialDataRaw,
+    contract,
+    mapData,
+    enabled,
+    validate,
+    name,
+    serialize,
+    sources,
+    paramsAreMeaningless,
+  } = config;
+
   const queryName = name ?? 'unnamed';
+
+  const initialData = initialDataRaw ?? (null as unknown as Initial);
 
   const operation = createRemoteOperation<
     Params,
@@ -77,7 +78,7 @@ export function createHeadlessQuery<
     kind: QuerySymbol,
     serialize: serializationForSideStore(serialize),
     enabled,
-    meta: { serialize },
+    meta: { serialize, initialData },
     contract,
     validate,
     mapData,
@@ -88,14 +89,11 @@ export function createHeadlessQuery<
   const reset = createEvent();
 
   // -- Main stores --
-  const $data = createStore<MappedData | Initial>(
-    initialData ?? (null as unknown as Initial),
-    {
-      sid: `ff.${queryName}.$data`,
-      name: `${queryName}.$data`,
-      serialize,
-    }
-  );
+  const $data = createStore<MappedData | Initial>(initialData, {
+    sid: `ff.${queryName}.$data`,
+    name: `${queryName}.$data`,
+    serialize,
+  });
   const $error = createStore<Error | InvalidDataError | null>(null, {
     sid: `ff.${queryName}.$error`,
     name: `${queryName}.$error`,
@@ -151,13 +149,33 @@ export function createHeadlessQuery<
 
   // -- Protocols --
 
-  const unitShape = () => ({
+  const unitShapeProtocol = () => ({
     data: $data,
     error: $error,
     stale: $stale,
     pending: operation.$pending,
     start: operation.start,
   });
+
+  // Experimental API, won't be exposed as protocol for now
+  const attachProtocol = <NewParams, Source>({
+    source,
+    mapParams,
+  }: {
+    source: Store<Source>;
+    mapParams: (params: NewParams, source: Source) => Params;
+  }) => {
+    const attachedQuery = createHeadlessQuery(config);
+
+    const originalHandler = attach({
+      source,
+      mapParams,
+      effect: operation.__.executeFx,
+    });
+    attachedQuery.__.executeFx.use(originalHandler);
+
+    return attachedQuery;
+  };
 
   // -- Public API --
 
@@ -167,6 +185,10 @@ export function createHeadlessQuery<
     $stale,
     reset,
     ...operation,
-    '@@unitShape': unitShape,
+    __: {
+      ...operation.__,
+      experimentalAPI: { attach: attachProtocol },
+    },
+    '@@unitShape': unitShapeProtocol,
   };
 }

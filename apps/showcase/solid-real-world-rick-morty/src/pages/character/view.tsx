@@ -4,7 +4,7 @@ import { Link } from 'atomic-router-solid';
 
 import { LocationDetails } from '../../entities/location';
 import {
-  characterQuery,
+  currentCharacterQuery,
   currentLocationQuery,
   originQuery,
   characterEpisodesQuery,
@@ -12,7 +12,7 @@ import {
 import { episodeRoute } from '../episode/model';
 
 function CharacterPage() {
-  const [character] = createQueryResource(characterQuery);
+  const [character] = createQueryResource(currentCharacterQuery);
   const [origin] = createQueryResource(originQuery);
   const [currentLocation] = createQueryResource(currentLocationQuery);
   const [episodes] = createQueryResource(characterEpisodesQuery);

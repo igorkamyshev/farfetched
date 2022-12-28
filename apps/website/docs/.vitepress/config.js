@@ -108,6 +108,10 @@ export default withMermaid(
                   },
                   { text: 'Retries', link: '/tutorial/retries' },
                   { text: 'Caching', link: '/tutorial/caching' },
+                  {
+                    text: 'Operation copying',
+                    link: '/tutorial/operation_copying',
+                  },
                 ],
               },
               {
@@ -182,6 +186,10 @@ export default withMermaid(
               { text: 'udpate', link: '/api/operators/update' },
               { text: 'retry', link: '/api/operators/retry' },
               { text: 'cache', link: '/api/operators/cache' },
+              {
+                text: 'attachOperation',
+                link: '/api/operators/attach_operation',
+              },
             ],
           },
           {

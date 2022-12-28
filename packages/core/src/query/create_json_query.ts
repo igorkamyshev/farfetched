@@ -382,7 +382,11 @@ export function createJsonQuery(config: any) {
     })
   );
 
-  sample({ clock: headlessQuery.start, target: internalStart, greedy: true });
+  sample({
+    clock: headlessQuery.__.executeFx,
+    target: internalStart,
+    greedy: true,
+  });
 
   return {
     ...headlessQuery,
