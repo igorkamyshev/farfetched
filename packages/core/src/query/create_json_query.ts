@@ -1,7 +1,7 @@
-import { attach, createEvent, Event, sample } from 'effector';
+import { attach, createEvent, Event, sample, type Json } from 'effector';
 
 import { Contract } from '../contract/type';
-import { createJsonApiRequest, Json } from '../fetch/json';
+import { createJsonApiRequest } from '../fetch/json';
 import { ApiRequestError, HttpMethod } from '../fetch/api';
 import {
   normalizeSourced,
