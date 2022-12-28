@@ -299,6 +299,7 @@ export default withMermaid(
               { text: 'Testing', link: '/statements/tests' },
               { text: 'Effector', link: '/statements/effector' },
               { text: 'TypeScript', link: '/statements/typescript' },
+              { text: 'Compile target', link: '/statements/compile_target' },
             ],
           },
         ],
