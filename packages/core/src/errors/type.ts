@@ -1,3 +1,5 @@
+import { type Json } from 'effector';
+
 export type FarfetchedError<T extends string> = {
   errorType: T;
   explanation: string;
@@ -28,7 +30,7 @@ export interface HttpError<Status extends number = number>
   extends FarfetchedError<typeof HTTP> {
   status: Status;
   statusText: string;
-  response: string | null;
+  response: string | Json | null;
 }
 
 export const NETWORK = 'NETWORK';

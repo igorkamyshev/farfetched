@@ -1,7 +1,6 @@
-import { createStore, Store } from 'effector';
 import { describe, test, expectTypeOf } from 'vitest';
 
-import { createJsonApiRequest, Json } from '../json';
+import { createJsonApiRequest } from '../json';
 
 describe('createJsonApiRequest request.body', () => {
   // Does not matter
