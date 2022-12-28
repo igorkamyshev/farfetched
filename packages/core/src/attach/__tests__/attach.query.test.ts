@@ -49,6 +49,45 @@ describe('attach for query', () => {
     expect(scope.getState(secondQuery.$data)).toBe('second response');
   });
 
+  test('attached queries do not overlap with error', async () => {
+    const err1 = new Error('cannot');
+    const err2 = new Error('can not');
+
+    const originalHandler = vi
+      .fn()
+      .mockResolvedValueOnce('first response')
+      .mockImplementationOnce(() => {
+        throw err1;
+      })
+      .mockImplementationOnce(() => {
+        throw err2;
+      });
+
+    const originalQuery = createQuery({ handler: originalHandler });
+
+    const firstQuery = attachOperation(originalQuery);
+    const secondQuery = attachOperation(originalQuery);
+    const thirdQuery = attachOperation(originalQuery);
+
+    const scope = fork();
+
+    await allSettled(firstQuery.start, { scope });
+    await allSettled(secondQuery.start, { scope });
+    await allSettled(thirdQuery.start, { scope });
+
+    expect(scope.getState(firstQuery.$data)).toBe('first response');
+    expect(scope.getState(firstQuery.$error)).toBe(null);
+    expect(scope.getState(firstQuery.$failed)).toBe(false);
+
+    expect(scope.getState(secondQuery.$error)).toBe(err1);
+    expect(scope.getState(secondQuery.$data)).toBe(null);
+    expect(scope.getState(secondQuery.$failed)).toBe(true);
+
+    expect(scope.getState(thirdQuery.$error)).toBe(err2);
+    expect(scope.getState(thirdQuery.$data)).toBe(null);
+    expect(scope.getState(thirdQuery.$failed)).toBe(true);
+  });
+
   test('pass params from mapParams to original handler', async () => {
     const originalHandler = vi
       .fn()
