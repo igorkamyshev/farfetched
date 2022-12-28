@@ -54,4 +54,26 @@ describe('fetch/json.response.data', () => {
 
     expect(watcher.listeners.onDoneData).toBeCalledWith({ test: 'value' });
   });
+
+  test('empty body as null', async () => {
+    const callJsonApiFx = createJsonApiRequest({ request });
+
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(
+        new Response('', { headers: { 'Content-Length': '0' } })
+      );
+
+    const scope = fork({ handlers: [[fetchFx, fetchMock]] });
+
+    const watcher = watchEffect(callJsonApiFx, scope);
+
+    await allSettled(callJsonApiFx, {
+      scope,
+      params: {},
+    });
+
+    expect(watcher.listeners.onFailData).not.toBeCalled();
+    expect(watcher.listeners.onDoneData).toBeCalledWith(null);
+  });
 });

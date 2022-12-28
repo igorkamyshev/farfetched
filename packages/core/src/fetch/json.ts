@@ -67,7 +67,9 @@ export function createJsonApiRequest<R extends CreationRequestConfig>(
     },
     response: {
       extract: async (response) => {
-        if (!response.body) {
+        const emptyContent = response.headers.get('Content-Length') === '0';
+
+        if (!response.body || emptyContent) {
           return null;
         }
 
