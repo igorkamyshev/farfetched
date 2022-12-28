@@ -23,7 +23,11 @@ export function enrichFinishedSuccessWithKey<Q extends Query<any, any, any>>(
     fn: (sources, { params, result }) => ({
       params,
       result,
-      key: createKey({ sid: queryDataSid, params, sources }),
+      key: createKey({
+        sid: queryDataSid,
+        params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
+        sources,
+      }),
     }),
   });
 }
@@ -38,7 +42,11 @@ export function enrichStartWithKey<Q extends Query<any, any, any>>(
     source: query.__.lowLevelAPI.sources,
     fn: (sources, params) => ({
       params,
-      key: createKey({ sid: queryDataSid, params, sources }),
+      key: createKey({
+        sid: queryDataSid,
+        params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
+        sources,
+      }),
     }),
   });
 }

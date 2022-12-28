@@ -43,6 +43,7 @@ export function createHeadlessQuery<
   name,
   serialize,
   sources,
+  paramsAreMeaningless,
 }: {
   initialData?: Initial;
   contract: Contract<Response, ContractData>;
@@ -53,6 +54,7 @@ export function createHeadlessQuery<
   >;
   validate?: Validator<ContractData, Params, ValidationSource>;
   sources?: Array<Store<unknown>>;
+  paramsAreMeaningless?: boolean;
 } & SharedQueryFactoryConfig<MappedData, Initial>): Query<
   Params,
   MappedData,
@@ -80,6 +82,7 @@ export function createHeadlessQuery<
     validate,
     mapData,
     sources,
+    paramsAreMeaningless,
   });
 
   const reset = createEvent();

@@ -45,6 +45,7 @@ export function createRemoteOperation<
   validate,
   mapData,
   sources,
+  paramsAreMeaningless,
 }: {
   name: string;
   meta: Meta;
@@ -59,6 +60,7 @@ export function createRemoteOperation<
     MapDataSource
   >;
   sources?: Array<Store<unknown>>;
+  paramsAreMeaningless?: boolean;
 }): RemoteOperation<Params, MappedData, Error | InvalidDataError, Meta> {
   let withInterruption = false;
   const registerInterruption = () => {
@@ -297,6 +299,7 @@ export function createRemoteOperation<
       kind,
       lowLevelAPI: {
         sources: sources ?? [],
+        paramsAreMeaningless: paramsAreMeaningless ?? false,
         registerInterruption,
         validatedSuccessfully,
         fillData,
