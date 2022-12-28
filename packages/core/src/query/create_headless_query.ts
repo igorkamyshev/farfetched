@@ -149,13 +149,14 @@ export function createHeadlessQuery<
 
   // -- Protocols --
 
-  const unitShapeProtocol = () => ({
+  const unitShape = {
     data: $data,
     error: $error,
     stale: $stale,
     pending: operation.$pending,
     start: operation.start,
-  });
+  };
+  const unitShapeProtocol = () => unitShape;
 
   // Experimental API, won't be exposed as protocol for now
   const attachProtocol = <NewParams, Source>({

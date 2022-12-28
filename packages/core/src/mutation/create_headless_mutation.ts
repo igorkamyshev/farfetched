@@ -56,10 +56,11 @@ export function createHeadlessMutation<
 
   // -- Protocols --
 
-  const unitShapeProtocol = () => ({
+  const unitShape = {
     pending: operation.$pending,
     start: operation.start,
-  });
+  };
+  const unitShapeProtocol = () => unitShape;
 
   // Experimental API, won't be exposed as protocol for now
   const attachProtocol = <NewParams, Source>({
