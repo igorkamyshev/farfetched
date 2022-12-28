@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.5.1
+
+### Patch Changes
+
+- 2ad92fb: Do not use value from `cache` on refetch after `update`
+
 ## 0.5.0
 
 ### Minor Changes

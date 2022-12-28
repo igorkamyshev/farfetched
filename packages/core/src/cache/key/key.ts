@@ -53,7 +53,7 @@ export function enrichStartWithKey<Q extends Query<any, any, any>>(
 
 function createKey({
   sid,
-  params,
+  params = null,
   sources,
 }: {
   sid: string;

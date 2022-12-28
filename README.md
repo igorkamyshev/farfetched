@@ -5,6 +5,8 @@
 
 The advanced data fetching tool for web applications
 
+![minified and gzipped size badge](https://badgen.net/bundlephobia/minzip/@farfetched/core)
+
 ## Quick Features
 
 - Transport/protocol/backend agnostic (REST, GraphQL, promises, whatever!)
