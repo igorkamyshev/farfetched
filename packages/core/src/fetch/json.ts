@@ -1,4 +1,8 @@
-import { combine } from 'effector';
+import { combine, type Json } from 'effector';
+
+import { httpError } from '../errors/create_error';
+import { isHttpError } from '../errors/guards';
+import { HttpError } from '../errors/type';
 
 import { normalizeStaticOrReactive } from '../libs/patronus';
 import {
@@ -9,14 +13,6 @@ import {
   StaticOnlyRequestConfig,
 } from './api';
 import { mergeRecords } from './lib';
-
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [property: string]: Json }
-  | Json[];
 
 export type JsonObject = Record<string, Json>;
 
@@ -74,6 +70,29 @@ export function createJsonApiRequest<R extends CreationRequestConfig>(
         }
 
         return response.json();
+      },
+      transformError: (error) => {
+        if (!isHttpError({ error })) {
+          return error;
+        }
+
+        const errorAsHttpError = error as HttpError;
+
+        if (typeof errorAsHttpError.response !== 'string') {
+          return errorAsHttpError;
+        }
+
+        try {
+          const parsedError = JSON.parse(errorAsHttpError.response);
+
+          return httpError({
+            status: errorAsHttpError.status,
+            statusText: errorAsHttpError.statusText,
+            response: parsedError,
+          });
+        } catch (e) {
+          return errorAsHttpError;
+        }
       },
       status: config.response?.status,
     },

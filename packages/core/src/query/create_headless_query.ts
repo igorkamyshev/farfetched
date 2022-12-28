@@ -45,6 +45,7 @@ export function createHeadlessQuery<
     >;
     validate?: Validator<ContractData, Params, ValidationSource>;
     sources?: Array<Store<unknown>>;
+    paramsAreMeaningless?: boolean;
   } & SharedQueryFactoryConfig<MappedData, Initial>
 ): Query<Params, MappedData, Error | InvalidDataError, Initial> {
   const {
@@ -56,6 +57,7 @@ export function createHeadlessQuery<
     name,
     serialize,
     sources,
+    paramsAreMeaningless,
   } = config;
 
   const queryName = name ?? 'unnamed';
@@ -81,6 +83,7 @@ export function createHeadlessQuery<
     validate,
     mapData,
     sources,
+    paramsAreMeaningless,
   });
 
   const reset = createEvent();

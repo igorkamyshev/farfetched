@@ -1,3 +1,5 @@
+import { type Json } from 'effector';
+
 import {
   ABORT,
   AbortError,
@@ -62,7 +64,7 @@ export function httpError({
 }: {
   status: number;
   statusText: string;
-  response: string | null;
+  response: string | Json | null;
 }): HttpError {
   return {
     errorType: HTTP,

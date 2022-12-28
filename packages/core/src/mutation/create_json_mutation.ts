@@ -1,10 +1,10 @@
-import { attach, createEvent, Event, sample } from 'effector';
+import { attach, createEvent, Event, sample, type Json } from 'effector';
 
 import { Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
 import { InvalidDataError } from '../errors/type';
 import { ApiRequestError, HttpMethod } from '../fetch/api';
-import { createJsonApiRequest, Json } from '../fetch/json';
+import { createJsonApiRequest } from '../fetch/json';
 import { FetchApiRecord } from '../fetch/lib';
 import { ParamsDeclaration } from '../remote_operation/params';
 import {

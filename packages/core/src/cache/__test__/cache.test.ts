@@ -10,6 +10,10 @@ import { createQuery } from '../../query/create_query';
 import { inMemoryCache } from '../adapters/in_memory';
 import { cache } from '../cache';
 import { sha1 } from '../lib/hash';
+import { createJsonQuery } from '../../query/create_json_query';
+import { declareParams } from '../../remote_operation/params';
+import { unknownContract } from '../../contract/unknown_contract';
+import { fetchFx } from '../../fetch/fetch';
 
 describe('cache', () => {
   test('use value from cache on second call, revalidate', async () => {
@@ -280,5 +284,62 @@ describe('cache', () => {
 
     await allSettled(query.start, { scope, params });
     expect(scope.getState(query.$data)).toEqual(1);
+  });
+
+  test('do not use params if it is unnecessary (createJsonQuery)', async () => {
+    const query = withFactory({
+      fn: () =>
+        createJsonQuery({
+          params: declareParams<string>(),
+          request: {
+            method: 'GET',
+            url: (params) => `https://api.salo.com/${params.length.toString()}`,
+          },
+          response: { contract: unknownContract },
+        }),
+      sid: '1',
+    });
+
+    cache(query);
+
+    const scope = fork({
+      handlers: [
+        [
+          fetchFx,
+          vi
+            .fn()
+            .mockImplementationOnce(() =>
+              setTimeout(100).then(
+                () => new Response(JSON.stringify({ step: 1 }))
+              )
+            )
+            .mockImplementationOnce(() =>
+              setTimeout(100).then(
+                () => new Response(JSON.stringify({ step: 2 }))
+              )
+            ),
+        ],
+      ],
+    });
+
+    await allSettled(query.start, { scope, params: 'lol' });
+    expect(scope.getState(query.$data)).toEqual({ step: 1 });
+
+    await allSettled(query.reset, { scope });
+
+    // Do not await
+    allSettled(query.start, { scope, params: 'kek' });
+    // But wait for next tick becuase of async adapter's nature
+    await setTimeout(1);
+
+    // Value from cache
+    expect(scope.getState(query.$data)).toEqual({ step: 1 });
+    expect(scope.getState(query.$stale)).toBeTruthy();
+
+    await allPrevSettled(scope);
+
+    // After refetch, it's new value
+    expect(scope.getState(query.$data)).toEqual({ step: 2 });
+    expect(scope.getState(query.$stale)).toBeFalsy();
   });
 });

@@ -98,6 +98,9 @@ interface ApiConfigResponse<P> {
    * })
    */
   extract: (response: Response) => Promise<P>;
+  transformError?: (
+    error: NetworkError | HttpError
+  ) => NetworkError | HttpError;
   /** Configuration of allowed response statuses */
   status?: {
     expected: number | number[];
@@ -205,6 +208,10 @@ export function createApiRequest<
       const response = await requestFx(request).catch((cause) => {
         if (timeoutController?.signal.aborted) {
           throw timeoutError({ timeout: timeoutController.timeout });
+        }
+
+        if (config.response.transformError) {
+          throw config.response.transformError(cause);
         }
 
         throw cause;
