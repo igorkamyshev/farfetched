@@ -1,5 +1,11 @@
 # @farfetched/solid
 
+## 0.6.0
+
+### Minor Changes
+
+- dc6ee4c: Delete deprecated `useMutation` in favour of @@unitShape protocol
+
 ## 0.5.1
 
 ## 0.5.0

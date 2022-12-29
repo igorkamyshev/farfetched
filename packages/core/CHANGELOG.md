@@ -1,5 +1,19 @@
 # @farfetched/core
 
+## 0.6.0
+
+### Minor Changes
+
+- 521834d: Allow passing abort signal to `createJsonQuery` and `createJsonMutation`
+- f7def6f: Ignore `params` while `cache` `createJsonQuery` to decrease number of cache misses
+- b57c5ee: Add `attachOperation` operator
+- c2431af: Parse response in `httpError` in `createJson*` as JSON
+- b57c5ee: Expose `initialData` in _Query_ meta
+
+### Patch Changes
+
+- fa4a40f: Return `null` for empty response in `createJsonApiRequest` instead of `preparationError`
+
 ## 0.5.1
 
 ### Patch Changes
