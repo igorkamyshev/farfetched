@@ -6,11 +6,15 @@ Farfetched is under development now, before the first stable release we are goin
 
 ### v.0.7
 
-- DevTools interface
+- Code generation for Open API
 
 ## Future releases
 
 ### v.0.8
+
+- DevTools interface
+
+### v.0.9
 
 - Triggers API to mark data as stale and re-fetch on some declarative triggers.
 - Add-on `@farfetched/web-api` with common triggers
@@ -21,11 +25,11 @@ Farfetched is under development now, before the first stable release we are goin
 - migrate Mutation API to Triggers API
 - migrate `connectQuery` to Triggers API
 
-### v.0.9
+### v.0.10
 
 - Pagination and infinite scroll
 
-### v.0.10
+### v.0.11
 
 - GraphQL add-on — `@farfetched/graphql`
   - `createGraphQLQuery`
@@ -34,13 +38,13 @@ Farfetched is under development now, before the first stable release we are goin
   - import, parsing, and usage of schema
   - automatic optimistic update for Query based on Mutation and schema
 
-### v.0.11
+### v.0.12
 
 - WebSocket
 - Server Sent Events
 - HTTP Polling
 
-### v.0.12
+### v.0.13
 
 - Add-on `@farfetched/rest`
   - `createREST` — return set of Queries and Mutations for typical REST API
