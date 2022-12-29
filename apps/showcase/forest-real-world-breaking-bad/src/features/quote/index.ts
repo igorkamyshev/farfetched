@@ -1,0 +1,1 @@
+export { RandomQuotesView } from './view';

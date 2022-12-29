@@ -31,6 +31,7 @@ importers:
       effector-react: ^22.3.0
       effector-solid: 0.22.6
       eslint: ~8.15.0
+      forest: ^0.21.2
       glob: ^8.0.3
       history: ^5.3.0
       jsdom: ^20.0.1
@@ -62,6 +63,7 @@ importers:
       atomic-router-solid: 0.5.1_w3vp3dllu5ljuf2zbowjos4slq
       effector-react: 22.3.3_mzy7u3vnsemuxnfbzqvpqiy7pu
       effector-solid: 0.22.6_iudkbrkizgf6r5wa7tpffcrddm
+      forest: 0.21.2_effector@22.4.0
       history: 5.3.0
       mermaid: 9.1.7
       react: 18.2.0
@@ -7783,6 +7785,15 @@ packages:
       debug:
         optional: true
     dev: true
+
+  /forest/0.21.2_effector@22.4.0:
+    resolution: {integrity: sha512-NV16mpZHZn/C23dGAOL0lUjjYIfo/k1hAH8awPINuT7+aME41DGV0idUf9f9jNPukD1ldgIVG0LHVuAEy28zyg==}
+    engines: {node: '>=11.0.0'}
+    peerDependencies:
+      effector: ^22.3.0
+    dependencies:
+      effector: 22.4.0
+    dev: false
 
   /fork-ts-checker-webpack-plugin/7.2.13_3o2jfq6vfqxns3sz6wn2nnc3ei:
     resolution: {integrity: sha512-fR3WRkOb4bQdWB/y7ssDUlVdrclvwtyCUIHCfivAoYxq9dF7XfrDKbMdZIfwJ7hxIAqkYSGeU7lLJE6xrxIBdg==}
