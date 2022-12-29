@@ -244,7 +244,7 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
   );
 
   sample({
-    clock: headlessMutation.__.executeFx,
+    clock: [headlessMutation.start, headlessMutation.__.executeFx],
     target: internalStart,
     greedy: true,
   });
