@@ -342,4 +342,61 @@ describe('cache', () => {
     expect(scope.getState(query.$data)).toEqual({ step: 2 });
     expect(scope.getState(query.$stale)).toBeFalsy();
   });
+
+  test('do not use params if it is unnecessary (createJsonQuery)', async () => {
+    const query = withFactory({
+      fn: () =>
+        createJsonQuery({
+          params: declareParams<string>(),
+          request: {
+            method: 'GET',
+            url: (params) => `https://api.salo.com/${params}`,
+          },
+          response: { contract: unknownContract },
+        }),
+      sid: '1',
+    });
+
+    cache(query);
+
+    const scope = fork({
+      handlers: [
+        [
+          fetchFx,
+          vi
+            .fn()
+            .mockImplementationOnce(() =>
+              setTimeout(100).then(
+                () => new Response(JSON.stringify({ step: 1 }))
+              )
+            )
+            .mockImplementationOnce(() =>
+              setTimeout(100).then(
+                () => new Response(JSON.stringify({ step: 2 }))
+              )
+            ),
+        ],
+      ],
+    });
+
+    await allSettled(query.start, { scope, params: 'lol' });
+    expect(scope.getState(query.$data)).toEqual({ step: 1 });
+
+    await allSettled(query.reset, { scope });
+
+    // Do not await
+    allSettled(query.start, { scope, params: 'kek' });
+    // But wait for next tick becuase of async adapter's nature
+    await setTimeout(1);
+
+    // No value from cache
+    expect(scope.getState(query.$data)).toBeNull();
+    expect(scope.getState(query.$stale)).toBeFalsy();
+
+    await allPrevSettled(scope);
+
+    // After refetch, it's new value
+    expect(scope.getState(query.$data)).toEqual({ step: 2 });
+    expect(scope.getState(query.$stale)).toBeFalsy();
+  });
 });
