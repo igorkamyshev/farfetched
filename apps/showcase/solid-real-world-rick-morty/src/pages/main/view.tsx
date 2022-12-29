@@ -5,10 +5,10 @@ import { For, Show, Suspense } from 'solid-js';
 
 import { characterRoute, characterListRoute } from '../../entities/character';
 import { Pagination } from '../../features/pagination';
-import { $currentPage, characterListQuery } from './model';
+import { $currentPage, allCharactersQuery } from './model';
 
 function MainPage() {
-  const [data] = createQueryResource(characterListQuery);
+  const [data] = createQueryResource(allCharactersQuery);
   const { currentPage } = useUnit({
     currentPage: $currentPage,
   });

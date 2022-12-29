@@ -12,6 +12,7 @@ export interface QueryMeta<Data, InitialData> {
    * - save state to persistent storage during caching
    */
   serialize: Serialize<Data | InitialData>;
+  initialData: InitialData;
 }
 
 export interface Query<Params, Data, Error, InitialData = null>
@@ -42,6 +43,9 @@ export interface Query<Params, Data, Error, InitialData = null>
     start: Event<Params>;
   };
 }
+
+export type QueryInitialData<Q extends Query<any, any, any, any>> =
+  Q['__']['meta']['initialData'];
 
 export function isQuery(value: any): value is Query<any, any, any> {
   return value?.__?.kind === QuerySymbol;

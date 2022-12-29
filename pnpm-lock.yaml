@@ -136,9 +136,6 @@ importers:
   packages/core:
     specifiers: {}
 
-  packages/react:
-    specifiers: {}
-
   packages/runtypes:
     specifiers: {}
 

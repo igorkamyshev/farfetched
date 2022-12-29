@@ -1,7 +1,7 @@
-import { attach, createEvent, sample } from 'effector';
+import { attach, createEvent, Event, sample, type Json } from 'effector';
 
 import { Contract } from '../contract/type';
-import { createJsonApiRequest, Json } from '../fetch/json';
+import { createJsonApiRequest } from '../fetch/json';
 import { ApiRequestError, HttpMethod } from '../fetch/api';
 import {
   normalizeSourced,
@@ -23,6 +23,7 @@ import { Validator } from '../validation/type';
 
 type ConcurrencyConfig = {
   strategy?: 'TAKE_EVERY' | 'TAKE_FIRST' | 'TAKE_LATEST';
+  abort?: Event<void>;
 };
 
 type RequestConfig<Params, BodySource, QuerySource, HeadersSource, UrlSource> =
@@ -322,6 +323,7 @@ export function createJsonQuery(config: any) {
   const requestFx = createJsonApiRequest({
     request: { method: config.request.method, credentials: 'same-origin' },
     concurrency: { strategy: config.concurrency?.strategy ?? 'TAKE_LATEST' },
+    abort: { clock: config.concurrency?.abort },
   });
 
   // Connections
@@ -365,6 +367,7 @@ export function createJsonQuery(config: any) {
     name: config.name,
     serialize: config.serialize,
     sources: [url, body, headers, query],
+    paramsAreMeaningless: true,
   });
 
   headlessQuery.__.executeFx.use(
@@ -379,7 +382,11 @@ export function createJsonQuery(config: any) {
     })
   );
 
-  sample({ clock: headlessQuery.start, target: internalStart, greedy: true });
+  sample({
+    clock: headlessQuery.__.executeFx,
+    target: internalStart,
+    greedy: true,
+  });
 
   return {
     ...headlessQuery,

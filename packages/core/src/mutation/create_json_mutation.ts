@@ -1,9 +1,10 @@
-import { attach, createEvent, sample } from 'effector';
+import { attach, createEvent, Event, sample, type Json } from 'effector';
+
 import { Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
 import { InvalidDataError } from '../errors/type';
 import { ApiRequestError, HttpMethod } from '../fetch/api';
-import { createJsonApiRequest, Json } from '../fetch/json';
+import { createJsonApiRequest } from '../fetch/json';
 import { FetchApiRecord } from '../fetch/lib';
 import { ParamsDeclaration } from '../remote_operation/params';
 import {
@@ -19,6 +20,10 @@ import {
 import { Mutation } from './type';
 
 // -- Shared --
+
+type ConcurrencyConfig = {
+  abort?: Event<void>;
+};
 
 type RequestConfig<Params, BodySource, QuerySource, HeadersSource, UrlSource> =
   {
@@ -49,6 +54,7 @@ interface BaseJsonMutationConfigNoParams<
     HeadersSource,
     UrlSource
   >;
+  concurrency?: ConcurrencyConfig;
 }
 
 interface BaseJsonMutationConfigWithParams<
@@ -67,6 +73,7 @@ interface BaseJsonMutationConfigWithParams<
     HeadersSource,
     UrlSource
   >;
+  concurrency?: ConcurrencyConfig;
 }
 
 // -- Overloads
@@ -199,6 +206,7 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
     request: { method: config.request.method, credentials: 'same-origin' },
     concurrency: { strategy: 'TAKE_EVERY' },
     response: { status: config.response.status },
+    abort: { clock: config.concurrency?.abort },
   });
 
   const headlessMutation = createHeadlessMutation({
@@ -236,7 +244,7 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
   );
 
   sample({
-    clock: headlessMutation.start,
+    clock: headlessMutation.__.executeFx,
     target: internalStart,
     greedy: true,
   });

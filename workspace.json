@@ -3,7 +3,6 @@
   "version": 2,
   "projects": {
     "core": "packages/core",
-    "react": "packages/react",
     "runtypes": "packages/runtypes",
     "showcase-react-real-world-pokemons": "apps/showcase/react-real-world-pokemons",
     "showcase-solid-real-world-rick-morty": "apps/showcase/solid-real-world-rick-morty",

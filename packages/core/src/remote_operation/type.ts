@@ -75,6 +75,7 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
      */
     lowLevelAPI: {
       sources: Array<Store<unknown>>;
+      paramsAreMeaningless: boolean;
       registerInterruption: () => void;
       validatedSuccessfully: Event<{ params: Params; result: unknown }>;
       fillData: Event<{
@@ -83,6 +84,12 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
         meta: ExecutionMeta;
       }>;
       resumeExecution: Event<{ params: Params }>;
+    };
+    experimentalAPI?: {
+      attach: <Source, NewParams>(config: {
+        source: Store<Source>;
+        mapParams: (params: NewParams, source: Source) => Params;
+      }) => any;
     };
   };
 }

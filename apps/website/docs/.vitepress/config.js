@@ -108,6 +108,10 @@ export default withMermaid(
                   },
                   { text: 'Retries', link: '/tutorial/retries' },
                   { text: 'Caching', link: '/tutorial/caching' },
+                  {
+                    text: 'Operation copying',
+                    link: '/tutorial/operation_copying',
+                  },
                 ],
               },
               {
@@ -182,6 +186,10 @@ export default withMermaid(
               { text: 'udpate', link: '/api/operators/update' },
               { text: 'retry', link: '/api/operators/retry' },
               { text: 'cache', link: '/api/operators/cache' },
+              {
+                text: 'attachOperation',
+                link: '/api/operators/attach_operation',
+              },
             ],
           },
           {
@@ -199,10 +207,6 @@ export default withMermaid(
               {
                 text: 'UI libraries',
                 items: [
-                  {
-                    text: 'React',
-                    link: '/api/ui/react',
-                  },
                   {
                     text: 'Solid',
                     link: '/api/ui/solid',
@@ -295,6 +299,7 @@ export default withMermaid(
               { text: 'Testing', link: '/statements/tests' },
               { text: 'Effector', link: '/statements/effector' },
               { text: 'TypeScript', link: '/statements/typescript' },
+              { text: 'Compile target', link: '/statements/compile_target' },
             ],
           },
         ],
@@ -303,6 +308,7 @@ export default withMermaid(
             text: 'Releases',
             collapsible: false,
             items: [
+              { text: 'v0.6 Huai Nam Dang', link: '/releases/0-6' },
               { text: 'v0.5 Chew Lan', link: '/releases/0-5' },
               { text: 'v0.4', link: '/releases/0-4' },
               { text: 'v0.3 Sirinat', link: '/releases/0-3' },

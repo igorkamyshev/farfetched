@@ -1,5 +1,5 @@
 import { watchRemoteOperation } from '@farfetched/test-utils';
-import { allSettled, fork } from 'effector';
+import { allSettled, createEvent, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
@@ -145,6 +145,39 @@ describe('createJsonQuery concurrency.strategy', () => {
     expect(watcher.listeners.onSuccess).toBeCalledTimes(1);
     expect(watcher.listeners.onSuccess).toBeCalledWith(
       expect.objectContaining({ result: firstResponse })
+    );
+  });
+
+  test('cancel all by external clock', async () => {
+    const abort = createEvent();
+
+    const query = createJsonQuery({
+      request: { method: 'GET', url: 'https://api.salo.com' },
+      response: { contract: unknownContract },
+      concurrency: { abort },
+    });
+
+    const scope = fork({
+      handlers: [
+        [
+          // We have to mock fetchFx because executeFx contains cancellation logic
+          fetchFx,
+          vi.fn().mockImplementation(async () => {
+            await setTimeout(100);
+            throw new Error('cannot');
+          }),
+        ],
+      ],
+    });
+
+    const { listeners } = watchRemoteOperation(query, scope);
+
+    allSettled(query.start, { scope });
+    await allSettled(abort, { scope });
+
+    expect(listeners.onFailure).toBeCalledTimes(1);
+    expect(listeners.onFailure).toHaveBeenCalledWith(
+      expect.objectContaining({ error: abortError() })
     );
   });
 });

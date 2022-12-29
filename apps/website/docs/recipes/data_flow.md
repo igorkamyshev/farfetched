@@ -124,7 +124,7 @@ const userQuery = createJsonQuery({
   response: {
     mapData: {
       source: $language,
-      fn: (result, _params, language) => ({
+      fn: ({ result }, language) => ({
         ...result,
         name: result.name.translations[language],
       }),
