@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.6.1
+
+### Patch Changes
+
+- c2b67a6: Fix `cache` overlapping in `createJsonQuery`
+
 ## 0.6.0
 
 ### Minor Changes

@@ -383,7 +383,7 @@ export function createJsonQuery(config: any) {
   );
 
   sample({
-    clock: headlessQuery.__.executeFx,
+    clock: [headlessQuery.start, headlessQuery.__.executeFx],
     target: internalStart,
     greedy: true,
   });
