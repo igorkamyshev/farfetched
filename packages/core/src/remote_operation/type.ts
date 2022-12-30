@@ -84,6 +84,7 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
         meta: ExecutionMeta;
       }>;
       resumeExecution: Event<{ params: Params }>;
+      forced: Event<{ params: Params }>;
     };
     experimentalAPI?: {
       attach: <Source, NewParams>(config: {

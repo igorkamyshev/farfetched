@@ -9,7 +9,11 @@ import {
 import { Query } from '../query/type';
 import { inMemoryCache } from './adapters/in_memory';
 import { CacheAdapter, CacheAdapterInstance } from './adapters/type';
-import { enrichFinishedSuccessWithKey, enrichStartWithKey } from './key/key';
+import {
+  enrichFinishedSuccessWithKey,
+  enrichForcedWithKey,
+  enrichStartWithKey,
+} from './key/key';
 
 interface CacheParameters {
   adapter?: CacheAdapter;
@@ -34,12 +38,15 @@ export function cache<Q extends Query<any, any, any, any>>(
     ...params,
   };
 
-  connectPurge(defaultedParams);
+  removeFromCache(query, defaultedParams);
   saveToCache(query, defaultedParams);
   pickFromCache(query, defaultedParams);
 }
 
-function connectPurge({ adapter, purge }: CacheParametersDefaulted) {
+function removeFromCache<Q extends Query<any, any, any>>(
+  query: Q,
+  { adapter, purge }: CacheParametersDefaulted
+) {
   if (purge) {
     const purgeCachedValuesFx = createEffect(
       ({ instance }: { instance: CacheAdapterInstance }) => instance.purge()
@@ -51,6 +58,27 @@ function connectPurge({ adapter, purge }: CacheParametersDefaulted) {
       target: purgeCachedValuesFx,
     });
   }
+
+  const unsetCachedValueFx = createEffect(
+    ({ instance, key }: { instance: CacheAdapterInstance; key: string }) =>
+      instance.unset?.({ key })
+  );
+
+  const { forcedWithKey } = split(enrichForcedWithKey(query), {
+    forcedWithKey: (
+      p
+    ): p is {
+      params: RemoteOperationParams<Q>;
+      key: string;
+    } => p.key !== null,
+  });
+
+  sample({
+    clock: forcedWithKey,
+    source: adapter.__.$instance,
+    fn: (instance, { key }) => ({ instance, key }),
+    target: unsetCachedValueFx,
+  });
 }
 
 function saveToCache<Q extends Query<any, any, any>>(
