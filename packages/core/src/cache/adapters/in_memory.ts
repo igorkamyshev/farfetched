@@ -116,6 +116,7 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
       },
       void
     >(saveValue),
+    unset: createEffect<{ key: string }, void>(removeValue),
     purge,
   };
 

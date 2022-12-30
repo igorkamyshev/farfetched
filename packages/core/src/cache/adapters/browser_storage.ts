@@ -115,6 +115,9 @@ export function browserStorageCache(
           await setSavedItemFx({ key, value });
         }
       ),
+      unset: createEffect<{ key: string }, void>(async ({ key }) => {
+        await removeSavedItemFx(key);
+      }),
       purge,
     };
 

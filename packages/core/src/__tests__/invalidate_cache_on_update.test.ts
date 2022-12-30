@@ -51,4 +51,106 @@ describe('invalidate cache on update', () => {
     await allPrevSettled(scope);
     expect(scope.getState(query.$data)).toEqual('new from remote source');
   });
+
+  test('do not use cached value for prev params after new params', async () => {
+    const query = withFactory({
+      fn: () =>
+        createQuery({
+          handler: vi
+            .fn()
+            .mockImplementationOnce((p: string) =>
+              setTimeout(100).then(() => `old result: ${p}`)
+            )
+            .mockImplementationOnce((p: string) =>
+              setTimeout(100).then(() => `new result: ${p}`)
+            )
+            .mockImplementationOnce((p: string) =>
+              setTimeout(100).then(() => `very new result: ${p}`)
+            ),
+        }),
+      sid: 'q',
+    });
+
+    const mutation = createMutation({
+      handler: vi.fn().mockResolvedValue('mutated data'),
+    });
+
+    cache(query);
+
+    update(query, {
+      on: mutation,
+      by: {
+        success: (state) => ({ result: state.mutation.result }),
+      },
+    });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope, params: 1 });
+    expect(scope.getState(query.$data)).toEqual('old result: 1');
+
+    await allSettled(mutation.start, { scope });
+    expect(scope.getState(query.$data)).toEqual('mutated data');
+
+    await allSettled(query.start, { scope, params: 2 });
+    expect(scope.getState(query.$data)).toEqual('new result: 2');
+
+    allSettled(query.start, { scope, params: 1 });
+    await setTimeout(1);
+    expect(scope.getState(query.$data)).not.toEqual('old result: 1');
+
+    await allPrevSettled(scope);
+    expect(scope.getState(query.$data)).toEqual('very new result: 1');
+  });
+
+  test('do use cached value for new params after update with old params', async () => {
+    const query = withFactory({
+      fn: () =>
+        createQuery({
+          handler: vi
+            .fn()
+            .mockImplementationOnce((p: string) =>
+              setTimeout(100).then(() => `old result: ${p}`)
+            )
+            .mockImplementationOnce((p: string) =>
+              setTimeout(100).then(() => `old result: ${p}`)
+            )
+            .mockImplementationOnce((p: string) =>
+              setTimeout(100).then(() => `new result: ${p}`)
+            )
+            .mockImplementationOnce((p: string) =>
+              setTimeout(100).then(() => `very new result: ${p}`)
+            ),
+        }),
+      sid: 'q',
+    });
+
+    const mutation = createMutation({
+      handler: vi.fn().mockResolvedValue('mutated data'),
+    });
+
+    cache(query);
+
+    update(query, {
+      on: mutation,
+      by: {
+        success: (state) => ({ result: state.mutation.result }),
+      },
+    });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope, params: 2 });
+    expect(scope.getState(query.$data)).toEqual('old result: 2');
+
+    await allSettled(query.start, { scope, params: 1 });
+    expect(scope.getState(query.$data)).toEqual('old result: 1');
+
+    await allSettled(mutation.start, { scope });
+    expect(scope.getState(query.$data)).toEqual('mutated data');
+
+    allSettled(query.start, { scope, params: 2 });
+    await setTimeout(1);
+    expect(scope.getState(query.$data)).toEqual('old result: 2');
+  });
 });

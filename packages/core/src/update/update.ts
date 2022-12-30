@@ -148,6 +148,13 @@ export function update<
     target: [query.$error, query.$data.reinit!],
   });
 
+  sample({
+    clock: [fillQueryError, fillQueryData],
+    source: $queryState,
+    filter: Boolean,
+    target: query.__.lowLevelAPI.forced,
+  });
+
   // -- Refetching
   const refetchQuery = createEvent<RemoteOperationParams<Q>>();
 

@@ -79,6 +79,8 @@ export function createRemoteOperation<
     result: unknown;
   }>();
 
+  const forced = createEvent<{ params: Params }>();
+
   const applyContractFx = createContractApplier<Params, Data, ContractData>(
     contract
   );
@@ -304,6 +306,7 @@ export function createRemoteOperation<
         validatedSuccessfully,
         fillData,
         resumeExecution,
+        forced,
       },
     },
   };
