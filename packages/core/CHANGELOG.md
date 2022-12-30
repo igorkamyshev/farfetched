@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.6.2
+
+### Patch Changes
+
+- 05b4860: Fix `cache` invalidation after `update`
+
 ## 0.6.1
 
 ### Patch Changes
