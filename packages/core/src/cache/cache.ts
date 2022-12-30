@@ -1,4 +1,4 @@
-import { createEffect, Event, sample, split } from 'effector';
+import { attach, createEffect, Event, sample, split } from 'effector';
 
 import { time } from '../libs/patronus';
 import { parseTime, Time } from '../libs/date-nfs';
