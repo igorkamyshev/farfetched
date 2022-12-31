@@ -7,7 +7,7 @@ import { describe, expect, test, afterEach } from 'vitest';
 import { ErrorBoundary, For, Suspense } from 'solid-js/web';
 import { render, cleanup, screen } from 'solid-testing-library';
 import { Provider } from 'effector-solid';
-import { createMutation, createQuery } from '@farfetched/core';
+import { createMutation, createQuery, update } from '@farfetched/core';
 import { allPrevSettled } from '@farfetched/test-utils';
 import { setTimeout } from 'timers/promises';
 
@@ -288,5 +288,52 @@ describe('createQueryResource', () => {
     });
 
     expect(await screen.findByText(2)).toBeInTheDocument();
+  });
+
+  test('query update should trigger resource', async () => {
+    const defer = createDefer<any, unknown>();
+    const deferMutation = createDefer<any, unknown>();
+    const controlledQuery = createQuery({ handler: () => defer.promise });
+
+    const mutation = createMutation({
+      handler: async () => 'Mutation success',
+    });
+
+    update(controlledQuery, {
+      on: mutation,
+      by: {
+        success: ({ mutation: { result } }) => ({ result }),
+      },
+    });
+
+    const scope = fork();
+
+    const boundStart = scopeBind(controlledQuery.start, { scope });
+    const boundMutationStart = scopeBind(mutation.start, { scope });
+
+    function App() {
+      const [data] = createQueryResource(controlledQuery);
+
+      return <p>{data()}</p>;
+    }
+
+    render(() => (
+      <Provider value={scope}>
+        <App />
+      </Provider>
+    ));
+
+    boundStart({});
+
+    defer.resolve('Hello');
+    await allPrevSettled(scope);
+
+    const helloText = await screen.findByText('Hello');
+    expect(helloText).toBeInTheDocument();
+
+    await allSettled(mutation.start, { scope, params: {} });
+
+    const mutationText = await screen.findByText('Mutation success');
+    expect(mutationText).toBeInTheDocument();
   });
 });
