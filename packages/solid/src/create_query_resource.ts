@@ -6,7 +6,16 @@ import { createDefer } from './defer';
 
 function createQueryResource<Params, Data, Error>(
   query: Query<Params, Data, Error>
-): [Resource<Data | undefined>, { refetch: (params: Params) => void }] {
+): [
+  Resource<Data | undefined>,
+  {
+    /**
+     * @deprecated use `start` instead
+     */
+    refetch: (params: Params) => void;
+    start: (params: Params) => void;
+  }
+] {
   const [track, rerun] = createSignal<[] | undefined>(undefined, {
     equals: false,
   });
@@ -43,7 +52,7 @@ function createQueryResource<Params, Data, Error>(
   // Bind to suspense
   const [resourceData] = createResource(track, () => dataDefer.promise);
 
-  return [resourceData, { refetch: start }];
+  return [resourceData, { refetch: start, start }];
 }
 
 export { createQueryResource };

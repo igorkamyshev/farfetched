@@ -5,7 +5,7 @@ import { createQueryResource } from '../create_query_resource';
 
 describe('createQueryResource', () => {
   test('void start', () => {
-    const [data, { refetch: start }] = createQueryResource(
+    const [data, { start }] = createQueryResource(
       {} as Query<void, number, string>
     );
 
@@ -19,7 +19,7 @@ describe('createQueryResource', () => {
   });
 
   test('start with params', () => {
-    const [data, { refetch: start }] = createQueryResource(
+    const [data, { start }] = createQueryResource(
       {} as Query<{ limit: string }, number, string>
     );
 
