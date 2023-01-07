@@ -2,8 +2,6 @@ import { allSettled, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
-import { allPrevSettled } from '@farfetched/test-utils';
-
 import { cache } from '../cache/cache';
 import { withFactory } from '../libs/patronus';
 import { createMutation } from '../mutation/create_mutation';
@@ -48,7 +46,7 @@ describe('invalidate cache on update', () => {
     await setTimeout(1);
     expect(scope.getState(query.$data)).toEqual('mutated data');
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
     expect(scope.getState(query.$data)).toEqual('new from remote source');
   });
 
@@ -99,7 +97,7 @@ describe('invalidate cache on update', () => {
     await setTimeout(1);
     expect(scope.getState(query.$data)).not.toEqual('old result: 1');
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
     expect(scope.getState(query.$data)).toEqual('very new result: 1');
   });
 

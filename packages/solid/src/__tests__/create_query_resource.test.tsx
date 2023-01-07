@@ -8,7 +8,6 @@ import { ErrorBoundary, For, Suspense } from 'solid-js/web';
 import { render, cleanup, screen } from 'solid-testing-library';
 import { Provider } from 'effector-solid';
 import { createMutation, createQuery } from '@farfetched/core';
-import { allPrevSettled } from '@farfetched/test-utils';
 import { setTimeout } from 'timers/promises';
 
 import { createDefer } from '../defer';
@@ -47,7 +46,7 @@ describe('createQueryResource', () => {
     expect(loadingText).toBeInTheDocument();
 
     defer.resolve('Hello');
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     const helloText = await screen.findByText('Hello');
     expect(helloText).toBeInTheDocument();
@@ -83,7 +82,7 @@ describe('createQueryResource', () => {
     const loadingText = await screen.findByText('Loading');
     expect(loadingText).toBeInTheDocument();
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     const helloText = await screen.findByText('Hello');
     expect(helloText).toBeInTheDocument();
@@ -91,7 +90,7 @@ describe('createQueryResource', () => {
     boundStart({});
     expect(loadingText).toBeInTheDocument();
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
     expect(helloText).toBeInTheDocument();
   });
 
@@ -124,7 +123,7 @@ describe('createQueryResource', () => {
     boundStart({});
 
     defer.reject('WOW');
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     const errorText = await screen.findByText('Error: WOW');
     expect(errorText).toBeInTheDocument();
@@ -243,8 +242,8 @@ describe('createQueryResource', () => {
     const loadingText = await screen.findByText('Loading');
     expect(loadingText).toBeInTheDocument();
 
-    await allPrevSettled(correctScope);
-    await allPrevSettled(wrongScope);
+    await allSettled(correctScope);
+    await allSettled(wrongScope);
   });
 
   test('should update when query restarted', async () => {

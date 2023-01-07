@@ -1,6 +1,6 @@
 import { allSettled, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
-import { allPrevSettled, watchEffect } from '@farfetched/test-utils';
+import { watchEffect } from '@farfetched/test-utils';
 import { describe, test, expect } from 'vitest';
 
 import { abortError } from '../../errors/create_error';
@@ -56,7 +56,7 @@ describe('fetch/api.concurrency.strategy', () => {
       params: { query: LATEST_QUERY },
     });
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     // Fail first two
     expect(watcher.listeners.onFail).toBeCalledTimes(2);
@@ -117,7 +117,7 @@ describe('fetch/api.concurrency.strategy', () => {
       params: { query: LATEST_QUERY },
     });
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     // Done first
     expect(watcher.listeners.onDone).toBeCalledTimes(1);

@@ -1,4 +1,4 @@
-import { allPrevSettled, watchRemoteOperation } from '@farfetched/test-utils';
+import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
@@ -149,7 +149,7 @@ describe('update', () => {
     expect(scope.getState(query.$data)).toEqual('bySuccess');
     expect(scope.getState(query.$stale)).toBeTruthy();
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
     expect(scope.getState(query.$data)).toEqual('2');
 
     expect(listeners.onStart).toBeCalledTimes(3); // 2 original and 1 by refetch
@@ -189,7 +189,7 @@ describe('update', () => {
     expect(scope.getState(query.$data)).toEqual('bySuccess');
     expect(scope.getState(query.$stale)).toBeTruthy();
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
     expect(scope.getState(query.$data)).toEqual('3');
 
     expect(listeners.onStart).toBeCalledTimes(3); // 2 original and 1 by refetch

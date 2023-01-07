@@ -1,4 +1,4 @@
-import { allPrevSettled, watchRemoteOperation } from '@farfetched/test-utils';
+import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, createStore, fork } from 'effector';
 import { describe, test, expect } from 'vitest';
 
@@ -35,7 +35,7 @@ describe('createRemoteOperation, disable in-flight', () => {
 
     defer.resolve({});
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     expect(listeners.onSkip).toBeCalledTimes(1);
     expect(listeners.onSkip).toBeCalledWith(
@@ -64,7 +64,7 @@ describe('createRemoteOperation, disable in-flight', () => {
 
     defer.reject({});
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     expect(listeners.onSkip).toBeCalledTimes(1);
     expect(listeners.onSkip).toBeCalledWith(
