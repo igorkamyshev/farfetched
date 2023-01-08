@@ -1,6 +1,6 @@
 {
   "name": "@farfetched/zod",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "type": "commonjs",
   "devDependencies": {
     "zod": "^3.19.1"
