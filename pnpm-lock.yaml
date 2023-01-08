@@ -29,7 +29,7 @@ importers:
       bytes-iec: ^3.1.1
       effector: ^22.5.0
       effector-react: ^22.3.0
-      effector-solid: 0.22.6
+      effector-solid: 0.22.7
       eslint: ~8.15.0
       forest: ^0.21.2
       glob: ^8.0.3
@@ -60,9 +60,9 @@ importers:
       vue: ^3.2.37
     dependencies:
       atomic-router: 0.6.3_cliveijp3nbay2cvrupvo6s3zu
-      atomic-router-solid: 0.5.1_rkgg2awf7zvyzgoxwmc2rihc6m
+      atomic-router-solid: 0.5.1_rnoi5kydze3b3n45kuqpzbvjcq
       effector-react: 22.3.3_h4ij6u274dp7q2sfbxpq3srcnu
-      effector-solid: 0.22.6_l3k2dly3lzsosk5a4ahtdehhim
+      effector-solid: 0.22.7_l3k2dly3lzsosk5a4ahtdehhim
       forest: 0.21.2_effector@22.5.0
       history: 5.3.0
       mermaid: 9.1.7
@@ -5440,7 +5440,7 @@ packages:
     hasBin: true
     dev: true
 
-  /atomic-router-solid/0.5.1_rkgg2awf7zvyzgoxwmc2rihc6m:
+  /atomic-router-solid/0.5.1_rnoi5kydze3b3n45kuqpzbvjcq:
     resolution: {integrity: sha512-Du+LjjxeRA9h/JmHn3A9Ad3wRjhLFqz256TPg9YX3xkV9fK7eqOOyELntlo/MwL+RLagnvculBVuJwD1r6KbKQ==}
     peerDependencies:
       atomic-router: ~0.4.3
@@ -5452,7 +5452,7 @@ packages:
       atomic-router: 0.6.3_cliveijp3nbay2cvrupvo6s3zu
       classcat: 5.0.4
       effector: 22.5.0
-      effector-solid: 0.22.6_l3k2dly3lzsosk5a4ahtdehhim
+      effector-solid: 0.22.7_l3k2dly3lzsosk5a4ahtdehhim
       history: 5.3.0
       solid-js: 1.4.8
     dev: false
@@ -7167,8 +7167,8 @@ packages:
       use-sync-external-store: 1.2.0_react@18.2.0
     dev: false
 
-  /effector-solid/0.22.6_l3k2dly3lzsosk5a4ahtdehhim:
-    resolution: {integrity: sha512-cjxjnHA8vJbDHV323vCpZIhRgBE/RLojkgiOx9btpXofEQVNW9mQp5Ci74hnk8Csgo3Bt4IFtoUFBB6RZV/ePw==}
+  /effector-solid/0.22.7_l3k2dly3lzsosk5a4ahtdehhim:
+    resolution: {integrity: sha512-6+nb7DhyDlnbdIiFElpzWAxjIscBRqUr4ehBMiIoTN7Xpw5DWn+oGYoWo/ZPtquNOC9VoJFIEWaaVWJ8Z0ExoQ==}
     engines: {node: '>=11.0.0'}
     peerDependencies:
       effector: ^22.0.2
