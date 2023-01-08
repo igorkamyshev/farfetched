@@ -1,4 +1,4 @@
-import { allPrevSettled, watchRemoteOperation } from '@farfetched/test-utils';
+import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
@@ -36,7 +36,7 @@ describe('remote_data/query/json.response.error', () => {
     expect(scope.getState(query.$pending)).toBeTruthy();
 
     requestDefer.reject(error);
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     expect(scope.getState(query.$status)).toBe('fail');
     expect(scope.getState(query.$pending)).toBeFalsy();

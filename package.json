@@ -37,7 +37,7 @@
     "@typescript-eslint/parser": "5.33.1",
     "@vitejs/plugin-react": "3",
     "bytes-iec": "^3.1.1",
-    "effector": "^22.4.0",
+    "effector": "^22.5.0",
     "eslint": "~8.15.0",
     "glob": "^8.0.3",
     "jsdom": "^20.0.1",

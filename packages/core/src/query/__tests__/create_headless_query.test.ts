@@ -1,7 +1,7 @@
 import { allSettled, createStore, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
-import { allPrevSettled, watchRemoteOperation } from '@farfetched/test-utils';
+import { watchRemoteOperation } from '@farfetched/test-utils';
 
 import { createDefer } from '../../libs/lohyphen';
 import { createHeadlessQuery } from '../create_headless_query';
@@ -128,7 +128,7 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(scope.getState(query.$succeeded)).toBeFalsy();
 
     executorFirstDefer.resolve('result');
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     expect(scope.getState(query.$status)).toBe('done');
     expect(scope.getState(query.$pending)).toBeFalsy();
@@ -144,7 +144,7 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(scope.getState(query.$succeeded)).toBeFalsy();
 
     executorSecondDefer.reject(new Error('error'));
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     expect(scope.getState(query.$status)).toBe('fail');
     expect(scope.getState(query.$pending)).toBeFalsy();

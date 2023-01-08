@@ -1,4 +1,3 @@
-import { allPrevSettled } from '@farfetched/test-utils';
 import { allSettled, createEffect, createEvent, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, vi, expect, test } from 'vitest';
@@ -41,7 +40,7 @@ describe('cache', () => {
     expect(scope.getState(query.$data)).toEqual(1);
     expect(scope.getState(query.$stale)).toBeTruthy();
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     // After refetch, it's new value
     expect(scope.getState(query.$data)).toEqual(2);
@@ -75,7 +74,7 @@ describe('cache', () => {
     expect(scope.getState(query.$data)).toEqual(1);
     expect(scope.getState(query.$stale)).toBeFalsy();
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     // No refetch
     expect(handler).toBeCalledTimes(1);
@@ -107,7 +106,7 @@ describe('cache', () => {
     expect(scope.getState(query.$data)).toEqual(1);
     expect(scope.getState(query.$stale)).toBeTruthy();
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     // After refetch, it's new value
     expect(scope.getState(query.$data)).toEqual(2);
@@ -215,7 +214,7 @@ describe('cache', () => {
     expect(scope.getState(query.$data)).toEqual(null);
     expect(scope.getState(query.$stale)).toBeFalsy();
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     // After refetch, it's new value
     expect(scope.getState(query.$data)).toEqual(2);
@@ -258,7 +257,7 @@ describe('cache', () => {
     expect(scope.getState(query.$data)).toEqual(null);
     expect(scope.getState(query.$stale)).toBeFalsy();
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     // After refetch, it's new value
     expect(scope.getState(query.$data)).toEqual(2);
@@ -336,7 +335,7 @@ describe('cache', () => {
     expect(scope.getState(query.$data)).toEqual({ step: 1 });
     expect(scope.getState(query.$stale)).toBeTruthy();
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     // After refetch, it's new value
     expect(scope.getState(query.$data)).toEqual({ step: 2 });
@@ -393,7 +392,7 @@ describe('cache', () => {
     expect(scope.getState(query.$data)).toBeNull();
     expect(scope.getState(query.$stale)).toBeFalsy();
 
-    await allPrevSettled(scope);
+    await allSettled(scope);
 
     // After refetch, it's new value
     expect(scope.getState(query.$data)).toEqual({ step: 2 });
