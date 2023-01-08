@@ -292,7 +292,6 @@ describe('createQueryResource', () => {
 
   test('query update should trigger resource', async () => {
     const defer = createDefer<any, unknown>();
-    const deferMutation = createDefer<any, unknown>();
     const controlledQuery = createQuery({ handler: () => defer.promise });
 
     const mutation = createMutation({
@@ -309,7 +308,6 @@ describe('createQueryResource', () => {
     const scope = fork();
 
     const boundStart = scopeBind(controlledQuery.start, { scope });
-    const boundMutationStart = scopeBind(mutation.start, { scope });
 
     function App() {
       const [data] = createQueryResource(controlledQuery);
