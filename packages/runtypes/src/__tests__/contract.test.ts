@@ -1,5 +1,8 @@
-import { Array, Number, Record, String } from 'runtypes';
+import { createJsonMutation, createMutation } from '@farfetched/core';
+import { allSettled, createEffect, fork } from 'effector';
+import { Array, Number, Record, String, Null } from 'runtypes';
 import { describe, test, expect } from 'vitest';
+import { watchRemoteOperation } from '@farfetched/test-utils';
 
 import { runtypeContract } from '../runtype_contract';
 
@@ -66,5 +69,20 @@ describe('runtypes/runtypeContract short', () => {
     const contract = runtypeContract(String);
 
     expect(contract.getErrorMessages('foo')).toEqual([]);
+  });
+
+  test('null contract (issue #240)', async () => {
+    const mutationThatReturnsNull = createMutation({
+      effect: createEffect(() => null),
+      contract: runtypeContract(Null),
+    });
+
+    const scope = fork();
+
+    const { listeners } = watchRemoteOperation(mutationThatReturnsNull, scope);
+
+    await allSettled(mutationThatReturnsNull.start, { scope });
+
+    expect(listeners.onSuccess).toBeCalled();
   });
 });
