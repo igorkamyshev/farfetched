@@ -36,7 +36,7 @@ export function createRemoteOperation<
   MapDataSource = void,
   ValidationSource = void
 >({
-  name,
+  name: ownName,
   meta,
   kind,
   serialize,
@@ -47,7 +47,7 @@ export function createRemoteOperation<
   sources,
   paramsAreMeaningless,
 }: {
-  name: string;
+  name?: string;
   meta: Meta;
   kind: unknown;
   serialize?: 'ignore';
@@ -84,6 +84,8 @@ export function createRemoteOperation<
   const applyContractFx = createContractApplier<Params, Data, ContractData>(
     contract
   );
+
+  const name = ownName ?? 'unnamed';
 
   // Dummy effect, it will be replaced with real in head-full factory
   const executeFx = createEffect<any, any, any>({
@@ -297,7 +299,7 @@ export function createRemoteOperation<
     $enabled,
     __: {
       executeFx,
-      meta,
+      meta: { ...meta, name },
       kind,
       lowLevelAPI: {
         sources: sources ?? [],

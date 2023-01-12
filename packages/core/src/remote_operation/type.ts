@@ -2,6 +2,10 @@ import { Effect, Event, EventPayload, Store } from 'effector';
 
 import { type FetchingStatus } from '../libs/patronus';
 
+interface DefaultMeta {
+  name: string;
+}
+
 export interface RemoteOperation<Params, Data, Error, Meta> {
   /**
    * Reactive current request status
@@ -65,7 +69,7 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
     /**
      * Meta information about operation and its configuration.
      */
-    meta: Meta;
+    meta: Meta & DefaultMeta;
     /**
      * Distinguish different kinds of operations
      */

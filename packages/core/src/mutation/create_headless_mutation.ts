@@ -32,8 +32,6 @@ export function createHeadlessMutation<
 ): Mutation<Params, MappedData, Error | InvalidDataError> {
   const { name, enabled, contract, validate, mapData } = config;
 
-  const mutationName = name ?? 'unnamed';
-
   const operation = createRemoteOperation<
     Params,
     Data,
@@ -44,7 +42,7 @@ export function createHeadlessMutation<
     MapDataSource,
     ValidationSource
   >({
-    name: mutationName,
+    name,
     serialize: 'ignore',
     enabled,
     kind: MutationSymbol,
