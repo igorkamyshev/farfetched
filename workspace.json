@@ -10,6 +10,7 @@
     "solid": "packages/solid",
     "test-utils": "packages/test-utils",
     "website": "apps/website",
-    "zod": "packages/zod"
+    "zod": "packages/zod",
+    "open-api": "packages/open-api"
   }
 }
