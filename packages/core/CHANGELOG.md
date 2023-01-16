@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.6.4
+
+### Patch Changes
+
+- 5da04bf: Fix type inference in `createQuery` in `effect` and `mapData` overload
+
 ## 0.6.3
 
 ## 0.6.2
