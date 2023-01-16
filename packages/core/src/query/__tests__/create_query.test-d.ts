@@ -99,10 +99,7 @@ describe('createQuery', () => {
       effect: createEffect(() => 12),
       mapData: {
         source: createStore(12),
-        fn: (
-          { result, params }: { result: number; params: void },
-          source: number
-        ) => 'string',
+        fn: ({ result, params }, source: number) => 'string',
       },
     });
 
@@ -125,10 +122,7 @@ describe('createQuery', () => {
       contract: unknownContract,
       mapData: {
         source: createStore(12),
-        fn: (
-          { result, params }: { result: unknown; params: void },
-          source: number
-        ): string => 'string',
+        fn: ({ result, params }, source: number): string => 'string',
       },
     });
 
