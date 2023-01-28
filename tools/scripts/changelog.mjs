@@ -74,19 +74,27 @@ function mergeChangelogs(packages) {
 
     currentLog.push(['header', { level: 2 }, 'Full changelog']);
     for (const { name, changes } of relatedChanges) {
-      currentLog.push(['header', { level: 3 }, name]);
+      const logForVersion = [];
       for (const [version, versionChanges] of Object.entries(changes).sort(
         ([v1], [v2]) => -compareSemVer(v1, v2)
       )) {
-        currentLog.push(['header', { level: 4 }, version]);
-
         const versionChangesEntries = Object.entries(versionChanges);
-        if (versionChangesEntries.length === 0) {
-          currentLog.push(['para'], 'Technical release');
+
+        let hasChanges = versionChangesEntries.length > 0;
+
+        if (!hasChanges) {
+          continue;
         }
+        logForVersion.push(['header', { level: 4 }, version]);
+
         for (const [type, items] of versionChangesEntries) {
-          currentLog.push(['para', ['strong', type]], ...items);
+          logForVersion.push(['para', ['strong', type]], ...items);
         }
+      }
+
+      if (logForVersion.length > 0) {
+        currentLog.push(['header', { level: 3 }, name]);
+        currentLog.push(...logForVersion);
       }
     }
 
