@@ -31,9 +31,9 @@ const Asteroid = s.type({
   mass: s.number(),
 });
 
-const asteriodContract = superstructContract(Asteroid);
+const asteroidContract = superstructContract(Asteroid);
 
-/* typeof asteriodContract === Contract<
+/* typeof asteroidContract === Contract<
  *   unknown, 👈 it accepts something unknown
  *   { type: 'asteriod', mass: number }, 👈 and validates if it is an asteroid
  * >
