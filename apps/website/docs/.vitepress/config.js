@@ -308,6 +308,7 @@ export default withMermaid(
             text: 'Releases',
             collapsible: false,
             items: [
+              { text: 'v0.7', link: '/releases/0-7' },
               { text: 'v0.6 Huai Nam Dang', link: '/releases/0-6' },
               { text: 'v0.5 Chew Lan', link: '/releases/0-5' },
               { text: 'v0.4', link: '/releases/0-4' },
