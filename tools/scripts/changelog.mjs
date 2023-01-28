@@ -14,13 +14,15 @@ const files = await promisify(glob)(
   }
 );
 
-const changelogs = await Promise.all(
-  files.map((file) =>
-    readFile(file, 'UTF-8')
-      .then((content) => content.toString())
-      .then(parseChangelog)
+const changelogs = (
+  await Promise.all(
+    files.map((file) =>
+      readFile(file, 'UTF-8')
+        .then((content) => content.toString())
+        .then(parseChangelog)
+    )
   )
-);
+).filter(Boolean);
 
 for (const [release, changelog] of mergeChangelogs(changelogs).entries()) {
   const md = renderChangelog(changelog);
@@ -98,6 +100,10 @@ function mergeChangelogs(packages) {
 
 async function parseChangelog(md) {
   const [_1, header, ...rest] = markdown.parse(md);
+
+  if (!header) {
+    return null;
+  }
 
   const name = header.at(2);
 
