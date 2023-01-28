@@ -1,5 +1,10 @@
 import { useUnit } from 'effector-solid';
-import { createResource, createSignal, createEffect, Resource } from 'solid-js';
+import {
+  createResource,
+  createSignal,
+  Resource,
+  createComputed,
+} from 'solid-js';
 import { type Query } from '@farfetched/core';
 
 import { createDefer } from './defer';
@@ -20,18 +25,13 @@ function createQueryResource<Params, Data, Error>(
     equals: false,
   });
 
-  const { data, error, pending, start } = useUnit({
-    data: query.$data,
-    error: query.$error,
-    pending: query.$pending,
-    start: query.start,
-  });
+  const { data, error, pending, start } = useUnit(query);
 
   let dataDefer = createDefer<Data, Error>();
 
-  createEffect(() => {
+  createComputed(() => {
     // Start Resource after Query state changes
-    if (pending()) {
+    if (pending() || data()) {
       dataDefer = createDefer();
       rerun([]);
     }
