@@ -37,13 +37,14 @@
     "@typescript-eslint/eslint-plugin": "5.49.0",
     "@typescript-eslint/parser": "5.49.0",
     "@vitejs/plugin-react": "3",
+    "@vitest/ui": "^0.25.8",
     "bytes-iec": "^3.1.1",
     "effector": "^22.5.0",
     "eslint": "~8.15.0",
     "fp-ts": "^2.13.1",
     "glob": "^8.0.3",
+    "jsdom": "~20.0.3",
     "io-ts": "^2.2.20",
-    "jsdom": "^20.0.1",
     "markdown": "^0.5.0",
     "node-html-markdown": "^1.2.0",
     "nx": "15.6.3",
@@ -54,10 +55,11 @@
     "size-limit": "^7.0.8",
     "solid-testing-library": "^0.3.0",
     "typescript": "4.8.4",
+    "vite": "^4.0.1",
+    "vite-plugin-eslint": "^1.8.1",
     "superstruct": "^1.0.3",
-    "vite": "4",
     "vite-plugin-solid": "2.5",
-    "vite-tsconfig-paths": "^3.5.1",
+    "vite-tsconfig-paths": "^4.0.2",
     "vitepress": "1.0.0-alpha.33",
     "vitepress-plugin-mermaid": "^2.0.8",
     "vitest": "^0.26.2",
@@ -78,4 +80,3 @@
     "solid-js": "1.4.8"
   }
 }
-

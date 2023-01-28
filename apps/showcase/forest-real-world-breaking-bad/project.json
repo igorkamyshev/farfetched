@@ -5,17 +5,15 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "nx:run-commands",
+      "executor": "@nrwl/vite:build",
       "options": {
-        "command": "vite build",
-        "cwd": "apps/showcase/forest-real-world-breaking-bad"
+        "outputPath": "dist/apps/showcase/forest-real-world-breaking-bad"
       }
     },
     "serve": {
-      "executor": "nx:run-commands",
+      "executor": "@nrwl/vite:dev-server",
       "options": {
-        "command": "vite",
-        "cwd": "apps/showcase/forest-real-world-breaking-bad"
+        "buildTarget": "showcase-forest-real-world-breaking-bad:build"
       }
     },
     "lint": {
@@ -25,6 +23,21 @@
         "lintFilePatterns": [
           "apps/showcase/forest-real-world-breaking-bad/**/*.{ts,js}"
         ]
+      }
+    },
+    "preview": {
+      "executor": "@nrwl/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "showcase-forest-real-world-breaking-bad:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "showcase-forest-real-world-breaking-bad:build:development"
+        },
+        "production": {
+          "buildTarget": "showcase-forest-real-world-breaking-bad:build:production"
+        }
       }
     }
   },
