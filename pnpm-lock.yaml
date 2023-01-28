@@ -55,6 +55,7 @@ importers:
       solid-js: 1.4.8
       solid-testing-library: ^0.3.0
       superstruct: ^1.0.3
+      tslib: ^2.3.0
       typescript: 4.8.4
       vite: ^4.0.1
       vite-plugin-eslint: ^1.8.1
@@ -117,6 +118,7 @@ importers:
       size-limit: 7.0.8
       solid-testing-library: 0.3.0_solid-js@1.4.8
       superstruct: 1.0.3
+      tslib: 2.4.0
       typescript: 4.8.4
       vite: 4.0.3_@types+node@18.7.14
       vite-plugin-eslint: 1.8.1_eslint@8.15.0+vite@4.0.3

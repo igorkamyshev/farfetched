@@ -22,7 +22,7 @@
       "options": {
         "outputPath": "dist/packages/core",
         "entryFile": "packages/core/index.ts",
-        "tsConfig": "packages/core/tsconfig.json",
+        "tsConfig": "packages/core/tsconfig.build.json",
         "project": "packages/core/package.json",
         "format": ["esm", "cjs"],
         "generateExportsField": true,
