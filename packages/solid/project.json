@@ -50,17 +50,16 @@
       }
     },
     "test": {
-      "executor": "nx:run-commands",
+      "executor": "@nrwl/vite:test",
       "options": {
-        "command": "pnpm vitest run",
-        "cwd": "packages/solid"
+        "config": "vite.config.ts"
       }
     },
     "typetest": {
-      "executor": "nx:run-commands",
+      "executor": "@nrwl/vite:test",
       "options": {
-        "command": "pnpm vitest typecheck --run",
-        "cwd": "packages/solid"
+        "config": "vite.config.ts",
+        "mode": "typecheck"
       }
     },
     "size": {

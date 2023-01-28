@@ -49,24 +49,23 @@
       }
     },
     "test": {
-      "executor": "nx:run-commands",
+      "executor": "@nrwl/vite:test",
       "options": {
-        "command": "pnpm vitest run",
-        "cwd": "packages/core"
+        "config": "vite.config.ts"
       }
     },
     "test_watch": {
-      "executor": "nx:run-commands",
+      "executor": "@nrwl/vite:test",
       "options": {
-        "command": "pnpm vitest",
-        "cwd": "packages/core"
+        "config": "vite.config.ts",
+        "watch": true
       }
     },
     "typetest": {
-      "executor": "nx:run-commands",
+      "executor": "@nrwl/vite:test",
       "options": {
-        "command": "pnpm vitest typecheck --run",
-        "cwd": "packages/core"
+        "config": "vite.config.ts",
+        "mode": "typecheck"
       }
     },
     "size": {
