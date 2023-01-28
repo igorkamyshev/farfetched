@@ -1,7 +1,7 @@
 import { allSettled, createEvent, fork, scopeBind } from 'effector';
-import { parseTime } from 'packages/core/src/libs/date-nfs';
 import { describe, test, expect, vi } from 'vitest';
 
+import { parseTime } from '../../../libs/date-nfs';
 import { inMemoryCache } from '../in_memory';
 
 describe('inMemoryCache', () => {
