@@ -1,0 +1,80 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/io-ts/src",
+  "projectType": "library",
+  "targets": {
+    "pack": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/typepack.mjs --package io-ts"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    },
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "project": "packages/io-ts/package.json",
+        "outputPath": "dist/packages/io-ts",
+        "entryFile": "packages/io-ts/index.ts",
+        "tsConfig": "packages/io-ts/tsconfig.json",
+        "format": ["esm", "cjs"],
+        "generateExportsField": true,
+        "compiler": "babel"
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs io-ts"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "pack"
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/io-ts/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "pnpm vitest run",
+        "cwd": "packages/io-ts"
+      }
+    },
+    "typetest": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "pnpm vitest typecheck --run",
+        "cwd": "packages/io-ts"
+      }
+    },
+    "size": {
+      "executor": "./tools/executors/size-limit:size-limit",
+      "options": {
+        "limit": "0.6 kB",
+        "outputPath": "dist/packages/io-ts"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    }
+  },
+  "implicitDependencies": ["!test-utils"],
+  "tags": []
+}

@@ -32,8 +32,10 @@ importers:
       effector-solid: 0.22.7
       eslint: ~8.15.0
       forest: ^0.21.2
+      fp-ts: ^2.13.1
       glob: ^8.0.3
       history: ^5.3.0
+      io-ts: ^2.2.20
       jsdom: ^20.0.1
       markdown: ^0.5.0
       mermaid: 9.1.7
@@ -95,7 +97,9 @@ importers:
       bytes-iec: 3.1.1
       effector: 22.5.0
       eslint: 8.15.0
+      fp-ts: 2.13.1
       glob: 8.0.3
+      io-ts: 2.2.20_fp-ts@2.13.1
       jsdom: 20.0.1
       markdown: 0.5.0
       node-html-markdown: 1.2.0
@@ -7836,6 +7840,10 @@ packages:
     engines: {node: '>= 0.6'}
     dev: true
 
+  /fp-ts/2.13.1:
+    resolution: {integrity: sha512-0eu5ULPS2c/jsa1lGFneEFFEdTbembJv8e4QKXeVJ3lm/5hyve06dlKZrpxmMwJt6rYen7sxmHHK2CLaXvWuWQ==}
+    dev: true
+
   /fraction.js/4.2.0:
     resolution: {integrity: sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==}
     dev: true
@@ -8401,6 +8409,14 @@ packages:
   /internmap/2.0.3:
     resolution: {integrity: sha512-5Hh7Y1wQbvY5ooGgPbDaL5iYLAPzMTUrjMulskHLH6wnv/A+1q5rgEaiuqEjB+oxGXIVZs1FF+R/KPN3ZSQYYg==}
     engines: {node: '>=12'}
+
+  /io-ts/2.2.20_fp-ts@2.13.1:
+    resolution: {integrity: sha512-Rq2BsYmtwS5vVttie4rqrOCIfHCS9TgpRLFpKQCM1wZBBRY9nWVGmEvm2FnDbSE2un1UE39DvFpTR5UL47YDcA==}
+    peerDependencies:
+      fp-ts: ^2.5.0
+    dependencies:
+      fp-ts: 2.13.1
+    dev: true
 
   /ipaddr.js/1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}

@@ -224,6 +224,10 @@ export default withMermaid(
                     text: 'Zod',
                     link: '/api/contracts/zod',
                   },
+                  {
+                    text: 'io-ts',
+                    link: '/api/contracts/io-ts',
+                  },
                 ],
               },
             ],
