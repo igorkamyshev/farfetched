@@ -26,6 +26,26 @@ export function createQuery<Params, Response>(
   } & SharedQueryFactoryConfig<Response>
 ): Query<Params, Response, unknown, Response>;
 
+// Overload: Effect and MapData
+export function createQuery<
+  Params,
+  Response,
+  Error,
+  MappedData,
+  MapDataSource = void,
+  ValidationSource = void
+>(
+  config: {
+    effect: Effect<Params, Response, Error>;
+    mapData: DynamicallySourcedField<
+      { result: Response; params: Params },
+      MappedData,
+      MapDataSource
+    >;
+    validate?: Validator<MappedData, Params, ValidationSource>;
+  } & SharedQueryFactoryConfig<MappedData>
+): Query<Params, MappedData, Error>;
+
 // Overload: Only effect
 export function createQuery<Params, Response, Error>(
   config: {
@@ -69,26 +89,6 @@ export function createQuery<
     validate?: Validator<ContractData, Params, ValidationSource>;
   } & SharedQueryFactoryConfig<ContractData>
 ): Query<Params, ContractData, Error | InvalidDataError, ContractData>;
-
-// Overload: Effect and MapData
-export function createQuery<
-  Params,
-  Response,
-  Error,
-  MappedData,
-  MapDataSource = void,
-  ValidationSource = void
->(
-  config: {
-    effect: Effect<Params, Response, Error>;
-    mapData: DynamicallySourcedField<
-      { result: Response; params: Params },
-      MappedData,
-      MapDataSource
-    >;
-    validate?: Validator<MappedData, Params, ValidationSource>;
-  } & SharedQueryFactoryConfig<MappedData>
-): Query<Params, MappedData, Error>;
 
 export function createQuery<
   Params,
