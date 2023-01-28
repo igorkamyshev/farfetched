@@ -52,6 +52,7 @@ importers:
       size-limit: ^7.0.8
       solid-js: 1.4.8
       solid-testing-library: ^0.3.0
+      superstruct: ^1.0.3
       typescript: ~4.7.2
       vite: '4'
       vite-plugin-solid: '2.5'
@@ -110,6 +111,7 @@ importers:
       semver-parser: 4.0.1
       size-limit: 7.0.8
       solid-testing-library: 0.3.0_solid-js@1.4.8
+      superstruct: 1.0.3
       typescript: 4.7.4
       vite: 4.0.1_@types+node@18.7.14
       vite-plugin-solid: 2.5.0_solid-js@1.4.8+vite@4.0.1
@@ -11825,6 +11827,11 @@ packages:
       source-map: 0.7.4
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /superstruct/1.0.3:
+    resolution: {integrity: sha512-8iTn3oSS8nRGn+C2pgXSKPI3jmpm6FExNazNpjvqS6ZUJQCej3PUXEKM8NjHBOs54ExM+LPW/FBRhymrdcCiSg==}
+    engines: {node: '>=14.0.0'}
     dev: true
 
   /supports-color/5.5.0:

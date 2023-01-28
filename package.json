@@ -52,6 +52,7 @@
     "semver-parser": "^4.0.1",
     "size-limit": "^7.0.8",
     "solid-testing-library": "^0.3.0",
+    "superstruct": "^1.0.3",
     "typescript": "~4.7.2",
     "vite": "4",
     "vite-plugin-solid": "2.5",

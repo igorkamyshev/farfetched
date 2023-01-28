@@ -9,6 +9,7 @@
     "showcase-react-real-world-pokemons": "apps/showcase/react-real-world-pokemons",
     "showcase-solid-real-world-rick-morty": "apps/showcase/solid-real-world-rick-morty",
     "solid": "packages/solid",
+    "superstruct": "packages/superstruct",
     "test-utils": "packages/test-utils",
     "website": "apps/website",
     "zod": "packages/zod"
