@@ -1,5 +1,13 @@
 # @farfetched/solid
 
+## 0.6.4
+
+## 0.6.3
+
+### Patch Changes
+
+- 0a45391: Re-trigger resource after `update` a _Query_
+
 ## 0.6.2
 
 ## 0.6.1
