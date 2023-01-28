@@ -6,6 +6,7 @@ import { unknownContract } from '../../contract/unknown_contract';
 import { ExecutionMeta } from '../../remote_operation/type';
 import { declareParams } from '../../remote_operation/params';
 import { createJsonMutation } from '../create_json_mutation';
+import { Mutation } from '../type';
 
 describe('createJsonMutation', () => {
   test('no params and no body in GET', () => {
@@ -404,5 +405,18 @@ describe('createJsonMutation', () => {
     expectTypeOf(mutationTwo.finished.success).toEqualTypeOf<
       Event<{ result: number; params: void; meta: ExecutionMeta }>
     >();
+  });
+
+  test('allow to pass credentials', () => {
+    const mutation = createJsonMutation({
+      request: {
+        url: 'https://salo.com',
+        method: 'GET',
+        credentials: 'same-origin',
+      },
+      response: { contract: unknownContract },
+    });
+
+    expectTypeOf(mutation).toEqualTypeOf<Mutation<void, unknown, unknown>>();
   });
 });

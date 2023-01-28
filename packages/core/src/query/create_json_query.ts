@@ -29,6 +29,7 @@ type ConcurrencyConfig = {
 type RequestConfig<Params, BodySource, QuerySource, HeadersSource, UrlSource> =
   {
     url: SourcedField<Params, string, UrlSource>;
+    credentials?: RequestCredentials;
     query?: SourcedField<Params, FetchApiRecord, QuerySource>;
     headers?: SourcedField<Params, FetchApiRecord, HeadersSource>;
   } & (
@@ -319,9 +320,15 @@ export function createJsonQuery<
 
 // -- Implementation --
 export function createJsonQuery(config: any) {
+  const credentials: RequestCredentials =
+    config.request.credentials ?? 'same-origin';
+
   // Basement
   const requestFx = createJsonApiRequest({
-    request: { method: config.request.method, credentials: 'same-origin' },
+    request: {
+      method: config.request.method,
+      credentials,
+    },
     concurrency: { strategy: config.concurrency?.strategy ?? 'TAKE_LATEST' },
     abort: { clock: config.concurrency?.abort },
   });
