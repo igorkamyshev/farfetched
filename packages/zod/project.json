@@ -1,10 +1,11 @@
 {
+  "name": "zod",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/zod/src",
   "projectType": "library",
   "targets": {
     "pack": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "node tools/scripts/typepack.mjs --package zod"
       },
@@ -16,7 +17,7 @@
       ]
     },
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "project": "packages/zod/package.json",
@@ -29,7 +30,7 @@
       }
     },
     "publish": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "node tools/scripts/publish.mjs zod"
       },
@@ -47,18 +48,17 @@
         "lintFilePatterns": ["packages/zod/**/*.ts"]
       }
     },
-    "typetest": {
-      "executor": "@nrwl/workspace:run-commands",
+    "test": {
+      "executor": "@nrwl/vite:test",
       "options": {
-        "command": "pnpm vitest typecheck --run",
-        "cwd": "packages/zod"
+        "config": "vite.config.ts"
       }
     },
-    "test": {
-      "executor": "@nrwl/workspace:run-commands",
+    "typetest": {
+      "executor": "@nrwl/vite:test",
       "options": {
-        "command": "pnpm vitest run",
-        "cwd": "packages/zod"
+        "config": "vite.config.ts",
+        "mode": "typecheck"
       }
     },
     "size": {

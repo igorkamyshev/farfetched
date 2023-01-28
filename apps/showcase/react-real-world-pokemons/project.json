@@ -1,20 +1,19 @@
 {
+  "name": "showcase-react-real-world-pokemons",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/showcase/react-real-world-pokemons/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/vite:build",
       "options": {
-        "command": "vite build",
-        "cwd": "apps/showcase/react-real-world-pokemons"
+        "outputPath": "dist/apps/showcase/react-real-world-pokemons"
       }
     },
     "serve": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/vite:dev-server",
       "options": {
-        "command": "vite",
-        "cwd": "apps/showcase/react-real-world-pokemons"
+        "buildTarget": "showcase-react-real-world-pokemons:build"
       }
     },
     "lint": {
@@ -24,6 +23,21 @@
         "lintFilePatterns": [
           "apps/showcase/react-real-world-pokemons/**/*.{ts,tsx,js,jsx}"
         ]
+      }
+    },
+    "preview": {
+      "executor": "@nrwl/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "showcase-react-real-world-pokemons:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "showcase-react-real-world-pokemons:build:development"
+        },
+        "production": {
+          "buildTarget": "showcase-react-real-world-pokemons:build:production"
+        }
       }
     }
   },

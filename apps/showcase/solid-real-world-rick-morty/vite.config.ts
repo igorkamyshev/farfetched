@@ -3,6 +3,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import solidPlugin from 'vite-plugin-solid';
 
 export default defineConfig({
+  cacheDir: '../../../node_modules/.vite/showcase-solid-real-world-rick-morty',
   plugins: [tsconfigPaths(), solidPlugin()],
   resolve: {
     conditions: ['browser'],

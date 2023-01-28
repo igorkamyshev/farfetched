@@ -1,11 +1,12 @@
 {
+  "name": "solid",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/solid/src",
   "projectType": "library",
   "tags": [],
   "targets": {
     "pack": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "node tools/scripts/typepack.mjs --package solid"
       },
@@ -17,7 +18,7 @@
       ]
     },
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "project": "packages/solid/package.json",
@@ -30,7 +31,7 @@
       }
     },
     "publish": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "node tools/scripts/publish.mjs solid"
       },
@@ -49,17 +50,16 @@
       }
     },
     "test": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/vite:test",
       "options": {
-        "command": "pnpm vitest run",
-        "cwd": "packages/solid"
+        "config": "vite.config.ts"
       }
     },
     "typetest": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/vite:test",
       "options": {
-        "command": "pnpm vitest typecheck --run",
-        "cwd": "packages/solid"
+        "config": "vite.config.ts",
+        "mode": "typecheck"
       }
     },
     "size": {
