@@ -10,7 +10,7 @@ import { Contract } from '@farfetched/core';
 function runtypeContract<D>(data: Runtype<D>): Contract<unknown, D> {
   return {
     isData: data.guard,
-    getErrorMessages(raw) {
+    getErrorMessages(raw: unknown) {
       const validation = data.validate(raw);
       if (validation.success) {
         return [];
