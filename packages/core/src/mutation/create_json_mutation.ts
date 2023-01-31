@@ -28,6 +28,7 @@ type ConcurrencyConfig = {
 type RequestConfig<Params, BodySource, QuerySource, HeadersSource, UrlSource> =
   {
     url: SourcedField<Params, string, UrlSource>;
+    credentials?: RequestCredentials;
     query?: SourcedField<Params, FetchApiRecord, QuerySource>;
     headers?: SourcedField<Params, FetchApiRecord, HeadersSource>;
   } & (
@@ -202,8 +203,11 @@ export function createJsonMutation<
 
 // -- Implementation --
 export function createJsonMutation(config: any): Mutation<any, any, any> {
+  const credentials: RequestCredentials =
+    config.request.credentials ?? 'same-origin';
+
   const requestFx = createJsonApiRequest({
-    request: { method: config.request.method, credentials: 'same-origin' },
+    request: { method: config.request.method, credentials },
     concurrency: { strategy: 'TAKE_EVERY' },
     response: { status: config.response.status },
     abort: { clock: config.concurrency?.abort },

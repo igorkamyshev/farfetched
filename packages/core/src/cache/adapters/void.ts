@@ -13,5 +13,6 @@ export function voidCache(): CacheAdapter {
       // pass
     }),
     purge: createEvent(),
+    unset: createEffect<{ key: string }, void>(),
   });
 }

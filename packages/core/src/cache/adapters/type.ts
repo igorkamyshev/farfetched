@@ -6,7 +6,7 @@ export interface CacheAdapterInstance {
   get: Effect<{ key: string }, { value: unknown; cachedAt: number } | null>;
   set: Effect<{ key: string; value: unknown }, void>;
   purge: Event<void>;
-  unset?: Effect<{ key: string }, void>;
+  unset: Effect<{ key: string }, void>;
 }
 
 export interface CacheAdapterOptions {

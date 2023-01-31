@@ -60,8 +60,6 @@ export function createHeadlessQuery<
     paramsAreMeaningless,
   } = config;
 
-  const queryName = name ?? 'unnamed';
-
   const initialData = initialDataRaw ?? (null as unknown as Initial);
 
   const operation = createRemoteOperation<
@@ -74,7 +72,7 @@ export function createHeadlessQuery<
     MapDataSource,
     ValidationSource
   >({
-    name: queryName,
+    name,
     kind: QuerySymbol,
     serialize: serializationForSideStore(serialize),
     enabled,
@@ -90,18 +88,18 @@ export function createHeadlessQuery<
 
   // -- Main stores --
   const $data = createStore<MappedData | Initial>(initialData, {
-    sid: `ff.${queryName}.$data`,
-    name: `${queryName}.$data`,
+    sid: `ff.${operation.__.meta.name}.$data`,
+    name: `${operation.__.meta.name}.$data`,
     serialize,
   });
   const $error = createStore<Error | InvalidDataError | null>(null, {
-    sid: `ff.${queryName}.$error`,
-    name: `${queryName}.$error`,
+    sid: `ff.${operation.__.meta.name}.$error`,
+    name: `${operation.__.meta.name}.$error`,
     serialize: serializationForSideStore(serialize),
   });
   const $stale = createStore<boolean>(false, {
-    sid: `ff.${queryName}.$stale`,
-    name: `${queryName}.$stale`,
+    sid: `ff.${operation.__.meta.name}.$stale`,
+    name: `${operation.__.meta.name}.$stale`,
     serialize: serializationForSideStore(serialize),
   });
 

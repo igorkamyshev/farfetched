@@ -7,18 +7,6 @@ import { createQuery } from '../../../query/create_query';
 import { enrichStartWithKey } from '../key';
 
 describe('key, without sourced', () => {
-  test('exception for query without sid', () => {
-    const query = createQuery({
-      handler: async (p: void) => null,
-    });
-
-    expect(() => {
-      enrichStartWithKey(query);
-    }).toThrowErrorMatchingInlineSnapshot(
-      '"Query does not have sid, which is required for caching, read more https://farfetched.pages.dev/recipes/sids.html"'
-    );
-  });
-
   test('different keys for different Queries', async () => {
     const firstQuery = withFactory({
       fn: () => createQuery({ handler: async (p: void) => 1 }),

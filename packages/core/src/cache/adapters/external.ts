@@ -17,7 +17,7 @@ export function externalCache(config: {
     | { value: unknown; cachedAt: number }
     | null;
   set: (opts: { key: string; value: unknown }) => Promise<void> | void;
-  unset?: (opts: { key: string }) => Promise<void> | void;
+  unset: (opts: { key: string }) => Promise<void> | void;
   purge: () => Promise<void> | void;
   observability?: NarrowObservability;
 }): CacheAdapter {
@@ -28,11 +28,7 @@ export function externalCache(config: {
   const adapter = {
     get: createEffect(config.get),
     set: createEffect(config.set),
-    unset: config.unset
-      ? createEffect(config.unset)
-      : createEffect((_: { key: string }) => {
-          // TODO: remove this fallback in the next minor release
-        }),
+    unset: createEffect(config.unset),
     purge,
   };
 

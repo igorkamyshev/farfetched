@@ -1,6 +1,7 @@
-import { createEvent, fork, scopeBind } from 'effector';
+import { allSettled, createEvent, fork, scopeBind } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
+import { parseTime } from '../../../libs/date-nfs';
 import { inMemoryCache } from '../in_memory';
 
 describe('inMemoryCache', () => {
@@ -38,5 +39,43 @@ describe('inMemoryCache', () => {
 
     expect(listener).toBeCalledTimes(1);
     expect(listener).toBeCalledWith({ key: 'key' });
+  });
+
+  test('share across scopes', async () => {
+    const cache = inMemoryCache({
+      maxAge: '1sec',
+    });
+
+    const scopeOne = fork();
+    const scopeTwo = fork();
+
+    // Save on scopeOne
+    await scopeBind(cache.set, {
+      scope: scopeOne,
+    })({ key: 'key', value: 'test-value' });
+
+    // Get on scopeTwo
+    const resultOne = await scopeBind(cache.get, {
+      scope: scopeTwo,
+    })({ key: 'key' });
+
+    expect(resultOne?.value).toEqual('test-value');
+  });
+
+  test('do not block allSettled', async () => {
+    const cache = inMemoryCache({
+      maxAge: '1sec',
+    });
+
+    const scope = fork();
+
+    const before = Date.now();
+    await allSettled(cache.set, {
+      scope,
+      params: { key: 'key', value: 'test-value' },
+    });
+    const after = Date.now();
+
+    expect(after - before).toBeLessThan(parseTime('1sec'));
   });
 });

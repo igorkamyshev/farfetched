@@ -3,11 +3,13 @@
   "version": 2,
   "projects": {
     "core": "packages/core",
+    "io-ts": "packages/io-ts",
     "runtypes": "packages/runtypes",
     "showcase-forest-real-world-breaking-bad": "apps/showcase/forest-real-world-breaking-bad",
     "showcase-react-real-world-pokemons": "apps/showcase/react-real-world-pokemons",
     "showcase-solid-real-world-rick-morty": "apps/showcase/solid-real-world-rick-morty",
     "solid": "packages/solid",
+    "superstruct": "packages/superstruct",
     "test-utils": "packages/test-utils",
     "website": "apps/website",
     "zod": "packages/zod"

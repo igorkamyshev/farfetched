@@ -37,7 +37,7 @@ function enrichWithKey<
   T extends { params: any },
   Q extends Query<any, any, any>
 >(event: Event<T>, query: Q): Event<T & { key: string | null }> {
-  const queryDataSid = querySid(query);
+  const queryDataSid = queryUniqId(query);
 
   return sample({
     clock: event,
@@ -73,14 +73,42 @@ function createKey({
   }
 }
 
-function querySid(query: Query<any, any, any>) {
+function queryUniqId(query: Query<any, any, any>) {
+  const sid = querySid(query);
+
+  if (sid) {
+    return sid;
+  }
+
+  const uniqName = queryUniqName(query);
+
+  if (uniqName) {
+    return uniqName;
+  }
+
+  throw new Error(
+    'Query does not have sid or uniq name, which is required for caching, read more https://farfetched.pages.dev/recipes/sids.html'
+  );
+}
+
+function querySid(query: Query<any, any, any>): string | null {
   const sid = query.$data.sid;
 
   if (!sid?.includes('|')) {
-    throw new Error(
-      'Query does not have sid, which is required for caching, read more https://farfetched.pages.dev/recipes/sids.html'
-    );
+    return null;
   }
 
   return sid;
+}
+
+const prevNames = new Set<string>();
+function queryUniqName(query: Query<any, any, any>): string | null {
+  const name = query.__.meta.name;
+
+  if (prevNames.has(name)) {
+    return null;
+  }
+
+  prevNames.add(name);
+  return name;
 }

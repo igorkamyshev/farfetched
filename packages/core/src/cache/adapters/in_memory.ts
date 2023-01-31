@@ -1,12 +1,6 @@
-import {
-  attach,
-  createEffect,
-  createEvent,
-  createStore,
-  sample,
-} from 'effector';
+import { createEffect, createEvent, sample, scopeBind } from 'effector';
 
-import { time, delay } from '../../libs/patronus';
+import { time } from '../../libs/patronus';
 import { parseTime } from '../../libs/date-nfs';
 import { createAdapter } from './instance';
 import { attachObservability } from './observability';
@@ -15,16 +9,10 @@ import { CacheAdapter, CacheAdapterOptions } from './type';
 type Entry = { value: unknown; cachedAt: number };
 type Storage = Record<string, Entry>;
 
-// TODO: save time to prevent stale data because of throttling
 export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
   const { maxEntries, maxAge, observability } = config ?? {};
 
-  const $storage = createStore<Storage>(
-    {},
-    {
-      serialize: 'ignore',
-    }
-  );
+  let storage: Storage = {};
 
   const saveValue = createEvent<{ key: string; value: unknown }>();
   const removeValue = createEvent<{ key: string }>();
@@ -34,14 +22,16 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
 
   const purge = createEvent();
 
-  $storage.reset(purge);
+  purge.watch(() => {
+    storage = {};
+  });
 
   const $now = time({ clock: saveValue });
 
   const maxEntriesApplied = sample({
     clock: saveValue,
-    source: { storage: $storage, now: $now },
-    fn: ({ storage, now }, { key, value }) =>
+    source: { now: $now },
+    fn: ({ now }, { key, value }) =>
       applyMaxEntries(
         storage,
         { key, entry: { value, cachedAt: now } },
@@ -49,10 +39,8 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
       ),
   });
 
-  sample({
-    source: maxEntriesApplied,
-    fn: ({ next }) => next,
-    target: $storage,
+  maxEntriesApplied.watch(({ next }) => {
+    storage = next;
   });
 
   sample({
@@ -62,22 +50,19 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
     target: itemEvicted,
   });
 
-  sample({
-    clock: removeValue,
-    source: $storage,
-    fn: (storage, { key }) => {
-      const { [key]: _, ...rest } = storage;
+  removeValue.watch(({ key }) => {
+    const { [key]: _, ...rest } = storage;
 
-      return rest;
-    },
-    target: $storage,
+    storage = rest;
   });
 
   if (maxAge) {
-    delay({
-      clock: saveValue,
-      timeout: parseTime(maxAge),
-      target: itemExpired,
+    const timeout = parseTime(maxAge);
+
+    saveValue.watch((payload) => {
+      const boundItemExpired = scopeBind(itemExpired, { safe: true });
+
+      setTimeout(() => boundItemExpired(payload), timeout);
     });
 
     sample({
@@ -88,26 +73,23 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
   }
 
   const adapter = {
-    get: attach({
-      source: $storage,
-      effect: (storage, { key }: { key: string }): Entry | null => {
-        const saved = storage[key] ?? null;
+    get: createEffect(({ key }: { key: string }): Entry | null => {
+      const saved = storage[key] ?? null;
 
-        if (!saved) {
+      if (!saved) {
+        return null;
+      }
+
+      if (maxAge) {
+        const expiredAt = saved?.cachedAt + parseTime(maxAge);
+
+        if (Date.now() >= expiredAt) {
+          removeValue({ key });
           return null;
         }
+      }
 
-        if (maxAge) {
-          const expiredAt = saved?.cachedAt + parseTime(maxAge);
-
-          if (Date.now() >= expiredAt) {
-            removeValue({ key });
-            return null;
-          }
-        }
-
-        return saved;
-      },
+      return saved;
     }),
     set: createEffect<
       {

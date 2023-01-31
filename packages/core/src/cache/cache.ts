@@ -1,4 +1,4 @@
-import { attach, createEffect, Event, sample, split } from 'effector';
+import { createEffect, Event, sample, split } from 'effector';
 
 import { time } from '../libs/patronus';
 import { parseTime, Time } from '../libs/date-nfs';
@@ -61,7 +61,7 @@ function removeFromCache<Q extends Query<any, any, any>>(
 
   const unsetCachedValueFx = createEffect(
     ({ instance, key }: { instance: CacheAdapterInstance; key: string }) =>
-      instance.unset?.({ key })
+      instance.unset({ key })
   );
 
   const { forcedWithKey } = split(enrichForcedWithKey(query), {

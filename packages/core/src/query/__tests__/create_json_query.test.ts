@@ -1,5 +1,8 @@
-import { describe, test, expect } from 'vitest';
+import { allSettled, fork } from 'effector';
+import { describe, test, expect, vi } from 'vitest';
 
+import { unknownContract } from '../../contract/unknown_contract';
+import { fetchFx } from '../../fetch/fetch';
 import { createJsonQuery } from '../create_json_query';
 import { isQuery } from '../type';
 
@@ -36,5 +39,31 @@ describe('createJsonQuery', () => {
     });
 
     expect(query.$data.getState()).toBe(14);
+  });
+
+  test('pass credentials to fetch', async () => {
+    const mutation = createJsonQuery({
+      request: {
+        method: 'GET',
+        url: 'https://api.salo.com',
+        credentials: 'omit',
+      },
+      response: { contract: unknownContract },
+    });
+
+    const fetchMock = vi.fn().mockImplementation(async () => {
+      throw new Error('cannot');
+    });
+
+    const scope = fork({
+      handlers: [[fetchFx, fetchMock]],
+    });
+
+    await allSettled(mutation.start, { scope });
+
+    expect(fetchMock).toBeCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.objectContaining({ credentials: 'omit' })
+    );
   });
 });

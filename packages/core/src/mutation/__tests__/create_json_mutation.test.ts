@@ -179,4 +179,30 @@ describe('createJsonMutation', () => {
       expect.objectContaining({ error: abortError() })
     );
   });
+
+  test('pass credentials to fetch', async () => {
+    const mutation = createJsonMutation({
+      request: {
+        method: 'GET',
+        url: 'https://api.salo.com',
+        credentials: 'omit',
+      },
+      response: { contract: unknownContract },
+    });
+
+    const fetchMock = vi.fn().mockImplementation(async () => {
+      throw new Error('cannot');
+    });
+
+    const scope = fork({
+      handlers: [[fetchFx, fetchMock]],
+    });
+
+    await allSettled(mutation.start, { scope });
+
+    expect(fetchMock).toBeCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.objectContaining({ credentials: 'omit' })
+    );
+  });
 });

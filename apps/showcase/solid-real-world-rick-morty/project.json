@@ -1,20 +1,19 @@
 {
+  "name": "showcase-solid-real-world-rick-morty",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/showcase/solid-real-world-rick-morty/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/vite:build",
       "options": {
-        "command": "vite build",
-        "cwd": "apps/showcase/solid-real-world-rick-morty"
+        "outputPath": "dist/apps/showcase/solid-real-world-rick-morty"
       }
     },
     "serve": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/vite:dev-server",
       "options": {
-        "command": "vite",
-        "cwd": "apps/showcase/solid-real-world-rick-morty"
+        "buildTarget": "showcase-solid-real-world-rick-morty:build"
       }
     },
     "lint": {
@@ -24,6 +23,21 @@
         "lintFilePatterns": [
           "apps/showcase/solid-real-world-rick-morty/**/*.{ts,tsx,js,jsx}"
         ]
+      }
+    },
+    "preview": {
+      "executor": "@nrwl/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "showcase-solid-real-world-rick-morty:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "showcase-solid-real-world-rick-morty:build:development"
+        },
+        "production": {
+          "buildTarget": "showcase-solid-real-world-rick-morty:build:production"
+        }
       }
     }
   },
