@@ -1,5 +1,15 @@
 # @farfetched/core
 
+## 0.7.0
+
+### Minor Changes
+
+- 294f0ae: Add `name` field to meta of any _RemoteOperation_
+- 7fd0c57: Share `inMemoryCache` between scopes, do not block `allSettled` in it
+- 2116b36: Use `name` of a _Query_ as a part of key in `cache` in case of absent `sid` and uniq `name`
+- 942cbf2: Allow to override `credentials` in `createJsonQuery` and `createJsonMutation`
+- 79593c6: Make `unset` method of custom `cache` adapter required
+
 ## 0.6.4
 
 ### Patch Changes
