@@ -210,14 +210,17 @@ describe('core/createHeadlessQuery with contract', () => {
     await allSettled(query.start, { scope, params: 42 });
 
     expect(scope.getState(query.$error)).toEqual(
-      invalidDataError({ validationErrors: ['got it'] })
+      invalidDataError({ validationErrors: ['got it'], response: undefined })
     );
 
     expect(listeners.onFailure).toHaveBeenCalledTimes(1);
     expect(listeners.onFailure).toHaveBeenCalledWith(
       expect.objectContaining({
         params: 42,
-        error: invalidDataError({ validationErrors: ['got it'] }),
+        error: invalidDataError({
+          validationErrors: ['got it'],
+          response: undefined,
+        }),
       })
     );
   });

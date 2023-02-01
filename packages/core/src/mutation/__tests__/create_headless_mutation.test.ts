@@ -100,6 +100,7 @@ describe('createHeadlessMutation', () => {
           explanation:
             'Response was considered as invalid against a given contract',
           validationErrors: ['Test error'],
+          response: 42,
         },
       })
     );
@@ -129,6 +130,7 @@ describe('createHeadlessMutation', () => {
           explanation:
             'Response was considered as invalid against a given contract',
           validationErrors: ['Test error'],
+          response: 42,
         },
       })
     );

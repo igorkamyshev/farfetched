@@ -115,6 +115,7 @@ describe('createJsonMutation', () => {
           validationErrors: [
             'Expected response status has to be one of [201], got 200',
           ],
+          response: null,
         },
         params: undefined,
       })

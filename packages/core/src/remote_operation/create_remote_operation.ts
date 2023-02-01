@@ -255,10 +255,11 @@ export function createRemoteOperation<
   sample({
     clock: invalidDataRecieved,
     filter: ({ meta }) => !meta.stopErrorPropagation,
-    fn: ({ params, validation, meta }) => ({
+    fn: ({ params, validation, meta, result }) => ({
       params,
       error: invalidDataError({
         validationErrors: unwrapValidationResult(validation),
+        response: result,
       }),
       meta,
     }),

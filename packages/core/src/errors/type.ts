@@ -8,6 +8,7 @@ export type FarfetchedError<T extends string> = {
 export const INVALID_DATA = 'INVALID_DATA';
 export interface InvalidDataError extends FarfetchedError<typeof INVALID_DATA> {
   validationErrors: string[];
+  response: unknown;
 }
 
 export const TIMEOUT = 'TIMEOUT';

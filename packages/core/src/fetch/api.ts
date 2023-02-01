@@ -239,6 +239,7 @@ export function createApiRequest<
                 ', '
               )}], got ${response.status}`,
             ],
+            response: prepared,
           });
         }
       }
