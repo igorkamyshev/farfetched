@@ -23,7 +23,7 @@
         "project": "packages/runtypes/package.json",
         "outputPath": "dist/packages/runtypes",
         "entryFile": "packages/runtypes/index.ts",
-        "tsConfig": "packages/runtypes/tsconfig.json",
+        "tsConfig": "packages/runtypes/tsconfig.build.json",
         "format": ["esm", "cjs"],
         "generateExportsField": true,
         "compiler": "babel"
