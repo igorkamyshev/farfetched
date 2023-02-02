@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.7.1
+
+### Patch Changes
+
+- f1afd34: Add a response field in invalid data error
+
 ## 0.7.0
 
 ### Minor Changes
