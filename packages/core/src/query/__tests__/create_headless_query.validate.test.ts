@@ -23,7 +23,10 @@ describe('core/createHeadlessQuery with validate', () => {
     await allSettled(query.start, { scope, params: {} });
 
     expect(scope.getState(query.$error)).toEqual(
-      invalidDataError({ validationErrors: ['Some validation error'] })
+      invalidDataError({
+        validationErrors: ['Some validation error'],
+        response: 'Random string',
+      })
     );
   });
 
@@ -38,7 +41,10 @@ describe('core/createHeadlessQuery with validate', () => {
     await allSettled(query.start, { scope, params: {} });
 
     expect(scope.getState(query.$error)).toEqual(
-      invalidDataError({ validationErrors: ['first error', 'second error'] })
+      invalidDataError({
+        validationErrors: ['first error', 'second error'],
+        response: 'Random string',
+      })
     );
   });
 

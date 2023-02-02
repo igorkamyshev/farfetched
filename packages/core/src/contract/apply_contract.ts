@@ -22,6 +22,7 @@ export function createContractApplier<Params, Raw, Data extends Raw>(
       if (!isData) {
         throw invalidDataError({
           validationErrors: contract.getErrorMessages(data),
+          response: data,
         });
       }
 

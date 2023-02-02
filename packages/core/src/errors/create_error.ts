@@ -17,13 +17,16 @@ import {
 
 export function invalidDataError({
   validationErrors,
+  response,
 }: {
   validationErrors: string[];
+  response: unknown;
 }): InvalidDataError {
   return {
     errorType: INVALID_DATA,
     explanation: 'Response was considered as invalid against a given contract',
     validationErrors,
+    response,
   };
 }
 

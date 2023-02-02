@@ -80,6 +80,7 @@ describe('createMutation', () => {
           explanation:
             'Response was considered as invalid against a given contract',
           validationErrors: ['Test error'],
+          response: 'data',
         },
       })
     );
