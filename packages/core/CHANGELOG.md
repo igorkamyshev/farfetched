@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.7.2
+
+### Patch Changes
+
+- be8bb8b: Return null for empty response without header in `createJson*`
+
 ## 0.7.1
 
 ### Patch Changes
