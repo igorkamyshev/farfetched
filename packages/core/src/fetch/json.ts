@@ -63,9 +63,9 @@ export function createJsonApiRequest<R extends CreationRequestConfig>(
     },
     response: {
       extract: async (response) => {
-        const emptyContent = response.headers.get('Content-Length') === '0';
+        const emptyContent = await isEmptyResponse(response);
 
-        if (!response.body || emptyContent) {
+        if (emptyContent) {
           return null;
         }
 
@@ -99,4 +99,25 @@ export function createJsonApiRequest<R extends CreationRequestConfig>(
   });
 
   return jsonApiCallFx;
+}
+
+async function isEmptyResponse(response: Response): Promise<boolean> {
+  if (!response.body) {
+    return true;
+  }
+
+  const headerAsEmpty = response.headers.get('Content-Length') === '0';
+  if (headerAsEmpty) {
+    return true;
+  }
+
+  // Clone response to read it
+  // because response can be read only once
+  const clonnedResponse = response.clone();
+  const bodyAsText = await clonnedResponse.text();
+  if (bodyAsText.length === 0) {
+    return true;
+  }
+
+  return false;
 }
