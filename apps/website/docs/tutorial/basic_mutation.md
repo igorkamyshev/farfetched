@@ -95,4 +95,4 @@ In real applications, we assume that the result of the [_Mutation_](/api/primiti
 
 ## _Mutation_ status
 
-Since [_Mutation_](/api/primitives/mutation) is an asynchronous operation, you can use `.$status` to get current status of the operation. It is a [Store](https://effector.dev/docs/api/effector/store) that contains one of the following statuses: "initial", "pending", "success" or "error".
+Since [_Mutation_](/api/primitives/mutation) is an asynchronous operation, you can use `.$status` to get current status of the operation. It is a [Store](https://effector.dev/docs/api/effector/store) that contains one of the following statuses: "initial", "pending", "success" or "fail".
