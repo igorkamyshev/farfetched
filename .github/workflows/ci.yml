@@ -26,6 +26,7 @@ jobs:
       - run: pnpm lint:workspace
       - run: pnpm test
       - run: pnpm test:types
+      - run: pnpm test:tools
       - run: pnpm lint
       - run: pnpm build
       - run: pnpm size

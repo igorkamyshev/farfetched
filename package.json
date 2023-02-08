@@ -6,6 +6,7 @@
     "test": "nx run-many --target=test --all",
     "test:watch": "nx run-many --target=test_watch --all --args=\"--\"",
     "test:types": "nx run-many --target=typetest --all",
+    "test:tools": "vitest run tools",
     "lint": "nx run-many --target=lint --all",
     "lint:format": "nx format:check",
     "lint:workspace": "nx workspace-lint",
