@@ -7,6 +7,8 @@ import { NodeHtmlMarkdown } from 'node-html-markdown';
 import { parseSemVer, compareSemVer } from 'semver-parser';
 import { resolve } from 'node:path';
 
+import { groupByVersions } from './lib.mjs';
+
 const files = await promisify(glob)(
   '{packages,deleted_packages}/*/CHANGELOG.md',
   {
@@ -73,27 +75,27 @@ function mergeChangelogs(packages) {
       .filter(({ changes }) => Object.keys(changes).length > 0);
 
     currentLog.push(['header', { level: 2 }, 'Full changelog']);
-    for (const { name, changes } of relatedChanges) {
+    for (const { version, packages } of groupByVersions(relatedChanges).sort(
+      ({ version: v1 }, { version: v2 }) => -compareSemVer(v1, v2)
+    )) {
       const logForVersion = [];
-      for (const [version, versionChanges] of Object.entries(changes).sort(
-        ([v1], [v2]) => -compareSemVer(v1, v2)
-      )) {
-        const versionChangesEntries = Object.entries(versionChanges);
+      for (const { name: packageName, changes: packageChanges } of packages) {
+        const pacakgeChangesEntries = Object.entries(packageChanges);
 
-        let hasChanges = versionChangesEntries.length > 0;
+        let hasChanges = pacakgeChangesEntries.length > 0;
 
         if (!hasChanges) {
           continue;
         }
-        logForVersion.push(['header', { level: 4 }, version]);
+        logForVersion.push(['header', { level: 4 }, packageName]);
 
-        for (const [type, items] of versionChangesEntries) {
+        for (const [type, items] of pacakgeChangesEntries) {
           logForVersion.push(['para', ['strong', type]], ...items);
         }
       }
 
       if (logForVersion.length > 0) {
-        currentLog.push(['header', { level: 3 }, name]);
+        currentLog.push(['header', { level: 3 }, version]);
         currentLog.push(...logForVersion);
       }
     }
