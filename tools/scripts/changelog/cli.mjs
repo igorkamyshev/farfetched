@@ -87,11 +87,14 @@ function mergeChangelogs(packages) {
         if (!hasChanges) {
           continue;
         }
-        logForVersion.push(['header', { level: 4 }, packageName]);
+
+        logForVersion.push(['para', `::: details ${packageName}`]);
 
         for (const [type, items] of pacakgeChangesEntries) {
           logForVersion.push(['para', ['strong', type]], ...items);
         }
+
+        logForVersion.push(['para', ':::']);
       }
 
       if (logForVersion.length > 0) {
