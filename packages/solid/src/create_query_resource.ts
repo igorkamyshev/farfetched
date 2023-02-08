@@ -14,10 +14,6 @@ function createQueryResource<Params, Data, Error>(
 ): [
   Resource<Data | undefined>,
   {
-    /**
-     * @deprecated use `start` instead
-     */
-    refetch: (params: Params) => void;
     start: (params: Params) => void;
   }
 ] {
@@ -52,7 +48,7 @@ function createQueryResource<Params, Data, Error>(
   // Bind to suspense
   const [resourceData] = createResource(track, () => dataDefer.promise);
 
-  return [resourceData, { refetch: start, start }];
+  return [resourceData, { start }];
 }
 
 export { createQueryResource };
