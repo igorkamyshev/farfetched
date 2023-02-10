@@ -194,6 +194,8 @@ export default withMermaid(
           },
           {
             text: 'Primitives',
+            collapsible: true,
+            collapsed: true,
             items: [
               { text: 'Query', link: '/api/primitives/query' },
               { text: 'Mutation', link: '/api/primitives/mutation' },
@@ -202,7 +204,15 @@ export default withMermaid(
             ],
           },
           {
+            text: 'Utils',
+            collapsible: true,
+            collapsed: true,
+            items: [{ text: 'Error guards', link: '/api/utils/error_guards' }],
+          },
+          {
             text: 'Integrations',
+            collapsible: true,
+            collapsed: true,
             items: [
               {
                 text: 'UI libraries',

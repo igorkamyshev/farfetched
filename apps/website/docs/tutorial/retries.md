@@ -51,7 +51,7 @@ retry(characterQuery, {
 ```
 
 ::: info
-`isHttpErrorCode` is imported from `@farfetched/core` package, it is a helper function to check if the error is an HTTP error with the specified code.
+`isHttpErrorCode` is imported from `@farfetched/core` package, it is a helper function to check if the error is an HTTP error with the specified code. Read more about it in [the API reference](/api/utils/error_guards).
 :::
 
 It is only the simplest way to use filter option. Actually, it could be used to disable retries by some external condition. For example, let's see how to allow retries only the particular page of the application.
