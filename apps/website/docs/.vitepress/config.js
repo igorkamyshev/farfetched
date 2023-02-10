@@ -24,6 +24,7 @@ export default withMermaid(
       socialLinks: [
         { icon: 'github', link: 'https://github.com/igorkamyshev/farfetched' },
         { icon: 'twitter', link: 'https://twitter.com/farfetched_dev' },
+        { icon: 'discord', link: 'https://discord.gg/HkFmJBYX' },
       ],
       algolia: {
         appId: 'E2VDGRUQY3',
