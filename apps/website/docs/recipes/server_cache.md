@@ -285,7 +285,7 @@ function redisCache({ maxAge }) {
     get,
     set,
     unset: attach({
-      source: $reids,
+      source: $redis,
       effect: (redis, { key }) => redis.del(key),
     }),
     purge,
