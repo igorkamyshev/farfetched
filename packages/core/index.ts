@@ -46,6 +46,11 @@ export {
   declareParams,
   type ParamsDeclaration,
 } from './src/remote_operation/params';
+export {
+  type RemoteOperationResult,
+  type RemoteOperationError,
+  type RemoteOperationParams,
+} from './src/remote_operation/type';
 
 // Validation public API
 export { type ValidationResult, type Validator } from './src/validation/type';
