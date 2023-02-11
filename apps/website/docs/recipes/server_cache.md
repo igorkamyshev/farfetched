@@ -225,7 +225,7 @@ cache(characterListQuery, { adapter: charactersCache });
 
 And then, in the `server.ts` file, we can inject the Redis adapter during `fork`:
 
-```ts
+```ts{3-11}
 function handleHttp(req, res) {
   const scope = fork({
     values: [
@@ -251,9 +251,11 @@ function handleHttp(req, res) {
 Read more about SSR with Farfetched in the recipe about [Server-side rendering](/recipes/ssr).
 :::
 
-## Possible improvements
+### What else?
 
-### Observability
+That's it, we have a `redisCache` adapter that can be used in the real application. But it's only a part of the story. There are a lot of things that can be improved:
+
+#### Observability
 
 All built-in adapters support `observability` option. It allows to track the cache state and the number of cache hits and misses. It is useful for debugging and performance optimization. We can implement the same functionality for our custom `redisCache`.
 
@@ -307,4 +309,58 @@ function redisAdapter({
 
 However, we still need to trigger `itemEvicted` and `itemExpired` events in our adapter. Its implementation is out of scope of this recipe.
 
+#### Dynamic configuration
+
+In this recipe, we have skipped Redis configuration. But in real applications, it is required to configure Redis connection. We can do it by passing the configuration through [_Store_](https://effector.dev/docs/api/effector/store):
+
+```ts
+import Redis from 'ioreis';
+import { attach } from 'effector';
+
+const $redisConnection = createStore<string | null>(null);
+const $redis = $redisConnection.map((connection) => new Redis(connection));
+```
+
+In the adapter, we can use [`attach`](https://effector.dev/docs/api/effector/attach/) to pass instance of `Redis` to any [_Effect_](https://effector.dev/docs/api/effector/effect):
+
+```ts{7-10}
+import { attach } from 'effector';
+
+function redisCache({ maxAge }) {
+  return createAdapter({
+    get,
+    set,
+    unset: attach({
+      source: $reids,
+      effect: (redis, { key }) => redis.del(key),
+    }),
+    purge,
+  });
+}
+```
+
+In this case we can change Redis connection dynamically during `fork`:
+
+```ts{3-6}
+function handleHttp(req, res) {
+  const scope = fork({
+    values: [
+      // NOTE: let's use Redis connection from environment variable
+      [$redisConnection, process.env.REDIS_CONNECTION],
+    ],
+  });
+
+  // ... run calculations
+
+  // ... render html
+
+  // ... send response
+}
+```
+
 ## Conclusion
+
+We have set up server side cache for our [_Queries_](/api/primitives/query) using external Redis. It's not a complete solution, but it's a good start. Key points of this article:
+
+- use `createAdapter` to create custom adapters for [`cache`](/api/operators/cache) operator
+- use Fork API to inject different adapters in different environments
