@@ -76,9 +76,9 @@ Then we need to create a [custom adapter for `cache`](/api/operators/cache.html#
 
 ```ts
 import { createEffect } from 'effector';
-import { type Time, createAdapter } from '@farfetched/core';
+import { createAdapter } from '@farfetched/core';
 
-function redisCache({ maxAge }: { maxAge: Time }) {
+function redisCache({ maxAge }: { maxAge: number }) {
   return createAdapter({
     get: createEffect(
       (_: { key: string }): { value: unknown; cachedAt: number } | null => {
@@ -115,11 +115,11 @@ Now, let's implement all methods of the adapter one by one.
 ```ts{4,7-14}
 import Redis from 'ioreis';
 
-function redisCache({ maxAge }: { maxAge: Time }) {
+function redisCache({ maxAge }) {
   const redis = new Redis();
 
   return createAdapter({
-    get: createEffect(async ({ key }: { key: string }) => {
+    get: createEffect(async ({ key }) => {
       // NOTE: we store stringified object with {value, cachedAt} in the Redis
       const valueFromCache = await redis.get(key);
       if (!valueFromCache) {
@@ -140,23 +140,21 @@ function redisCache({ maxAge }: { maxAge: Time }) {
 
 Because of internal implementation of the `cache` operator, it is required to store the `cachedAt` property in the cache. It is a timestamp of the moment when the value was cached. So, let's store it together with the value in the cache.
 
-```ts{5,9-19}
+```ts{4,8-17}
 import Redis from 'ioreis';
-import { parseTime } from '@farfetched/core';
 
-function redisCache({ maxAge }: { maxAge: Time }) {
+function redisCache({ maxAge }) {
   const redis = new Redis();
 
   return createAdapter({
     get,
     set: createEffect(
-      async ({ key, value }: { key: string; value: unknown }) => {
+      async ({ key, value }) => {
         await redis.set(
           key,
           JSON.stringify({ value, cachedAt: Date.now() }),
           'EX',
-          // NOTE: use parseTime to convert Time to milliseconds
-          parseTime(maxAge)
+          maxAge
         );
       }
     ),
@@ -168,18 +166,18 @@ function redisCache({ maxAge }: { maxAge: Time }) {
 
 #### `unset`
 
-`get` [_Effect_](https://effector.dev/docs/api/effector/effect) accepts a single argument — an object with `key` property. It should remove the value from the cache.
+`unset` [_Effect_](https://effector.dev/docs/api/effector/effect) accepts a single argument — an object with `key` property. It should remove the value from the cache.
 
 ```ts{4,9-11}
 import Redis from 'ioredis';
 
-function redisCache({ maxAge }: { maxAge: Time }) {
+function redisCache({ maxAge }) {
   const redis = new Redis();
 
   return createAdapter({
     get,
     set,
-    unset: createEffect(async ({ key }: { key: string }) => {
+    unset: createEffect(async ({ key } => {
       await redis.del(key);
     }),
     purge,
@@ -189,12 +187,12 @@ function redisCache({ maxAge }: { maxAge: Time }) {
 
 #### `purge`
 
-`get` [_Effect_](https://effector.dev/docs/api/effector/effect) doesn't accept any arguments. It should remove all the values from the cache.
+`purge` [_Effect_](https://effector.dev/docs/api/effector/effect) doesn't accept any arguments. It should remove all the values from the cache.
 
 ```ts{4,10-12}
 import Redis from 'ioredis';
 
-function redisCache({ maxAge }: { maxAge: Time }) {
+function redisCache({ maxAge }) {
   const redis = new Redis();
 
   return createAdapter({
@@ -208,7 +206,7 @@ function redisCache({ maxAge }: { maxAge: Time }) {
 }
 ```
 
-### Different adapters in different environments
+### Inject adapter
 
 So far, we have implemented a custom adapter for the `cache` operator. But we still need to use it in our application. And we need to use different adapters in different environments — on server and on client.
 
@@ -228,10 +226,17 @@ cache(characterListQuery, { adapter: charactersCache });
 And then, in the `server.ts` file, we can inject the Redis adapter during `fork`:
 
 ```ts
-// server.ts
 function handleHttp(req, res) {
   const scope = fork({
-    values: [[charactersCache.__.$adapter, redisCache({ maxAge: '1h' })]],
+    values: [
+      // NOTE: let's use Redis adapter on server for charactersCache
+      [
+        charactersCache.__.$adapter,
+        redisCache({
+          maxAge: 60 * 60 * 1000, // 1 hour
+        }),
+      ],
+    ],
   });
 
   // ... run calculations
@@ -242,6 +247,64 @@ function handleHttp(req, res) {
 }
 ```
 
-## Future improvements
+:::tip
+Read more about SSR with Farfetched in the recipe about [Server-side rendering](/recipes/ssr).
+:::
+
+## Possible improvements
+
+### Observability
+
+All built-in adapters support `observability` option. It allows to track the cache state and the number of cache hits and misses. It is useful for debugging and performance optimization. We can implement the same functionality for our custom `redisCache`.
+
+Farfetched provides a helper function to attach observability to the custom adapter — `attachObservability`. It accepts the object with the following properties:
+
+- `adapter` — the adapter instance itself
+- `options` — the object with [_Events_](https://effector.dev/docs/api/effector/event) which should be **passed by the user to the adapter from application code**:
+  - `hit` — the [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered on cache hit
+  - `miss` — the [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered on cache miss
+  - `expired` — the [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered on cache expiration
+  - `evicted` — the [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered on cache eviction
+- `events` — the object with [_Events_](https://effector.dev/docs/api/effector/event) which have to be **triggered by the adapter itself**:
+  - `itemEvicted` — the [_Event_](https://effector.dev/docs/api/effector/event) that is triggered on cache eviction
+  - `itemExpired` — the [_Event_](https://effector.dev/docs/api/effector/event) that is triggered on cache expiration
+
+Let's add observability to our `redisCache`:
+
+```ts
+import Redis from 'ioredis';
+import { createEvent } from 'effector';
+import { attachObservability } from '@farfetched/core';
+
+function redisAdapter({
+  observability,
+}: {
+  observability: {
+    hit?: Event<{ key: string }>;
+    miss?: Event<{ key: string }>;
+    expired?: Event<{ key: string }>;
+    evicted?: Event<{ key: string }>;
+  };
+}) {
+  const redis = new Redis();
+
+  const adapter = createAdapter({
+    // ...
+  });
+
+  const itemEvicted = createEvent<{ key: string }>();
+  const itemExpired = createEvent<{ key: string }>();
+
+  attachCacheObservability({
+    adapter,
+    options: observability,
+    events: { itemEvicted, itemExpired },
+  });
+
+  return adapter;
+}
+```
+
+However, we still need to trigger `itemEvicted` and `itemExpired` events in our adapter. Its implementation is out of scope of this recipe.
 
 ## Conclusion
