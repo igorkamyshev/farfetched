@@ -23,7 +23,7 @@ function createAsyncStorageMutation({ storageKey }) {
 Of course, it looks pretty verbose, so Farfetched provides a special helper that aims to simplify creation of custom [_Mutation_](/api/primitives/mutation.md) factories — `createHeadlessMutation`. Let us rewrite provided example with this helper 👇
 
 ```ts
-import { createHeadlessMutation } from '@fafetched/core';
+import { createHeadlessMutation } from '@farfetched/core';
 
 function createAsyncStorageMutation({ storageKey }) {
   const executeFx = createEffect((value) =>

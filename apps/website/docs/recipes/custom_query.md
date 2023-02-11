@@ -24,7 +24,7 @@ function createAsyncStorageQuery({ storageKey }) {
 Of course, it looks pretty hard, so Farfetched provides a special helper that aims to simplify creation of custom [_Query_](/api/primitives/query) factories — `createHeadlessQuery`. Let us rewrite provided example with this helper 👇
 
 ```ts
-import { createHeadlessQuery } from '@fafetched/core';
+import { createHeadlessQuery } from '@farfetched/core';
 
 function createAsyncStorageQuery({ storageKey }) {
   const fetchFx = createEffect(() => asyncLocalStorage.getItem(storageKey));
