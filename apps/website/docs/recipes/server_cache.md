@@ -112,6 +112,8 @@ Now, let's implement all methods of the adapter one by one.
 
 `get` [_Effect_](https://effector.dev/docs/api/effector/effect) accepts a single argument — an object with `key` property. It should return an object with `value` and `cachedAt` properties or `null` if there is no value in the cache.
 
+This [_Effect_](https://effector.dev/docs/api/effector/effect) can fail with an error if something went wrong.
+
 ```ts{4,7-14}
 import Redis from 'ioreis';
 
@@ -139,6 +141,8 @@ function redisCache({ maxAge }) {
 `set` [_Effect_](https://effector.dev/docs/api/effector/effect) accepts a single argument — an object with `key` and `value` properties. It should store the value in the cache.
 
 Because of internal implementation of the `cache` operator, it is required to store the `cachedAt` property in the cache. It is a timestamp of the moment when the value was cached. So, let's store it together with the value in the cache.
+
+This [_Effect_](https://effector.dev/docs/api/effector/effect) can fail with an error if something went wrong.
 
 ```ts{4,8-17}
 import Redis from 'ioreis';
@@ -168,6 +172,8 @@ function redisCache({ maxAge }) {
 
 `unset` [_Effect_](https://effector.dev/docs/api/effector/effect) accepts a single argument — an object with `key` property. It should remove the value from the cache.
 
+This [_Effect_](https://effector.dev/docs/api/effector/effect) should not fail with an error. So, you have to provide a guarantee that the value will be removed from the cache after resolving the [_Effect_](https://effector.dev/docs/api/effector/effect). We skip this step in this example, but it's required to implement it in the real application.
+
 ```ts{4,9-11}
 import Redis from 'ioredis';
 
@@ -188,6 +194,8 @@ function redisCache({ maxAge }) {
 #### `purge`
 
 `purge` [_Effect_](https://effector.dev/docs/api/effector/effect) doesn't accept any arguments. It should remove all the values from the cache.
+
+This [_Effect_](https://effector.dev/docs/api/effector/effect) should not fail with an error. So, you have to provide a guarantee that all values will be removed from the cache after resolving the [_Effect_](https://effector.dev/docs/api/effector/effect). We skip this step in this example, but it's required to implement it in the real application.
 
 ```ts{4,10-12}
 import Redis from 'ioredis';
