@@ -286,6 +286,7 @@ export default withMermaid(
             collapsible: true,
             items: [
               { text: 'Feature flags service', link: '/recipes/feature_flags' },
+              { text: 'Server side caching', link: '/recipes/server_cache' },
             ],
           },
           {
