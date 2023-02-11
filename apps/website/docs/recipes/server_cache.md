@@ -257,57 +257,11 @@ That's it, we have a `redisCache` adapter that can be used in the real applicati
 
 #### Observability
 
-All built-in adapters support `observability` option. It allows to track the cache state and the number of cache hits and misses. It is useful for debugging and performance optimization. We can implement the same functionality for our custom `redisCache`.
+All built-in adapters support `observability` option. It allows to track the cache state and the number of cache hits and misses, expired and evicted values, etc.
 
-Farfetched provides a helper function to attach observability to the custom adapter — `attachObservability`. It accepts the object with the following properties:
+It is useful for debugging and performance optimization. In general, it is a good practice to [add `observability` to your custom adapters](/api/operators/cache.html#observability) as well.
 
-- `adapter` — the adapter instance itself
-- `options` — the object with [_Events_](https://effector.dev/docs/api/effector/event) which should be **passed by the user to the adapter from application code**:
-  - `hit` — the [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered on cache hit
-  - `miss` — the [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered on cache miss
-  - `expired` — the [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered on cache expiration
-  - `evicted` — the [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered on cache eviction
-- `events` — the object with [_Events_](https://effector.dev/docs/api/effector/event) which have to be **triggered by the adapter itself**:
-  - `itemEvicted` — the [_Event_](https://effector.dev/docs/api/effector/event) that is triggered on cache eviction
-  - `itemExpired` — the [_Event_](https://effector.dev/docs/api/effector/event) that is triggered on cache expiration
-
-Let's add observability to our `redisCache`:
-
-```ts
-import Redis from 'ioredis';
-import { createEvent } from 'effector';
-import { attachObservability } from '@farfetched/core';
-
-function redisAdapter({
-  observability,
-}: {
-  observability: {
-    hit?: Event<{ key: string }>;
-    miss?: Event<{ key: string }>;
-    expired?: Event<{ key: string }>;
-    evicted?: Event<{ key: string }>;
-  };
-}) {
-  const redis = new Redis();
-
-  const adapter = createAdapter({
-    // ...
-  });
-
-  const itemEvicted = createEvent<{ key: string }>();
-  const itemExpired = createEvent<{ key: string }>();
-
-  attachCacheObservability({
-    adapter,
-    options: observability,
-    events: { itemEvicted, itemExpired },
-  });
-
-  return adapter;
-}
-```
-
-However, we still need to trigger `itemEvicted` and `itemExpired` events in our adapter. Its implementation is out of scope of this recipe.
+However, in case of our Redis adapter it is not recommended to track external storage metrics at the application level — it is much better to track them directly from your Redis instances — ask your Ops-team about it.
 
 #### Dynamic configuration
 
