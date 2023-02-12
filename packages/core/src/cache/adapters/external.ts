@@ -9,6 +9,9 @@ interface NarrowObservability {
   miss?: Event<{ key: string }>;
 }
 
+/**
+ * @deprecated Write your own adapter instead by recipe — https://farfetched.pages.dev/recipes/server_cache.html
+ */
 export function externalCache(config: {
   get: (opts: {
     key: string;
