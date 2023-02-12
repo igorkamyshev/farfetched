@@ -58,3 +58,48 @@ cache(query, {
   adapter: someAdapter({ observability: { hit, miss, expired, evicted } }),
 });
 ```
+
+Farfetched provides a helper function to attach observability to the custom adapter — `attachObservability`. It accepts the object with the following properties:
+
+- `adapter` — the adapter instance itself
+- `options` — the object with [_Events_](https://effector.dev/docs/api/effector/event) which should be **passed by the user to the adapter from application code**:
+  - `hit` — the [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered on cache hit
+  - `miss` — the [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered on cache miss
+  - `expired` — the [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered on cache expiration
+  - `evicted` — the [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered on cache eviction
+- `events` — the object with [_Events_](https://effector.dev/docs/api/effector/event) which have to be **triggered by the adapter itself**:
+  - `itemEvicted` — the [_Event_](https://effector.dev/docs/api/effector/event) that is triggered on cache eviction
+  - `itemExpired` — the [_Event_](https://effector.dev/docs/api/effector/event) that is triggered on cache expiration
+
+```ts
+import { createEvent } from 'effector';
+import { attachObservability } from '@farfetched/core';
+
+function myCustomAdapter({
+  observability,
+}: {
+  observability: {
+    hit?: Event<{ key: string }>;
+    miss?: Event<{ key: string }>;
+    expired?: Event<{ key: string }>;
+    evicted?: Event<{ key: string }>;
+  };
+}) {
+  const adapter = createAdapter({
+    // ...
+  });
+
+  const itemEvicted = createEvent<{ key: string }>();
+  const itemExpired = createEvent<{ key: string }>();
+
+  attachCacheObservability({
+    adapter,
+    options: observability,
+    events: { itemEvicted, itemExpired },
+  });
+
+  return adapter;
+}
+```
+
+However, we still need to trigger `itemEvicted` and `itemExpired` events in our adapter.
