@@ -74,7 +74,7 @@ export default withMermaid(
         '/tutorial': [
           {
             text: 'Thorough Tutorial',
-            collapsible: true,
+            collapsed: false,
             items: [
               { text: 'Get started', link: '/tutorial/' },
               { text: 'Installation', link: '/tutorial/install' },
@@ -132,7 +132,6 @@ export default withMermaid(
           },
           {
             text: 'Solid',
-            collapsible: true,
             collapsed: true,
             items: [
               { text: 'Get started', link: '/tutorial/solid/' },
@@ -142,7 +141,6 @@ export default withMermaid(
           },
           {
             text: 'React',
-            collapsible: true,
             collapsed: true,
             items: [
               { text: 'Get started', link: '/tutorial/react/' },
@@ -195,7 +193,6 @@ export default withMermaid(
           },
           {
             text: 'Primitives',
-            collapsible: true,
             collapsed: true,
             items: [
               { text: 'Query', link: '/api/primitives/query' },
@@ -206,13 +203,11 @@ export default withMermaid(
           },
           {
             text: 'Utils',
-            collapsible: true,
             collapsed: true,
             items: [{ text: 'Error guards', link: '/api/utils/error_guards' }],
           },
           {
             text: 'Integrations',
-            collapsible: true,
             collapsed: true,
             items: [
               {
@@ -283,7 +278,6 @@ export default withMermaid(
           },
           {
             text: 'Case studies',
-            collapsible: true,
             items: [
               { text: 'Feature flags service', link: '/recipes/feature_flags' },
               { text: 'Server side caching', link: '/recipes/server_cache' },
@@ -291,7 +285,7 @@ export default withMermaid(
           },
           {
             text: 'Deep dive',
-            collapsible: true,
+            collapsed: false,
             items: [
               { text: 'Unique store identifiers', link: '/recipes/sids' },
               {
@@ -305,7 +299,6 @@ export default withMermaid(
         '/statements': [
           {
             text: 'Statements',
-            collapsible: false,
             items: [
               { text: 'Releases policy', link: '/statements/releases' },
               {
@@ -326,7 +319,6 @@ export default withMermaid(
         '/releases': [
           {
             text: 'Releases',
-            collapsible: false,
             items: [
               { text: 'v0.7 Nam Phu Chet Si', link: '/releases/0-7' },
               { text: 'v0.6 Huai Nam Dang', link: '/releases/0-6' },
