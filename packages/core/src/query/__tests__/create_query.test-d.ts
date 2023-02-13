@@ -4,6 +4,7 @@ import { describe, test, expectTypeOf } from 'vitest';
 import { Contract } from '../../contract/type';
 import { unknownContract } from '../../contract/unknown_contract';
 import { InvalidDataError } from '../../errors/type';
+import { DefaultRequestError } from '../../fetch/api';
 import { createQuery } from '../create_query';
 import { Query } from '../type';
 
@@ -13,21 +14,21 @@ describe('createQuery', () => {
       handler: async (params: number) => params.toString(),
     });
     expectTypeOf(numberToStringQuery).toEqualTypeOf<
-      Query<number, string, unknown>
+      Query<number, string, InvalidDataError>
     >();
 
     const objectToNumberQuery = createQuery({
       handler: async (config: { name: string; age: number }) => config.age,
     });
     expectTypeOf(objectToNumberQuery).toEqualTypeOf<
-      Query<{ name: string; age: number }, number, unknown>
+      Query<{ name: string; age: number }, number, InvalidDataError>
     >();
 
     const stringToObjectQuery = createQuery({
       handler: async (params: string) => ({ name: params }),
     });
     expectTypeOf(stringToObjectQuery).toEqualTypeOf<
-      Query<string, { name: string }, unknown>
+      Query<string, { name: string }, InvalidDataError>
     >();
   });
 
@@ -36,7 +37,11 @@ describe('createQuery', () => {
       effect: createEffect<number, string, { error: boolean }>(),
     });
     expectTypeOf(numberToStringQuery).toEqualTypeOf<
-      Query<number, string, { error: boolean }>
+      Query<
+        number,
+        string,
+        DefaultRequestError<{ error: boolean }, InvalidDataError>
+      >
     >();
 
     const objectToNumberQuery = createQuery({
@@ -47,14 +52,22 @@ describe('createQuery', () => {
       >(),
     });
     expectTypeOf(objectToNumberQuery).toEqualTypeOf<
-      Query<{ name: string; age: number }, number, { error: boolean }>
+      Query<
+        { name: string; age: number },
+        number,
+        DefaultRequestError<{ error: boolean }, InvalidDataError>
+      >
     >();
 
     const stringToObjectQuery = createQuery({
       effect: createEffect<string, { name: string }, { error: boolean }>(),
     });
     expectTypeOf(stringToObjectQuery).toEqualTypeOf<
-      Query<string, { name: string }, { error: boolean }>
+      Query<
+        string,
+        { name: string },
+        DefaultRequestError<{ error: boolean }, InvalidDataError>
+      >
     >();
   });
 
@@ -67,8 +80,7 @@ describe('createQuery', () => {
       Query<
         number,
         string,
-        | { effectError: boolean } // from effect
-        | InvalidDataError // from data.validate
+        DefaultRequestError<{ effectError: boolean }, InvalidDataError> // from effect and data.validate
       >
     >;
 
@@ -93,7 +105,9 @@ describe('createQuery', () => {
       mapData: () => 12,
     });
 
-    expectTypeOf(toNumberQuery).toEqualTypeOf<Query<void, number, Error>>();
+    expectTypeOf(toNumberQuery).toEqualTypeOf<
+      Query<void, number, DefaultRequestError<Error, InvalidDataError>>
+    >();
 
     const toSourceQuery = createQuery({
       effect: createEffect(() => 12),
@@ -103,7 +117,9 @@ describe('createQuery', () => {
       },
     });
 
-    expectTypeOf(toSourceQuery).toEqualTypeOf<Query<void, string, Error>>();
+    expectTypeOf(toSourceQuery).toEqualTypeOf<
+      Query<void, string, DefaultRequestError<Error, InvalidDataError>>
+    >();
   });
 
   test('effect, contract and mapData', () => {
@@ -137,7 +153,12 @@ describe('createQuery', () => {
       handler: async (_: void) => 12,
     });
     expectTypeOf(handleQuery).toEqualTypeOf<
-      Query<void, number, unknown, number>
+      Query<
+        void,
+        number,
+        DefaultRequestError<unknown, InvalidDataError>,
+        number
+      >
     >();
 
     const effectQuery = createQuery({
@@ -145,7 +166,7 @@ describe('createQuery', () => {
       effect: createEffect((): number => 12),
     });
     expectTypeOf(effectQuery).toEqualTypeOf<
-      Query<void, number, Error, number>
+      Query<void, number, DefaultRequestError<Error, InvalidDataError>, number>
     >();
 
     const effectContarctQuery = createQuery({
@@ -169,7 +190,7 @@ describe('createQuery', () => {
       mapData: () => 12,
     });
     expectTypeOf(effectMapDataQuery).toEqualTypeOf<
-      Query<void, number, Error, number>
+      Query<void, number, DefaultRequestError<Error, InvalidDataError>, number>
     >();
 
     const effectContractMapDataQuery = createQuery({

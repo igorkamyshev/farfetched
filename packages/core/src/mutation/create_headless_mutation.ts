@@ -5,6 +5,7 @@ import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
 import { attach, Store } from 'effector';
+import { DefaultRequestError } from '../fetch/api';
 
 export interface SharedMutationFactoryConfig {
   name?: string;
@@ -29,7 +30,7 @@ export function createHeadlessMutation<
       MapDataSource
     >;
   }
-): Mutation<Params, MappedData, Error | InvalidDataError> {
+): Mutation<Params, MappedData, DefaultRequestError<Error, InvalidDataError>> {
   const { name, enabled, contract, validate, mapData } = config;
 
   const operation = createRemoteOperation<

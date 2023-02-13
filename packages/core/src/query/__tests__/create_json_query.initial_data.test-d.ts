@@ -4,6 +4,7 @@ import { Contract } from '../../contract/type';
 import { declareParams } from '../../remote_operation/params';
 import { createJsonQuery } from '../create_json_query';
 import { Query } from '../type';
+import { DefaultRequestError } from '../../fetch/api';
 
 describe('createJsonQuery', () => {
   test('infer initial data with params and mapData', () => {
@@ -17,7 +18,9 @@ describe('createJsonQuery', () => {
       },
     });
 
-    expectTypeOf(query).toEqualTypeOf<Query<number, string, unknown, string>>();
+    expectTypeOf(query).toEqualTypeOf<
+      Query<number, string, DefaultRequestError, string>
+    >();
     // @ts-expect-error invalid initial initial data type
     expectTypeOf(query).toEqualTypeOf<Query<number, string, unknown>>();
   });
@@ -32,7 +35,9 @@ describe('createJsonQuery', () => {
       },
     });
 
-    expectTypeOf(query).toEqualTypeOf<Query<number, string, unknown, string>>();
+    expectTypeOf(query).toEqualTypeOf<
+      Query<number, string, DefaultRequestError, string>
+    >();
     // @ts-expect-error invalid initial initial data type
     expectTypeOf(query).toEqualTypeOf<Query<number, string, unknown>>();
   });
@@ -47,7 +52,9 @@ describe('createJsonQuery', () => {
       },
     });
 
-    expectTypeOf(query).toEqualTypeOf<Query<void, string, unknown, string>>();
+    expectTypeOf(query).toEqualTypeOf<
+      Query<void, string, DefaultRequestError, string>
+    >();
     // @ts-expect-error invalid initial initial data type
     expectTypeOf(query).toEqualTypeOf<Query<void, string, unknown>>();
   });
@@ -61,7 +68,9 @@ describe('createJsonQuery', () => {
       },
     });
 
-    expectTypeOf(query).toEqualTypeOf<Query<void, string, unknown, string>>();
+    expectTypeOf(query).toEqualTypeOf<
+      Query<void, string, DefaultRequestError, string>
+    >();
     // @ts-expect-error invalid initial initial data type
     expectTypeOf(query).toEqualTypeOf<Query<void, string, unknown>>();
   });

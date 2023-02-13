@@ -11,6 +11,7 @@ import {
 } from '../libs/patronus';
 import { Validator } from '../validation/type';
 import { Query, QueryMeta, QuerySymbol } from './type';
+import { DefaultRequestError } from '../fetch/api';
 
 export interface SharedQueryFactoryConfig<Data, Initial = Data> {
   name?: string;
@@ -47,7 +48,12 @@ export function createHeadlessQuery<
     sources?: Array<Store<unknown>>;
     paramsAreMeaningless?: boolean;
   } & SharedQueryFactoryConfig<MappedData, Initial>
-): Query<Params, MappedData, Error | InvalidDataError, Initial> {
+): Query<
+  Params,
+  MappedData,
+  DefaultRequestError<Error, InvalidDataError>,
+  Initial
+> {
   const {
     initialData: initialDataRaw,
     contract,
@@ -92,7 +98,10 @@ export function createHeadlessQuery<
     name: `${operation.__.meta.name}.$data`,
     serialize,
   });
-  const $error = createStore<Error | InvalidDataError | null>(null, {
+  const $error = createStore<DefaultRequestError<
+    Error,
+    InvalidDataError
+  > | null>(null, {
     sid: `ff.${operation.__.meta.name}.$error`,
     name: `${operation.__.meta.name}.$error`,
     serialize: serializationForSideStore(serialize),

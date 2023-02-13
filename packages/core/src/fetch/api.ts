@@ -17,6 +17,7 @@ import { NonOptionalKeys } from '../libs/lohyphen';
 import {
   AbortError,
   HttpError,
+  InvalidDataError,
   NetworkError,
   PreparationError,
   TimeoutError,
@@ -152,6 +153,11 @@ export type ApiRequestError =
   | PreparationError
   | NetworkError
   | HttpError;
+
+export type DefaultRequestError<
+  Error = unknown,
+  DefaultError = ApiRequestError | InvalidDataError
+> = unknown extends Error ? DefaultError : Error | DefaultError;
 
 export function createApiRequest<
   R extends CreationRequestConfig<B>,

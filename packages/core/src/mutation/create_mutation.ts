@@ -9,6 +9,7 @@ import { Contract } from '../contract/type';
 import { Mutation } from './type';
 import { resolveExecuteEffect } from '../remote_operation/resolve_execute_effect';
 import { unknownContract } from '../contract/unknown_contract';
+import { DefaultRequestError } from '../fetch/api';
 
 // Overload: Only handler
 export function createMutation<Params, Data>(
@@ -29,7 +30,7 @@ export function createMutation<Params, Data, ContractData extends Data, Error>(
     effect: Effect<Params, Data, Error>;
     contract: Contract<Data, ContractData>;
   } & SharedMutationFactoryConfig
-): Mutation<Params, ContractData, Error | InvalidDataError>;
+): Mutation<Params, ContractData, DefaultRequestError<Error, InvalidDataError>>;
 
 // -- Implementation --
 export function createMutation(

@@ -3,7 +3,7 @@ import { attach, createEvent, Event, sample, type Json } from 'effector';
 import { Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
 import { InvalidDataError } from '../errors/type';
-import { ApiRequestError, HttpMethod } from '../fetch/api';
+import { ApiRequestError, DefaultRequestError, HttpMethod } from '../fetch/api';
 import { createJsonApiRequest } from '../fetch/json';
 import { FetchApiRecord } from '../fetch/lib';
 import { ParamsDeclaration } from '../remote_operation/params';
@@ -111,11 +111,7 @@ export function createJsonMutation<
       status?: { expected: number | number[] };
     };
   }
-): Mutation<
-  Params,
-  TransformedData,
-  ApiRequestError | Error | InvalidDataError
->;
+): Mutation<Params, TransformedData, DefaultRequestError<Error>>;
 
 // params + no mapData
 export function createJsonMutation<
@@ -142,7 +138,7 @@ export function createJsonMutation<
       status?: { expected: number | number[] };
     };
   }
-): Mutation<Params, Data, ApiRequestError | Error | InvalidDataError>;
+): Mutation<Params, Data, DefaultRequestError<Error>>;
 
 // No params + mapData
 export function createJsonMutation<
@@ -174,7 +170,7 @@ export function createJsonMutation<
       status?: { expected: number | number[] };
     };
   }
-): Mutation<void, TransformedData, ApiRequestError | Error | InvalidDataError>;
+): Mutation<void, TransformedData, DefaultRequestError<Error>>;
 
 // No params + no mapData
 export function createJsonMutation<
@@ -199,7 +195,7 @@ export function createJsonMutation<
       status?: { expected: number | number[] };
     };
   }
-): Mutation<void, Data, ApiRequestError | Error | InvalidDataError>;
+): Mutation<void, Data, DefaultRequestError<Error>>;
 
 // -- Implementation --
 export function createJsonMutation(config: any): Mutation<any, any, any> {

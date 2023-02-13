@@ -5,6 +5,7 @@ import { Contract } from '../../contract/type';
 import { unknownContract } from '../../contract/unknown_contract';
 import { createHeadlessQuery } from '../create_headless_query';
 import { Query } from '../type';
+import { InvalidDataError } from '../../errors/type';
 
 describe('createHeadlessQuery', () => {
   test('contract', () => {
@@ -16,7 +17,7 @@ describe('createHeadlessQuery', () => {
     });
 
     expectTypeOf(numberQuery).toEqualTypeOf<
-      Query<unknown, number, unknown | number>
+      Query<unknown, number, InvalidDataError>
     >();
 
     const stringContract = {} as Contract<unknown, string>;
@@ -27,7 +28,7 @@ describe('createHeadlessQuery', () => {
     });
 
     expectTypeOf(stringQuery).toEqualTypeOf<
-      Query<unknown, string, unknown | number>
+      Query<unknown, string, InvalidDataError>
     >();
   });
 
@@ -37,7 +38,9 @@ describe('createHeadlessQuery', () => {
       mapData: ({ result, params }) => 12,
     });
 
-    expectTypeOf(numberQuery).toEqualTypeOf<Query<unknown, number, unknown>>();
+    expectTypeOf(numberQuery).toEqualTypeOf<
+      Query<unknown, number, InvalidDataError>
+    >();
 
     const objectQuery = createHeadlessQuery({
       contract: unknownContract,
@@ -45,7 +48,7 @@ describe('createHeadlessQuery', () => {
     });
 
     expectTypeOf(objectQuery).toEqualTypeOf<
-      Query<unknown, { response: number }, unknown>
+      Query<unknown, { response: number }, InvalidDataError>
     >();
   });
 
@@ -61,7 +64,9 @@ describe('createHeadlessQuery', () => {
       },
     });
 
-    expectTypeOf(numberQuery).toEqualTypeOf<Query<unknown, number, unknown>>();
+    expectTypeOf(numberQuery).toEqualTypeOf<
+      Query<unknown, number, InvalidDataError>
+    >();
 
     const objectQuery = createHeadlessQuery({
       contract: unknownContract,
@@ -75,7 +80,7 @@ describe('createHeadlessQuery', () => {
     });
 
     expectTypeOf(objectQuery).toEqualTypeOf<
-      Query<unknown, { response: number }, unknown>
+      Query<unknown, { response: number }, InvalidDataError>
     >();
   });
 });
