@@ -419,4 +419,36 @@ describe('createJsonMutation', () => {
 
     expectTypeOf(mutation).toEqualTypeOf<Mutation<void, unknown, unknown>>();
   });
+
+  test('interface as params, issue #266', () => {
+    interface Params {
+      requested_cashback: {
+        currency_code: string;
+        value: number;
+      };
+      requested_co2: {
+        provider: string;
+        currency_code: string;
+        value: number;
+      };
+      payment_type: {
+        type: 'bank_card';
+        value: {
+          card_number: string;
+          card_holder: string;
+        };
+        save: boolean;
+      };
+    }
+
+    const mutation = createJsonMutation({
+      params: declareParams<Params>(),
+      request: {
+        url: 'https://salo.com',
+        method: 'POST',
+        body: (params) => params,
+      },
+      response: { contract: unknownContract },
+    });
+  });
 });
