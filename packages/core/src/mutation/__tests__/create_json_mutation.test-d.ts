@@ -422,23 +422,7 @@ describe('createJsonMutation', () => {
 
   test('interface as params, issue #266', () => {
     interface Params {
-      requested_cashback: {
-        currency_code: string;
-        value: number;
-      };
-      requested_co2: {
-        provider: string;
-        currency_code: string;
-        value: number;
-      };
-      payment_type: {
-        type: 'bank_card';
-        value: {
-          card_number: string;
-          card_holder: string;
-        };
-        save: boolean;
-      };
+      currency_code: string;
     }
 
     const mutation = createJsonMutation({
