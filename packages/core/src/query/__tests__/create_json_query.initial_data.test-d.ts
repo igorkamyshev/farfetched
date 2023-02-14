@@ -1,6 +1,7 @@
 import { describe, test, expectTypeOf } from 'vitest';
 
 import { Contract } from '../../contract/type';
+import { JsonApiRequestError } from '../../fetch/api';
 import { declareParams } from '../../remote_operation/params';
 import { createJsonQuery } from '../create_json_query';
 import { Query } from '../type';
@@ -17,9 +18,13 @@ describe('createJsonQuery', () => {
       },
     });
 
-    expectTypeOf(query).toEqualTypeOf<Query<number, string, unknown, string>>();
+    expectTypeOf(query).toEqualTypeOf<
+      Query<number, string, JsonApiRequestError, string>
+    >();
     // @ts-expect-error invalid initial initial data type
-    expectTypeOf(query).toEqualTypeOf<Query<number, string, unknown>>();
+    expectTypeOf(query).toEqualTypeOf<
+      Query<number, string, JsonApiRequestError>
+    >();
   });
 
   test('infer initial data with params and no mapData', () => {
@@ -32,9 +37,13 @@ describe('createJsonQuery', () => {
       },
     });
 
-    expectTypeOf(query).toEqualTypeOf<Query<number, string, unknown, string>>();
+    expectTypeOf(query).toEqualTypeOf<
+      Query<number, string, JsonApiRequestError, string>
+    >();
     // @ts-expect-error invalid initial initial data type
-    expectTypeOf(query).toEqualTypeOf<Query<number, string, unknown>>();
+    expectTypeOf(query).toEqualTypeOf<
+      Query<number, string, JsonApiRequestError>
+    >();
   });
 
   test('infer initial data with no params and mapData', () => {
@@ -47,9 +56,13 @@ describe('createJsonQuery', () => {
       },
     });
 
-    expectTypeOf(query).toEqualTypeOf<Query<void, string, unknown, string>>();
+    expectTypeOf(query).toEqualTypeOf<
+      Query<void, string, JsonApiRequestError, string>
+    >();
     // @ts-expect-error invalid initial initial data type
-    expectTypeOf(query).toEqualTypeOf<Query<void, string, unknown>>();
+    expectTypeOf(query).toEqualTypeOf<
+      Query<void, string, JsonApiRequestError>
+    >();
   });
 
   test('infer initial data with no params and no mapData', () => {
@@ -61,8 +74,12 @@ describe('createJsonQuery', () => {
       },
     });
 
-    expectTypeOf(query).toEqualTypeOf<Query<void, string, unknown, string>>();
+    expectTypeOf(query).toEqualTypeOf<
+      Query<void, string, JsonApiRequestError, string>
+    >();
     // @ts-expect-error invalid initial initial data type
-    expectTypeOf(query).toEqualTypeOf<Query<void, string, unknown>>();
+    expectTypeOf(query).toEqualTypeOf<
+      Query<void, string, JsonApiRequestError>
+    >();
   });
 });
