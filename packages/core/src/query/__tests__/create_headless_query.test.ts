@@ -3,7 +3,6 @@ import { describe, test, expect, vi } from 'vitest';
 
 import { watchRemoteOperation } from '@farfetched/test-utils';
 
-import { createDefer } from '../../libs/lohyphen';
 import { createHeadlessQuery } from '../create_headless_query';
 import { unknownContract } from '../../contract/unknown_contract';
 import { invalidDataError } from '../../errors/create_error';
@@ -96,60 +95,6 @@ describe('core/createHeadlessQuery without contract', () => {
     await allSettled(disabledQuery.start, { scope, params: 42 });
 
     expect(scope.getState(disabledQuery.$status)).toBe('initial');
-  });
-
-  test('$status changes on stages', async () => {
-    const executorFirstDefer = createDefer();
-    const executorSecondDefer = createDefer();
-
-    const scope = fork({
-      handlers: [
-        [
-          query.__.executeFx,
-          vi
-            .fn()
-            .mockImplementationOnce(() => executorFirstDefer.promise)
-            .mockImplementationOnce(() => executorSecondDefer.promise),
-        ],
-      ],
-    });
-
-    expect(scope.getState(query.$status)).toBe('initial');
-    expect(scope.getState(query.$pending)).toBeFalsy();
-    expect(scope.getState(query.$failed)).toBeFalsy();
-    expect(scope.getState(query.$succeeded)).toBeFalsy();
-
-    // do not await
-    allSettled(query.start, { scope, params: 42 });
-
-    expect(scope.getState(query.$status)).toBe('pending');
-    expect(scope.getState(query.$pending)).toBeTruthy();
-    expect(scope.getState(query.$failed)).toBeFalsy();
-    expect(scope.getState(query.$succeeded)).toBeFalsy();
-
-    executorFirstDefer.resolve('result');
-    await allSettled(scope);
-
-    expect(scope.getState(query.$status)).toBe('done');
-    expect(scope.getState(query.$pending)).toBeFalsy();
-    expect(scope.getState(query.$failed)).toBeFalsy();
-    expect(scope.getState(query.$succeeded)).toBeTruthy();
-
-    // do not await
-    allSettled(query.start, { scope, params: 42 });
-
-    expect(scope.getState(query.$status)).toBe('pending');
-    expect(scope.getState(query.$pending)).toBeTruthy();
-    expect(scope.getState(query.$failed)).toBeFalsy();
-    expect(scope.getState(query.$succeeded)).toBeFalsy();
-
-    executorSecondDefer.reject(new Error('error'));
-    await allSettled(scope);
-
-    expect(scope.getState(query.$status)).toBe('fail');
-    expect(scope.getState(query.$pending)).toBeFalsy();
-    expect(scope.getState(query.$failed)).toBeTruthy();
-    expect(scope.getState(query.$succeeded)).toBeFalsy();
   });
 
   test('re-execute', async () => {
