@@ -1,5 +1,5 @@
 ---
-'@farfetched/core': patch
+'@farfetched/core': minor
 ---
 
-Add \$idle store that shows if fetching has started or not
+Add `.$idle` _Store_ that shows if fetching has started or not in _Remote Operations_
