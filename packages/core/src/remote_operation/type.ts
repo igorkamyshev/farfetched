@@ -16,6 +16,8 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
    * + 'fail' — an error occurred while fetching data
    */
   $status: Store<FetchingStatus>;
+  /** Is fetching started? */
+  $idle: Store<boolean>;
   /** Is fetching in progress right now? */
   $pending: Store<boolean>;
   /** Is fetching failed? */
