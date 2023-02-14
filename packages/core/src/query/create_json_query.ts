@@ -2,7 +2,7 @@ import { attach, createEvent, Event, sample, type Json } from 'effector';
 
 import { Contract } from '../contract/type';
 import { createJsonApiRequest } from '../fetch/json';
-import { ApiRequestError, HttpMethod } from '../fetch/api';
+import { ApiRequestError, HttpMethod, JsonApiRequestError } from '../fetch/api';
 import {
   normalizeSourced,
   type SourcedField,
@@ -85,7 +85,6 @@ export function createJsonQuery<
   Params,
   Data,
   TransformedData,
-  Error,
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
@@ -111,13 +110,12 @@ export function createJsonQuery<
       validate?: Validator<TransformedData, Params, ValidationSource>;
     };
   }
-): Query<Params, TransformedData, ApiRequestError | Error | InvalidDataError>;
+): Query<Params, TransformedData, JsonApiRequestError>;
 
 export function createJsonQuery<
   Params,
   Data,
   TransformedData,
-  Error,
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
@@ -144,18 +142,12 @@ export function createJsonQuery<
       validate?: Validator<TransformedData, Params, ValidationSource>;
     };
   }
-): Query<
-  Params,
-  TransformedData,
-  ApiRequestError | Error | InvalidDataError,
-  TransformedData
->;
+): Query<Params, TransformedData, JsonApiRequestError, TransformedData>;
 
 // params + no mapData
 export function createJsonQuery<
   Params,
   Data,
-  Error,
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
@@ -175,12 +167,11 @@ export function createJsonQuery<
       validate?: Validator<Data, Params, ValidationSource>;
     };
   }
-): Query<Params, Data, ApiRequestError | Error | InvalidDataError>;
+): Query<Params, Data, JsonApiRequestError>;
 
 export function createJsonQuery<
   Params,
   Data,
-  Error,
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
@@ -201,13 +192,12 @@ export function createJsonQuery<
       validate?: Validator<Data, Params, ValidationSource>;
     };
   }
-): Query<Params, Data, ApiRequestError | Error | InvalidDataError, Data>;
+): Query<Params, Data, JsonApiRequestError, Data>;
 
 // No params + mapData
 export function createJsonQuery<
   Data,
   TransformedData,
-  Error,
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
@@ -232,12 +222,11 @@ export function createJsonQuery<
       validate?: Validator<TransformedData, void, ValidationSource>;
     };
   }
-): Query<void, TransformedData, ApiRequestError | Error | InvalidDataError>;
+): Query<void, TransformedData, JsonApiRequestError>;
 
 export function createJsonQuery<
   Data,
   TransformedData,
-  Error,
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
@@ -263,17 +252,11 @@ export function createJsonQuery<
       validate?: Validator<TransformedData, void, ValidationSource>;
     };
   }
-): Query<
-  void,
-  TransformedData,
-  ApiRequestError | Error | InvalidDataError,
-  TransformedData
->;
+): Query<void, TransformedData, JsonApiRequestError, TransformedData>;
 
 // No params + no mapData
 export function createJsonQuery<
   Data,
-  Error,
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
@@ -292,11 +275,10 @@ export function createJsonQuery<
       validate?: Validator<Data, void, ValidationSource>;
     };
   }
-): Query<void, Data, ApiRequestError | Error | InvalidDataError>;
+): Query<void, Data, JsonApiRequestError>;
 
 export function createJsonQuery<
   Data,
-  Error,
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
@@ -316,7 +298,7 @@ export function createJsonQuery<
       validate?: Validator<Data, void, ValidationSource>;
     };
   }
-): Query<void, Data, ApiRequestError | Error | InvalidDataError, Data>;
+): Query<void, Data, JsonApiRequestError, Data>;
 
 // -- Implementation --
 export function createJsonQuery(config: any) {

@@ -3,6 +3,7 @@ import { describe, test, expectTypeOf } from 'vitest';
 import { unknownContract } from '../../contract/unknown_contract';
 import { Query } from '../type';
 import { createJsonQuery } from '../create_json_query';
+import { JsonApiRequestError } from '../../fetch/api';
 
 describe('createJsonQuery', () => {
   test('allow to pass credentials', () => {
@@ -15,6 +16,8 @@ describe('createJsonQuery', () => {
       response: { contract: unknownContract },
     });
 
-    expectTypeOf(mutation).toEqualTypeOf<Query<void, unknown, unknown>>();
+    expectTypeOf(mutation).toEqualTypeOf<
+      Query<void, unknown, JsonApiRequestError>
+    >();
   });
 });
