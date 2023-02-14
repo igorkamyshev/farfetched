@@ -133,6 +133,7 @@ export function createRemoteOperation<
   const $enabled = normalizeStaticOrReactive(enabled ?? true).map(Boolean);
 
   // -- Derived stores --
+  const $idle = $status.map((status) => status === 'initial');
   const $pending = $status.map((status) => status === 'pending');
   const $failed = $status.map((status) => status === 'fail');
   const $succeeded = $status.map((status) => status === 'done');
@@ -294,6 +295,7 @@ export function createRemoteOperation<
     start,
     finished,
     $status,
+    $idle,
     $pending,
     $failed,
     $succeeded,

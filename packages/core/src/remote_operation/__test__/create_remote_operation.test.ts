@@ -1,6 +1,6 @@
 import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, createStore, fork } from 'effector';
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi } from 'vitest';
 
 import { unknownContract } from '../../contract/unknown_contract';
 import { createDefer } from '../../libs/lohyphen';
@@ -71,5 +71,68 @@ describe('createRemoteOperation, disable in-flight', () => {
       expect.objectContaining({ params: 1 })
     );
     expect(listeners.onFailure).not.toBeCalled();
+  });
+
+  test('$status changes on stages', async () => {
+    const executorFirstDefer = createDefer();
+    const executorSecondDefer = createDefer();
+
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+
+    const scope = fork({
+      handlers: [
+        [
+          operation.__.executeFx,
+          vi
+            .fn()
+            .mockImplementationOnce(() => executorFirstDefer.promise)
+            .mockImplementationOnce(() => executorSecondDefer.promise),
+        ],
+      ],
+    });
+
+    expect(scope.getState(operation.$status)).toBe('initial');
+    expect(scope.getState(operation.$idle)).toBeTruthy();
+    expect(scope.getState(operation.$pending)).toBeFalsy();
+    expect(scope.getState(operation.$failed)).toBeFalsy();
+    expect(scope.getState(operation.$succeeded)).toBeFalsy();
+
+    // do not await
+    allSettled(operation.start, { scope, params: 42 });
+
+    expect(scope.getState(operation.$status)).toBe('pending');
+    expect(scope.getState(operation.$idle)).toBeFalsy();
+    expect(scope.getState(operation.$pending)).toBeTruthy();
+    expect(scope.getState(operation.$failed)).toBeFalsy();
+    expect(scope.getState(operation.$succeeded)).toBeFalsy();
+
+    executorFirstDefer.resolve('result');
+    await allSettled(scope);
+
+    expect(scope.getState(operation.$status)).toBe('done');
+    expect(scope.getState(operation.$idle)).toBeFalsy();
+    expect(scope.getState(operation.$pending)).toBeFalsy();
+    expect(scope.getState(operation.$failed)).toBeFalsy();
+    expect(scope.getState(operation.$succeeded)).toBeTruthy();
+
+    // do not await
+    allSettled(operation.start, { scope, params: 42 });
+
+    expect(scope.getState(operation.$status)).toBe('pending');
+    expect(scope.getState(operation.$idle)).toBeFalsy();
+    expect(scope.getState(operation.$pending)).toBeTruthy();
+    expect(scope.getState(operation.$failed)).toBeFalsy();
+    expect(scope.getState(operation.$succeeded)).toBeFalsy();
+
+    executorSecondDefer.reject(new Error('error'));
+    await allSettled(scope);
+
+    expect(scope.getState(operation.$status)).toBe('fail');
+    expect(scope.getState(operation.$idle)).toBeFalsy();
+    expect(scope.getState(operation.$pending)).toBeFalsy();
+    expect(scope.getState(operation.$failed)).toBeTruthy();
+    expect(scope.getState(operation.$succeeded)).toBeFalsy();
   });
 });

@@ -12,6 +12,7 @@ const query: Query<Params, Data, Error, InitialData>; // InitialData is allowed 
 query.$data; // Store<Data | InitialData>
 query.$error; // Store<Error | null>
 query.$status; // Store<'initial' | 'pending' | 'done' | 'fail'>
+query.$idle; // Store<boolean>, since v0.8.0
 query.$pending; // Store<boolean>
 query.$failed; // Store<boolean>, since v0.2.0
 query.$succeeded; // Store<boolean>, since v0.2.0

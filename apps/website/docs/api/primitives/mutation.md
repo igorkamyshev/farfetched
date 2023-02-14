@@ -9,9 +9,10 @@ const mutation: Mutation<Params, Data, Error>;
 
 // Stores
 mutation.$status; // Store<'initial' | 'pending' | 'done' | 'fail'>
+mutation.$idle; // Store<boolean>, since v0.8.0
 mutation.$pending; // Store<boolean>
 mutation.$failed; // Store<boolean>
-mutation.$pending; // Store<boolean>
+mutation.$succeeded; // Store<boolean>
 mutation.$enabled; // Store<boolean>
 
 // Commands
