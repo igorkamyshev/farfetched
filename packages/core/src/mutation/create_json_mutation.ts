@@ -3,7 +3,7 @@ import { attach, createEvent, Event, sample, type Json } from 'effector';
 import { Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
 import { InvalidDataError } from '../errors/type';
-import { ApiRequestError, HttpMethod } from '../fetch/api';
+import { ApiRequestError, HttpMethod, JsonApiRequestError } from '../fetch/api';
 import { createJsonApiRequest } from '../fetch/json';
 import { FetchApiRecord } from '../fetch/lib';
 import { ParamsDeclaration } from '../remote_operation/params';
@@ -84,7 +84,6 @@ export function createJsonMutation<
   Params,
   Data,
   TransformedData,
-  Error,
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
@@ -111,17 +110,12 @@ export function createJsonMutation<
       status?: { expected: number | number[] };
     };
   }
-): Mutation<
-  Params,
-  TransformedData,
-  ApiRequestError | Error | InvalidDataError
->;
+): Mutation<Params, TransformedData, JsonApiRequestError>;
 
 // params + no mapData
 export function createJsonMutation<
   Params,
   Data,
-  Error,
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
@@ -142,13 +136,12 @@ export function createJsonMutation<
       status?: { expected: number | number[] };
     };
   }
-): Mutation<Params, Data, ApiRequestError | Error | InvalidDataError>;
+): Mutation<Params, Data, JsonApiRequestError>;
 
 // No params + mapData
 export function createJsonMutation<
   Data,
   TransformedData,
-  Error,
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
@@ -174,12 +167,11 @@ export function createJsonMutation<
       status?: { expected: number | number[] };
     };
   }
-): Mutation<void, TransformedData, ApiRequestError | Error | InvalidDataError>;
+): Mutation<void, TransformedData, JsonApiRequestError>;
 
 // No params + no mapData
 export function createJsonMutation<
   Data,
-  Error,
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
@@ -199,7 +191,7 @@ export function createJsonMutation<
       status?: { expected: number | number[] };
     };
   }
-): Mutation<void, Data, ApiRequestError | Error | InvalidDataError>;
+): Mutation<void, Data, JsonApiRequestError>;
 
 // -- Implementation --
 export function createJsonMutation(config: any): Mutation<any, any, any> {

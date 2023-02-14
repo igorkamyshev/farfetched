@@ -7,6 +7,7 @@ import { ExecutionMeta } from '../../remote_operation/type';
 import { declareParams } from '../../remote_operation/params';
 import { createJsonMutation } from '../create_json_mutation';
 import { Mutation } from '../type';
+import { JsonApiRequestError } from '../../fetch/api';
 
 describe('createJsonMutation', () => {
   test('no params and no body in GET', () => {
@@ -417,6 +418,8 @@ describe('createJsonMutation', () => {
       response: { contract: unknownContract },
     });
 
-    expectTypeOf(mutation).toEqualTypeOf<Mutation<void, unknown, unknown>>();
+    expectTypeOf(mutation).toEqualTypeOf<
+      Mutation<void, unknown, JsonApiRequestError>
+    >();
   });
 });
