@@ -5,7 +5,6 @@ import { Contract } from '../../contract/type';
 import { unknownContract } from '../../contract/unknown_contract';
 import { createHeadlessQuery } from '../create_headless_query';
 import { Query } from '../type';
-import { InvalidDataError } from '../../errors/type';
 
 describe('createHeadlessQuery', () => {
   test('contract', () => {
@@ -17,7 +16,7 @@ describe('createHeadlessQuery', () => {
     });
 
     expectTypeOf(numberQuery).toEqualTypeOf<
-      Query<unknown, number, InvalidDataError>
+      Query<unknown, number, unknown | number>
     >();
 
     const stringContract = {} as Contract<unknown, string>;
@@ -28,7 +27,7 @@ describe('createHeadlessQuery', () => {
     });
 
     expectTypeOf(stringQuery).toEqualTypeOf<
-      Query<unknown, string, InvalidDataError>
+      Query<unknown, string, unknown | number>
     >();
   });
 
@@ -38,9 +37,7 @@ describe('createHeadlessQuery', () => {
       mapData: ({ result, params }) => 12,
     });
 
-    expectTypeOf(numberQuery).toEqualTypeOf<
-      Query<unknown, number, InvalidDataError>
-    >();
+    expectTypeOf(numberQuery).toEqualTypeOf<Query<unknown, number, unknown>>();
 
     const objectQuery = createHeadlessQuery({
       contract: unknownContract,
@@ -48,7 +45,7 @@ describe('createHeadlessQuery', () => {
     });
 
     expectTypeOf(objectQuery).toEqualTypeOf<
-      Query<unknown, { response: number }, InvalidDataError>
+      Query<unknown, { response: number }, unknown>
     >();
   });
 
@@ -64,9 +61,7 @@ describe('createHeadlessQuery', () => {
       },
     });
 
-    expectTypeOf(numberQuery).toEqualTypeOf<
-      Query<unknown, number, InvalidDataError>
-    >();
+    expectTypeOf(numberQuery).toEqualTypeOf<Query<unknown, number, unknown>>();
 
     const objectQuery = createHeadlessQuery({
       contract: unknownContract,
@@ -80,7 +75,7 @@ describe('createHeadlessQuery', () => {
     });
 
     expectTypeOf(objectQuery).toEqualTypeOf<
-      Query<unknown, { response: number }, InvalidDataError>
+      Query<unknown, { response: number }, unknown>
     >();
   });
 });

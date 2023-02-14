@@ -25,7 +25,6 @@ import { Validator } from '../validation/type';
 import { unwrapValidationResult } from '../validation/unwrap_validation_result';
 import { validValidator } from '../validation/valid_validator';
 import { RemoteOperation } from './type';
-import { DefaultRequestError } from '../fetch/api';
 
 export function createRemoteOperation<
   Params,
@@ -62,12 +61,7 @@ export function createRemoteOperation<
   >;
   sources?: Array<Store<unknown>>;
   paramsAreMeaningless?: boolean;
-}): RemoteOperation<
-  Params,
-  MappedData,
-  DefaultRequestError<Error, InvalidDataError>,
-  Meta
-> {
+}): RemoteOperation<Params, MappedData, Error | InvalidDataError, Meta> {
   let withInterruption = false;
   const registerInterruption = () => {
     withInterruption = true;
@@ -122,7 +116,7 @@ export function createRemoteOperation<
     }>(),
     failure: createEvent<{
       params: Params;
-      error: DefaultRequestError<Error, InvalidDataError>;
+      error: Error | InvalidDataError;
       meta: ExecutionMeta;
     }>(),
     skip: createEvent<{ params: Params; meta: ExecutionMeta }>(),

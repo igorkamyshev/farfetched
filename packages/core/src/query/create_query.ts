@@ -11,26 +11,20 @@ import { type DynamicallySourcedField } from '../libs/patronus';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
 import { resolveExecuteEffect } from '../remote_operation/resolve_execute_effect';
-import { DefaultRequestError } from '../fetch/api';
 
 // Overload: Only handler
 export function createQuery<Params, Response>(
   config: {
     handler: (p: Params) => Promise<Response>;
   } & SharedQueryFactoryConfig<Response>
-): Query<Params, Response, DefaultRequestError<unknown, InvalidDataError>>;
+): Query<Params, Response, unknown>;
 
 export function createQuery<Params, Response>(
   config: {
     initialData: Response;
     handler: (p: Params) => Promise<Response>;
   } & SharedQueryFactoryConfig<Response>
-): Query<
-  Params,
-  Response,
-  DefaultRequestError<unknown, InvalidDataError>,
-  Response
->;
+): Query<Params, Response, unknown, Response>;
 
 // Overload: Effect and MapData
 export function createQuery<
@@ -50,26 +44,21 @@ export function createQuery<
     >;
     validate?: Validator<MappedData, Params, ValidationSource>;
   } & SharedQueryFactoryConfig<MappedData>
-): Query<Params, MappedData, DefaultRequestError<Error, InvalidDataError>>;
+): Query<Params, MappedData, Error>;
 
 // Overload: Only effect
 export function createQuery<Params, Response, Error>(
   config: {
     effect: Effect<Params, Response, Error>;
   } & SharedQueryFactoryConfig<Response>
-): Query<Params, Response, DefaultRequestError<Error, InvalidDataError>>;
+): Query<Params, Response, Error>;
 
 export function createQuery<Params, Response, Error>(
   config: {
     initialData: Response;
     effect: Effect<Params, Response, Error>;
   } & SharedQueryFactoryConfig<Response>
-): Query<
-  Params,
-  Response,
-  DefaultRequestError<Error, InvalidDataError>,
-  Response
->;
+): Query<Params, Response, Error, Response>;
 
 // Overload: Effect and Contract
 export function createQuery<
@@ -84,7 +73,7 @@ export function createQuery<
     contract: Contract<Response, ContractData>;
     validate?: Validator<ContractData, Params, ValidationSource>;
   } & SharedQueryFactoryConfig<ContractData>
-): Query<Params, ContractData, DefaultRequestError<Error, InvalidDataError>>;
+): Query<Params, ContractData, Error | InvalidDataError>;
 
 export function createQuery<
   Params,
@@ -99,12 +88,7 @@ export function createQuery<
     contract: Contract<Response, ContractData>;
     validate?: Validator<ContractData, Params, ValidationSource>;
   } & SharedQueryFactoryConfig<ContractData>
-): Query<
-  Params,
-  ContractData,
-  DefaultRequestError<Error, InvalidDataError>,
-  ContractData
->;
+): Query<Params, ContractData, Error | InvalidDataError, ContractData>;
 
 export function createQuery<
   Params,
@@ -124,12 +108,7 @@ export function createQuery<
     >;
     validate?: Validator<MappedData, Params, ValidationSource>;
   } & SharedQueryFactoryConfig<MappedData>
-): Query<
-  Params,
-  MappedData,
-  DefaultRequestError<Error, InvalidDataError>,
-  MappedData
->;
+): Query<Params, MappedData, Error, MappedData>;
 
 // Overload: Effect, Contract and MapData
 export function createQuery<
@@ -151,7 +130,7 @@ export function createQuery<
     >;
     validate?: Validator<ContractData, Params, ValidationSource>;
   } & SharedQueryFactoryConfig<MappedData>
-): Query<Params, MappedData, DefaultRequestError<Error, InvalidDataError>>;
+): Query<Params, MappedData, Error | InvalidDataError>;
 
 export function createQuery<
   Params,
@@ -173,18 +152,13 @@ export function createQuery<
     >;
     validate?: Validator<ContractData, Params, ValidationSource>;
   } & SharedQueryFactoryConfig<MappedData>
-): Query<
-  Params,
-  MappedData,
-  DefaultRequestError<Error, InvalidDataError>,
-  MappedData
->;
+): Query<Params, MappedData, Error | InvalidDataError, MappedData>;
 
 // -- Implementation --
 export function createQuery<
   Params,
   Response,
-  Error = unknown,
+  Error,
   ContractData extends Response = Response,
   MappedData = ContractData,
   MapDataSource = void,
@@ -193,12 +167,7 @@ export function createQuery<
   // Use any because of overloads
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config: any
-): Query<
-  Params,
-  MappedData,
-  DefaultRequestError<Error, InvalidDataError>,
-  MappedData
-> {
+): Query<Params, MappedData, Error | InvalidDataError, MappedData> {
   const query = createHeadlessQuery<
     Params,
     Response,
