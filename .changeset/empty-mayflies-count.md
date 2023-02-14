@@ -2,4 +2,4 @@
 '@farfetched/core': patch
 ---
 
-Error generic is removed in create_json_query and create_json_mutation and replaced with default JsonApiRequestsError
+Fix error type of _Mutations_ and _Queries_ create by `createJson*` factories

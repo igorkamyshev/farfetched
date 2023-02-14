@@ -2,4 +2,4 @@
 '@farfetched/core': patch
 ---
 
-Add RemoteOperation types to public API
+Add utility types for _Remote Operations_ to public API
