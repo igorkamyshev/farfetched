@@ -97,5 +97,6 @@ Farfetched provides integrations for the following third-party solutions:
 - [Zod](/api/contracts/zod)
 - [io-ts](/api/contracts/io-ts)
 - [Superstruct](/api/contracts/superstruct)
+- [typed-contracts](/api/contracts/typed-contracts)
 
 If you are using any other solution for contracts, you can easily create a wrapper for it to case your internal contracts to Farfetched [_Contract_](/api/primitives/contract). Check source code of [Runtypes integration](https://github.com/igorkamyshev/farfetched/blob/master/packages/runtypes/src/runtype_contract.ts) for inspiration.

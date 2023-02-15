@@ -238,6 +238,10 @@ export default withMermaid(
                     text: 'superstruct',
                     link: '/api/contracts/superstruct',
                   },
+                  {
+                    text: 'typed-contracts',
+                    link: '/api/contracts/typed-contracts',
+                  },
                 ],
               },
             ],
