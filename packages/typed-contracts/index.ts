@@ -1,1 +1,1 @@
-export { ioTsContract } from './src/contract';
+export { typedContract } from './src/contract';
