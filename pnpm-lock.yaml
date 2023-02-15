@@ -55,6 +55,7 @@ importers:
       solid-js: 1.4.8
       solid-testing-library: ^0.3.0
       superstruct: ^1.0.3
+      typed-contracts: ^3.0.0
       typescript: 4.8.4
       vite: ^4.0.1
       vite-plugin-eslint: ^1.8.1
@@ -77,6 +78,7 @@ importers:
       react-router-dom: 6.4.2_biqbaboplfbrettd7655fr4n2y
       runtypes: 6.5.1
       solid-js: 1.4.8
+      typed-contracts: 3.0.0
     devDependencies:
       '@algolia/client-search': 4.14.2
       '@babel/core': 7.18.6
@@ -9466,6 +9468,10 @@ packages:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
     engines: {node: '>=8'}
     dev: true
+
+  /typed-contracts/3.0.0:
+    resolution: {integrity: sha512-Crw4cKiPBulqy2YFfCMU3OaudtDPeEDwbkbYj6mI2XZA2wt3iGBvxvMobESW9t73+hlIpwe/4i63M+BzkprW+g==}
+    dev: false
 
   /typescript/4.8.4:
     resolution: {integrity: sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==}
