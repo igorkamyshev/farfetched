@@ -122,7 +122,7 @@ import { retry } from '@farfetched/core';
 
 import { petsQuery } from './api/shared';
 
-retry(petsGet, {
+retry(petsQuery, {
   times: 3,
   delay: 1000,
 });
