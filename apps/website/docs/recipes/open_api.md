@@ -26,6 +26,8 @@ npm install --dev openapi@^1.0.0 openapi-preset-effector typed-contracts
 
 :::warning
 `openapi-preset-effector` supports only [`typed-contracts`](https://github.com/bigslycat/typed-contracts) for now, but integrations for [`runtypes`](https://github.com/openapi/preset-effector/issues/12) and [`io-ts`](https://github.com/openapi/preset-effector/issues/13) on their ways.
+
+To prevent using many contract systems in your project, we recommend using `typed-contracts` across the whole project. Farfetched supports it out of the box, read more the API reference for [`@farfetched/typed-contracts`](/api/contracts/typed-contracts).
 :::
 
 2. Create base [_Effect_](https://effector.dev/docs/api/effector/effect) that will be used in the generated code, put it in the `./src/api/shared/request.ts` file. In general, it has to be any [_Effect_](https://effector.dev/docs/api/effector/effect) with the following signature:
