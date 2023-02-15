@@ -274,6 +274,10 @@ export default withMermaid(
                 text: 'Vite',
                 link: '/recipes/vite',
               },
+              {
+                text: 'Code generation with OpenAPI',
+                link: '/recipes/open_api',
+              },
             ],
           },
           {
