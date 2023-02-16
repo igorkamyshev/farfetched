@@ -1,0 +1,29 @@
+[
+  {
+    "avatar": "https://www.github.com/igorkamyshev.png",
+    "name": "Igor Kamyşev",
+    "org": "Effector Core Team",
+    "orgLink": "https://effector.dev",
+    "links": [
+      { "icon": "github", "link": "https://github.com/igorkamyshev" },
+      { "icon": "twitter", "link": "https://twitter.com/kamyshev_dev" }
+    ]
+  },
+  {
+    "avatar": "https://www.github.com/AlexandrHoroshih.png",
+    "name": "Alexander Khoroshikh",
+    "org": "Effector Core Team",
+    "orgLink": "https://effector.dev",
+    "links": [
+      { "icon": "github", "link": "https://github.com/AlexandrHoroshih" },
+      { "icon": "twitter", "link": "https://twitter.com/sashahoroshih" }
+    ]
+  },
+  {
+    "avatar": "https://www.github.com/Drevoed.png",
+    "name": "Kirill Mironov",
+    "org": "Effector Core Team",
+    "orgLink": "https://effector.dev",
+    "links": [{ "icon": "github", "link": "https://github.com/Drevoed" }]
+  }
+]
