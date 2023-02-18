@@ -36,44 +36,20 @@ import {
   VPTeamPageSection
 } from 'vitepress/theme'
 
-const members = [
-  {
-    avatar: 'https://www.github.com/igorkamyshev.png',
-    name: 'Igor Kamyşev',
-    org: 'Effector Core Team',
-    orgLink: 'https://effector.dev',
-    links: [
-      { icon: 'github', link: 'https://github.com/igorkamyshev' },
-      { icon: 'twitter', link: 'https://twitter.com/kamyshev_dev' }
-    ]
-  },
-  {
-    avatar: 'https://www.github.com/AlexandrHoroshih.png',
-    name: 'Alexander Khoroshikh',
-    org: 'Effector Core Team',
-    orgLink: 'https://effector.dev',
-    links: [
-      { icon: 'github', link: 'https://github.com/AlexandrHoroshih' },
-      { icon: 'twitter', link: 'https://twitter.com/sashahoroshih' }
-    ]
-  },
-  {
-    avatar: 'https://www.github.com/Drevoed.png',
-    name: 'Kirill Mironov',
-    org: 'Effector Core Team',
-    orgLink: 'https://effector.dev',
-    links: [
-      { icon: 'github', link: 'https://github.com/Drevoed' },
-    ]
-  },
-]
+import { data as contributors} from './contributors.data';
+import members from './core_team.data.json';
 </script>
 
 <VPTeamPage>
   <VPTeamPageTitle>
-    <template #title>
-      Meet the team
-    </template>
+    <template #title>Meet the team</template>
   </VPTeamPageTitle>
   <VPTeamMembers :members="members" />
+
+  <VPTeamPageSection>
+    <template #title>Contributors</template>
+    <template #members>
+      <VPTeamMembers size="small" :members="contributors" />
+    </template>
+  </VPTeamPageSection>
 </VPTeamPage>

@@ -24,7 +24,7 @@ export default withMermaid(
       socialLinks: [
         { icon: 'github', link: 'https://github.com/igorkamyshev/farfetched' },
         { icon: 'twitter', link: 'https://twitter.com/farfetched_dev' },
-        { icon: 'discord', link: 'https://discord.gg/HkFmJBYX' },
+        { icon: 'discord', link: 'https://discord.gg/t8SFqZjyET' },
       ],
       algolia: {
         appId: 'E2VDGRUQY3',
@@ -204,7 +204,10 @@ export default withMermaid(
           {
             text: 'Utils',
             collapsed: true,
-            items: [{ text: 'Error guards', link: '/api/utils/error_guards' }],
+            items: [
+              { text: 'Error creators', link: '/api/utils/error_creators' },
+              { text: 'Error guards', link: '/api/utils/error_guards' },
+            ],
           },
           {
             text: 'Integrations',
