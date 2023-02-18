@@ -204,7 +204,10 @@ export default withMermaid(
           {
             text: 'Utils',
             collapsed: true,
-            items: [{ text: 'Error guards', link: '/api/utils/error_guards' }],
+            items: [
+              { text: 'Error creators', link: '/api/utils/error_creators' },
+              { text: 'Error guards', link: '/api/utils/error_guards' },
+            ],
           },
           {
             text: 'Integrations',
