@@ -11,6 +11,7 @@
     "solid": "packages/solid",
     "superstruct": "packages/superstruct",
     "test-utils": "packages/test-utils",
+    "typed-contracts": "packages/typed-contracts",
     "website": "apps/website",
     "zod": "packages/zod"
   }

@@ -241,6 +241,10 @@ export default withMermaid(
                     text: 'superstruct',
                     link: '/api/contracts/superstruct',
                   },
+                  {
+                    text: 'typed-contracts',
+                    link: '/api/contracts/typed-contracts',
+                  },
                 ],
               },
             ],
@@ -276,6 +280,10 @@ export default withMermaid(
               {
                 text: 'Vite',
                 link: '/recipes/vite',
+              },
+              {
+                text: 'Code generation with OpenAPI',
+                link: '/recipes/open_api',
               },
             ],
           },
