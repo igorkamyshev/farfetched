@@ -29,7 +29,9 @@ type RequestConfig<Params, BodySource, QuerySource, HeadersSource, UrlSource> =
   {
     url: SourcedField<Params, string, UrlSource>;
     credentials?: RequestCredentials;
-    query?: SourcedField<Params, FetchApiRecord, QuerySource>;
+    query?:
+      | SourcedField<Params, FetchApiRecord, QuerySource>
+      | SourcedField<Params, string, QuerySource>;
     headers?: SourcedField<Params, FetchApiRecord, HeadersSource>;
   } & (
     | {

@@ -2,7 +2,7 @@ import { attach, createEvent, Event, sample, type Json } from 'effector';
 
 import { Contract } from '../contract/type';
 import { createJsonApiRequest } from '../fetch/json';
-import { ApiRequestError, HttpMethod, JsonApiRequestError } from '../fetch/api';
+import { HttpMethod, JsonApiRequestError } from '../fetch/api';
 import {
   normalizeSourced,
   type SourcedField,
@@ -16,7 +16,6 @@ import {
   SharedQueryFactoryConfig,
 } from './create_headless_query';
 import { unknownContract } from '../contract/unknown_contract';
-import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
 
 // -- Shared
@@ -30,7 +29,9 @@ type RequestConfig<Params, BodySource, QuerySource, HeadersSource, UrlSource> =
   {
     url: SourcedField<Params, string, UrlSource>;
     credentials?: RequestCredentials;
-    query?: SourcedField<Params, FetchApiRecord, QuerySource>;
+    query?:
+      | SourcedField<Params, FetchApiRecord, QuerySource>
+      | SourcedField<Params, string, QuerySource>;
     headers?: SourcedField<Params, FetchApiRecord, HeadersSource>;
   } & (
     | {

@@ -55,7 +55,7 @@ describe('fetch/api.request.query', () => {
   });
 
   test('pass reactive query on creation to request', async () => {
-    const $query = createStore<FetchApiRecord>({ test: 'value' });
+    const $query = createStore<FetchApiRecord | string>({ test: 'value' });
 
     const callApiFx = createApiRequest({
       request: { mapBody, method, url, credentials, query: $query },
@@ -103,7 +103,7 @@ describe('fetch/api.request.query', () => {
     });
 
     expect(fetchMock.mock.calls[0][0].url).toEqual(
-      `${url}/?static=one&shared=static&shared=dynamic&dynamic=two`
+      `${url}/?static=one&shared=static&dynamic=two&shared=dynamic`
     );
   });
 });

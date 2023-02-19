@@ -35,6 +35,7 @@ import {
   mergeRecords,
   formatHeaders,
   type FetchApiRecord,
+  mergeQueryStrings,
 } from './lib';
 import { requestFx } from './request';
 
@@ -68,7 +69,7 @@ export interface ExclusiveRequestConfig<B>
 
 // These settings can be defined twice — both statically and dynamically, they will be merged
 export interface InclusiveRequestConfig {
-  query?: FetchApiRecord;
+  query?: FetchApiRecord | string;
   headers?: FetchApiRecord;
 }
 
@@ -282,7 +283,7 @@ export function createApiRequest<
 
       // Inclusive settings
 
-      const query = mergeRecords(staticConfig.query, dynamicConfig.query);
+      const query = mergeQueryStrings(staticConfig.query, dynamicConfig.query);
       const headers = mergeRecords(staticConfig.headers, dynamicConfig.headers);
 
       // Other settings
