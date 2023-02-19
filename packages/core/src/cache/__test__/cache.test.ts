@@ -159,7 +159,7 @@ describe('cache', () => {
 
     // Value from cache is not a number, did not put it to cache
     expect(scope.getState(query.$data)).toEqual(null);
-    expect(scope.getState(query.$stale)).toBeFalsy();
+    expect(scope.getState(query.$stale)).toBeTruthy();
   });
 
   test('save value to cache before mapData call', async () => {
@@ -212,7 +212,7 @@ describe('cache', () => {
 
     // Value from cache not found
     expect(scope.getState(query.$data)).toEqual(null);
-    expect(scope.getState(query.$stale)).toBeFalsy();
+    expect(scope.getState(query.$stale)).toBeTruthy();
 
     await allSettled(scope);
 
@@ -255,7 +255,7 @@ describe('cache', () => {
 
     // Value from cache
     expect(scope.getState(query.$data)).toEqual(null);
-    expect(scope.getState(query.$stale)).toBeFalsy();
+    expect(scope.getState(query.$stale)).toBeTruthy();
 
     await allSettled(scope);
 
@@ -390,7 +390,7 @@ describe('cache', () => {
 
     // No value from cache
     expect(scope.getState(query.$data)).toBeNull();
-    expect(scope.getState(query.$stale)).toBeFalsy();
+    expect(scope.getState(query.$stale)).toBeTruthy();
 
     await allSettled(scope);
 

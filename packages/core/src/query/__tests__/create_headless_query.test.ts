@@ -324,6 +324,6 @@ describe('core/createHeadlessQuery enabled', () => {
     expect(scope.getState(query.$data)).toBeNull();
     expect(scope.getState(query.$error)).toBeNull();
     expect(scope.getState(query.$status)).toBe('initial');
-    expect(scope.getState(query.$stale)).toBeFalsy();
+    expect(scope.getState(query.$stale)).toBeTruthy();
   });
 });

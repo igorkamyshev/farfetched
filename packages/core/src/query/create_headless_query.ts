@@ -97,7 +97,7 @@ export function createHeadlessQuery<
     name: `${operation.__.meta.name}.$error`,
     serialize: serializationForSideStore(serialize),
   });
-  const $stale = createStore<boolean>(false, {
+  const $stale = createStore<boolean>(true, {
     sid: `ff.${operation.__.meta.name}.$stale`,
     name: `${operation.__.meta.name}.$stale`,
     serialize: serializationForSideStore(serialize),
@@ -121,15 +121,7 @@ export function createHeadlessQuery<
 
   sample({
     clock: operation.finished.finally,
-    filter: ({ meta }) => !meta.isFreshData,
-    fn: () => true,
-    target: $stale,
-  });
-
-  sample({
-    clock: operation.finished.finally,
-    filter: ({ meta }) => meta.isFreshData,
-    fn: () => false,
+    fn: ({ meta }) => !meta.isFreshData,
     target: $stale,
   });
 
