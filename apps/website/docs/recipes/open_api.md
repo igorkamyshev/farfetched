@@ -44,7 +44,7 @@ export interface Request {
 
 export interface Answer {
   ok: boolean;
-  body: unkown;
+  body: unknown;
   status: number;
   headers: Record<string, string>;
 }
