@@ -30,7 +30,7 @@ async function fetchItems() {
 
 let attempt = 0;
 
-async function start(prevIds) {
+async function start() {
   try {
     const items = await fetchItemsByIds(ids);
     return items;
