@@ -24,7 +24,7 @@ Data becomes stale when the [_Query_](/api/primitives/query) in many cases:
 
 In all these cases, the `.$stale` property of the [_Query_](/api/primitives/query) becomes `true` and the [_Query_](/api/primitives/query) immediately starts the process of refreshing the data.
 
-## Renew the data manually
+## Renew the data
 
 Sometimes you want to start a [_Query_] only if the data is stale and skip it if the data is fresh. For example, you got the data from the server and do not want to fetch it again until on client. For this case, you can use the `.refresh` [_Event_](https://effector.dev/docs/api/effector/event) of the [_Query_](/api/primitives/query).
 
@@ -40,3 +40,19 @@ sample({ clock: appStarted, target: someQuery.refresh });
 ```
 
 In this example, the `someQuery` will be started only every time when the `appStarted` event is triggered and the data in the `someQuery` is stale. You can safely call the `appStarted` on the server, transfer the data to the client, and call the `appStarted` on the client. The `someQuery` will be started only on the server and will be skipped on the client.
+
+## Mark [_Query_](/api/primitives/query) as stale
+
+Sometimes you want to mark the [_Query_](/api/primitives/query) as stale manually. For example, you want to refresh the data after the user logs out. For this case, you can use the [`stale`-operator](/api/operators/stale)
+
+```ts
+import { stale } from '@farfetched/core';
+
+const someQuery = createJsonQuery({
+  /* ... */
+});
+
+stale(someQuery, { clock: userLoggedOut });
+```
+
+👆 it means that the `someQuery` will be marked as stale every time when the `userLoggedOut` event is triggered, after that, the `someQuery` will be started to refresh the data.

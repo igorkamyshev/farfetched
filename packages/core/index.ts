@@ -87,3 +87,6 @@ export {
   isInvalidDataError,
   isHttpErrorCode,
 } from './src/errors/guards';
+
+// Trigger API
+export { stale } from './src/trigger_api/stale';
