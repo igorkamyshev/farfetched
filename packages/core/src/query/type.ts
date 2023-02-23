@@ -18,6 +18,10 @@ export interface QueryMeta<Data, InitialData> {
 export interface Query<Params, Data, Error, InitialData = null>
   extends RemoteOperation<Params, Data, Error, QueryMeta<Data, InitialData>> {
   /**
+   * Start fetching data if it is absent or stale.
+   */
+  refresh: Event<Params>;
+  /**
    * The reactive value of the latest received data.
    *
    * If there was an error during fetching or there has not been a request yet, the store will be `null`.

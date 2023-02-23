@@ -84,6 +84,7 @@ export function createHeadlessQuery<
     paramsAreMeaningless,
   });
 
+  const refresh = createEvent<Params>();
   const reset = createEvent();
 
   // -- Main stores --
@@ -123,6 +124,14 @@ export function createHeadlessQuery<
     clock: operation.finished.finally,
     fn: ({ meta }) => !meta.isFreshData,
     target: $stale,
+  });
+
+  // -- Trigger API
+
+  sample({
+    clock: refresh,
+    filter: $stale,
+    target: operation.start,
   });
 
   // -- Reset state --
@@ -175,6 +184,7 @@ export function createHeadlessQuery<
     $error,
     $stale,
     reset,
+    refresh,
     ...operation,
     __: {
       ...operation.__,

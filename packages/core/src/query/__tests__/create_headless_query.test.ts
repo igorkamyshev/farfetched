@@ -327,3 +327,53 @@ describe('core/createHeadlessQuery enabled', () => {
     expect(scope.getState(query.$stale)).toBeTruthy();
   });
 });
+
+describe('createHeadlessQuery#refresh', () => {
+  test('start query in case of data absence', async () => {
+    const query = createHeadlessQuery({
+      contract: unknownContract,
+      mapData: ({ result }) => result,
+    });
+
+    const listener = vi.fn();
+
+    const scope = fork({ handlers: [[query.__.executeFx, listener]] });
+
+    await allSettled(query.refresh, { scope, params: null });
+
+    expect(listener).toBeCalledTimes(1);
+  });
+
+  test('skip start query in case of fresh data', async () => {
+    const query = createHeadlessQuery({
+      contract: unknownContract,
+      mapData: ({ result }) => result,
+    });
+
+    const listener = vi.fn(() => 'data from query');
+
+    const scope = fork({ handlers: [[query.__.executeFx, listener]] });
+
+    await allSettled(query.start, { scope, params: null });
+    await allSettled(query.refresh, { scope, params: null });
+
+    expect(listener).toBeCalledTimes(1);
+  });
+
+  test('skip start query in case of stale data', async () => {
+    const query = createHeadlessQuery({
+      contract: unknownContract,
+      mapData: ({ result }) => result,
+    });
+
+    const listener = vi.fn(() => 'data from query');
+
+    const scope = fork({ handlers: [[query.__.executeFx, listener]] });
+
+    await allSettled(query.start, { scope, params: null });
+    await allSettled(query.$stale, { scope, params: true });
+    await allSettled(query.refresh, { scope, params: null });
+
+    expect(listener).toBeCalledTimes(2);
+  });
+});

@@ -128,6 +128,10 @@ export default withMermaid(
                   },
                 ],
               },
+              {
+                text: 'Trigger API',
+                link: '/tutorial/trigger_api',
+              },
             ],
           },
           {
