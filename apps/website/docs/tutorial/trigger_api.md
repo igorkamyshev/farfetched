@@ -24,7 +24,7 @@ Data becomes stale when the [_Query_](/api/primitives/query) in many cases:
 
 In all these cases, the `.$stale` property of the [_Query_](/api/primitives/query) becomes `true` and the [_Query_](/api/primitives/query) immediately starts the process of refreshing the data.
 
-## Renew the data
+## Refresh the data manually
 
 Sometimes you want to start a [_Query_] only if the data is stale and skip it if the data is fresh. For example, you got the data from the server and do not want to fetch it again until on client. For this case, you can use the `.refresh` [_Event_](https://effector.dev/docs/api/effector/event) of the [_Query_](/api/primitives/query).
 
@@ -41,18 +41,38 @@ sample({ clock: appStarted, target: someQuery.refresh });
 
 In this example, the `someQuery` will be started only every time when the `appStarted` event is triggered and the data in the `someQuery` is stale. You can safely call the `appStarted` on the server, transfer the data to the client, and call the `appStarted` on the client. The `someQuery` will be started only on the server and will be skipped on the client.
 
-## Mark [_Query_](/api/primitives/query) as stale
+## Refresh the data automatically
 
-Sometimes you want to mark the [_Query_](/api/primitives/query) as stale manually. For example, you want to refresh the data after the user logs out. For this case, you can use the [`stale`-operator](/api/operators/stale)
+In the most cases, you want to refresh the data automatically during the lifetime of the app. For this case, you can use the [`keepFresh`](/api/operators/keep_fresh)-operator.
+
+The following example shows how to refresh the `someQuery` every time when `$language` store is changed, but only after the `appStarted` event is triggered.
 
 ```ts
-import { stale } from '@farfetched/core';
+import { keepFresh, createJsonQuery } from '@farfetched/core';
+
+const $language = createStore('en');
 
 const someQuery = createJsonQuery({
-  /* ... */
+  request: {
+    url: { source: $language, fn: (_, language) => `/api/${language}` },
+  },
 });
 
-stale(someQuery, { clock: userLoggedOut });
+keepFresh(someQuery, { setup: appStarted });
 ```
 
-👆 it means that the `someQuery` will be marked as stale every time when the `userLoggedOut` event is triggered, after that, the `someQuery` will be started to refresh the data.
+If you do not want to refresh the data immediately after `$language` is changed, you can use `triggers` field of the `keepFresh`-operator's config to specify the triggers.
+
+```ts
+import { keepFresh, createJsonQuery } from '@farfetched/core';
+
+const $language = createStore('en');
+
+const someQuery = createJsonQuery({
+  request: {
+    url: { source: $language, fn: (_, language) => `/api/${language}` },
+  },
+});
+
+keepFresh(someQuery, { triggers: [userLoggedIn] });
+```

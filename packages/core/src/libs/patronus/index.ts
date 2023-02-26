@@ -6,6 +6,7 @@ export { postpone } from './postpone';
 export { serializationForSideStore, type Serialize } from './serialization';
 export { withFactory } from './sid';
 export {
+  extractSource,
   normalizeSourced,
   normalizeStaticOrReactive,
   type SourcedField,

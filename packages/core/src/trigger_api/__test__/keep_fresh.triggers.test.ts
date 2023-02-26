@@ -3,9 +3,9 @@ import { setTimeout } from 'timers/promises';
 import { describe, expect, test, vi } from 'vitest';
 
 import { createQuery } from '../../query/create_query';
-import { stale } from '../stale';
+import { keepFresh } from '../keep_fresh';
 
-describe('Trigger API, stale', () => {
+describe('keepFresh, triggers', () => {
   test('mark Query as stale and refresh', async () => {
     const clock = createEvent();
 
@@ -17,7 +17,7 @@ describe('Trigger API, stale', () => {
       handler: executeListener,
     });
 
-    stale(query, { clock });
+    keepFresh(query, { triggers: [clock] });
 
     const scope = fork();
 
@@ -45,7 +45,7 @@ describe('Trigger API, stale', () => {
       handler: executeListener,
     });
 
-    stale(query, { clock, params: () => 'from_operator' });
+    keepFresh(query, { triggers: [clock], params: () => 'from_operator' });
 
     const scope = fork();
 

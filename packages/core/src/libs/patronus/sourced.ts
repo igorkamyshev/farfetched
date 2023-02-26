@@ -182,6 +182,20 @@ function normalizeStaticOrReactive<T>(
   });
 }
 
+// -- Extract source
+
+function extractSource<S>(sourced: SourcedField<any, any, S>): Store<S> | null {
+  if (is.store(sourced)) {
+    return sourced;
+  }
+
+  if (sourced?.source) {
+    return sourced.source;
+  }
+
+  return null;
+}
+
 // -- Exports --
 
 export {
@@ -191,4 +205,5 @@ export {
   reduceTwoArgs,
   type StaticOrReactive,
   normalizeStaticOrReactive,
+  extractSource,
 };

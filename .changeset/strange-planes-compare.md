@@ -2,4 +2,4 @@
 '@farfetched/core': minor
 ---
 
-Add operator `stale`
+Add new operaor — `keepFresh`

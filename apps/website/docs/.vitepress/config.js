@@ -189,7 +189,7 @@ export default withMermaid(
               { text: 'update', link: '/api/operators/update' },
               { text: 'retry', link: '/api/operators/retry' },
               { text: 'cache', link: '/api/operators/cache' },
-              { text: 'stale', link: '/api/operators/stale' },
+              { text: 'keepFresh', link: '/api/operators/keep_fresh' },
               {
                 text: 'attachOperation',
                 link: '/api/operators/attach_operation',

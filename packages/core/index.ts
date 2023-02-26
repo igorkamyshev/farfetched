@@ -89,4 +89,4 @@ export {
 } from './src/errors/guards';
 
 // Trigger API
-export { stale } from './src/trigger_api/stale';
+export { keepFresh } from './src/trigger_api/keep_fresh';

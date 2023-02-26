@@ -2,6 +2,7 @@ import {
   createEffect,
   createEvent,
   createStore,
+  Event,
   sample,
   split,
   Store,
@@ -45,6 +46,7 @@ export function createRemoteOperation<
   validate,
   mapData,
   sources,
+  sourced,
   paramsAreMeaningless,
 }: {
   name?: string;
@@ -60,6 +62,7 @@ export function createRemoteOperation<
     MapDataSource
   >;
   sources?: Array<Store<unknown>>;
+  sourced?: Array<(clock: Event<Params>) => Store<unknown>>;
   paramsAreMeaningless?: boolean;
 }): RemoteOperation<Params, MappedData, Error | InvalidDataError, Meta> {
   let withInterruption = false;
@@ -306,6 +309,7 @@ export function createRemoteOperation<
       kind,
       lowLevelAPI: {
         sources: sources ?? [],
+        sourced: sourced ?? [],
         paramsAreMeaningless: paramsAreMeaningless ?? false,
         registerInterruption,
         validatedSuccessfully,

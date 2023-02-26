@@ -1,4 +1,4 @@
-import { attach, createEvent, Event, sample, type Json } from 'effector';
+import { attach, createEvent, Event, is, sample, type Json } from 'effector';
 
 import { Contract } from '../contract/type';
 import { createJsonApiRequest } from '../fetch/json';
@@ -7,6 +7,7 @@ import {
   normalizeSourced,
   type SourcedField,
   type DynamicallySourcedField,
+  extractSource,
 } from '../libs/patronus';
 import { type ParamsDeclaration } from '../remote_operation/params';
 import { Query } from './type';
@@ -319,25 +320,29 @@ export function createJsonQuery(config: any) {
   // Connections
   const internalStart = createEvent<any>();
 
-  const url = normalizeSourced({
-    field: config.request.url,
-    clock: internalStart,
-  });
+  const url = (clock: Event<any>) =>
+    normalizeSourced({
+      field: config.request.url,
+      clock,
+    });
 
-  const body = normalizeSourced({
-    field: config.request.body,
-    clock: internalStart,
-  });
+  const body = (clock: Event<any>) =>
+    normalizeSourced({
+      field: config.request.body,
+      clock,
+    });
 
-  const headers = normalizeSourced({
-    field: config.request.headers,
-    clock: internalStart,
-  });
+  const headers = (clock: Event<any>) =>
+    normalizeSourced({
+      field: config.request.headers,
+      clock,
+    });
 
-  const query = normalizeSourced({
-    field: config.request.query,
-    clock: internalStart,
-  });
+  const query = (clock: Event<any>) =>
+    normalizeSourced({
+      field: config.request.query,
+      clock,
+    });
 
   const headlessQuery = createHeadlessQuery<
     any,
@@ -356,17 +361,23 @@ export function createJsonQuery(config: any) {
     enabled: config.enabled,
     name: config.name,
     serialize: config.serialize,
-    sources: [url, body, headers, query],
+    sources: [
+      extractSource(config.request.url),
+      extractSource(config.request.body),
+      extractSource(config.request.headers),
+      extractSource(config.request.query),
+    ].filter(is.store),
+    sourced: [url, body, headers, query],
     paramsAreMeaningless: true,
   });
 
   headlessQuery.__.executeFx.use(
     attach({
       source: {
-        url,
-        body,
-        headers,
-        query,
+        url: url(internalStart),
+        body: body(internalStart),
+        headers: headers(internalStart),
+        query: query(internalStart),
       },
       effect: requestFx,
     })
