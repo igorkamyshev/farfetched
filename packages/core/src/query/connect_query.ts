@@ -18,7 +18,7 @@ export function connectQuery<Sources, Target extends Query<any, any, any>>(
     target: Target | [...Target[]];
   } & (Target extends Query<infer P, any, any>
     ? P extends void
-      ? NonExtendable
+      ? { fn?: undefined }
       : Sources extends Query<any, any, any>
       ? {
           fn: (sources: {
