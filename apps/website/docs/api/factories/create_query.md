@@ -91,7 +91,7 @@ const languagesQuery = createQuery({
   },
 });
 
-/* typeof languagesQuery.$error === Store<{
+/* typeof languagesQuery.$data === Store<{
  *   availableLanguages: string[],
  *   languageCanBeSelected: boolean,
  * }>
@@ -122,7 +122,7 @@ const languagesQuery = createQuery({
   },
 });
 
-/* typeof languagesQuery.$error === Store<{
+/* typeof languagesQuery.$data === Store<{
  *   availableLanguages: string[],
  *   languageCanBeSelected: boolean,
  * }>
