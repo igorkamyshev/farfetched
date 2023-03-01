@@ -58,7 +58,9 @@ const someQuery = createJsonQuery({
   },
 });
 
-keepFresh(someQuery, { setup: appStarted });
+keepFresh(someQuery);
+
+sample({ clock: appStarted, target: someQuery.refresh });
 ```
 
 If you do not want to refresh the data immediately after `$language` is changed, you can use `triggers` field of the `keepFresh`-operator's config to specify the triggers.
@@ -75,4 +77,6 @@ const someQuery = createJsonQuery({
 });
 
 keepFresh(someQuery, { triggers: [userLoggedIn] });
+
+sample({ clock: appStarted, target: someQuery.refresh });
 ```

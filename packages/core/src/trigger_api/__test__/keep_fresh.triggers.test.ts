@@ -34,7 +34,7 @@ describe('keepFresh, triggers', () => {
     expect(executeListener).toBeCalledTimes(2);
   });
 
-  test('uses params Query from params field', async () => {
+  test('uses latest Query params', async () => {
     const clock = createEvent();
 
     const executeListener = vi.fn(async (params: string) =>
@@ -45,7 +45,7 @@ describe('keepFresh, triggers', () => {
       handler: executeListener,
     });
 
-    keepFresh(query, { triggers: [clock], params: () => 'from_operator' });
+    keepFresh(query, { triggers: [clock] });
 
     const scope = fork();
 
@@ -61,6 +61,6 @@ describe('keepFresh, triggers', () => {
     await allSettled(scope);
     expect(scope.getState(query.$stale)).toBeFalsy();
     expect(executeListener).toBeCalledTimes(2);
-    expect(executeListener).toBeCalledWith('from_operator');
+    expect(executeListener).toBeCalledWith('original');
   });
 });

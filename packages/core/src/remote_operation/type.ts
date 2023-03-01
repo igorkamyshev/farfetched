@@ -76,6 +76,7 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
      * Distinguish different kinds of operations
      */
     kind: unknown;
+    $latestParams: Store<Params | null>;
     /**
      * Low-level API, it can be changed anytime without any notice!
      */

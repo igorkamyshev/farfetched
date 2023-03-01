@@ -135,6 +135,10 @@ export function createRemoteOperation<
 
   const $enabled = normalizeStaticOrReactive(enabled ?? true).map(Boolean);
 
+  const $latestParams = createStore<Params | null>(null, {
+    serialize: 'ignore',
+  });
+
   // -- Derived stores --
   const $idle = $status.map((status) => status === 'initial');
   const $pending = $status.map((status) => status === 'pending');
@@ -150,6 +154,8 @@ export function createRemoteOperation<
     ],
     target: $status,
   });
+
+  sample({ clock: start, filter: $enabled, target: $latestParams });
 
   // -- Execution flow
   sample({
@@ -307,6 +313,7 @@ export function createRemoteOperation<
       executeFx,
       meta: { ...meta, name },
       kind,
+      $latestParams,
       lowLevelAPI: {
         sources: sources ?? [],
         sourced: sourced ?? [],
