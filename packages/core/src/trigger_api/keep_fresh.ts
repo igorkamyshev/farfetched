@@ -1,45 +1,39 @@
-import { combine, createEvent, type Event, merge, sample } from 'effector';
+import {
+  combine,
+  type Event,
+  merge,
+  sample,
+  is,
+  createStore,
+  createEvent,
+} from 'effector';
 
 import { type Query } from '../query/type';
-import { isEqual } from '../libs/lohyphen';
+import { isEqual, divide } from '../libs/lohyphen';
 import { not } from '../libs/patronus';
+import { TriggerProtocol } from './trigger_protocol';
 
 export function keepFresh(query: Query<any, any, any>): void;
 
-export function keepFresh(
-  query: Query<any, any, any>,
-  config: {
-    triggers: Array<Event<any>>;
-  }
-): void;
-
-export function keepFresh<Params, Payload, ParamsSource = void>(
+export function keepFresh<Params>(
   query: Query<Params, any, any>,
   config: {
-    triggers: Array<Event<Payload>>;
+    triggers: Array<Event<unknown> | TriggerProtocol>;
   }
 ): void;
 
 export function keepFresh(
   query: Query<any, any, any>,
   config?: {
-    triggers?: Array<Event<any>>;
+    triggers?: Array<Event<unknown> | TriggerProtocol>;
   }
 ) {
-  const $latestParams = query.__.$latestParams;
+  const forceFresh = createEvent();
+  const triggers: Array<Event<unknown> | TriggerProtocol> = [];
 
   if (config?.triggers) {
-    sample({ clock: config.triggers, fn: () => true, target: query.$stale });
-
-    sample({
-      clock: config.triggers,
-      filter: not(query.$idle),
-      source: $latestParams,
-      target: query.refresh,
-    });
+    triggers.push(...config.triggers);
   } else {
-    const checkUpdate = createEvent();
-
     const $previousSources = combine(
       query.__.lowLevelAPI.sourced.map((sourced) =>
         sourced(query.finished.finally)
@@ -51,24 +45,53 @@ export function keepFresh(
       )
     );
 
-    sample({
-      clock: $nextSources,
-      source: { prev: $nextSources, next: $previousSources },
-      filter: ({ prev, next }) => !isEqual(prev, next),
-      target: checkUpdate,
-    });
+    triggers.push(
+      sample({
+        clock: $nextSources,
+        source: { prev: $nextSources, next: $previousSources },
+        filter: ({ prev, next }) => !isEqual(prev, next),
+        fn: () => null as unknown,
+      })
+    );
+  }
+
+  const [triggerEvents, triggersByProtocol] = divide(triggers, is.event);
+
+  if (triggersByProtocol.length > 0) {
+    const $alreadySetup = createStore(false, { serialize: 'ignore' });
 
     sample({
-      clock: checkUpdate,
-      filter: not(query.$idle),
+      clock: query.refresh,
+      filter: not($alreadySetup),
       fn: () => true,
-      target: query.$stale,
-    });
-    sample({
-      clock: checkUpdate,
-      source: $latestParams,
-      filter: not(query.$idle),
-      target: query.refresh,
+      target: [
+        ...triggersByProtocol
+          .map((trigger) => trigger['@@trigger'].setup)
+          .filter(is.event),
+        $alreadySetup,
+      ],
     });
   }
+
+  sample({
+    clock: [
+      ...triggerEvents,
+      ...triggersByProtocol.map((trigger) => trigger['@@trigger'].fired),
+    ],
+    target: forceFresh,
+  });
+
+  sample({
+    clock: forceFresh,
+    filter: not(query.$idle),
+    fn: () => true,
+    target: query.$stale,
+  });
+
+  sample({
+    clock: forceFresh,
+    source: query.__.$latestParams,
+    filter: not(query.$idle),
+    target: query.refresh,
+  });
 }
