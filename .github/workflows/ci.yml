@@ -6,27 +6,18 @@ jobs:
   checks:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x]
-
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - uses: pnpm/action-setup@v2
-        with:
-          version: 7.2.1
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: '.nvmrc'
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint:format
       - run: pnpm lint:workspace
       - run: pnpm test
       - run: pnpm test:types
-      - run: pnpm test:tools
       - run: pnpm lint
       - run: pnpm build
       - run: pnpm size

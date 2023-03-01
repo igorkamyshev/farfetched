@@ -1,0 +1,30 @@
+name: Website
+
+on: [push]
+
+jobs:
+  website:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    name: Publish to Cloudflare Pages
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm nx build website
+
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 1d6db711ad880b2455da08a6aeb2a119
+          projectName: farfetched
+          directory: dist/apps/website
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}

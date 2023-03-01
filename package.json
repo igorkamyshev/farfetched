@@ -2,6 +2,7 @@
   "name": "farfetched",
   "version": "0.0.0",
   "license": "MIT",
+  "packageManager": "pnpm@7.28.0",
   "scripts": {
     "test": "nx run-many --target=test --all",
     "test:watch": "nx run-many --target=test_watch --all --args=\"--\"",
