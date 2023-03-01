@@ -182,6 +182,66 @@ function normalizeStaticOrReactive<T>(
   });
 }
 
+// -- Combine
+
+type SourcedResult<S> = S extends SourcedField<any, infer Result, any>
+  ? Result
+  : never;
+
+type SourcedSource<S> = S extends SourcedField<any, any, infer Source>
+  ? Source
+  : never;
+
+function combineSourced<
+  Data,
+  Config extends {
+    [key: string]: SourcedField<Data, any, any>;
+  },
+  Final
+>(
+  config: Config,
+  mapper: (c: { [Key in keyof Config]: SourcedResult<Config[Key]> }) => Final
+): SourcedField<
+  Data,
+  { [Key in keyof Config]: SourcedResult<Config[Key]> },
+  { [Key in keyof Config]: SourcedSource<Config[Key]> }
+> {
+  const megaStore: any = {};
+  const megaFns: any = {};
+
+  for (const [key, value] of Object.entries(config)) {
+    if (is.store(value)) {
+      megaStore[key] = value;
+    } else if (value?.source && value?.fn) {
+      megaStore[key] = value.source;
+      megaFns[key] = value.fn;
+    } else if (typeof value === 'function') {
+      megaFns[key] = value;
+    } else {
+      // plain value
+      megaStore[key] = value;
+    }
+  }
+
+  const $megaSource = combine(megaStore);
+
+  return {
+    source: $megaSource,
+    fn: (data: any, source: any) => {
+      const result: any = {};
+      for (const key of Object.keys(config)) {
+        if (key in source) {
+          result[key] = source[key];
+        }
+        if (key in megaFns) {
+          result[key] = megaFns[key](data, source[key]);
+        }
+      }
+      return mapper(result);
+    },
+  } as any;
+}
+
 // -- Exports --
 
 export {
@@ -191,4 +251,5 @@ export {
   reduceTwoArgs,
   type StaticOrReactive,
   normalizeStaticOrReactive,
+  combineSourced,
 };
