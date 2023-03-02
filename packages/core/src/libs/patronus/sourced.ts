@@ -182,34 +182,14 @@ function normalizeStaticOrReactive<T>(
   });
 }
 
-// -- Combine
+// -- Combine sourced
 
-type SourcedResult<S> = S extends SourcedField<any, infer Result, any>
-  ? Result
-  : never;
-
-type SourcedSource<S> = S extends SourcedField<any, any, infer Source>
-  ? Source
-  : never;
-
-function combineSourced<
-  Data,
-  Config extends {
-    [key: string]: SourcedField<Data, any, any>;
-  },
-  Final
->(
-  config: Config,
-  mapper: (c: { [Key in keyof Config]: SourcedResult<Config[Key]> }) => Final
-): SourcedField<
-  Data,
-  { [Key in keyof Config]: SourcedResult<Config[Key]> },
-  { [Key in keyof Config]: SourcedSource<Config[Key]> }
-> {
+// TODO: type it https://github.com/igorkamyshev/farfetched/issues/281
+function combineSourced(config: any, mapper?: (v: any) => any) {
   const megaStore: any = {};
   const megaFns: any = {};
 
-  for (const [key, value] of Object.entries(config)) {
+  for (const [key, value] of Object.entries(config) as any) {
     if (is.store(value)) {
       megaStore[key] = value;
     } else if (value?.source && value?.fn) {
@@ -237,7 +217,12 @@ function combineSourced<
           result[key] = megaFns[key](data, source[key]);
         }
       }
-      return mapper(result);
+
+      if (mapper) {
+        return mapper(result);
+      } else {
+        return result;
+      }
     },
   } as any;
 }

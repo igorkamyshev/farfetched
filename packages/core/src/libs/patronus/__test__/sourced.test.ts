@@ -264,7 +264,7 @@ describe('reduceTwoArgs', () => {
 });
 
 describe('combienSourced', () => {
-  test('supports здфшт мфдгуы', async () => {
+  test('supports plain values', async () => {
     const result = combineSourced({
       count: 1,
       name: 'John',
@@ -334,5 +334,32 @@ describe('combienSourced', () => {
     await allSettled($source, { scope, params: 2 });
     await allSettled(clock, { scope, params: '30' });
     expect(scope.getState($result)).toEqual({ count: 32, name: 'John' });
+  });
+
+  test('supports optional mapper', async () => {
+    const $source = createStore(1);
+
+    const result = combineSourced(
+      {
+        count: {
+          source: $source,
+          fn: (val: string, source: number) => Number(val) + source,
+        },
+        name: createStore('John'),
+      },
+      ({ count, name }) => ({ newCount: count, newName: name })
+    );
+
+    const clock = createEvent<string>();
+    const $result = normalizeSourced({ field: result, clock });
+
+    const scope = fork();
+
+    await allSettled(clock, { scope, params: '20' });
+    expect(scope.getState($result)).toEqual({ newCount: 21, newName: 'John' });
+
+    await allSettled($source, { scope, params: 2 });
+    await allSettled(clock, { scope, params: '30' });
+    expect(scope.getState($result)).toEqual({ newCount: 32, newName: 'John' });
   });
 });
