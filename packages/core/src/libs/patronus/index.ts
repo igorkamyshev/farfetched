@@ -8,6 +8,7 @@ export { withFactory } from './sid';
 export {
   normalizeSourced,
   normalizeStaticOrReactive,
+  combineSourced,
   type SourcedField,
   type DynamicallySourcedField,
   type StaticOrReactive,
