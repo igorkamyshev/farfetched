@@ -37,6 +37,7 @@ export { voidCache } from './src/cache/adapters/void';
 export {
   type SourcedField,
   normalizeSourced,
+  combineSourced,
   type DynamicallySourcedField,
 } from './src/libs/patronus';
 export { type FetchingStatus } from './src/libs/patronus';
