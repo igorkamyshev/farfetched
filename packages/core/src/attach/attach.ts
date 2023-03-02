@@ -5,6 +5,7 @@ import { Query, QueryInitialData } from '../query/type';
 import {
   RemoteOperation,
   RemoteOperationError,
+  RemoteOperationParams,
   RemoteOperationResult,
 } from '../remote_operation/type';
 
@@ -12,14 +13,13 @@ import {
 
 export function attachOperation<
   NewParams,
-  OriginalParams,
-  Q extends Query<OriginalParams, any, any, any>,
+  Q extends Query<any, any, any, any>,
   Source
 >(
   operation: Q,
   config: {
     source: Store<Source>;
-    mapParams: (params: NewParams, source: Source) => OriginalParams;
+    mapParams: (params: NewParams, source: Source) => RemoteOperationParams<Q>;
   }
 ): Query<
   NewParams,
@@ -28,13 +28,9 @@ export function attachOperation<
   QueryInitialData<Q>
 >;
 
-export function attachOperation<
-  NewParams,
-  OriginalParams,
-  Q extends Query<OriginalParams, any, any, any>
->(
+export function attachOperation<NewParams, Q extends Query<any, any, any, any>>(
   operation: Q,
-  config: { mapParams: (params: NewParams) => OriginalParams }
+  config: { mapParams: (params: NewParams) => RemoteOperationParams<Q> }
 ): Query<
   NewParams,
   RemoteOperationResult<Q>,
@@ -50,24 +46,19 @@ export function attachOperation<Q extends Query<any, any, any, any>>(
 
 export function attachOperation<
   NewParams,
-  OriginalParams,
-  M extends Mutation<OriginalParams, any, any>,
+  M extends Mutation<any, any, any>,
   Source
 >(
   operation: M,
   config: {
     source: Store<Source>;
-    mapParams: (params: NewParams, source: Source) => OriginalParams;
+    mapParams: (params: NewParams, source: Source) => RemoteOperationParams<M>;
   }
 ): Mutation<NewParams, RemoteOperationResult<M>, RemoteOperationError<M>>;
 
-export function attachOperation<
-  NewParams,
-  OriginalParams,
-  M extends Mutation<OriginalParams, any, any>
->(
+export function attachOperation<NewParams, M extends Mutation<any, any, any>>(
   operation: M,
-  config: { mapParams: (params: NewParams) => OriginalParams }
+  config: { mapParams: (params: NewParams) => RemoteOperationParams<M> }
 ): Mutation<NewParams, RemoteOperationResult<M>, RemoteOperationError<M>>;
 
 export function attachOperation<M extends Mutation<any, any, any>>(
