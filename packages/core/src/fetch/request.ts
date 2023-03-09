@@ -16,7 +16,10 @@ export const requestFx = createEffect<
 >({
   handler: async (request) => {
     const response = await fetchFx(request).catch((cause) => {
-      throw networkError({ reason: cause?.message ?? null });
+      throw networkError({
+        reason: cause?.message ?? null,
+        cause,
+      });
     });
 
     if (!response.ok) {

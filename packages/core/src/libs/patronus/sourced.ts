@@ -196,6 +196,51 @@ function extractSource<S>(sourced: SourcedField<any, any, S>): Store<S> | null {
   return null;
 }
 
+// -- Combine sourced
+
+// TODO: type it https://github.com/igorkamyshev/farfetched/issues/281
+function combineSourced(config: any, mapper?: (v: any) => any) {
+  const megaStore: any = {};
+  const megaFns: any = {};
+
+  for (const [key, value] of Object.entries(config) as any) {
+    if (is.store(value)) {
+      megaStore[key] = value;
+    } else if (value?.source && value?.fn) {
+      megaStore[key] = value.source;
+      megaFns[key] = value.fn;
+    } else if (typeof value === 'function') {
+      megaFns[key] = value;
+    } else {
+      // plain value
+      megaStore[key] = value;
+    }
+  }
+
+  const $megaSource = combine(megaStore);
+
+  return {
+    source: $megaSource,
+    fn: (data: any, source: any) => {
+      const result: any = {};
+      for (const key of Object.keys(config)) {
+        if (key in source) {
+          result[key] = source[key];
+        }
+        if (key in megaFns) {
+          result[key] = megaFns[key](data, source[key]);
+        }
+      }
+
+      if (mapper) {
+        return mapper(result);
+      } else {
+        return result;
+      }
+    },
+  } as any;
+}
+
 // -- Exports --
 
 export {
@@ -206,4 +251,5 @@ export {
   type StaticOrReactive,
   normalizeStaticOrReactive,
   extractSource,
+  combineSourced,
 };

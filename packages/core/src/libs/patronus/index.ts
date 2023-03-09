@@ -9,6 +9,7 @@ export {
   extractSource,
   normalizeSourced,
   normalizeStaticOrReactive,
+  combineSourced,
   type SourcedField,
   type DynamicallySourcedField,
   type StaticOrReactive,

@@ -1,7 +1,7 @@
 import { allSettled, createEvent, createStore, fork } from 'effector';
 import { describe, test, expect } from 'vitest';
 
-import { normalizeSourced, reduceTwoArgs } from '../sourced';
+import { combineSourced, normalizeSourced, reduceTwoArgs } from '../sourced';
 
 describe('normalizeSourced (with clock)', () => {
   test('handle simple value', async () => {
@@ -260,5 +260,106 @@ describe('reduceTwoArgs', () => {
     await allSettled($source, { scope, params: 'new source' });
     await allSettled(clock, { scope, params: ['SECOND', 'other'] });
     expect(scope.getState($normalized)).toBe('SECONDothernew source');
+  });
+});
+
+describe('combienSourced', () => {
+  test('supports plain values', async () => {
+    const result = combineSourced({
+      count: 1,
+      name: 'John',
+    });
+
+    const clock = createEvent();
+    const $result = normalizeSourced({ field: result, clock });
+
+    const scope = fork();
+
+    await allSettled(clock, { scope });
+    expect(scope.getState($result)).toEqual({ count: 1, name: 'John' });
+  });
+
+  test('supports stores', async () => {
+    const result = combineSourced({
+      count: createStore(1),
+      name: createStore('John'),
+    });
+
+    const clock = createEvent();
+    const $result = normalizeSourced({ field: result, clock });
+
+    const scope = fork();
+
+    await allSettled(clock, { scope });
+    expect(scope.getState($result)).toEqual({ count: 1, name: 'John' });
+  });
+
+  test('supports functions by arg', async () => {
+    const result = combineSourced({
+      count: (val: string) => Number(val),
+      name: createStore('John'),
+    });
+
+    const clock = createEvent<string>();
+    const $result = normalizeSourced({ field: result, clock });
+
+    const scope = fork();
+
+    await allSettled(clock, { scope, params: '20' });
+    expect(scope.getState($result)).toEqual({ count: 20, name: 'John' });
+
+    await allSettled(clock, { scope, params: '30' });
+    expect(scope.getState($result)).toEqual({ count: 30, name: 'John' });
+  });
+
+  test('supports function with source by arg', async () => {
+    const $source = createStore(1);
+
+    const result = combineSourced({
+      count: {
+        source: $source,
+        fn: (val: string, source: number) => Number(val) + source,
+      },
+      name: createStore('John'),
+    });
+
+    const clock = createEvent<string>();
+    const $result = normalizeSourced({ field: result, clock });
+
+    const scope = fork();
+
+    await allSettled(clock, { scope, params: '20' });
+    expect(scope.getState($result)).toEqual({ count: 21, name: 'John' });
+
+    await allSettled($source, { scope, params: 2 });
+    await allSettled(clock, { scope, params: '30' });
+    expect(scope.getState($result)).toEqual({ count: 32, name: 'John' });
+  });
+
+  test('supports optional mapper', async () => {
+    const $source = createStore(1);
+
+    const result = combineSourced(
+      {
+        count: {
+          source: $source,
+          fn: (val: string, source: number) => Number(val) + source,
+        },
+        name: createStore('John'),
+      },
+      ({ count, name }) => ({ newCount: count, newName: name })
+    );
+
+    const clock = createEvent<string>();
+    const $result = normalizeSourced({ field: result, clock });
+
+    const scope = fork();
+
+    await allSettled(clock, { scope, params: '20' });
+    expect(scope.getState($result)).toEqual({ newCount: 21, newName: 'John' });
+
+    await allSettled($source, { scope, params: 2 });
+    await allSettled(clock, { scope, params: '30' });
+    expect(scope.getState($result)).toEqual({ newCount: 32, newName: 'John' });
   });
 });
