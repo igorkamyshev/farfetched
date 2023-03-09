@@ -62,4 +62,23 @@ describe('fetch/request', () => {
       );
     });
   });
+
+  test('expose original error if fetchFx fails', async () => {
+    const cause = new Error('Aaaaaa, it hurts!');
+
+    const scope = fork({ handlers: [[fetchFx, () => Promise.reject(cause)]] });
+
+    const effectWatcher = watchEffect(requestFx, scope);
+
+    await allSettled(requestFx, {
+      scope,
+      params: new Request('https://api.salo.com'),
+    });
+
+    expect(effectWatcher.listeners.onFailData).toHaveBeenCalledWith(
+      expect.objectContaining({
+        cause,
+      })
+    );
+  });
 });

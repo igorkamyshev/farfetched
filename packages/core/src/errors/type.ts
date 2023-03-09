@@ -37,4 +37,5 @@ export interface HttpError<Status extends number = number>
 export const NETWORK = 'NETWORK';
 export interface NetworkError extends FarfetchedError<typeof NETWORK> {
   reason: string | null;
+  cause?: unknown;
 }

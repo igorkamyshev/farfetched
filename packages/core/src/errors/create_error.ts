@@ -80,12 +80,15 @@ export function httpError({
 
 export function networkError({
   reason,
+  cause,
 }: {
   reason: string | null;
+  cause?: unknown;
 }): NetworkError {
   return {
     errorType: NETWORK,
     explanation: 'Request was failed due to network problems',
     reason,
+    cause,
   };
 }
