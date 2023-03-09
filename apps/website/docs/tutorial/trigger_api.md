@@ -100,11 +100,11 @@ npm install @withease/web-api
 It is compatible with Farfetched and can be used without any additional configuration.
 
 ```ts
-import { trackDocumentVisibility, trackNetworkStatus } from '@withease/web-api';
+import { trackPageVisibility, trackNetworkStatus } from '@withease/web-api';
 import { keepFresh } from '@farfetched/core';
 
 keeypFresh(someQuery, {
-  triggers: [trackDocumentVisibility, trackNetworkStatus],
+  triggers: [trackPageVisibility, trackNetworkStatus],
 });
 ```
 
