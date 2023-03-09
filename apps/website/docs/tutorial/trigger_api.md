@@ -79,7 +79,7 @@ sample({ clock: appStarted, target: someQuery.refresh });
 
 ### External triggers
 
-It could be really useful to refresh the data on some application wide triggers like tab focus of network reconnection. This kind of triggers is out of scope of Farfetched, so they are distributed as [separated package — `@withease/web-api`](https://withease.pages.dev/web-api.html).
+It could be really useful to refresh the data on some application wide triggers like tab visibility or network reconnection. This kind of triggers is out of scope of Farfetched, so they are distributed as [separated package — `@withease/web-api`](https://withease.pages.dev/web-api.html).
 
 ::: code-group
 
@@ -100,11 +100,11 @@ npm install @withease/web-api
 It is compatible with Farfetched and can be used without any additional configuration.
 
 ```ts
-import { trackWindowFocus, trackNetworkStatus } from '@withease/web-api';
+import { trackDocumentVisibility, trackNetworkStatus } from '@withease/web-api';
 import { keepFresh } from '@farfetched/core';
 
 keeypFresh(someQuery, {
-  triggers: [trackWindowFocus, trackNetworkStatus],
+  triggers: [trackDocumentVisibility, trackNetworkStatus],
 });
 ```
 
