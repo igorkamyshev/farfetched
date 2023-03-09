@@ -63,20 +63,53 @@ keepFresh(someQuery);
 sample({ clock: appStarted, target: someQuery.refresh });
 ```
 
-If you do not want to refresh the data immediately after `$language` is changed, you can use `triggers` field of the `keepFresh`-operator's config to specify the triggers.
+If you do want to refresh the data immediately after some external trigger, you can use `triggers` field of the `keepFresh`-operator's config to specify the triggers.
 
 ```ts
 import { keepFresh, createJsonQuery } from '@farfetched/core';
 
 const $language = createStore('en');
 
-const someQuery = createJsonQuery({
-  request: {
-    url: { source: $language, fn: (_, language) => `/api/${language}` },
-  },
-});
+const someQuery = createJsonQuery(/* ... */);
 
 keepFresh(someQuery, { triggers: [userLoggedIn] });
 
 sample({ clock: appStarted, target: someQuery.refresh });
 ```
+
+### External triggers
+
+It could be really useful to refresh the data on some application wide triggers like tab focus of network reconnection. This kind of triggers is out of scope of Farfetched, so they are distributed as [separated package — `@withease/web-api`](https://withease.pages.dev/web-api.html).
+
+::: code-group
+
+```sh [pnpm]
+pnpm install @withease/web-api
+```
+
+```sh [yarn]
+yarn add @withease/web-api
+```
+
+```sh [npm]
+npm install @withease/web-api
+```
+
+:::
+
+It is compatible with Farfetched and can be used without any additional configuration.
+
+```ts
+import { trackWindowFocus, trackNetworkStatus } from '@withease/web-api';
+import { keepFresh } from '@farfetched/core';
+
+keeypFresh(someQuery, {
+  triggers: [trackWindowFocus, trackNetworkStatus],
+});
+```
+
+Check [documentation of `@withease/web-api`](https://withease.pages.dev/web-api.html) for the complete list of available triggers.
+
+## API reference
+
+You can find the full API reference for the `keepFresh` operator in the [API reference](/api/operators/keep_fresh).

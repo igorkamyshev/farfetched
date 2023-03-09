@@ -27,3 +27,7 @@ keepFresh(query, { triggers: [windowGotFocus] });
 ```
 
 - `triggers`: _Array_ of [_Events_](https://effector.dev/docs/api/effector/event) after which operator starts refreshing the data in the [_Query_](/api/primitives/query).
+
+:::tip
+You can use any object that follows the [`@@trigger`-protocol](https://withease.pages.dev/protocols/trigger.html) as a trigger in the `keepFresh` operator.
+:::
