@@ -68,7 +68,11 @@ describe('keepFresh, triggers as Events', () => {
 describe('keepFresh, triggers as TriggerProtocol', () => {
   test('setup external trigger after first Query refresh', async () => {
     const setupListener = vi.fn();
-    const trigger = { setup: createEvent(), fired: createEvent() };
+    const trigger = {
+      setup: createEvent(),
+      teardown: createEvent(),
+      fired: createEvent(),
+    };
 
     const handler = vi.fn();
 
@@ -95,7 +99,11 @@ describe('keepFresh, triggers as TriggerProtocol', () => {
   });
 
   test('mark Query as stale and refresh after trigger fired', async () => {
-    const trigger = { setup: createEvent(), fired: createEvent() };
+    const trigger = {
+      setup: createEvent(),
+      teardown: createEvent(),
+      fired: createEvent(),
+    };
 
     const handler = vi.fn();
 
@@ -129,4 +137,8 @@ describe('keepFresh, triggers as TriggerProtocol', () => {
 
     expect(handler).toBeCalledTimes(3);
   });
+
+  test.todo(
+    'call teardown after query disabling and call start again after enabling'
+  );
 });

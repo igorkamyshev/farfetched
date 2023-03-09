@@ -2,7 +2,8 @@ import { Event } from 'effector';
 
 export type TriggerProtocol = {
   '@@trigger': () => {
-    setup?: Event<void>;
+    setup: Event<void>;
+    teardown: Event<void>;
     fired: Event<unknown> | Event<void>;
   };
 };

@@ -68,9 +68,7 @@ export function keepFresh(
       filter: not($alreadySetup),
       fn: () => true,
       target: [
-        ...resolvedTriggersByProtocol
-          .map((trigger) => trigger.setup)
-          .filter(is.event),
+        ...resolvedTriggersByProtocol.map((trigger) => trigger.setup),
         $alreadySetup,
       ],
     });
