@@ -15,6 +15,7 @@ yarn add zod @farfetched/zod
 ```sh [npm]
 npm install zod @farfetched/zod
 ```
+
 :::
 
 ## `zodContract`
