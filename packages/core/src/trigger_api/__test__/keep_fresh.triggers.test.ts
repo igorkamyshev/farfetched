@@ -68,20 +68,18 @@ describe('keepFresh, triggers as Events', () => {
 describe('keepFresh, triggers as TriggerProtocol', () => {
   test('setup external trigger after first Query refresh', async () => {
     const setupListener = vi.fn();
-    const someExternalTrigger = {
-      '@@trigger': { setup: createEvent(), fired: createEvent() },
-    };
+    const trigger = { setup: createEvent(), fired: createEvent() };
 
     const handler = vi.fn();
 
     const query = createQuery({ handler });
 
-    keepFresh(query, { triggers: [someExternalTrigger] });
+    keepFresh(query, { triggers: [{ '@@trigger': () => trigger }] });
 
     const scope = fork();
 
     createWatch({
-      unit: someExternalTrigger['@@trigger'].setup,
+      unit: trigger.setup,
       fn: setupListener,
       scope,
     });
@@ -97,21 +95,25 @@ describe('keepFresh, triggers as TriggerProtocol', () => {
   });
 
   test('mark Query as stale and refresh after trigger fired', async () => {
-    const someExternalTrigger = {
-      '@@trigger': { setup: createEvent(), fired: createEvent() },
-    };
+    const trigger = { setup: createEvent(), fired: createEvent() };
 
     const handler = vi.fn();
 
     const query = createQuery({ handler });
 
-    keepFresh(query, { triggers: [someExternalTrigger] });
+    keepFresh(query, {
+      triggers: [
+        {
+          '@@trigger': () => trigger,
+        },
+      ],
+    });
 
     const scope = fork();
 
     await allSettled(query.refresh, { scope });
 
-    allSettled(someExternalTrigger['@@trigger'].fired, { scope });
+    allSettled(trigger.fired, { scope });
     expect(scope.getState(query.$stale)).toBeTruthy();
 
     await allSettled(scope);
@@ -119,7 +121,7 @@ describe('keepFresh, triggers as TriggerProtocol', () => {
 
     expect(handler).toBeCalledTimes(2);
 
-    allSettled(someExternalTrigger['@@trigger'].fired, { scope });
+    allSettled(trigger.fired, { scope });
     expect(scope.getState(query.$stale)).toBeTruthy();
 
     await allSettled(scope);

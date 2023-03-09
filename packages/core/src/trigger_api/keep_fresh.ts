@@ -18,18 +18,18 @@ export function keepFresh(query: Query<any, any, any>): void;
 export function keepFresh<Params>(
   query: Query<Params, any, any>,
   config: {
-    triggers: Array<Event<unknown> | TriggerProtocol>;
+    triggers: Array<Event<unknown> | Event<void> | TriggerProtocol>;
   }
 ): void;
 
 export function keepFresh(
   query: Query<any, any, any>,
   config?: {
-    triggers?: Array<Event<unknown> | TriggerProtocol>;
+    triggers?: Array<Event<unknown> | Event<void> | TriggerProtocol>;
   }
 ) {
   const forceFresh = createEvent();
-  const triggers: Array<Event<unknown> | TriggerProtocol> = [];
+  const triggers: Array<Event<unknown> | Event<void> | TriggerProtocol> = [];
 
   if (config?.triggers) {
     triggers.push(...config.triggers);
@@ -56,8 +56,11 @@ export function keepFresh(
   }
 
   const [triggerEvents, triggersByProtocol] = divide(triggers, is.event);
+  const resolvedTriggersByProtocol = triggersByProtocol.map((trigger) =>
+    trigger['@@trigger']()
+  );
 
-  if (triggersByProtocol.length > 0) {
+  if (resolvedTriggersByProtocol.length > 0) {
     const $alreadySetup = createStore(false, { serialize: 'ignore' });
 
     sample({
@@ -65,8 +68,8 @@ export function keepFresh(
       filter: not($alreadySetup),
       fn: () => true,
       target: [
-        ...triggersByProtocol
-          .map((trigger) => trigger['@@trigger'].setup)
+        ...resolvedTriggersByProtocol
+          .map((trigger) => trigger.setup)
           .filter(is.event),
         $alreadySetup,
       ],
@@ -76,7 +79,7 @@ export function keepFresh(
   sample({
     clock: [
       ...triggerEvents,
-      ...triggersByProtocol.map((trigger) => trigger['@@trigger'].fired),
+      ...resolvedTriggersByProtocol.map((trigger) => trigger.fired),
     ],
     target: forceFresh,
   });
