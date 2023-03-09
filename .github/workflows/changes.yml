@@ -13,11 +13,9 @@ jobs:
         with:
           fetch-depth: 0
       - uses: pnpm/action-setup@v2
-        with:
-          version: 7.2.1
       - uses: actions/setup-node@v3
         with:
-          node-version: 18.x
+          node-version-file: '.nvmrc'
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint:changes

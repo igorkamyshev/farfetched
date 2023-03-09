@@ -172,4 +172,22 @@ describe('connectQuery', () => {
       target: someTargetQuery,
     });
   });
+
+  test('does not require fn for void tarte Query', () => {
+    const languageQuery = {} as Query<unknown, unknown, unknown>;
+
+    const someTargetQuery = {} as Query<void, unknown, unknown>;
+
+    connectQuery({
+      source: languageQuery,
+      target: someTargetQuery,
+    });
+
+    connectQuery({
+      source: languageQuery,
+      // @ts-expect-error fn does not exist for void query in target
+      fn: () => ({ params: 1 }),
+      target: someTargetQuery,
+    });
+  });
 });
