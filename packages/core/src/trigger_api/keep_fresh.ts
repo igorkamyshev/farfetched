@@ -1,6 +1,6 @@
 import {
-  combine,
   type Event,
+  combine,
   merge,
   sample,
   is,
@@ -63,14 +63,37 @@ export function keepFresh(
   if (resolvedTriggersByProtocol.length > 0) {
     const $alreadySetup = createStore(false, { serialize: 'ignore' });
 
+    const setup = createEvent();
+    const teardown = createEvent();
+
     sample({
-      clock: query.refresh,
+      clock: setup,
       filter: not($alreadySetup),
-      fn: () => true,
-      target: [
-        ...resolvedTriggersByProtocol.map((trigger) => trigger.setup),
-        $alreadySetup,
+      target: resolvedTriggersByProtocol.map((trigger) => trigger.setup),
+    });
+
+    sample({ clock: setup, fn: () => true, target: $alreadySetup });
+
+    sample({
+      clock: teardown,
+      filter: $alreadySetup,
+      target: resolvedTriggersByProtocol.map((trigger) => trigger.teardown),
+    });
+
+    sample({ clock: teardown, fn: () => false, target: $alreadySetup });
+
+    sample({
+      clock: [
+        query.finished.success,
+        sample({ clock: query.$enabled.updates, filter: query.$enabled }),
       ],
+      target: setup,
+    });
+
+    sample({
+      clock: query.$enabled.updates,
+      filter: not(query.$enabled),
+      target: teardown,
     });
   }
 

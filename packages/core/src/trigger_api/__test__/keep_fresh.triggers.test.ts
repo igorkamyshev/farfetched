@@ -1,4 +1,10 @@
-import { allSettled, createEvent, createWatch, fork } from 'effector';
+import {
+  allSettled,
+  createEvent,
+  createStore,
+  createWatch,
+  fork,
+} from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, expect, test, vi } from 'vitest';
 
@@ -138,7 +144,74 @@ describe('keepFresh, triggers as TriggerProtocol', () => {
     expect(handler).toBeCalledTimes(3);
   });
 
-  test.todo(
-    'call teardown after query disabling and call start again after enabling'
-  );
+  test('do not setup triggers for disabled query', async () => {
+    const trigger = {
+      setup: createEvent(),
+      teardown: createEvent(),
+      fired: createEvent(),
+    };
+
+    const listener = vi.fn();
+    trigger.setup.watch(listener);
+
+    const query = createQuery({
+      handler: vi.fn().mockRejectedValue(new Error('cannot')),
+    });
+
+    keepFresh(query, {
+      triggers: [
+        {
+          '@@trigger': () => trigger,
+        },
+      ],
+    });
+
+    const scope = fork();
+
+    await allSettled(query.refresh, { scope });
+
+    expect(listener).not.toBeCalled();
+  });
+
+  test('call teardown after query disabling and call start again after enabling', async () => {
+    const trigger = {
+      setup: createEvent(),
+      teardown: createEvent(),
+      fired: createEvent(),
+    };
+
+    const $enabled = createStore(true);
+
+    const teardownListener = vi.fn();
+    trigger.teardown.watch(teardownListener);
+
+    const setupListener = vi.fn();
+    trigger.setup.watch(setupListener);
+
+    const query = createQuery({
+      handler: vi.fn(),
+      enabled: $enabled,
+    });
+
+    keepFresh(query, {
+      triggers: [
+        {
+          '@@trigger': () => trigger,
+        },
+      ],
+    });
+
+    const scope = fork();
+
+    await allSettled(query.refresh, { scope });
+
+    await allSettled($enabled, { scope, params: false });
+
+    expect(teardownListener).toBeCalled();
+
+    await allSettled($enabled, { scope, params: true });
+
+    // 1 initial + 1 after enabling
+    expect(setupListener).toBeCalledTimes(2);
+  });
 });
