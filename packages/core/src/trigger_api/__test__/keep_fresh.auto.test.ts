@@ -143,5 +143,42 @@ describe('keepFresh, triggers', () => {
     );
   });
 
-  test.todo('handle params changes between refreshes');
+  test('handle params changes between refreshes', async () => {
+    const listener = vi.fn(async (_: void) => 42);
+
+    const $language = createStore('en');
+
+    const queryWithSourced = createJsonQuery({
+      params: declareParams<string>(),
+      request: {
+        url: {
+          source: $language,
+          fn: (params, lang) => `/api/${lang.length + params.length}`,
+        },
+        method: 'GET',
+      },
+      response: { contract: unknownContract },
+    });
+
+    keepFresh(queryWithSourced, { onSourcesUpdate: true });
+
+    const scope = fork({
+      handlers: [[queryWithSourced.__.executeFx, listener]],
+    });
+
+    await allSettled(queryWithSourced.refresh, { scope, params: 'o' });
+    expect(listener).toBeCalledWith(
+      expect.objectContaining({
+        url: '/api/3', // 2 from lang and 1 from params
+      })
+    );
+
+    allSettled($language, { scope, params: 'ru' });
+    expect(scope.getState(queryWithSourced.$stale)).toBeFalsy();
+
+    await allSettled(scope);
+    expect(listener).toBeCalledTimes(1);
+  });
+
+  test.todo('batching');
 });

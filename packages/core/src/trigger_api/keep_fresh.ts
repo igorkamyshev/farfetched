@@ -1,7 +1,6 @@
 import {
   type Event,
   combine,
-  merge,
   sample,
   is,
   createStore,
@@ -28,15 +27,19 @@ export function keepFresh<Params>(
   }
 
   if (config.onSourcesUpdate) {
+    const finalyParams = query.finished.finally.map(({ params }) => params);
     const $previousSources = combine(
-      query.__.lowLevelAPI.sourced.map((sourced) =>
-        sourced(query.finished.finally)
-      )
+      query.__.lowLevelAPI.sourced.map((sourced) => sourced(finalyParams))
     );
+
+    const sourcesUpdated = sample({
+      clock: query.__.lowLevelAPI.sources,
+      source: query.__.$latestParams,
+      filter: not(query.$idle),
+      fn: (params): Params => params!,
+    });
     const $nextSources = combine(
-      query.__.lowLevelAPI.sourced.map((sourced) =>
-        sourced(merge(query.__.lowLevelAPI.sources))
-      )
+      query.__.lowLevelAPI.sourced.map((sourced) => sourced(sourcesUpdated))
     );
 
     triggers.push(
