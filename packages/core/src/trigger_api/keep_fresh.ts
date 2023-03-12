@@ -13,27 +13,21 @@ import { isEqual, divide } from '../libs/lohyphen';
 import { not } from '../libs/patronus';
 import { TriggerProtocol } from './trigger_protocol';
 
-export function keepFresh(query: Query<any, any, any>): void;
-
 export function keepFresh<Params>(
   query: Query<Params, any, any>,
   config: {
-    triggers: Array<Event<unknown> | Event<void> | TriggerProtocol>;
-  }
-): void;
-
-export function keepFresh(
-  query: Query<any, any, any>,
-  config?: {
-    triggers?: Array<Event<unknown> | Event<void> | TriggerProtocol>;
+    onSourcesUpdate?: true;
+    onTriggers?: Array<Event<unknown> | Event<void> | TriggerProtocol>;
   }
 ) {
   const forceFresh = createEvent();
   const triggers: Array<Event<unknown> | Event<void> | TriggerProtocol> = [];
 
-  if (config?.triggers) {
-    triggers.push(...config.triggers);
-  } else {
+  if (config.onTriggers) {
+    triggers.push(...config.onTriggers);
+  }
+
+  if (config.onSourcesUpdate) {
     const $previousSources = combine(
       query.__.lowLevelAPI.sourced.map((sourced) =>
         sourced(query.finished.finally)
@@ -116,6 +110,7 @@ export function keepFresh(
     clock: forceFresh,
     source: query.__.$latestParams,
     filter: not(query.$idle),
+    fn: (params) => params!,
     target: query.refresh,
   });
 }

@@ -12,7 +12,7 @@ describe('keepFresh, triggers', () => {
 
     const query = createQuery({ handler: listener });
 
-    keepFresh(query);
+    keepFresh(query, { onSourcesUpdate: true });
 
     const scope = fork();
 
@@ -37,7 +37,7 @@ describe('keepFresh, triggers', () => {
       response: { contract: unknownContract },
     });
 
-    keepFresh(queryWithSourced);
+    keepFresh(queryWithSourced, { onSourcesUpdate: true });
 
     const scope = fork({
       handlers: [[queryWithSourced.__.executeFx, listener]],
@@ -76,7 +76,7 @@ describe('keepFresh, triggers', () => {
       response: { contract: unknownContract },
     });
 
-    keepFresh(queryWithSourced);
+    keepFresh(queryWithSourced, { onSourcesUpdate: true });
 
     const scope = fork({
       handlers: [[queryWithSourced.__.executeFx, listener]],
@@ -118,7 +118,7 @@ describe('keepFresh, triggers', () => {
       response: { contract: unknownContract },
     });
 
-    keepFresh(queryWithSourced);
+    keepFresh(queryWithSourced, { onSourcesUpdate: true });
 
     const scope = fork({
       handlers: [[queryWithSourced.__.executeFx, listener]],
@@ -142,4 +142,6 @@ describe('keepFresh, triggers', () => {
       expect.objectContaining({ url: '/api/ru', query: { passed: 'original' } })
     );
   });
+
+  test.todo('handle params changes between refreshes');
 });

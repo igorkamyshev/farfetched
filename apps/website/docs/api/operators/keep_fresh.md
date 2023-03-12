@@ -6,28 +6,21 @@ Refreshes the data in a [_Query_](/api/primitives/query) automatically or on dem
 `keepFresh` operator refreshes only [_Queries_](/api/primitives/query) that were started at least once. So, consider calling `query.refresh` on the app start.
 :::
 
-## Formulae, automatic refresh
+## Formulae
 
-Refreshes the data in a [_Query_](/api/primitives/query) automatically if any [_Store_](https://effector.dev/docs/api/effector/store) that is used in the [_Query_](/api/primitives/query) creation is changed.
+### `keepFresh(query, config)`
 
-```ts
-import { keepFresh } from '@farfetched/core';
+Config fields:
 
-keepFresh(query);
-```
-
-## Formulae, explicit triggers
-
-Refreshes the data in a [_Query_](/api/primitives/query) after any of the specified [_Events_](https://effector.dev/docs/api/effector/event) is triggered.
+- `onSourcesUpdate?`: _true_ to refresh the data in a [_Query_](/api/primitives/query) automatically if any [_Store_](https://effector.dev/docs/api/effector/store) that is used in the [_Query_](/api/primitives/query) creation is changed.
+- `onTriggers?`: _Array_ of [_Events_](https://effector.dev/docs/api/effector/event) after which operator starts refreshing the data in the [_Query_](/api/primitives/query).
 
 ```ts
 import { keepFresh } from '@farfetched/core';
 
-keepFresh(query, { triggers: [windowGotFocus] });
+keepFresh(query, { onSourcesUpdate: true, onTriggers: [someExternalEvent] });
 ```
-
-- `triggers`: _Array_ of [_Events_](https://effector.dev/docs/api/effector/event) after which operator starts refreshing the data in the [_Query_](/api/primitives/query).
 
 :::tip
-You can use any object that follows the [`@@trigger`-protocol](https://withease.pages.dev/protocols/trigger.html) as a trigger in the `keepFresh` operator.
+You can use any object that follows the [`@@trigger`-protocol](https://withease.pages.dev/protocols/trigger.html) as a trigger in the `keepFresh` operator's field `onTriggers`.
 :::

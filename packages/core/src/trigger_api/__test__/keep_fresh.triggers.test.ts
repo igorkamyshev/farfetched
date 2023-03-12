@@ -23,7 +23,7 @@ describe('keepFresh, triggers as Events', () => {
       handler: executeListener,
     });
 
-    keepFresh(query, { triggers: [clock] });
+    keepFresh(query, { onTriggers: [clock] });
 
     const scope = fork();
 
@@ -51,7 +51,7 @@ describe('keepFresh, triggers as Events', () => {
       handler: executeListener,
     });
 
-    keepFresh(query, { triggers: [clock] });
+    keepFresh(query, { onTriggers: [clock] });
 
     const scope = fork();
 
@@ -84,7 +84,7 @@ describe('keepFresh, triggers as TriggerProtocol', () => {
 
     const query = createQuery({ handler });
 
-    keepFresh(query, { triggers: [{ '@@trigger': () => trigger }] });
+    keepFresh(query, { onTriggers: [{ '@@trigger': () => trigger }] });
 
     const scope = fork();
 
@@ -116,7 +116,7 @@ describe('keepFresh, triggers as TriggerProtocol', () => {
     const query = createQuery({ handler });
 
     keepFresh(query, {
-      triggers: [
+      onTriggers: [
         {
           '@@trigger': () => trigger,
         },
@@ -159,7 +159,7 @@ describe('keepFresh, triggers as TriggerProtocol', () => {
     });
 
     keepFresh(query, {
-      triggers: [
+      onTriggers: [
         {
           '@@trigger': () => trigger,
         },
@@ -194,7 +194,7 @@ describe('keepFresh, triggers as TriggerProtocol', () => {
     });
 
     keepFresh(query, {
-      triggers: [
+      onTriggers: [
         {
           '@@trigger': () => trigger,
         },

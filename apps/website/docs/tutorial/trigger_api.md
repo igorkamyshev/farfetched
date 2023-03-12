@@ -58,7 +58,9 @@ const someQuery = createJsonQuery({
   },
 });
 
-keepFresh(someQuery);
+keepFresh(someQuery, {
+  onSourcesUpdate: true,
+});
 
 sample({ clock: appStarted, target: someQuery.refresh });
 ```
@@ -72,7 +74,7 @@ const $language = createStore('en');
 
 const someQuery = createJsonQuery(/* ... */);
 
-keepFresh(someQuery, { triggers: [userLoggedIn] });
+keepFresh(someQuery, { onTriggers: [userLoggedIn] });
 
 sample({ clock: appStarted, target: someQuery.refresh });
 ```
@@ -104,11 +106,22 @@ import { trackPageVisibility, trackNetworkStatus } from '@withease/web-api';
 import { keepFresh } from '@farfetched/core';
 
 keeypFresh(someQuery, {
-  triggers: [trackPageVisibility, trackNetworkStatus],
+  onTriggers: [trackPageVisibility, trackNetworkStatus],
 });
 ```
 
 Check [documentation of `@withease/web-api`](https://withease.pages.dev/web-api.html) for the complete list of available triggers.
+
+### Mix automatic and manual refresh
+
+You can mix automatic and manual refresh:
+
+```ts
+keepFresh(someQuery, {
+  onSourcesUpdate: true,
+  onTriggers: [userLoggedIn],
+});
+```
 
 ## API reference
 
