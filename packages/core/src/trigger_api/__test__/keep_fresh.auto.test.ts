@@ -180,5 +180,39 @@ describe('keepFresh, triggers', () => {
     expect(listener).toBeCalledTimes(1);
   });
 
-  test.todo('batching');
+  test('batching', async () => {
+    const listener = vi.fn(async (_: void) => 42);
+
+    const $language = createStore('en');
+    const $market = createStore('ru');
+
+    const queryWithSourced = createJsonQuery({
+      request: {
+        url: {
+          source: $language,
+          fn: (params, lang) => `/api/${lang}`,
+        },
+        query: { source: $market, fn: (_, maket) => ({ maket }) },
+        method: 'GET',
+      },
+      response: { contract: unknownContract },
+    });
+
+    keepFresh(queryWithSourced, { onSourcesUpdate: true });
+
+    const scope = fork({
+      handlers: [[queryWithSourced.__.executeFx, listener]],
+    });
+
+    await allSettled(queryWithSourced.refresh, { scope });
+
+    expect(listener).toBeCalledTimes(1);
+
+    allSettled($language, { scope, params: 'ge' });
+    allSettled($market, { scope, params: 'ge' });
+
+    await allSettled(scope);
+
+    expect(listener).toBeCalledTimes(2);
+  });
 });

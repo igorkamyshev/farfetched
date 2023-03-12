@@ -9,7 +9,7 @@ import {
 
 import { type Query } from '../query/type';
 import { isEqual, divide } from '../libs/lohyphen';
-import { not } from '../libs/patronus';
+import { not, delay } from '../libs/patronus';
 import { TriggerProtocol } from './trigger_protocol';
 
 export function keepFresh<Params>(
@@ -110,7 +110,8 @@ export function keepFresh<Params>(
   });
 
   sample({
-    clock: forceFresh,
+    // Use sync batching
+    clock: delay({ clock: forceFresh, timeout: 0 }),
     source: query.__.$latestParams,
     filter: not(query.$idle),
     fn: (params) => params!,
