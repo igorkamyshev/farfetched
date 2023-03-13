@@ -16,3 +16,4 @@ export {
 } from './sourced';
 export { type FetchingStatus } from './status';
 export { time } from './time';
+export { and } from './and';

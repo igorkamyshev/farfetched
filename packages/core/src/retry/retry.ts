@@ -98,11 +98,7 @@ export function retry<
         clock: planNextAttempt,
         source: normalizeSourced({
           field: (mapParams ?? (({ params }: any) => params)) as any,
-          clock: planNextAttempt.map(({ params, error, meta }) => ({
-            params,
-            error,
-            meta,
-          })),
+          clock: planNextAttempt,
         }),
       }),
       timeout: normalizeSourced({

@@ -43,7 +43,6 @@ export function attachObservability({
   if (options?.evicted && events?.itemEvicted) {
     sample({
       clock: events.itemEvicted,
-      fn: ({ key }) => ({ key }),
       target: options.evicted,
     });
   }

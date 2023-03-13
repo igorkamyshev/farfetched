@@ -1,14 +1,14 @@
 import { createEffect, Event, sample, split } from 'effector';
 
 import { time } from '../libs/patronus';
-import { parseTime, Time } from '../libs/date-nfs';
+import { parseTime, type Time } from '../libs/date-nfs';
 import {
-  RemoteOperationParams,
-  RemoteOperationResult,
+  type RemoteOperationParams,
+  type RemoteOperationResult,
 } from '../remote_operation/type';
-import { Query } from '../query/type';
+import { type Query } from '../query/type';
 import { inMemoryCache } from './adapters/in_memory';
-import { CacheAdapter, CacheAdapterInstance } from './adapters/type';
+import { type CacheAdapter, type CacheAdapterInstance } from './adapters/type';
 import {
   enrichFinishedSuccessWithKey,
   enrichForcedWithKey,

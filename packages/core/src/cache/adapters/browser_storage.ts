@@ -5,17 +5,16 @@ import { parseTime } from '../../libs/date-nfs';
 import { createAdapter } from './instance';
 import { attachObservability } from './observability';
 import { CacheAdapter, CacheAdapterOptions } from './type';
+import { get } from '../../libs/lohyphen';
 
 export function browserStorageCache(
   config: {
     storage: () => Storage;
   } & CacheAdapterOptions
 ): CacheAdapter {
-  const { storage, observability } = config;
+  const { storage, observability, maxAge, maxEntries } = config;
   // -- adapter
   function storageCache(): CacheAdapter {
-    const { maxEntries, maxAge } = config;
-
     const getSavedItemFx = createEffect(async (key: string) => {
       const item = await getItemFx(key);
 
@@ -69,10 +68,7 @@ export function browserStorageCache(
           }),
           timeout: parseTime(maxAge),
         }),
-        fn: (params) => ({
-          key: params.params.key,
-          value: params.params.value,
-        }),
+        fn: get('params'),
         target: [itemExpired, removeSavedItemFx],
       });
     }

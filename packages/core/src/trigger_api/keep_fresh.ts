@@ -1,16 +1,17 @@
 import {
   type Event,
+  createApi,
   combine,
   sample,
   is,
   createStore,
-  createEvent,
+  merge,
 } from 'effector';
 
 import { type Query } from '../query/type';
-import { isEqual, divide } from '../libs/lohyphen';
-import { not, delay } from '../libs/patronus';
-import { TriggerProtocol } from './trigger_protocol';
+import { isEqual, divide, get } from '../libs/lohyphen';
+import { not, and, delay } from '../libs/patronus';
+import { type TriggerProtocol } from './trigger_protocol';
 
 export function keepFresh<Params>(
   query: Query<Params, any, any>,
@@ -41,15 +42,47 @@ export function keepFresh<Params>(
     triggers?: Array<Event<unknown> | Event<void> | TriggerProtocol>;
   }
 ): void {
-  const forceFresh = createEvent();
-  const triggers: Array<Event<unknown> | Event<void> | TriggerProtocol> = [];
+  const triggers: Array<Event<any>> = [];
 
-  if (config.triggers) {
-    triggers.push(...config.triggers);
+  const [triggerEvents, protocolCompatibleObjects] = divide(
+    config.triggers ?? [],
+    is.event
+  );
+
+  triggers.push(...triggerEvents);
+
+  if (protocolCompatibleObjects.length > 0) {
+    const triggersByProtocol = protocolCompatibleObjects.map((trigger) =>
+      trigger['@@trigger']()
+    );
+
+    const $alreadySetup = createStore(false, { serialize: 'ignore' });
+
+    const { setup, teardown } = createApi($alreadySetup, {
+      setup: () => true,
+      teardown: () => false,
+    });
+
+    sample({
+      clock: [
+        query.finished.success,
+        sample({ clock: query.$enabled.updates, filter: query.$enabled }),
+      ],
+      filer: not($alreadySetup),
+      target: [...triggersByProtocol.map(get('setup')), setup],
+    });
+
+    sample({
+      clock: query.$enabled.updates,
+      filter: and($alreadySetup, not(query.$enabled)),
+      target: [...triggersByProtocol.map(get('teardown')), teardown],
+    });
+
+    triggers.push(...triggersByProtocol.map(get('fired')));
   }
 
   if (config.automatically) {
-    const finalyParams = query.finished.finally.map(({ params }) => params);
+    const finalyParams = query.finished.finally.map(get('params'));
     const $previousSources = combine(
       query.__.lowLevelAPI.sourced.map((sourced) => sourced(finalyParams))
     );
@@ -66,63 +99,14 @@ export function keepFresh<Params>(
 
     triggers.push(
       sample({
-        clock: $nextSources,
+        clock: $nextSources.updates,
         source: { prev: $nextSources, next: $previousSources },
         filter: ({ prev, next }) => !isEqual(prev, next),
-        fn: () => null as unknown,
       })
     );
   }
 
-  const [triggerEvents, triggersByProtocol] = divide(triggers, is.event);
-  const resolvedTriggersByProtocol = triggersByProtocol.map((trigger) =>
-    trigger['@@trigger']()
-  );
-
-  if (resolvedTriggersByProtocol.length > 0) {
-    const $alreadySetup = createStore(false, { serialize: 'ignore' });
-
-    const setup = createEvent();
-    const teardown = createEvent();
-
-    sample({
-      clock: setup,
-      filter: not($alreadySetup),
-      target: resolvedTriggersByProtocol.map((trigger) => trigger.setup),
-    });
-
-    sample({ clock: setup, fn: () => true, target: $alreadySetup });
-
-    sample({
-      clock: teardown,
-      filter: $alreadySetup,
-      target: resolvedTriggersByProtocol.map((trigger) => trigger.teardown),
-    });
-
-    sample({ clock: teardown, fn: () => false, target: $alreadySetup });
-
-    sample({
-      clock: [
-        query.finished.success,
-        sample({ clock: query.$enabled.updates, filter: query.$enabled }),
-      ],
-      target: setup,
-    });
-
-    sample({
-      clock: query.$enabled.updates,
-      filter: not(query.$enabled),
-      target: teardown,
-    });
-  }
-
-  sample({
-    clock: [
-      ...triggerEvents,
-      ...resolvedTriggersByProtocol.map((trigger) => trigger.fired),
-    ],
-    target: forceFresh,
-  });
+  const forceFresh = merge(triggers);
 
   sample({
     clock: forceFresh,
@@ -131,12 +115,12 @@ export function keepFresh<Params>(
     target: query.$stale,
   });
 
+  // @ts-expect-error TS cannot get that if query.$idle is false, then $latestParams is Params
   sample({
     // Use sync batching
     clock: delay({ clock: forceFresh, timeout: 0 }),
     source: query.__.$latestParams,
     filter: not(query.$idle),
-    fn: (params) => params!,
     target: query.refresh,
   });
 }

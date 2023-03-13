@@ -1,4 +1,5 @@
 import { Event, sample } from 'effector';
+import { get } from '../../libs/lohyphen';
 
 import { Query } from '../../query/type';
 import {
@@ -21,10 +22,7 @@ export function enrichFinishedSuccessWithKey<Q extends Query<any, any, any>>(
 export function enrichStartWithKey<Q extends Query<any, any, any>>(
   query: Q
 ): Event<{ params: RemoteOperationParams<Q>; key: string | null }> {
-  return enrichWithKey(
-    query.start.map((params) => ({ params })),
-    query
-  );
+  return enrichWithKey(query.start.map(get('params')), query);
 }
 
 export function enrichForcedWithKey<Q extends Query<any, any, any>>(
