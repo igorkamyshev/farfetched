@@ -15,18 +15,40 @@ import { TriggerProtocol } from './trigger_protocol';
 export function keepFresh<Params>(
   query: Query<Params, any, any>,
   config: {
-    onSourcesUpdate?: true;
-    onTriggers?: Array<Event<unknown> | Event<void> | TriggerProtocol>;
+    automatically: true;
   }
-) {
+): void;
+
+export function keepFresh<Params>(
+  query: Query<Params, any, any>,
+  config: {
+    triggers: Array<Event<unknown> | Event<void> | TriggerProtocol>;
+  }
+): void;
+
+export function keepFresh<Params>(
+  query: Query<Params, any, any>,
+  config: {
+    automatically: true;
+    triggers: Array<Event<unknown> | Event<void> | TriggerProtocol>;
+  }
+): void;
+
+export function keepFresh<Params>(
+  query: Query<Params, any, any>,
+  config: {
+    automatically?: true;
+    triggers?: Array<Event<unknown> | Event<void> | TriggerProtocol>;
+  }
+): void {
   const forceFresh = createEvent();
   const triggers: Array<Event<unknown> | Event<void> | TriggerProtocol> = [];
 
-  if (config.onTriggers) {
-    triggers.push(...config.onTriggers);
+  if (config.triggers) {
+    triggers.push(...config.triggers);
   }
 
-  if (config.onSourcesUpdate) {
+  if (config.automatically) {
     const finalyParams = query.finished.finally.map(({ params }) => params);
     const $previousSources = combine(
       query.__.lowLevelAPI.sourced.map((sourced) => sourced(finalyParams))

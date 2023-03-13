@@ -12,7 +12,7 @@ describe('keepFresh, triggers', () => {
 
     const query = createQuery({ handler: listener });
 
-    keepFresh(query, { onSourcesUpdate: true });
+    keepFresh(query, { automatically: true });
 
     const scope = fork();
 
@@ -37,7 +37,7 @@ describe('keepFresh, triggers', () => {
       response: { contract: unknownContract },
     });
 
-    keepFresh(queryWithSourced, { onSourcesUpdate: true });
+    keepFresh(queryWithSourced, { automatically: true });
 
     const scope = fork({
       handlers: [[queryWithSourced.__.executeFx, listener]],
@@ -76,7 +76,7 @@ describe('keepFresh, triggers', () => {
       response: { contract: unknownContract },
     });
 
-    keepFresh(queryWithSourced, { onSourcesUpdate: true });
+    keepFresh(queryWithSourced, { automatically: true });
 
     const scope = fork({
       handlers: [[queryWithSourced.__.executeFx, listener]],
@@ -118,7 +118,7 @@ describe('keepFresh, triggers', () => {
       response: { contract: unknownContract },
     });
 
-    keepFresh(queryWithSourced, { onSourcesUpdate: true });
+    keepFresh(queryWithSourced, { automatically: true });
 
     const scope = fork({
       handlers: [[queryWithSourced.__.executeFx, listener]],
@@ -160,7 +160,7 @@ describe('keepFresh, triggers', () => {
       response: { contract: unknownContract },
     });
 
-    keepFresh(queryWithSourced, { onSourcesUpdate: true });
+    keepFresh(queryWithSourced, { automatically: true });
 
     const scope = fork({
       handlers: [[queryWithSourced.__.executeFx, listener]],
@@ -198,7 +198,7 @@ describe('keepFresh, triggers', () => {
       response: { contract: unknownContract },
     });
 
-    keepFresh(queryWithSourced, { onSourcesUpdate: true });
+    keepFresh(queryWithSourced, { automatically: true });
 
     const scope = fork({
       handlers: [[queryWithSourced.__.executeFx, listener]],
