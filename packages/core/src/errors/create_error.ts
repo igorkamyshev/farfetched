@@ -2,39 +2,35 @@ import { type Json } from 'effector';
 
 import {
   ABORT,
-  AbortError,
+  type AbortError,
   HTTP,
-  HttpError,
-  InvalidDataError,
+  type HttpError,
   INVALID_DATA,
+  type InvalidDataError,
   NETWORK,
-  NetworkError,
+  type NetworkError,
   PREPARATION,
-  PreparationError,
+  type PreparationError,
   TIMEOUT,
-  TimeoutError,
+  type TimeoutError,
 } from './type';
 
-export function invalidDataError({
-  validationErrors,
-  response,
-}: {
+export function invalidDataError(config: {
   validationErrors: string[];
   response: unknown;
 }): InvalidDataError {
   return {
+    ...config,
     errorType: INVALID_DATA,
     explanation: 'Response was considered as invalid against a given contract',
-    validationErrors,
-    response,
   };
 }
 
-export function timeoutError({ timeout }: { timeout: number }): TimeoutError {
+export function timeoutError(config: { timeout: number }): TimeoutError {
   return {
+    ...config,
     errorType: TIMEOUT,
     explanation: 'Request was cancelled due to timeout',
-    timeout,
   };
 }
 
@@ -45,50 +41,36 @@ export function abortError(): AbortError {
   };
 }
 
-export function preparationError({
-  response,
-  reason,
-}: {
+export function preparationError(config: {
   response: string;
   reason: string | null;
 }): PreparationError {
   return {
+    ...config,
     errorType: PREPARATION,
     explanation: 'Extraction of data from the response was failed',
-    response,
-    reason,
   };
 }
 
-export function httpError({
-  status,
-  statusText,
-  response,
-}: {
+export function httpError(config: {
   status: number;
   statusText: string;
   response: string | Json | null;
 }): HttpError {
   return {
+    ...config,
     errorType: HTTP,
     explanation: 'Request was finished with unsuccessful HTTP code',
-    status,
-    statusText,
-    response,
   };
 }
 
-export function networkError({
-  reason,
-  cause,
-}: {
+export function networkError(config: {
   reason: string | null;
   cause?: unknown;
 }): NetworkError {
   return {
+    ...config,
     errorType: NETWORK,
     explanation: 'Request was failed due to network problems',
-    reason,
-    cause,
   };
 }

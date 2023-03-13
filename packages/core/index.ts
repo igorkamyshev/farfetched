@@ -89,3 +89,6 @@ export {
   isInvalidDataError,
   isHttpErrorCode,
 } from './src/errors/guards';
+
+// Trigger API
+export { keepFresh } from './src/trigger_api/keep_fresh';

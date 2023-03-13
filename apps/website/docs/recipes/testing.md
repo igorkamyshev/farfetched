@@ -56,7 +56,7 @@ test('let us mock function', async () => {
         [locationQuery.__.executeFx, () => 'Mocked'],
     ]})
 
-    await allSettled(locationQuery.start, { scope })
+    await allSettled(locationQuery.refresh, { scope })
 
     // all computations are settled
 })
@@ -72,7 +72,7 @@ test('let us mock function', async () => {
         [locationQuery.__.executeFx, () => 'Mocked'],
     ]})
 
-    await allSettled(locationQuery.start, { scope })
+    await allSettled(locationQuery.refresh, { scope })
 
     expect(scope.getState(locationQuery.$data)).toBe('Mocked')
 })

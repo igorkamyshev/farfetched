@@ -81,7 +81,7 @@ itemsQuery.finished.error.watch((error) => {
   console.error('OH NO', error);
 });
 
-itemsQuery.start();
+itemsQuery.refresh();
 ```
 
 :::

@@ -11,6 +11,7 @@ import {
 } from '../libs/patronus';
 import { Validator } from '../validation/type';
 import { Query, QueryMeta, QuerySymbol } from './type';
+import { Event } from 'effector';
 
 export interface SharedQueryFactoryConfig<Data, Initial = Data> {
   name?: string;
@@ -45,6 +46,7 @@ export function createHeadlessQuery<
     >;
     validate?: Validator<ContractData, Params, ValidationSource>;
     sources?: Array<Store<unknown>>;
+    sourced?: Array<(clock: Event<Params>) => Store<unknown>>;
     paramsAreMeaningless?: boolean;
   } & SharedQueryFactoryConfig<MappedData, Initial>
 ): Query<Params, MappedData, Error | InvalidDataError, Initial> {
@@ -57,6 +59,7 @@ export function createHeadlessQuery<
     name,
     serialize,
     sources,
+    sourced,
     paramsAreMeaningless,
   } = config;
 
@@ -81,9 +84,11 @@ export function createHeadlessQuery<
     validate,
     mapData,
     sources,
+    sourced,
     paramsAreMeaningless,
   });
 
+  const refresh = createEvent<Params>();
   const reset = createEvent();
 
   // -- Main stores --
@@ -123,6 +128,14 @@ export function createHeadlessQuery<
     clock: operation.finished.finally,
     fn: ({ meta }) => !meta.isFreshData,
     target: $stale,
+  });
+
+  // -- Trigger API
+
+  sample({
+    clock: refresh,
+    filter: $stale,
+    target: operation.start,
   });
 
   // -- Reset state --
@@ -175,6 +188,7 @@ export function createHeadlessQuery<
     $error,
     $stale,
     reset,
+    refresh,
     ...operation,
     __: {
       ...operation.__,

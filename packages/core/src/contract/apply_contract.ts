@@ -1,9 +1,9 @@
 import { createEffect, Effect } from 'effector';
 
 import { invalidDataError } from '../errors/create_error';
-import { InvalidDataError } from '../errors/type';
-import { ExecutionMeta } from '../remote_operation/type';
-import { Contract } from './type';
+import { type InvalidDataError } from '../errors/type';
+import { type ExecutionMeta } from '../remote_operation/type';
+import { type Contract } from './type';
 
 export function createContractApplier<Params, Raw, Data extends Raw>(
   contract: Contract<Raw, Data>

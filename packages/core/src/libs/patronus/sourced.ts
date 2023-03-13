@@ -182,6 +182,20 @@ function normalizeStaticOrReactive<T>(
   });
 }
 
+// -- Extract source
+
+function extractSource<S>(sourced: SourcedField<any, any, S>): Store<S> | null {
+  if (is.store(sourced)) {
+    return sourced;
+  }
+
+  if (sourced?.source) {
+    return sourced.source;
+  }
+
+  return null;
+}
+
 // -- Combine sourced
 
 // TODO: type it https://github.com/igorkamyshev/farfetched/issues/281
@@ -236,5 +250,6 @@ export {
   reduceTwoArgs,
   type StaticOrReactive,
   normalizeStaticOrReactive,
+  extractSource,
   combineSourced,
 };

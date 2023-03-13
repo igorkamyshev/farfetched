@@ -76,11 +76,13 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
      * Distinguish different kinds of operations
      */
     kind: unknown;
+    $latestParams: Store<Params | null>;
     /**
      * Low-level API, it can be changed anytime without any notice!
      */
     lowLevelAPI: {
       sources: Array<Store<unknown>>;
+      sourced: Array<(clock: Event<Params>) => Store<unknown>>;
       paramsAreMeaningless: boolean;
       registerInterruption: () => void;
       validatedSuccessfully: Event<{ params: Params; result: unknown }>;

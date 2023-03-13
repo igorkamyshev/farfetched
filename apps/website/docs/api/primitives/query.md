@@ -22,6 +22,7 @@ query.$stale; // Store<boolean>
 // Commands
 query.start; // Event<Params>
 query.reset; // Event<void>, since v0.2.0
+query.refresh; // Event<Params>. since v0.8.0
 
 // Events
 query.finished.success; // Event<{ result: Data, params: Params }>

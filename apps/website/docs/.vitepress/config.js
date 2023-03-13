@@ -128,6 +128,10 @@ export default withMermaid(
                   },
                 ],
               },
+              {
+                text: 'Trigger API',
+                link: '/tutorial/trigger_api',
+              },
             ],
           },
           {
@@ -185,6 +189,7 @@ export default withMermaid(
               { text: 'update', link: '/api/operators/update' },
               { text: 'retry', link: '/api/operators/retry' },
               { text: 'cache', link: '/api/operators/cache' },
+              { text: 'keepFresh', link: '/api/operators/keep_fresh' },
               {
                 text: 'attachOperation',
                 link: '/api/operators/attach_operation',

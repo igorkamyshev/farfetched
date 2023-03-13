@@ -2,6 +2,7 @@ import {
   createEffect,
   createEvent,
   createStore,
+  Event,
   sample,
   split,
   Store,
@@ -45,6 +46,7 @@ export function createRemoteOperation<
   validate,
   mapData,
   sources,
+  sourced,
   paramsAreMeaningless,
 }: {
   name?: string;
@@ -60,6 +62,7 @@ export function createRemoteOperation<
     MapDataSource
   >;
   sources?: Array<Store<unknown>>;
+  sourced?: Array<(clock: Event<Params>) => Store<unknown>>;
   paramsAreMeaningless?: boolean;
 }): RemoteOperation<Params, MappedData, Error | InvalidDataError, Meta> {
   let withInterruption = false;
@@ -132,6 +135,10 @@ export function createRemoteOperation<
 
   const $enabled = normalizeStaticOrReactive(enabled ?? true).map(Boolean);
 
+  const $latestParams = createStore<Params | null>(null, {
+    serialize: 'ignore',
+  });
+
   // -- Derived stores --
   const $idle = $status.map((status) => status === 'initial');
   const $pending = $status.map((status) => status === 'pending');
@@ -147,6 +154,8 @@ export function createRemoteOperation<
     ],
     target: $status,
   });
+
+  sample({ clock: start, filter: $enabled, target: $latestParams });
 
   // -- Execution flow
   sample({
@@ -304,8 +313,10 @@ export function createRemoteOperation<
       executeFx,
       meta: { ...meta, name },
       kind,
+      $latestParams,
       lowLevelAPI: {
         sources: sources ?? [],
+        sourced: sourced ?? [],
         paramsAreMeaningless: paramsAreMeaningless ?? false,
         registerInterruption,
         validatedSuccessfully,
