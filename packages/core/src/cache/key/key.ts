@@ -1,5 +1,6 @@
 import { Event, sample } from 'effector';
 
+import { get } from '../../libs/lohyphen';
 import { Query } from '../../query/type';
 import {
   RemoteOperationResult,
@@ -39,10 +40,8 @@ function enrichWithKey<
 >(event: Event<T>, query: Q): Event<T & { key: string | null }> {
   const queryDataSid = queryUniqId(query);
 
-  const clockParams = event.map((payload) => payload.params);
-
   const source = query.__.lowLevelAPI.sourced.map((sourced) =>
-    sourced(clockParams)
+    sourced(event.map(get('params')))
   );
 
   return sample({
