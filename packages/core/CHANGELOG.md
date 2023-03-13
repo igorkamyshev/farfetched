@@ -1,5 +1,26 @@
 # @farfetched/core
 
+## 0.8.0
+
+### Minor Changes
+
+- f04aa0d: Allow to pass any string as `query` in `createJson*`
+- 386752e: Expose original error in `NetworkError` as well
+- 24cb348: Add new _Event_ for the _Query_ — `.refresh`
+- f6ce0bf: Fix types of `connectQuery` in case of target Query<void, ...>
+- e298d2f: Add new low-level function — `combineSourced`
+- 573ad52: Add `.$idle` _Store_ that shows if fetching has started or not in _Remote Operations_
+- 24cb348: Add new operator — `keepFresh`
+- 19e9626: Mark `externalCache` as deprecated
+
+### Patch Changes
+
+- 2f6fa1c: Export `fetchFx` to allow low-level mocks
+- 8b76a37: Fix `.$stale` in initial state, now it is `true`
+- 25c051f: Fix error type of _Mutations_ and _Queries_ create by `createJson*` factories
+- 90be139: Add utility types for _Remote Operations_ to public API
+- c9766d0: Fix type inference of `attachOperation`
+
 ## 0.7.2
 
 ### Patch Changes

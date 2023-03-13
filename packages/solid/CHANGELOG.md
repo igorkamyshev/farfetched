@@ -1,5 +1,11 @@
 # @farfetched/solid
 
+## 0.8.0
+
+### Minor Changes
+
+- 065cede: Delete `refetch` from `createQueryResource`
+
 ## 0.7.2
 
 ## 0.7.1
