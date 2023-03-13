@@ -105,7 +105,7 @@ It is compatible with Farfetched and can be used without any additional configur
 import { trackPageVisibility, trackNetworkStatus } from '@withease/web-api';
 import { keepFresh } from '@farfetched/core';
 
-keeypFresh(someQuery, {
+keepFresh(someQuery, {
   triggers: [trackPageVisibility, trackNetworkStatus],
 });
 ```
