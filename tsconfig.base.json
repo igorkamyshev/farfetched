@@ -18,7 +18,7 @@
       "@farfetched/solid": ["packages/solid/index.ts"],
       "@farfetched/test-utils": ["packages/test-utils/index.ts"],
       "@farfetched/zod": ["packages/zod/index.ts"],
-      "@farfetched/c": ["packages/dev-tools/index.ts"]
+      "@farfetched/dev-tools": ["packages/dev-tools/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

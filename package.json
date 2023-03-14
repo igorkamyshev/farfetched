@@ -69,9 +69,10 @@
     "vue": "^3.2.37"
   },
   "dependencies": {
+    "@effector/reflect": "^8.2.0",
     "atomic-router": "0.6",
     "atomic-router-solid": "0.5",
-    "effector-react": "^22.3.0",
+    "effector-react": "^22.5.0",
     "effector-solid": "0.22.7",
     "forest": "^0.21.2",
     "history": "^5.3.0",
