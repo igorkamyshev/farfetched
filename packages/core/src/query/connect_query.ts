@@ -1,4 +1,13 @@
-import { combine, createStore, Event, merge, sample } from 'effector';
+import {
+  combine,
+  createNode,
+  createStore,
+  Event,
+  merge,
+  sample,
+  withRegion,
+} from 'effector';
+import { NodeMetaSumbol } from '../inspect/symbol';
 
 import { mapValues, zipObject } from '../libs/lohyphen';
 import { every, postpone } from '../libs/patronus';
@@ -41,6 +50,7 @@ export function connectQuery<Sources, Target extends Query<any, any, any>>(
     : NonExtendable)
 ): void {
   const { source, target } = args;
+
   // Settings
   const singleParentMode = isQuery(source);
 
@@ -51,73 +61,87 @@ export function connectQuery<Sources, Target extends Query<any, any, any>>(
     : Object.values(source as any);
   const mapperFn = args?.fn as (args: any) => { params?: any };
 
-  // Helper untis
-  const anyParentStarted = merge(parents.map((query) => query.start));
-  const anyParentSuccessfullyFinished = merge(
-    parents.map((query) => query.finished.success)
-  );
-
-  const $allParentsHaveData = every({
-    stores: parents.map((query) => query.$data),
-    predicate: (data) => data !== null,
-  });
-
-  const $allParentDataDictionary = singleParentMode
-    ? source.$data
-    : combine(mapValues(source as any, (query) => query.$data));
-
-  const $allParentParamsDictionary = createStore<any>(null, {
-    serialize: 'ignore',
-  });
-  if (singleParentMode) {
-    sample({
-      clock: source.finished.success,
-      fn: ({ params }) => params,
-      target: $allParentParamsDictionary,
-    });
-  } else {
-    for (const [parentName, parentFinishedSuccess] of Object.entries(
-      mapValues(source as any, (query) => query.finished.success)
-    )) {
-      sample({
-        clock: parentFinishedSuccess as Event<{ params: any }>,
-        source: $allParentParamsDictionary,
-        fn: (latestParams, { params }) => ({
-          ...latestParams,
-          [parentName]: params,
-        }),
-        target: $allParentParamsDictionary,
-      });
-    }
-  }
-
-  // Relations
-  sample({
-    clock: anyParentStarted,
-    fn() {
-      return true;
-    },
-    target: children.map((t) => t.$stale),
-  });
-
-  sample({
-    clock: postpone({
-      clock: anyParentSuccessfullyFinished,
-      until: $allParentsHaveData,
+  withRegion(
+    createNode({
+      meta: {
+        [NodeMetaSumbol]: {
+          type: 'operator',
+          operator: 'connectQuery',
+          source: parents.map((query) => query.__.meta.node),
+          target: children.map((query) => query.__.meta.node),
+        },
+      },
     }),
-    source: {
-      data: $allParentDataDictionary,
-      params: $allParentParamsDictionary,
-    },
-    fn({ data, params }) {
-      const mapped = mapperFn?.(
-        singleParentMode
-          ? { result: data, params }
-          : zipObject({ result: data, params })
+    () => {
+      // Helper untis
+      const anyParentStarted = merge(parents.map((query) => query.start));
+      const anyParentSuccessfullyFinished = merge(
+        parents.map((query) => query.finished.success)
       );
 
-      return mapped?.params ?? null;
-    },
-    target: children.map((t) => t.start),
-  });
+      const $allParentsHaveData = every({
+        stores: parents.map((query) => query.$data),
+        predicate: (data) => data !== null,
+      });
+
+      const $allParentDataDictionary = singleParentMode
+        ? source.$data
+        : combine(mapValues(source as any, (query) => query.$data));
+
+      const $allParentParamsDictionary = createStore<any>(null, {
+        serialize: 'ignore',
+      });
+      if (singleParentMode) {
+        sample({
+          clock: source.finished.success,
+          fn: ({ params }) => params,
+          target: $allParentParamsDictionary,
+        });
+      } else {
+        for (const [parentName, parentFinishedSuccess] of Object.entries(
+          mapValues(source as any, (query) => query.finished.success)
+        )) {
+          sample({
+            clock: parentFinishedSuccess as Event<{ params: any }>,
+            source: $allParentParamsDictionary,
+            fn: (latestParams, { params }) => ({
+              ...latestParams,
+              [parentName]: params,
+            }),
+            target: $allParentParamsDictionary,
+          });
+        }
+      }
+
+      // Relations
+      sample({
+        clock: anyParentStarted,
+        fn() {
+          return true;
+        },
+        target: children.map((t) => t.$stale),
+      });
+
+      sample({
+        clock: postpone({
+          clock: anyParentSuccessfullyFinished,
+          until: $allParentsHaveData,
+        }),
+        source: {
+          data: $allParentDataDictionary,
+          params: $allParentParamsDictionary,
+        },
+        fn({ data, params }) {
+          const mapped = mapperFn?.(
+            singleParentMode
+              ? { result: data, params }
+              : zipObject({ result: data, params })
+          );
+
+          return mapped?.params ?? null;
+        },
+        target: children.map((t) => t.start),
+      });
+    }
+  );
 }

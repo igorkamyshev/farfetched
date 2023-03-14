@@ -1,4 +1,4 @@
-import { Store, Event } from 'effector';
+import { Store, Event, Node } from 'effector';
 
 import { RemoteOperation } from '../remote_operation/type';
 import { type Serialize } from '../libs/patronus';
@@ -13,6 +13,7 @@ export interface QueryMeta<Data, InitialData> {
    */
   serialize: Serialize<Data | InitialData>;
   initialData: InitialData;
+  node: Node;
 }
 
 export interface Query<Params, Data, Error, InitialData = null>

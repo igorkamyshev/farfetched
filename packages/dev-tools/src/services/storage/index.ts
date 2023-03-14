@@ -1,5 +1,2 @@
-import { listenQueryCreation } from './query';
-
-export function listenFarfetchedPrimitives() {
-  listenQueryCreation();
-}
+export { declarations } from './collect';
+export { isQueryDeclaration, isConnectQueryDeclaration } from './guards';

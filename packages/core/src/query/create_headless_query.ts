@@ -28,6 +28,8 @@ export interface SharedQueryFactoryConfig<Data, Initial = Data> {
   serialize?: Serialize<Data | Initial>;
 }
 
+let id = 0;
+
 /**
  * Creates Query without any executor, it cannot be used as-is.
  *
@@ -74,144 +76,146 @@ export function createHeadlessQuery<
 
   const initialData = initialDataRaw ?? (null as unknown as Initial);
 
-  return withRegion(
-    createNode({ meta: { [NodeMetaSumbol]: { type: 'query' } } }),
-    () => {
-      const operation = createRemoteOperation<
-        Params,
-        Response,
-        ContractData,
-        MappedData,
-        Error,
-        QueryMeta<MappedData, Initial>,
-        MapDataSource,
-        ValidationSource
-      >({
-        name,
-        kind: QuerySymbol,
-        serialize: serializationForSideStore(serialize),
-        enabled,
-        meta: { serialize, initialData },
-        contract,
-        validate,
-        mapData,
-        sources,
-        sourced,
-        paramsAreMeaningless,
-      });
+  const node = createNode({
+    meta: { [NodeMetaSumbol]: { type: 'query', id: id.toString() } },
+  });
+  id++;
 
-      const refresh = createEvent<Params>();
-      const reset = createEvent();
+  return withRegion(node, () => {
+    const operation = createRemoteOperation<
+      Params,
+      Response,
+      ContractData,
+      MappedData,
+      Error,
+      QueryMeta<MappedData, Initial>,
+      MapDataSource,
+      ValidationSource
+    >({
+      name,
+      kind: QuerySymbol,
+      serialize: serializationForSideStore(serialize),
+      enabled,
+      meta: { serialize, initialData, node },
+      contract,
+      validate,
+      mapData,
+      sources,
+      sourced,
+      paramsAreMeaningless,
+    });
 
-      // -- Main stores --
-      const $data = createStore<MappedData | Initial>(initialData, {
-        sid: `ff.${operation.__.meta.name}.$data`,
-        name: `${operation.__.meta.name}.$data`,
-        serialize,
-      });
-      const $error = createStore<Error | InvalidDataError | null>(null, {
-        sid: `ff.${operation.__.meta.name}.$error`,
-        name: `${operation.__.meta.name}.$error`,
-        serialize: serializationForSideStore(serialize),
-      });
-      const $stale = createStore<boolean>(true, {
-        sid: `ff.${operation.__.meta.name}.$stale`,
-        name: `${operation.__.meta.name}.$stale`,
-        serialize: serializationForSideStore(serialize),
-      });
+    const refresh = createEvent<Params>();
+    const reset = createEvent();
 
-      sample({
-        clock: operation.finished.success,
-        fn: () => null,
-        target: $error,
-      });
-      sample({
-        clock: operation.finished.success,
-        fn: ({ result }) => result,
-        target: $data,
-      });
+    // -- Main stores --
+    const $data = createStore<MappedData | Initial>(initialData, {
+      sid: `ff.${operation.__.meta.name}.$data`,
+      name: `${operation.__.meta.name}.$data`,
+      serialize,
+    });
+    const $error = createStore<Error | InvalidDataError | null>(null, {
+      sid: `ff.${operation.__.meta.name}.$error`,
+      name: `${operation.__.meta.name}.$error`,
+      serialize: serializationForSideStore(serialize),
+    });
+    const $stale = createStore<boolean>(true, {
+      sid: `ff.${operation.__.meta.name}.$stale`,
+      name: `${operation.__.meta.name}.$stale`,
+      serialize: serializationForSideStore(serialize),
+    });
 
-      $data.reset(operation.finished.failure);
-      sample({
-        clock: operation.finished.failure,
-        fn: ({ error }) => error,
-        target: $error,
-      });
+    sample({
+      clock: operation.finished.success,
+      fn: () => null,
+      target: $error,
+    });
+    sample({
+      clock: operation.finished.success,
+      fn: ({ result }) => result,
+      target: $data,
+    });
 
-      // -- Handle stale
+    $data.reset(operation.finished.failure);
+    sample({
+      clock: operation.finished.failure,
+      fn: ({ error }) => error,
+      target: $error,
+    });
 
-      sample({
-        clock: operation.finished.finally,
-        fn: ({ meta }) => !meta.isFreshData,
-        target: $stale,
-      });
+    // -- Handle stale
 
-      // -- Trigger API
+    sample({
+      clock: operation.finished.finally,
+      fn: ({ meta }) => !meta.isFreshData,
+      target: $stale,
+    });
 
-      sample({
-        clock: refresh,
-        filter: $stale,
-        target: operation.start,
-      });
+    // -- Trigger API
 
-      // -- Reset state --
+    sample({
+      clock: refresh,
+      filter: $stale,
+      target: operation.start,
+    });
 
-      sample({
-        clock: reset,
-        target: [
-          $data.reinit!,
-          $error.reinit!,
-          $stale.reinit!,
-          operation.$status.reinit!,
-        ],
-      });
+    // -- Reset state --
 
-      // -- Protocols --
+    sample({
+      clock: reset,
+      target: [
+        $data.reinit!,
+        $error.reinit!,
+        $stale.reinit!,
+        operation.$status.reinit!,
+      ],
+    });
 
-      const unitShape = {
-        data: $data,
-        error: $error,
-        stale: $stale,
-        pending: operation.$pending,
-        start: operation.start,
-      };
-      const unitShapeProtocol = () => unitShape;
+    // -- Protocols --
 
-      // Experimental API, won't be exposed as protocol for now
-      const attachProtocol = <NewParams, Source>({
+    const unitShape = {
+      data: $data,
+      error: $error,
+      stale: $stale,
+      pending: operation.$pending,
+      start: operation.start,
+    };
+    const unitShapeProtocol = () => unitShape;
+
+    // Experimental API, won't be exposed as protocol for now
+    const attachProtocol = <NewParams, Source>({
+      source,
+      mapParams,
+    }: {
+      source: Store<Source>;
+      mapParams: (params: NewParams, source: Source) => Params;
+    }) => {
+      const attachedQuery = createHeadlessQuery(config);
+
+      const originalHandler = attach({
         source,
         mapParams,
-      }: {
-        source: Store<Source>;
-        mapParams: (params: NewParams, source: Source) => Params;
-      }) => {
-        const attachedQuery = createHeadlessQuery(config);
+        effect: operation.__.executeFx,
+      });
+      attachedQuery.__.executeFx.use(originalHandler);
 
-        const originalHandler = attach({
-          source,
-          mapParams,
-          effect: operation.__.executeFx,
-        });
-        attachedQuery.__.executeFx.use(originalHandler);
+      return attachedQuery;
+    };
 
-        return attachedQuery;
-      };
+    // -- Public API --
 
-      // -- Public API --
-
-      return {
-        $data,
-        $error,
-        $stale,
-        reset,
-        refresh,
-        ...operation,
-        __: {
-          ...operation.__,
-          experimentalAPI: { attach: attachProtocol },
-        },
-        '@@unitShape': unitShapeProtocol,
-      };
-    }
-  );
+    return {
+      $data,
+      $error,
+      $stale,
+      reset,
+      refresh,
+      ...operation,
+      __: {
+        ...operation.__,
+        experimentalAPI: { attach: attachProtocol },
+      },
+      '@@unitShape': unitShapeProtocol,
+    };
+  });
 }

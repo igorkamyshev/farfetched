@@ -5,7 +5,10 @@ import { appStarted } from './viewer';
 
 const show = createEvent();
 
-export const $visible = createStore(false).on(show, () => true);
+export const $visible = createStore(
+  true
+  // false
+).on(show, () => true);
 
 sample({
   clock: keyboardSequence('iddqd', { setup: appStarted }),
