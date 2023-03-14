@@ -13,6 +13,7 @@
     "test-utils": "packages/test-utils",
     "typed-contracts": "packages/typed-contracts",
     "website": "apps/website",
+    "dev-tools": "packages/dev-tools",
     "zod": "packages/zod"
   }
 }

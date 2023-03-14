@@ -1,0 +1,80 @@
+{
+  "name": "dev-tools",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/dev-tools/src",
+  "projectType": "library",
+  "targets": {
+    "pack": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/scripts/typepack.mjs --package dev-tools"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    },
+    "build": {
+      "executor": "@nrwl/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "project": "packages/dev-tools/package.json",
+        "outputPath": "dist/packages/dev-tools",
+        "entryFile": "packages/dev-tools/index.ts",
+        "tsConfig": "packages/dev-tools/tsconfig.json",
+        "format": ["esm", "cjs"],
+        "generateExportsField": true,
+        "compiler": "babel"
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs dev-tools"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "pack"
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/dev-tools/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/vite:test",
+      "options": {
+        "config": "vite.config.ts"
+      }
+    },
+    "typetest": {
+      "executor": "@nrwl/vite:test",
+      "options": {
+        "config": "vite.config.ts",
+        "mode": "typecheck"
+      }
+    },
+    "size": {
+      "executor": "./tools/executors/size-limit:size-limit",
+      "options": {
+        "limit": "0.6 kB",
+        "outputPath": "dist/packages/dev-tools"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    }
+  },
+  "implicitDependencies": ["!test-utils"],
+  "tags": []
+}
