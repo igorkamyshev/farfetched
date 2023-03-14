@@ -1,8 +1,8 @@
 import { NodeMetaSumbol } from '@farfetched/core';
-import { Node } from 'effector';
 import { type Declaration } from 'effector/inspect';
+import { Node } from 'effector';
 
-export type QueryMeta = { type: 'query'; id: string };
+export type QueryMeta = { type: 'query' };
 
 export type ConnectQueryMeta = {
   type: 'operator';

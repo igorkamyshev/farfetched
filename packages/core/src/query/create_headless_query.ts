@@ -28,8 +28,6 @@ export interface SharedQueryFactoryConfig<Data, Initial = Data> {
   serialize?: Serialize<Data | Initial>;
 }
 
-let id = 0;
-
 /**
  * Creates Query without any executor, it cannot be used as-is.
  *
@@ -77,9 +75,8 @@ export function createHeadlessQuery<
   const initialData = initialDataRaw ?? (null as unknown as Initial);
 
   const node = createNode({
-    meta: { [NodeMetaSumbol]: { type: 'query', id: id.toString() } },
+    meta: { [NodeMetaSumbol]: { type: 'query' } },
   });
-  id++;
 
   return withRegion(node, () => {
     const operation = createRemoteOperation<
