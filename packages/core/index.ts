@@ -92,3 +92,6 @@ export {
 
 // Trigger API
 export { keepFresh } from './src/trigger_api/keep_fresh';
+
+// Inspect API
+export { NodeMetaSumbol } from './src/inspect/symbol';

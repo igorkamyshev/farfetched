@@ -4,6 +4,9 @@ import { createRoot } from 'react-dom/client';
 
 import { appStarted } from './services/viewer';
 import { App } from './app';
+import { listenFarfetchedPrimitives } from './services/storage';
+
+listenFarfetchedPrimitives();
 
 export function attachDevTools(config: { scope: Scope }) {
   const scope = fork();

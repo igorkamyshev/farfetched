@@ -42,7 +42,7 @@
     "@vitejs/plugin-react": "3",
     "@vitest/ui": "^0.25.8",
     "bytes-iec": "^3.1.1",
-    "effector": "^22.5.0",
+    "effector": "^22.6.2",
     "eslint": "~8.15.0",
     "fp-ts": "^2.13.1",
     "glob": "^8.0.3",
