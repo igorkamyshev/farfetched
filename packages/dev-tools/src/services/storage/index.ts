@@ -1,2 +1,1 @@
-export { declarations } from './collect';
-export { isQueryDeclaration, isConnectQueryDeclaration } from './guards';
+export { $queries, $queryConnections } from './model';

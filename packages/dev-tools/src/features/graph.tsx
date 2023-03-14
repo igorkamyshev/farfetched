@@ -1,41 +1,31 @@
-import { NodeMetaSumbol } from '@farfetched/core';
-import { useMemo } from 'react';
+import { useStoreMap } from 'effector-react';
 import ReactFlow, { useNodesState, useEdgesState, MarkerType } from 'reactflow';
 
 import 'reactflow/dist/style.css';
 
-import {
-  declarations,
-  isQueryDeclaration,
-  isConnectQueryDeclaration,
-} from '../services/storage';
+import { $queries, $queryConnections } from '../services/storage';
 
 export function Graph() {
-  const initialNodes = useMemo(
-    () =>
-      declarations.filter(isQueryDeclaration).map((declaration, i) => ({
-        id: declaration.meta[NodeMetaSumbol].id,
-        position: { x: i * 100, y: i * 100 },
-        data: { label: declaration.region?.meta.name ?? 'Unknown Query' },
-      })),
-    []
+  const initialNodes = useStoreMap($queries, (queries) =>
+    queries.map((query, i) => ({
+      id: query.id,
+      position: { x: i * 100, y: i * 100 },
+      data: { label: query.name },
+      connectable: false,
+    }))
   );
 
-  const initialEdges = useMemo(
-    () =>
-      declarations.filter(isConnectQueryDeclaration).map((declaration) => ({
-        id: (declaration.region as any).sid!,
-        source:
-          declaration.meta[NodeMetaSumbol].source[0].meta[NodeMetaSumbol].id,
-        target:
-          declaration.meta[NodeMetaSumbol].target[0].meta[NodeMetaSumbol].id,
-        markerEnd: { type: MarkerType.Arrow },
-      })),
-    []
+  const initialEdges = useStoreMap($queryConnections, (connections) =>
+    connections.map((connection) => ({
+      id: connection.id,
+      source: connection.fromId,
+      target: connection.toId,
+      markerEnd: { type: MarkerType.Arrow },
+    }))
   );
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEgdesChange] = useEdgesState(initialEdges);
+  const [nodes, _1, onNodesChange] = useNodesState(initialNodes);
+  const [edges, _2, onEgdesChange] = useEdgesState(initialEdges);
 
   return (
     <div

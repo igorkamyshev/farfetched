@@ -7,8 +7,8 @@ export type QueryMeta = { type: 'query'; id: string };
 export type ConnectQueryMeta = {
   type: 'operator';
   operator: 'connectQuery';
-  source: Node[];
-  target: Node[];
+  source: (Node & { meta: { [NodeMetaSumbol]: QueryMeta } })[];
+  target: (Node & { meta: { [NodeMetaSumbol]: QueryMeta } })[];
 };
 
 export type FarfetchedDeclaration<
