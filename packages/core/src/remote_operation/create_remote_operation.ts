@@ -3,6 +3,7 @@ import {
   createEvent,
   createStore,
   Event,
+  is,
   sample,
   split,
   Store,
@@ -20,7 +21,7 @@ import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
 import { invalidDataError } from '../errors/create_error';
 import { InvalidDataError } from '../errors/type';
-import { ExecutionMeta } from './type';
+import { DataSource, ExecutionMeta } from './type';
 import { checkValidationResult } from '../validation/check_validation_result';
 import { Validator } from '../validation/type';
 import { unwrapValidationResult } from '../validation/unwrap_validation_result';
@@ -99,6 +100,22 @@ export function createRemoteOperation<
     name: `${name}.executeFx`,
   });
 
+  const remoteDataSoruce: DataSource<Params> = {
+    get: createEffect<
+      Params,
+      { result: unknown; stale: boolean } | null,
+      unknown
+    >(async (params) => {
+      const result = await executeFx(params);
+
+      return { result, stale: false };
+    }),
+  };
+
+  const dataSources = [remoteDataSoruce];
+
+  const retrieveDataFx = createDataRetriever<Params>(dataSources);
+
   /*
    * Start event, it's used as it or to pipe it in head-full factory
    *
@@ -148,7 +165,7 @@ export function createRemoteOperation<
   // -- Indicate status --
   sample({
     clock: [
-      executeFx.map(() => 'pending' as const),
+      retrieveDataFx.map(() => 'pending' as const),
       finished.success.map(() => 'done' as const),
       finished.failure.map(() => 'fail' as const),
     ],
@@ -175,21 +192,21 @@ export function createRemoteOperation<
     source: { enabled: $enabled },
     filter: ({ enabled }) => enabled && !withInterruption,
     fn: (_, params) => params,
-    target: executeFx,
+    target: retrieveDataFx,
   });
 
   sample({
     clock: resumeExecution,
     fn: ({ params }) => params,
-    target: executeFx,
+    target: retrieveDataFx,
   });
 
   sample({
-    clock: executeFx.done,
+    clock: retrieveDataFx.done,
     fn: ({ params, result }) => ({
-      params,
-      result,
-      meta: { stopErrorPropagation: false, isFreshData: true },
+      params: params,
+      result: result.result,
+      meta: { stopErrorPropagation: false, isFreshData: !result.stale },
     }),
     filter: $enabled,
     target: fillData,
@@ -197,10 +214,10 @@ export function createRemoteOperation<
 
   sample({ clock: fillData, target: applyContractFx });
   sample({
-    clock: executeFx.fail,
+    clock: retrieveDataFx.fail,
     fn: ({ error, params }) => ({
-      error,
-      params,
+      error: error,
+      params: params,
       meta: { stopErrorPropagation: false, isFreshData: true },
     }),
     filter: $enabled,
@@ -315,6 +332,8 @@ export function createRemoteOperation<
       kind,
       $latestParams,
       lowLevelAPI: {
+        dataSources,
+        dataSourceRetrieverFx: retrieveDataFx,
         sources: sources ?? [],
         sourced: sourced ?? [],
         paramsAreMeaningless: paramsAreMeaningless ?? false,
@@ -326,4 +345,20 @@ export function createRemoteOperation<
       },
     },
   };
+}
+
+function createDataRetriever<Params>(dataSources: DataSource<Params>[]) {
+  return createEffect<Params, { result: unknown; stale: boolean }, any>({
+    handler: async (params) => {
+      for (const dataSource of dataSources) {
+        const fromSource = await dataSource.get(params);
+
+        if (fromSource) {
+          return fromSource;
+        }
+      }
+
+      throw new Error('No data source returned data');
+    },
+  });
 }

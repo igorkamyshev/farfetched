@@ -137,7 +137,7 @@ export function createHeadlessQuery<
     clock: refresh,
     source: { stale: $stale, latestParams: operation.__.$latestParams },
     filter: ({ stale, latestParams }, params) =>
-      stale || !isEqual(params, latestParams),
+      stale || !isEqual(params ?? null, latestParams),
     fn: (_, params) => params,
     target: operation.start,
   });
@@ -173,14 +173,37 @@ export function createHeadlessQuery<
     source: Store<Source>;
     mapParams: (params: NewParams, source: Source) => Params;
   }) => {
-    const attachedQuery = createHeadlessQuery(config);
+    const attachedQuery = createHeadlessQuery<
+      NewParams,
+      Response,
+      unknown,
+      ContractData,
+      MappedData,
+      MapDataSource,
+      ValidationSource,
+      Initial
+    >(config as any);
 
-    const originalHandler = attach({
-      source,
-      mapParams,
-      effect: operation.__.executeFx,
-    });
-    attachedQuery.__.executeFx.use(originalHandler);
+    const newSources = operation.__.lowLevelAPI.dataSources.map(
+      (dataSource) => ({
+        // ...dataSource,
+        get: attach({ source, mapParams, effect: dataSource.get }),
+      })
+    );
+
+    attachedQuery.__.lowLevelAPI.dataSources.splice(
+      0,
+      newSources.length,
+      ...newSources
+    );
+
+    attachedQuery.__.lowLevelAPI.dataSourceRetrieverFx.use(
+      attach({
+        source,
+        mapParams,
+        effect: operation.__.lowLevelAPI.dataSourceRetrieverFx,
+      })
+    );
 
     return attachedQuery;
   };

@@ -68,14 +68,36 @@ export function createHeadlessMutation<
     source: Store<Source>;
     mapParams: (params: NewParams, source: Source) => Params;
   }) => {
-    const attachedMutation = createHeadlessMutation(config);
+    const attachedMutation = createHeadlessMutation<
+      NewParams,
+      Data,
+      ContractData,
+      MappedData,
+      unknown,
+      MapDataSource,
+      ValidationSource
+    >(config as any);
 
-    const originalHandler = attach({
-      source,
-      mapParams,
-      effect: operation.__.executeFx,
-    });
-    attachedMutation.__.executeFx.use(originalHandler);
+    const newSources = operation.__.lowLevelAPI.dataSources.map(
+      (dataSource) => ({
+        // ...dataSource,
+        get: attach({ source, mapParams, effect: dataSource.get }),
+      })
+    );
+
+    attachedMutation.__.lowLevelAPI.dataSources.splice(
+      0,
+      newSources.length,
+      ...newSources
+    );
+
+    attachedMutation.__.lowLevelAPI.dataSourceRetrieverFx.use(
+      attach({
+        source,
+        mapParams,
+        effect: operation.__.lowLevelAPI.dataSourceRetrieverFx,
+      })
+    );
 
     return attachedMutation;
   };

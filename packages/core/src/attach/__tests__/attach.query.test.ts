@@ -2,19 +2,26 @@ import { allSettled, createStore, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 import { unknownContract } from '../../contract/unknown_contract';
 import { fetchFx } from '../../fetch/fetch';
+import { withFactory } from '../../libs/patronus';
 import { createJsonQuery } from '../../query/create_json_query';
 
 import { createQuery } from '../../query/create_query';
 import { attachOperation } from '../attach';
 
 describe('attach for query', () => {
-  test('execute original handler as handler', async () => {
+  test('execute original handler as handler and fill $data', async () => {
     const originalHandler = vi
       .fn()
       .mockResolvedValue('data from original query');
 
-    const originalQuery = createQuery({ handler: originalHandler });
-    const attachedQuery = attachOperation(originalQuery);
+    const originalQuery = withFactory({
+      fn: () => createQuery({ handler: originalHandler }),
+      sid: 'base',
+    });
+    const attachedQuery = withFactory({
+      fn: () => attachOperation(originalQuery),
+      sid: 'attached',
+    });
 
     const scope = fork();
 
@@ -25,6 +32,33 @@ describe('attach for query', () => {
       'data from original query'
     );
     expect(scope.getState(originalQuery.$data)).toBe(
+      'data from original query'
+    );
+  });
+
+  test('execute original handler as handler and fill $error', async () => {
+    const originalHandler = vi
+      .fn()
+      .mockRejectedValue('data from original query');
+
+    const originalQuery = withFactory({
+      fn: () => createQuery({ handler: originalHandler }),
+      sid: 'base',
+    });
+    const attachedQuery = withFactory({
+      fn: () => attachOperation(originalQuery),
+      sid: 'attached',
+    });
+
+    const scope = fork();
+
+    await allSettled(attachedQuery.start, { scope });
+
+    expect(originalHandler).toBeCalledTimes(1);
+    expect(scope.getState(attachedQuery.$error)).toBe(
+      'data from original query'
+    );
+    expect(scope.getState(originalQuery.$error)).toBe(
       'data from original query'
     );
   });
