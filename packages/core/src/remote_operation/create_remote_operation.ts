@@ -3,7 +3,6 @@ import {
   createEvent,
   createStore,
   Event,
-  is,
   sample,
   split,
   Store,
@@ -101,11 +100,12 @@ export function createRemoteOperation<
   });
 
   const remoteDataSoruce: DataSource<Params> = {
+    name: 'remote_source',
     get: createEffect<
-      Params,
+      { params: Params },
       { result: unknown; stale: boolean } | null,
       unknown
-    >(async (params) => {
+    >(async ({ params }) => {
       const result = await executeFx(params);
 
       return { result, stale: false };
@@ -191,20 +191,20 @@ export function createRemoteOperation<
     clock: start,
     source: { enabled: $enabled },
     filter: ({ enabled }) => enabled && !withInterruption,
-    fn: (_, params) => params,
+    fn: (_, params) => ({ params, dataSources }),
     target: retrieveDataFx,
   });
 
   sample({
     clock: resumeExecution,
-    fn: ({ params }) => params,
+    fn: ({ params }) => ({ params, dataSources }),
     target: retrieveDataFx,
   });
 
   sample({
     clock: retrieveDataFx.done,
     fn: ({ params, result }) => ({
-      params: params,
+      params: params.params,
       result: result.result,
       meta: { stopErrorPropagation: false, isFreshData: !result.stale },
     }),
@@ -217,7 +217,7 @@ export function createRemoteOperation<
     clock: retrieveDataFx.fail,
     fn: ({ error, params }) => ({
       error: error,
-      params: params,
+      params: params.params,
       meta: { stopErrorPropagation: false, isFreshData: true },
     }),
     filter: $enabled,
@@ -259,6 +259,13 @@ export function createRemoteOperation<
       meta,
     }),
     target: finished.success,
+  });
+
+  sample({
+    clock: finished.success,
+    filter: ({ meta }) => !meta.isFreshData,
+    fn: ({ params }) => ({ params, skipStale: true }),
+    target: retrieveDataFx,
   });
 
   sample({
@@ -348,10 +355,21 @@ export function createRemoteOperation<
 }
 
 function createDataRetriever<Params>(dataSources: DataSource<Params>[]) {
-  return createEffect<Params, { result: unknown; stale: boolean }, any>({
-    handler: async (params) => {
+  const retriveFx = createEffect<
+    {
+      params: Params;
+      skipStale?: boolean;
+    },
+    { result: unknown; stale: boolean },
+    any
+  >({
+    handler: async ({ params, skipStale }) => {
       for (const dataSource of dataSources) {
-        const fromSource = await dataSource.get(params);
+        const fromSource = await dataSource.get({ params });
+
+        if (skipStale && fromSource?.stale) {
+          continue;
+        }
 
         if (fromSource) {
           return fromSource;
@@ -361,4 +379,6 @@ function createDataRetriever<Params>(dataSources: DataSource<Params>[]) {
       throw new Error('No data source returned data');
     },
   });
+
+  return retriveFx;
 }

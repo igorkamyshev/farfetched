@@ -83,7 +83,7 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
     lowLevelAPI: {
       dataSources: Array<DataSource<Params>>;
       dataSourceRetrieverFx: Effect<
-        Params,
+        { params: Params },
         { result: unknown; stale: boolean },
         any
       >;
@@ -125,7 +125,12 @@ export interface ExecutionMeta {
 }
 
 export type DataSource<Params> = {
-  get: Effect<Params, { result: unknown; stale: boolean } | null, unknown>;
+  name: string;
+  get: Effect<
+    { params: Params },
+    { result: unknown; stale: boolean } | null,
+    unknown
+  >;
   set?: Effect<{ params: Params; result: Params }, void, unknown>;
   unset?: Effect<{ params: Params; result: Params }, void, unknown>;
 };

@@ -81,7 +81,15 @@ export function createHeadlessMutation<
     attachedMutation.__.lowLevelAPI.dataSourceRetrieverFx.use(
       attach({
         source,
-        mapParams,
+        mapParams: (
+          { params, ...rest }: { params: NewParams },
+          sourceValue
+        ): { params: Params } => ({
+          params: (mapParams
+            ? mapParams(params, sourceValue)
+            : params) as Params,
+          ...rest,
+        }),
         effect: operation.__.lowLevelAPI.dataSourceRetrieverFx,
       })
     );

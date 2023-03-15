@@ -1,6 +1,14 @@
-import { createEffect, Event, sample, split } from 'effector';
+import {
+  attach,
+  combine,
+  createEffect,
+  Effect,
+  Event,
+  merge,
+  sample,
+  split,
+} from 'effector';
 
-import { time } from '../libs/patronus';
 import { parseTime, type Time } from '../libs/date-nfs';
 import {
   type RemoteOperationParams,
@@ -10,9 +18,10 @@ import { type Query } from '../query/type';
 import { inMemoryCache } from './adapters/in_memory';
 import { type CacheAdapter, type CacheAdapterInstance } from './adapters/type';
 import {
+  createKey,
   enrichFinishedSuccessWithKey,
   enrichForcedWithKey,
-  enrichStartWithKey,
+  queryUniqId,
 } from './key/key';
 
 interface CacheParameters {
@@ -31,7 +40,7 @@ export function cache<Q extends Query<any, any, any, any>>(
   query: Q,
   params?: CacheParameters
 ): void {
-  query.__.lowLevelAPI.registerInterruption();
+  // query.__.lowLevelAPI.registerInterruption();
 
   const defaultedParams: CacheParametersDefaulted = {
     adapter: params?.adapter ?? inMemoryCache(),
@@ -124,75 +133,46 @@ function pickFromCache<Q extends Query<any, any, any>>(
   query: Q,
   { adapter, staleAfter }: CacheParametersDefaulted
 ) {
-  const pickCachedValueFx = createEffect(
-    async ({
-      instance,
-      key,
-    }: {
-      instance: CacheAdapterInstance;
-      key: string;
-      params: RemoteOperationParams<Q>;
-    }) => instance.get({ key })
-  );
+  const anyStart = merge([query.start, query.refresh]);
 
-  const $now = time({ clock: pickCachedValueFx });
+  const getFromCacheFx: Effect<
+    any,
+    { result: unknown; stale: boolean } | null,
+    any
+  > = attach({
+    source: {
+      instance: adapter.__.$instance,
+      sources: combine(
+        query.__.lowLevelAPI.sourced.map((sourced) => sourced(anyStart))
+      ),
+    },
+    async effect({ instance, sources }, { params }: { params: unknown }) {
+      const key = createKey({
+        sid: queryUniqId(query),
+        params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
+        sources,
+      });
 
-  // TODO: allow to subscribe on __ to log invalid key error
-  const { startWithKey, __: startWithoutKey } = split(
-    enrichStartWithKey(query),
-    {
-      startWithKey: (
-        p
-      ): p is {
-        params: RemoteOperationParams<Q>;
-        key: string;
-      } => p.key !== null,
-    }
-  );
+      if (!key) {
+        return null;
+      }
 
-  sample({
-    clock: startWithKey,
-    source: adapter.__.$instance,
-    fn: (instance, { key, params }) => ({ instance, key, params }),
-    target: pickCachedValueFx,
+      const result = await instance.get({ key });
+
+      if (!result) {
+        return null;
+      }
+
+      const stale = staleAfter
+        ? result.cachedAt + parseTime(staleAfter!) <= Date.now()
+        : true;
+
+      return { result: result.value, stale };
+    },
   });
 
-  const { found, __: notFound } = split(pickCachedValueFx.done, {
-    found: ({ result }) => Boolean(result),
-  });
-
-  const { __: foundStale, foundFresh } = split(
-    sample({ clock: found, source: $now, fn: (now, f) => ({ ...f, now }) }),
-    {
-      foundFresh: ({ result, now }) => {
-        if (!staleAfter || !result) {
-          return false;
-        }
-
-        return result.cachedAt + parseTime(staleAfter) > now;
-      },
-    }
-  );
-
-  sample({
-    clock: [
-      sample({ clock: foundStale, fn: (p) => ({ ...p, isFreshData: false }) }),
-      sample({ clock: foundFresh, fn: (p) => ({ ...p, isFreshData: true }) }),
-    ],
-    fn: ({ result, params, isFreshData }) => ({
-      result: result!.value,
-      params: params.params,
-      meta: { stopErrorPropagation: true, isFreshData },
-    }),
-    target: query.__.lowLevelAPI.fillData,
-  });
-
-  sample({
-    clock: [
-      foundStale.map(({ params }) => params),
-      notFound.map(({ params }) => params),
-      startWithoutKey,
-    ],
-    target: query.__.lowLevelAPI.resumeExecution,
+  query.__.lowLevelAPI.dataSources.unshift({
+    name: 'cache',
+    get: getFromCacheFx,
   });
 }
