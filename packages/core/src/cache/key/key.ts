@@ -60,7 +60,7 @@ function enrichWithKey<
   });
 }
 
-function createKey({
+export function createKey({
   sid,
   params = null,
   sources,
@@ -78,7 +78,7 @@ function createKey({
   }
 }
 
-function queryUniqId(query: Query<any, any, any>) {
+export function queryUniqId(query: Query<any, any, any>) {
   const sid = querySid(query);
 
   if (sid) {

@@ -3,7 +3,6 @@ import {
   createEvent,
   createStore,
   Event,
-  is,
   sample,
   split,
   Store,
@@ -101,6 +100,7 @@ export function createRemoteOperation<
   });
 
   const remoteDataSoruce: DataSource<Params> = {
+    name: 'remote_source',
     get: createEffect<
       Params,
       { result: unknown; stale: boolean } | null,
@@ -347,8 +347,13 @@ export function createRemoteOperation<
   };
 }
 
+// TODO: go to next source if previous one returned stale
 function createDataRetriever<Params>(dataSources: DataSource<Params>[]) {
-  return createEffect<Params, { result: unknown; stale: boolean }, any>({
+  const retrieveFx = createEffect<
+    Params,
+    { result: unknown; stale: boolean },
+    any
+  >({
     handler: async (params) => {
       for (const dataSource of dataSources) {
         const fromSource = await dataSource.get(params);
@@ -361,4 +366,6 @@ function createDataRetriever<Params>(dataSources: DataSource<Params>[]) {
       throw new Error('No data source returned data');
     },
   });
+
+  return retrieveFx;
 }
