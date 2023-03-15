@@ -22,6 +22,6 @@ describe('shared cache between base Query and attached one', async () => {
     await allSettled(attachedQuery.refresh, { scope });
     await allSettled(attachedQuery.refresh, { scope });
 
-    expect(baseHandler).toBeCalledTimes(1)
+    expect(baseHandler).toBeCalledTimes(1);
   });
 });
