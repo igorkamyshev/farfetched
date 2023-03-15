@@ -106,8 +106,11 @@ export function createRemoteOperation<
 
   const dataSources = [remoteDataSoruce];
 
-  const { retrieveDataFx, notifyAboutNewValidDataFx } =
-    createDataSourceHandlers<Params>(dataSources);
+  const {
+    retrieveDataFx,
+    notifyAboutNewValidDataFx,
+    notifyAboutDataInvalidationFx,
+  } = createDataSourceHandlers<Params>(dataSources);
 
   /*
    * Start event, it's used as it or to pipe it in head-full factory
@@ -187,10 +190,14 @@ export function createRemoteOperation<
     target: retrieveDataFx,
   });
 
+  // TODO: refactor it
+  sample({ clock: forced, target: notifyAboutDataInvalidationFx });
   sample({
     clock: resumeExecution,
-    fn: ({ params }) => ({ params }),
-    target: retrieveDataFx,
+    target: createEffect(async ({ params }: { params: Params }) => {
+      await notifyAboutDataInvalidationFx({ params });
+      await retrieveDataFx({ params });
+    }),
   });
 
   sample({
@@ -262,6 +269,7 @@ export function createRemoteOperation<
 
   sample({
     clock: validDataRecieved,
+    filter: ({ meta }) => meta.isFreshData,
     target: notifyAboutNewValidDataFx,
   });
 
@@ -387,5 +395,26 @@ function createDataSourceHandlers<Params>(dataSources: DataSource<Params>[]) {
     },
   });
 
-  return { retrieveDataFx, notifyAboutNewValidDataFx };
+  const notifyAboutDataInvalidationFx = createEffect<
+    {
+      params: Params;
+    },
+    void,
+    any
+  >({
+    handler: async ({ params }) => {
+      await Promise.all(
+        dataSources
+          .map(get('unset'))
+          .filter(Boolean)
+          .map((unset) => unset!({ params }))
+      );
+    },
+  });
+
+  return {
+    retrieveDataFx,
+    notifyAboutNewValidDataFx,
+    notifyAboutDataInvalidationFx,
+  };
 }

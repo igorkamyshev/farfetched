@@ -130,5 +130,5 @@ export type DataSource<Params> = {
     unknown
   >;
   set?: Effect<{ params: Params; result: unknown }, void, unknown>;
-  unset?: Effect<{ params: Params; result: unknown }, void, unknown>;
+  unset?: Effect<{ params: Params }, void, unknown>;
 };

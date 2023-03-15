@@ -1,12 +1,4 @@
-import {
-  combine,
-  createEvent,
-  createStore,
-  merge,
-  sample,
-  split,
-  Store,
-} from 'effector';
+import { combine, createEvent, merge, sample, split, Store } from 'effector';
 
 import { isNotEmpty } from '../libs/lohyphen';
 import { DynamicallySourcedField, normalizeSourced } from '../libs/patronus';
@@ -195,15 +187,10 @@ export function update<
 function queryState<Q extends Query<any, any, any, any>>(
   query: Q
 ): Store<QueryState<Q>> {
-  const $latestParams = createStore(null, { serialize: 'ignore' }).on(
-    query.finished.finally,
-    (_, { params }) => params
-  );
-
   return combine(
     {
       result: query.$data,
-      params: $latestParams,
+      params: query.__.$latestParams,
       error: query.$error,
       failed: query.$failed,
     },
