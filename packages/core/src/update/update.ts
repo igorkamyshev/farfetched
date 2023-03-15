@@ -148,7 +148,7 @@ export function update<
   });
 
   // -- Refetching
-  const refetchQuery = createEvent<RemoteOperationParams<Q>>();
+  const refetchQuery = createEvent<{ params: RemoteOperationParams<Q> }>();
 
   const {
     __: refetchQueryWithPreviousParams,
@@ -172,13 +172,11 @@ export function update<
         filter: Boolean,
       }),
     ],
-    fn: ({ params }) => params,
     target: refetchQuery,
   });
 
   sample({
     clock: refetchQuery,
-    fn: (params) => ({ params }),
     target: query.__.lowLevelAPI.resumeExecution,
   });
   sample({ clock: refetchQuery, fn: () => true, target: query.$stale });

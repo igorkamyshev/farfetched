@@ -90,11 +90,6 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
       sources: Array<Store<unknown>>;
       sourced: Array<(clock: Event<Params>) => Store<unknown>>;
       paramsAreMeaningless: boolean;
-      fillData: Event<{
-        params: Params;
-        result: unknown;
-        meta: ExecutionMeta;
-      }>;
       resumeExecution: Event<{ params: Params }>;
       forced: Event<{ params: Params }>;
     };

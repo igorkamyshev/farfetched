@@ -66,12 +66,6 @@ export function createRemoteOperation<
   sourced?: Array<(clock: Event<Params>) => Store<unknown>>;
   paramsAreMeaningless?: boolean;
 }): RemoteOperation<Params, MappedData, Error | InvalidDataError, Meta> {
-  const fillData = createEvent<{
-    params: Params;
-    result: any;
-    meta: ExecutionMeta;
-  }>();
-
   const resumeExecution = createEvent<{ params: Params }>();
 
   const forced = createEvent<{ params: Params }>();
@@ -204,14 +198,13 @@ export function createRemoteOperation<
     clock: retrieveDataFx.done,
     fn: ({ params, result }) => ({
       params: params.params,
-      result: result.result,
+      result: result.result as Data,
       meta: { stopErrorPropagation: false, isFreshData: !result.stale },
     }),
     filter: $enabled,
-    target: fillData,
+    target: applyContractFx,
   });
 
-  sample({ clock: fillData, target: applyContractFx });
   sample({
     clock: retrieveDataFx.fail,
     fn: ({ error, params }) => ({
@@ -343,7 +336,6 @@ export function createRemoteOperation<
         sources: sources ?? [],
         sourced: sourced ?? [],
         paramsAreMeaningless: paramsAreMeaningless ?? false,
-        fillData,
         resumeExecution,
         forced,
       },
