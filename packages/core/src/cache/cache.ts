@@ -146,7 +146,7 @@ function pickFromCache<Q extends Query<any, any, any>>(
         query.__.lowLevelAPI.sourced.map((sourced) => sourced(anyStart))
       ),
     },
-    async effect({ instance, sources }, params: unknown) {
+    async effect({ instance, sources }, { params }: { params: unknown }) {
       const key = createKey({
         sid: queryUniqId(query),
         params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
