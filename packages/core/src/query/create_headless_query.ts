@@ -12,6 +12,7 @@ import {
 import { Validator } from '../validation/type';
 import { Query, QueryMeta, QuerySymbol } from './type';
 import { Event } from 'effector';
+import { isEqual } from '../libs/lohyphen';
 
 export interface SharedQueryFactoryConfig<Data, Initial = Data> {
   name?: string;
@@ -134,7 +135,10 @@ export function createHeadlessQuery<
 
   sample({
     clock: refresh,
-    filter: $stale,
+    source: { stale: $stale, latestParams: operation.__.$latestParams },
+    filter: ({ stale, latestParams }, params) =>
+      stale || !isEqual(params, latestParams),
+    fn: (_, params) => params,
     target: operation.start,
   });
 

@@ -376,4 +376,36 @@ describe('createHeadlessQuery#refresh', () => {
 
     expect(listener).toBeCalledTimes(2);
   });
+
+  test('skip query in case of same params', async () => {
+    const query = createHeadlessQuery({
+      contract: unknownContract,
+      mapData: ({ result }) => result,
+    });
+
+    const listener = vi.fn(() => 'data from query');
+
+    const scope = fork({ handlers: [[query.__.executeFx, listener]] });
+
+    await allSettled(query.refresh, { scope, params: 1 });
+    await allSettled(query.refresh, { scope, params: 1 });
+
+    expect(listener).toBeCalledTimes(1);
+  });
+
+  test('start query in case of changed params', async () => {
+    const query = createHeadlessQuery({
+      contract: unknownContract,
+      mapData: ({ result }) => result,
+    });
+
+    const listener = vi.fn(() => 'data from query');
+
+    const scope = fork({ handlers: [[query.__.executeFx, listener]] });
+
+    await allSettled(query.refresh, { scope, params: 1 });
+    await allSettled(query.refresh, { scope, params: 2 });
+
+    expect(listener).toBeCalledTimes(2);
+  });
 });
