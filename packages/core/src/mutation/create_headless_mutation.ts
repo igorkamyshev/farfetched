@@ -78,19 +78,6 @@ export function createHeadlessMutation<
       ValidationSource
     >(config as any);
 
-    const newSources = operation.__.lowLevelAPI.dataSources.map(
-      (dataSource) => ({
-        // ...dataSource,
-        get: attach({ source, mapParams, effect: dataSource.get }),
-      })
-    );
-
-    attachedMutation.__.lowLevelAPI.dataSources.splice(
-      0,
-      newSources.length,
-      ...newSources
-    );
-
     attachedMutation.__.lowLevelAPI.dataSourceRetrieverFx.use(
       attach({
         source,

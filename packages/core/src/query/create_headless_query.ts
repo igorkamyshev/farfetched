@@ -184,19 +184,6 @@ export function createHeadlessQuery<
       Initial
     >(config as any);
 
-    const newSources = operation.__.lowLevelAPI.dataSources.map(
-      (dataSource) => ({
-        // ...dataSource,
-        get: attach({ source, mapParams, effect: dataSource.get }),
-      })
-    );
-
-    attachedQuery.__.lowLevelAPI.dataSources.splice(
-      0,
-      newSources.length,
-      ...newSources
-    );
-
     attachedQuery.__.lowLevelAPI.dataSourceRetrieverFx.use(
       attach({
         source,
