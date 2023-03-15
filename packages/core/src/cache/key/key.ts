@@ -2,31 +2,9 @@ import { Event, sample } from 'effector';
 
 import { get } from '../../libs/lohyphen';
 import { Query } from '../../query/type';
-import {
-  RemoteOperationResult,
-  RemoteOperationParams,
-} from '../../remote_operation/type';
+import { RemoteOperationParams } from '../../remote_operation/type';
 import { sha1 } from '../lib/hash';
 import { stableStringify } from '../lib/stable_stringify';
-
-export function enrichFinishedSuccessWithKey<Q extends Query<any, any, any>>(
-  query: Q
-): Event<{
-  params: RemoteOperationParams<Q>;
-  result: RemoteOperationResult<Q>;
-  key: string | null;
-}> {
-  return enrichWithKey(query.__.lowLevelAPI.validatedSuccessfully, query);
-}
-
-export function enrichStartWithKey<Q extends Query<any, any, any>>(
-  query: Q
-): Event<{ params: RemoteOperationParams<Q>; key: string | null }> {
-  return enrichWithKey(
-    query.start.map((params) => ({ params })),
-    query
-  );
-}
 
 export function enrichForcedWithKey<Q extends Query<any, any, any>>(
   query: Q

@@ -90,8 +90,6 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
       sources: Array<Store<unknown>>;
       sourced: Array<(clock: Event<Params>) => Store<unknown>>;
       paramsAreMeaningless: boolean;
-      registerInterruption: () => void;
-      validatedSuccessfully: Event<{ params: Params; result: unknown }>;
       fillData: Event<{
         params: Params;
         result: unknown;
@@ -131,6 +129,6 @@ export type DataSource<Params> = {
     { result: unknown; stale: boolean } | null,
     unknown
   >;
-  set?: Effect<{ params: Params; result: Params }, void, unknown>;
-  unset?: Effect<{ params: Params; result: Params }, void, unknown>;
+  set?: Effect<{ params: Params; result: unknown }, void, unknown>;
+  unset?: Effect<{ params: Params; result: unknown }, void, unknown>;
 };

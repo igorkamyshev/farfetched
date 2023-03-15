@@ -26,6 +26,7 @@ import { Validator } from '../validation/type';
 import { unwrapValidationResult } from '../validation/unwrap_validation_result';
 import { validValidator } from '../validation/valid_validator';
 import { RemoteOperation } from './type';
+import { get } from '../libs/lohyphen';
 
 export function createRemoteOperation<
   Params,
@@ -65,11 +66,6 @@ export function createRemoteOperation<
   sourced?: Array<(clock: Event<Params>) => Store<unknown>>;
   paramsAreMeaningless?: boolean;
 }): RemoteOperation<Params, MappedData, Error | InvalidDataError, Meta> {
-  let withInterruption = false;
-  const registerInterruption = () => {
-    withInterruption = true;
-  };
-
   const fillData = createEvent<{
     params: Params;
     result: any;
@@ -77,10 +73,6 @@ export function createRemoteOperation<
   }>();
 
   const resumeExecution = createEvent<{ params: Params }>();
-  const validatedSuccessfully = createEvent<{
-    params: Params;
-    result: unknown;
-  }>();
 
   const forced = createEvent<{ params: Params }>();
 
@@ -114,7 +106,8 @@ export function createRemoteOperation<
 
   const dataSources = [remoteDataSoruce];
 
-  const retrieveDataFx = createDataRetriever<Params>(dataSources);
+  const { retrieveDataFx, notifyAboutNewValidDataFx } =
+    createDataSourceHandlers<Params>(dataSources);
 
   /*
    * Start event, it's used as it or to pipe it in head-full factory
@@ -189,15 +182,14 @@ export function createRemoteOperation<
 
   sample({
     clock: start,
-    source: { enabled: $enabled },
-    filter: ({ enabled }) => enabled && !withInterruption,
-    fn: (_, params) => ({ params, dataSources }),
+    filter: $enabled,
+    fn: (params) => ({ params }),
     target: retrieveDataFx,
   });
 
   sample({
     clock: resumeExecution,
-    fn: ({ params }) => ({ params, dataSources }),
+    fn: ({ params }) => ({ params }),
     target: retrieveDataFx,
   });
 
@@ -270,8 +262,7 @@ export function createRemoteOperation<
 
   sample({
     clock: validDataRecieved,
-    fn: ({ result, params }) => ({ result, params }),
-    target: validatedSuccessfully,
+    target: notifyAboutNewValidDataFx,
   });
 
   sample({
@@ -344,8 +335,6 @@ export function createRemoteOperation<
         sources: sources ?? [],
         sourced: sourced ?? [],
         paramsAreMeaningless: paramsAreMeaningless ?? false,
-        registerInterruption,
-        validatedSuccessfully,
         fillData,
         resumeExecution,
         forced,
@@ -354,8 +343,8 @@ export function createRemoteOperation<
   };
 }
 
-function createDataRetriever<Params>(dataSources: DataSource<Params>[]) {
-  const retriveFx = createEffect<
+function createDataSourceHandlers<Params>(dataSources: DataSource<Params>[]) {
+  const retrieveDataFx = createEffect<
     {
       params: Params;
       skipStale?: boolean;
@@ -380,5 +369,23 @@ function createDataRetriever<Params>(dataSources: DataSource<Params>[]) {
     },
   });
 
-  return retriveFx;
+  const notifyAboutNewValidDataFx = createEffect<
+    {
+      params: Params;
+      result: unknown;
+    },
+    void,
+    any
+  >({
+    handler: async ({ params, result }) => {
+      await Promise.all(
+        dataSources
+          .map(get('set'))
+          .filter(Boolean)
+          .map((set) => set!({ params, result }))
+      );
+    },
+  });
+
+  return { retrieveDataFx, notifyAboutNewValidDataFx };
 }
