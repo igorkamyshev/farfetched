@@ -5,6 +5,7 @@
 import { createEvent, fork, scopeBind } from 'effector';
 import { describe, beforeEach, test, expect, vi } from 'vitest';
 
+import { META_KEY } from '../browser_storage';
 import { sessionStorageCache } from '../session_storage';
 
 describe('sessionStorageCache', () => {
@@ -52,5 +53,23 @@ describe('sessionStorageCache', () => {
 
     expect(listener).toBeCalledTimes(1);
     expect(listener).toBeCalledWith({ key: 'key' });
+  });
+
+  test('do not flood keys with same value in meta', async () => {
+    const cache = sessionStorageCache();
+
+    const scope = fork();
+
+    await scopeBind(cache.set, {
+      scope,
+    })({ key: 'key', value: 'myValue' });
+
+    await scopeBind(cache.set, {
+      scope,
+    })({ key: 'key', value: 'myValue' });
+
+    expect(JSON.parse(sessionStorage.getItem(META_KEY)!)).toEqual({
+      keys: ['key'],
+    });
   });
 });

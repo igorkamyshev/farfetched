@@ -5,6 +5,7 @@
 import { createEvent, fork, scopeBind } from 'effector';
 import { describe, beforeEach, test, expect, vi } from 'vitest';
 
+import { META_KEY } from '../browser_storage';
 import { localStorageCache } from '../local_storage';
 
 describe('localStorageCache', () => {
@@ -52,5 +53,23 @@ describe('localStorageCache', () => {
 
     expect(listener).toBeCalledTimes(1);
     expect(listener).toBeCalledWith({ key: 'key' });
+  });
+
+  test('do not flood keys with same value in meta', async () => {
+    const cache = localStorageCache();
+
+    const scope = fork();
+
+    await scopeBind(cache.set, {
+      scope,
+    })({ key: 'key', value: 'myValue' });
+
+    await scopeBind(cache.set, {
+      scope,
+    })({ key: 'key', value: 'myValue' });
+
+    expect(JSON.parse(localStorage.getItem(META_KEY)!)).toEqual({
+      keys: ['key'],
+    });
   });
 });

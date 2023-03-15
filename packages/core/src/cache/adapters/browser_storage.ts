@@ -7,6 +7,8 @@ import { attachObservability } from './observability';
 import { CacheAdapter, CacheAdapterOptions } from './type';
 import { get } from '../../libs/lohyphen';
 
+export const META_KEY = '__farfetched_meta__';
+
 export function browserStorageCache(
   config: {
     storage: () => Storage;
@@ -132,8 +134,6 @@ export function browserStorageCache(
   }
 
   // -- meta storage
-  const META_KEY = '__farfetched_meta__';
-
   const $meta = createStore<Meta | null>(null, { serialize: 'ignore' });
 
   const getMetaFx = createEffect(async () => {
@@ -168,7 +168,15 @@ export function browserStorageCache(
   sample({
     clock: addKey,
     source: $meta,
-    fn: (meta, { key }) => ({ ...meta, keys: [...(meta?.keys ?? []), key] }),
+    fn: (meta, { key }) => {
+      const knownKeys = meta?.keys ?? [];
+
+      if (knownKeys.includes(key)) {
+        return meta;
+      }
+
+      return { ...meta, keys: [...knownKeys, key] };
+    },
     target: $meta,
   });
   sample({
