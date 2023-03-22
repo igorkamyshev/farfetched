@@ -79,10 +79,10 @@ describe('zod/zodContract short', () => {
       ])
     ).toMatchInlineSnapshot(`
       [
-        "Invalid literal value, expected true",
-        "Invalid set, expected set of strings",
-        "Invalid literal value, expected \\"Uhm?\\"",
-        "Invalid literal value, expected 42",
+        "Invalid literal value, expected true, path: 0.y",
+        "Invalid set, expected set of strings, path: 0.k",
+        "Invalid literal value, expected \\"Uhm?\\", path: 1",
+        "Invalid literal value, expected 42, path: 2",
       ]
     `);
   });
