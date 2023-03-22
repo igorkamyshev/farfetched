@@ -1,5 +1,14 @@
 # @farfetched/core
 
+## 0.8.1
+
+### Patch Changes
+
+- c1ceb16: Fix extra `setup` calls of `@@trigger` in `keepFresh`
+- 4c7f25f: Do not flood keys with same value in meta in `sessionStorageCache` and `localStorageCache`
+- 0ca10d3: Do not skip `.refresh` for disabled _Query_, instead postpone it until enabling
+- 0822244: Do not skip _Query_ execution with `.refresh` with different params
+
 ## 0.8.0
 
 ### Minor Changes
