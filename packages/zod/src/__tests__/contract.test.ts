@@ -94,8 +94,8 @@ describe('zod/zodContract short', () => {
         y: zod.object({
           z: zod.string(),
           k: zod.object({
-            j: zod.boolean()
-          })
+            j: zod.boolean(),
+          }),
         }),
       })
     );
@@ -106,8 +106,8 @@ describe('zod/zodContract short', () => {
         y: {
           z: 123,
           k: {
-            j: new Map()
-          }
+            j: new Map(),
+          },
         },
       })
     ).toMatchInlineSnapshot(`
