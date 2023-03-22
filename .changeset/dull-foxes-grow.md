@@ -2,4 +2,4 @@
 '@farfetched/zod': patch
 ---
 
-Improve zodContract error messages with path from original zod error
+Add a path from original zod error to final messsages

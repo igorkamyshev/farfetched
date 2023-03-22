@@ -86,4 +86,36 @@ describe('zod/zodContract short', () => {
       ]
     `);
   });
+
+  test('path from original zod error included in final message', () => {
+    const contract = zodContract(
+      zod.object({
+        x: zod.number(),
+        y: zod.object({
+          z: zod.string(),
+          k: zod.object({
+            j: zod.boolean()
+          })
+        }),
+      })
+    );
+
+    expect(
+      contract.getErrorMessages({
+        x: '42',
+        y: {
+          z: 123,
+          k: {
+            j: new Map()
+          }
+        },
+      })
+    ).toMatchInlineSnapshot(`
+      [
+        "Expected number, received string, path: x",
+        "Expected string, received number, path: y.z",
+        "Expected boolean, received map, path: y.k.j",
+      ]
+    `);
+  });
 });
