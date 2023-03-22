@@ -79,10 +79,42 @@ describe('zod/zodContract short', () => {
       ])
     ).toMatchInlineSnapshot(`
       [
-        "Invalid literal value, expected true",
-        "Invalid set, expected set of strings",
-        "Invalid literal value, expected \\"Uhm?\\"",
-        "Invalid literal value, expected 42",
+        "Invalid literal value, expected true, path: 0.y",
+        "Invalid set, expected set of strings, path: 0.k",
+        "Invalid literal value, expected \\"Uhm?\\", path: 1",
+        "Invalid literal value, expected 42, path: 2",
+      ]
+    `);
+  });
+
+  test('path from original zod error included in final message', () => {
+    const contract = zodContract(
+      zod.object({
+        x: zod.number(),
+        y: zod.object({
+          z: zod.string(),
+          k: zod.object({
+            j: zod.boolean()
+          })
+        }),
+      })
+    );
+
+    expect(
+      contract.getErrorMessages({
+        x: '42',
+        y: {
+          z: 123,
+          k: {
+            j: new Map()
+          }
+        },
+      })
+    ).toMatchInlineSnapshot(`
+      [
+        "Expected number, received string, path: x",
+        "Expected string, received number, path: y.z",
+        "Expected boolean, received map, path: y.k.j",
       ]
     `);
   });
