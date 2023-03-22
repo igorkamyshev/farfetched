@@ -1,5 +1,11 @@
 # @farfetched/zod
 
+## 0.8.1
+
+### Patch Changes
+
+- cdb7c15: Add a path from original zod error to final messsages
+
 ## 0.8.0
 
 ## 0.7.2
