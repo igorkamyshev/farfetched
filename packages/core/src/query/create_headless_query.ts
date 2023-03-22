@@ -4,6 +4,7 @@ import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
 import { createRemoteOperation } from '../remote_operation/create_remote_operation';
 import {
+  postpone,
   serializationForSideStore,
   type Serialize,
   type StaticOrReactive,
@@ -133,8 +134,13 @@ export function createHeadlessQuery<
 
   // -- Trigger API
 
-  sample({
+  const postponedRefresh: Event<Params> = postpone({
     clock: refresh,
+    until: operation.$enabled,
+  });
+
+  sample({
+    clock: postponedRefresh,
     source: { stale: $stale, latestParams: operation.__.$latestParams },
     filter: ({ stale, latestParams }, params) =>
       stale || !isEqual(params, latestParams),

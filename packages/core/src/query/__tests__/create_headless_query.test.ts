@@ -408,4 +408,27 @@ describe('createHeadlessQuery#refresh', () => {
 
     expect(listener).toBeCalledTimes(2);
   });
+
+  test('start after query enabling', async () => {
+    const $enabled = createStore(false);
+
+    const query = createHeadlessQuery({
+      enabled: $enabled,
+      contract: unknownContract,
+      mapData: ({ result, params }) => (result as any) + (params as any),
+    });
+
+    const listener = vi.fn().mockResolvedValue(1);
+
+    const scope = fork({ handlers: [[query.__.executeFx, listener]] });
+
+    await allSettled(query.refresh, { scope, params: 1 });
+
+    expect(listener).toBeCalledTimes(0);
+
+    await allSettled($enabled, { scope, params: true });
+
+    expect(listener).toBeCalledTimes(1);
+    expect(scope.getState(query.$data)).toBe(2);
+  });
 });
