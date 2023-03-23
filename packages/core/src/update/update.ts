@@ -140,46 +140,34 @@ export function update<
     target: [query.$error, query.$data.reinit!],
   });
 
-  sample({
-    clock: [fillQueryError, fillQueryData],
-    source: $queryState,
-    filter: Boolean,
-    target: query.__.lowLevelAPI.forced,
-  });
-
   // -- Refetching
-  const refetchQuery = createEvent<{ params: RemoteOperationParams<Q> }>();
-
-  const {
-    __: refetchQueryWithPreviousParams,
-    withParams: refetchQueryWithNewParams,
-  } = split(
-    merge([fillQueryData, fillQueryError])
-      .map(({ refetch }) => refetch)
-      .filter({ fn: (refetch): refetch is Refetch<Q> => Boolean(refetch) }),
+  const { shouldRefetch, __: shouldNotRefetch } = split(
+    merge([fillQueryData, fillQueryError]).map(({ refetch }) => refetch),
     {
-      withParams: (refetch): refetch is { params: RemoteOperationParams<Q> } =>
-        typeof refetch === 'object' && 'params' in refetch,
+      shouldRefetch: (refetch): refetch is Refetch<Q> => Boolean(refetch),
     }
   );
 
   sample({
-    clock: [
-      refetchQueryWithNewParams,
-      sample({
-        clock: refetchQueryWithPreviousParams,
-        source: $queryState,
-        filter: Boolean,
-      }),
-    ],
-    target: refetchQuery,
+    clock: shouldRefetch,
+    source: $queryState,
+    fn: (state, refetch) => {
+      if (typeof refetch === 'object' && 'params' in refetch) {
+        return { params: refetch.params, refresh: true };
+      }
+
+      return { params: state?.params, refresh: true };
+    },
+    target: [query.__.lowLevelAPI.revalidate, query.$stale.reinit!],
   });
 
   sample({
-    clock: refetchQuery,
-    target: query.__.lowLevelAPI.resumeExecution,
+    clock: shouldNotRefetch,
+    source: $queryState,
+    filter: Boolean,
+    fn: (state) => ({ params: state.params, refresh: false }),
+    target: query.__.lowLevelAPI.revalidate,
   });
-  sample({ clock: refetchQuery, fn: () => true, target: query.$stale });
 }
 
 function queryState<Q extends Query<any, any, any, any>>(

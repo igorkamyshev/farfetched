@@ -66,9 +66,7 @@ export function createRemoteOperation<
   sourced?: Array<(clock: Event<Params>) => Store<unknown>>;
   paramsAreMeaningless?: boolean;
 }): RemoteOperation<Params, MappedData, Error | InvalidDataError, Meta> {
-  const resumeExecution = createEvent<{ params: Params }>();
-
-  const forced = createEvent<{ params: Params }>();
+  const revalidate = createEvent<{ params: Params; refresh: boolean }>();
 
   const applyContractFx = createContractApplier<Params, Data, ContractData>(
     contract
@@ -178,20 +176,23 @@ export function createRemoteOperation<
   });
 
   sample({
+    clock: revalidate,
+    target: notifyAboutDataInvalidationFx,
+  });
+
+  sample({
+    clock: notifyAboutDataInvalidationFx.finally,
+    source: revalidate,
+    filter: ({ refresh }) => refresh,
+    fn: ({ params }) => params,
+    target: start,
+  });
+
+  sample({
     clock: start,
     filter: $enabled,
     fn: (params) => ({ params }),
     target: retrieveDataFx,
-  });
-
-  // TODO: refactor it
-  sample({ clock: forced, target: notifyAboutDataInvalidationFx });
-  sample({
-    clock: resumeExecution,
-    target: createEffect(async ({ params }: { params: Params }) => {
-      await notifyAboutDataInvalidationFx({ params });
-      await retrieveDataFx({ params });
-    }),
   });
 
   sample({
@@ -336,8 +337,7 @@ export function createRemoteOperation<
         sources: sources ?? [],
         sourced: sourced ?? [],
         paramsAreMeaningless: paramsAreMeaningless ?? false,
-        resumeExecution,
-        forced,
+        revalidate,
       },
     },
   };

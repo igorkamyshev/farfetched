@@ -90,8 +90,7 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
       sources: Array<Store<unknown>>;
       sourced: Array<(clock: Event<Params>) => Store<unknown>>;
       paramsAreMeaningless: boolean;
-      resumeExecution: Event<{ params: Params }>;
-      forced: Event<{ params: Params }>;
+      revalidate: Event<{ params: Params; refresh: boolean }>;
     };
     experimentalAPI?: {
       attach: <Source, NewParams>(config: {

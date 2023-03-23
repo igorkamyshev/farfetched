@@ -45,7 +45,7 @@ export function cache<Q extends Query<any, any, any, any>>(
       instance: adapter.__.$instance,
       sources: combine(
         query.__.lowLevelAPI.sourced.map((sourced) =>
-          sourced(query.__.lowLevelAPI.forced.map(get('params')))
+          sourced(query.__.lowLevelAPI.revalidate.map(get('params')))
         )
       ),
     },
