@@ -1,19 +1,11 @@
-import { createEffect, Event, sample, split } from 'effector';
+import { attach, createEffect, Event, sample } from 'effector';
 
-import { time } from '../libs/patronus';
 import { parseTime, type Time } from '../libs/date-nfs';
-import {
-  type RemoteOperationParams,
-  type RemoteOperationResult,
-} from '../remote_operation/type';
 import { type Query } from '../query/type';
 import { inMemoryCache } from './adapters/in_memory';
 import { type CacheAdapter, type CacheAdapterInstance } from './adapters/type';
-import {
-  enrichFinishedSuccessWithKey,
-  enrichForcedWithKey,
-  enrichStartWithKey,
-} from './key/key';
+import { createKey, queryUniqId } from './key/key';
+import { createSourcedReader } from '../libs/patronus';
 
 interface CacheParameters {
   adapter?: CacheAdapter;
@@ -29,170 +21,143 @@ interface CacheParametersDefaulted {
 
 export function cache<Q extends Query<any, any, any, any>>(
   query: Q,
-  params?: CacheParameters
+  rawParams?: CacheParameters
 ): void {
-  query.__.lowLevelAPI.registerInterruption();
-
-  const defaultedParams: CacheParametersDefaulted = {
-    adapter: params?.adapter ?? inMemoryCache(),
-    ...params,
+  const { adapter, staleAfter, purge }: CacheParametersDefaulted = {
+    adapter: rawParams?.adapter ?? inMemoryCache(),
+    ...rawParams,
   };
 
-  removeFromCache(query, defaultedParams);
-  saveToCache(query, defaultedParams);
-  pickFromCache(query, defaultedParams);
-}
+  const id = queryUniqId(query);
 
-function removeFromCache<Q extends Query<any, any, any>>(
-  query: Q,
-  { adapter, purge }: CacheParametersDefaulted
-) {
+  const sourcedReaders = query.__.lowLevelAPI.sourced.map(createSourcedReader);
+  const readAllSourcedFx = createEffect(async (params: unknown) => {
+    return Promise.all(sourcedReaders.map((readerFx) => readerFx(params)));
+  });
+
+  const unsetFx = createEffect<
+    {
+      params: unknown;
+      instance: CacheAdapterInstance;
+    },
+    void,
+    any
+  >(async ({ instance, params }) => {
+    const sources = await readAllSourcedFx(params);
+    const key = createKey({
+      sid: id,
+      params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
+      sources,
+    });
+
+    if (!key) {
+      return;
+    }
+
+    await instance.unset({ key });
+  });
+
+  const setFx = createEffect<
+    {
+      params: unknown;
+      result: unknown;
+      instance: CacheAdapterInstance;
+    },
+    void,
+    any
+  >(async ({ instance, params, result }) => {
+    const sources = await readAllSourcedFx(params);
+
+    const key = createKey({
+      sid: id,
+      params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
+      sources,
+    });
+
+    if (!key) {
+      return;
+    }
+
+    await instance.set({ key, value: result });
+  });
+
+  const getFx = createEffect<
+    { params: unknown; instance: CacheAdapterInstance },
+    { result: unknown; stale: boolean } | null,
+    any
+  >(async ({ params, instance }) => {
+    const sources = await readAllSourcedFx(params);
+
+    const key = createKey({
+      sid: id,
+      params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
+      sources,
+    });
+
+    if (!key) {
+      return null;
+    }
+
+    const result = await instance.get({ key });
+
+    if (!result) {
+      return null;
+    }
+
+    const stale = staleAfter
+      ? result.cachedAt + parseTime(staleAfter!) <= Date.now()
+      : true;
+
+    return { result: result.value, stale };
+  });
+
+  const cacheDatSource = {
+    name: 'cache',
+    get: attach({
+      source: {
+        instance: adapter.__.$instance,
+      },
+      mapParams: ({ params }: { params: unknown }, { instance }) => ({
+        params,
+        instance,
+      }),
+      effect: getFx,
+    }),
+    set: attach({
+      source: {
+        instance: adapter.__.$instance,
+      },
+      mapParams: (
+        { params, result }: { params: unknown; result: unknown },
+        { instance }
+      ) => ({
+        params,
+        result,
+        instance,
+      }),
+      effect: setFx,
+    }),
+    unset: attach({
+      source: {
+        instance: adapter.__.$instance,
+      },
+      mapParams: ({ params }: { params: unknown }, { instance }) => ({
+        instance,
+        params,
+      }),
+      effect: unsetFx,
+    }),
+  };
+
+  query.__.lowLevelAPI.dataSources.unshift(cacheDatSource);
+
   if (purge) {
-    const purgeCachedValuesFx = createEffect(
-      ({ instance }: { instance: CacheAdapterInstance }) => instance.purge()
-    );
-
     sample({
       clock: purge,
       source: { instance: adapter.__.$instance },
-      target: purgeCachedValuesFx,
+      target: createEffect(({ instance }: { instance: CacheAdapterInstance }) =>
+        instance.purge()
+      ),
     });
   }
-
-  const unsetCachedValueFx = createEffect(
-    ({ instance, key }: { instance: CacheAdapterInstance; key: string }) =>
-      instance.unset({ key })
-  );
-
-  const { forcedWithKey } = split(enrichForcedWithKey(query), {
-    forcedWithKey: (
-      p
-    ): p is {
-      params: RemoteOperationParams<Q>;
-      key: string;
-    } => p.key !== null,
-  });
-
-  sample({
-    clock: forcedWithKey,
-    source: adapter.__.$instance,
-    fn: (instance, { key }) => ({ instance, key }),
-    target: unsetCachedValueFx,
-  });
-}
-
-function saveToCache<Q extends Query<any, any, any>>(
-  query: Q,
-  { adapter }: CacheParametersDefaulted
-) {
-  const putCachedValueFx = createEffect(
-    ({
-      instance,
-      key,
-      value,
-    }: {
-      instance: CacheAdapterInstance;
-      key: string;
-      value: unknown;
-    }) => instance.set({ key, value })
-  );
-
-  // TODO: allow to subscribe on __ to log invalid key error
-  const { doneWithKey } = split(enrichFinishedSuccessWithKey(query), {
-    doneWithKey: (
-      p
-    ): p is {
-      params: RemoteOperationParams<Q>;
-      result: RemoteOperationResult<Q>;
-      key: string;
-    } => p.key !== null,
-  });
-
-  sample({
-    clock: doneWithKey,
-    source: adapter.__.$instance,
-    fn: (instance, { key, result }) => ({
-      instance,
-      key,
-      value: result,
-    }),
-    target: putCachedValueFx,
-  });
-}
-
-function pickFromCache<Q extends Query<any, any, any>>(
-  query: Q,
-  { adapter, staleAfter }: CacheParametersDefaulted
-) {
-  const pickCachedValueFx = createEffect(
-    async ({
-      instance,
-      key,
-    }: {
-      instance: CacheAdapterInstance;
-      key: string;
-      params: RemoteOperationParams<Q>;
-    }) => instance.get({ key })
-  );
-
-  const $now = time({ clock: pickCachedValueFx });
-
-  // TODO: allow to subscribe on __ to log invalid key error
-  const { startWithKey, __: startWithoutKey } = split(
-    enrichStartWithKey(query),
-    {
-      startWithKey: (
-        p
-      ): p is {
-        params: RemoteOperationParams<Q>;
-        key: string;
-      } => p.key !== null,
-    }
-  );
-
-  sample({
-    clock: startWithKey,
-    source: adapter.__.$instance,
-    fn: (instance, { key, params }) => ({ instance, key, params }),
-    target: pickCachedValueFx,
-  });
-
-  const { found, __: notFound } = split(pickCachedValueFx.done, {
-    found: ({ result }) => Boolean(result),
-  });
-
-  const { __: foundStale, foundFresh } = split(
-    sample({ clock: found, source: $now, fn: (now, f) => ({ ...f, now }) }),
-    {
-      foundFresh: ({ result, now }) => {
-        if (!staleAfter || !result) {
-          return false;
-        }
-
-        return result.cachedAt + parseTime(staleAfter) > now;
-      },
-    }
-  );
-
-  sample({
-    clock: [
-      sample({ clock: foundStale, fn: (p) => ({ ...p, isFreshData: false }) }),
-      sample({ clock: foundFresh, fn: (p) => ({ ...p, isFreshData: true }) }),
-    ],
-    fn: ({ result, params, isFreshData }) => ({
-      result: result!.value,
-      params: params.params,
-      meta: { stopErrorPropagation: true, isFreshData },
-    }),
-    target: query.__.lowLevelAPI.fillData,
-  });
-
-  sample({
-    clock: [
-      foundStale.map(({ params }) => params),
-      notFound.map(({ params }) => params),
-      startWithoutKey,
-    ],
-    target: query.__.lowLevelAPI.resumeExecution,
-  });
 }

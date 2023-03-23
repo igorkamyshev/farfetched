@@ -50,6 +50,47 @@ describe('invalidate cache on update', () => {
     expect(scope.getState(query.$data)).toEqual('new from remote source');
   });
 
+  test('do not use cached value (with staleAfter) for refetch query after update', async () => {
+    const query = withFactory({
+      fn: () =>
+        createQuery({
+          handler: vi
+            .fn()
+            .mockImplementationOnce(() =>
+              setTimeout(100).then(() => 'old from remote source')
+            )
+            .mockImplementationOnce(() =>
+              setTimeout(100).then(() => 'new from remote source')
+            ),
+        }),
+      sid: 'q',
+    });
+
+    const mutation = createMutation({
+      handler: vi.fn().mockResolvedValue('mutated data'),
+    });
+
+    cache(query, { staleAfter: '10s' });
+
+    update(query, {
+      on: mutation,
+      by: {
+        success: (state) => ({ result: state.mutation.result, refetch: true }),
+      },
+    });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope });
+
+    allSettled(mutation.start, { scope });
+    await setTimeout(1);
+    expect(scope.getState(query.$data)).toEqual('mutated data');
+
+    await allSettled(scope);
+    expect(scope.getState(query.$data)).toEqual('new from remote source');
+  });
+
   test('do not use cached value for prev params after new params', async () => {
     const query = withFactory({
       fn: () =>

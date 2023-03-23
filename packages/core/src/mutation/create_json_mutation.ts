@@ -2,8 +2,7 @@ import { attach, createEvent, Event, sample, type Json } from 'effector';
 
 import { Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
-import { InvalidDataError } from '../errors/type';
-import { ApiRequestError, HttpMethod, JsonApiRequestError } from '../fetch/api';
+import { HttpMethod, JsonApiRequestError } from '../fetch/api';
 import { createJsonApiRequest } from '../fetch/json';
 import { FetchApiRecord } from '../fetch/lib';
 import { ParamsDeclaration } from '../remote_operation/params';

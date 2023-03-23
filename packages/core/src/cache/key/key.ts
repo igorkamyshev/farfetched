@@ -1,66 +1,8 @@
-import { Event, sample } from 'effector';
-
-import { get } from '../../libs/lohyphen';
 import { Query } from '../../query/type';
-import {
-  RemoteOperationResult,
-  RemoteOperationParams,
-} from '../../remote_operation/type';
 import { sha1 } from '../lib/hash';
 import { stableStringify } from '../lib/stable_stringify';
 
-export function enrichFinishedSuccessWithKey<Q extends Query<any, any, any>>(
-  query: Q
-): Event<{
-  params: RemoteOperationParams<Q>;
-  result: RemoteOperationResult<Q>;
-  key: string | null;
-}> {
-  return enrichWithKey(query.__.lowLevelAPI.validatedSuccessfully, query);
-}
-
-export function enrichStartWithKey<Q extends Query<any, any, any>>(
-  query: Q
-): Event<{ params: RemoteOperationParams<Q>; key: string | null }> {
-  return enrichWithKey(
-    query.start.map((params) => ({ params })),
-    query
-  );
-}
-
-export function enrichForcedWithKey<Q extends Query<any, any, any>>(
-  query: Q
-): Event<{ params: RemoteOperationParams<Q>; key: string | null }> {
-  return enrichWithKey(query.__.lowLevelAPI.forced, query);
-}
-
-function enrichWithKey<
-  T extends { params: any },
-  Q extends Query<any, any, any>
->(event: Event<T>, query: Q): Event<T & { key: string | null }> {
-  const queryDataSid = queryUniqId(query);
-
-  const source = query.__.lowLevelAPI.sourced.map((sourced) =>
-    sourced(event.map(get('params')))
-  );
-
-  return sample({
-    clock: event,
-    source,
-    fn: (sources, payload) => ({
-      ...payload,
-      key: createKey({
-        sid: queryDataSid,
-        params: query.__.lowLevelAPI.paramsAreMeaningless
-          ? null
-          : payload.params,
-        sources,
-      }),
-    }),
-  });
-}
-
-function createKey({
+export function createKey({
   sid,
   params = null,
   sources,
@@ -78,7 +20,7 @@ function createKey({
   }
 }
 
-function queryUniqId(query: Query<any, any, any>) {
+export function queryUniqId(query: Query<any, any, any>) {
   const sid = querySid(query);
 
   if (sid) {

@@ -1,4 +1,14 @@
-import { combine, createStore, Event, is, sample, Store } from 'effector';
+import {
+  attach,
+  combine,
+  createEffect,
+  createStore,
+  Effect,
+  Event,
+  is,
+  sample,
+  Store,
+} from 'effector';
 
 // -- Main case --
 
@@ -91,6 +101,46 @@ function normalizeSourced<Data, Result, Source>({
   }
 
   return $target;
+}
+
+// -- Reader case --
+
+export function createSourcedReader<Data, Result, Source>(
+  field?: SourcedField<Data, Result, Source>
+): Effect<Data, Result, any> {
+  let readFx: Effect<Data, Result, any>;
+
+  if (field === undefined) {
+    readFx = createEffect(async (_params: Data) => null as any);
+  } else if (is.store(field)) {
+    const $storeField = field as Store<Result>;
+
+    readFx = attach({
+      source: $storeField,
+      async effect(source, _params: Data) {
+        return source;
+      },
+    });
+  } else if ((field as any).source && (field as any).fn) {
+    const callbackField = field as CallbackWithSource<Data, Result, Source>;
+
+    readFx = attach({
+      source: callbackField.source,
+      async effect(source, params: Data) {
+        return callbackField.fn(params, source);
+      },
+    });
+  } else if (typeof field === 'function') {
+    const callbackField = field as Callback<Data, Result>;
+
+    readFx = createEffect(async (params: Data) => callbackField(params));
+  } else {
+    const valueField = field as Result;
+
+    readFx = createEffect(async (_params: Data) => valueField);
+  }
+
+  return readFx;
 }
 
 // -- Extended case --

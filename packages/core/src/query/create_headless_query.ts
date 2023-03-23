@@ -9,6 +9,7 @@ import {
   type Serialize,
   type StaticOrReactive,
   type DynamicallySourcedField,
+  SourcedField,
 } from '../libs/patronus';
 import { Validator } from '../validation/type';
 import { Query, QueryMeta, QuerySymbol } from './type';
@@ -47,8 +48,7 @@ export function createHeadlessQuery<
       MapDataSource
     >;
     validate?: Validator<ContractData, Params, ValidationSource>;
-    sources?: Array<Store<unknown>>;
-    sourced?: Array<(clock: Event<Params>) => Store<unknown>>;
+    sourced?: SourcedField<Params, unknown, unknown>[];
     paramsAreMeaningless?: boolean;
   } & SharedQueryFactoryConfig<MappedData, Initial>
 ): Query<Params, MappedData, Error | InvalidDataError, Initial> {
@@ -60,7 +60,6 @@ export function createHeadlessQuery<
     validate,
     name,
     serialize,
-    sources,
     sourced,
     paramsAreMeaningless,
   } = config;
@@ -85,7 +84,6 @@ export function createHeadlessQuery<
     contract,
     validate,
     mapData,
-    sources,
     sourced,
     paramsAreMeaningless,
   });
@@ -128,7 +126,7 @@ export function createHeadlessQuery<
 
   sample({
     clock: operation.finished.finally,
-    fn: ({ meta }) => !meta.isFreshData,
+    fn: ({ meta }) => meta.stale,
     target: $stale,
   });
 
@@ -143,7 +141,7 @@ export function createHeadlessQuery<
     clock: postponedRefresh,
     source: { stale: $stale, latestParams: operation.__.$latestParams },
     filter: ({ stale, latestParams }, params) =>
-      stale || !isEqual(params, latestParams),
+      stale || !isEqual(params ?? null, latestParams),
     fn: (_, params) => params,
     target: operation.start,
   });
@@ -179,14 +177,32 @@ export function createHeadlessQuery<
     source: Store<Source>;
     mapParams: (params: NewParams, source: Source) => Params;
   }) => {
-    const attachedQuery = createHeadlessQuery(config);
+    const attachedQuery = createHeadlessQuery<
+      NewParams,
+      Response,
+      unknown,
+      ContractData,
+      MappedData,
+      MapDataSource,
+      ValidationSource,
+      Initial
+    >(config as any);
 
-    const originalHandler = attach({
-      source,
-      mapParams,
-      effect: operation.__.executeFx,
-    });
-    attachedQuery.__.executeFx.use(originalHandler);
+    attachedQuery.__.lowLevelAPI.dataSourceRetrieverFx.use(
+      attach({
+        source,
+        mapParams: (
+          { params, ...rest }: { params: NewParams },
+          sourceValue
+        ): { params: Params } => ({
+          params: (mapParams
+            ? mapParams(params, sourceValue)
+            : params) as Params,
+          ...rest,
+        }),
+        effect: operation.__.lowLevelAPI.dataSourceRetrieverFx,
+      })
+    );
 
     return attachedQuery;
   };

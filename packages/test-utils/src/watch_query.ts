@@ -9,11 +9,6 @@ interface RemoteOperationLike {
     skip: Event<any>;
     finally: Event<any>;
   };
-  __: {
-    lowLevelAPI: {
-      resumeExecution: Event<{ params: any }>;
-    };
-  };
 }
 
 function watchRemoteOperation(op: RemoteOperationLike, scope: Scope) {
@@ -25,11 +20,6 @@ function watchRemoteOperation(op: RemoteOperationLike, scope: Scope) {
   const onFinally = vi.fn();
 
   const startUnwatch = createWatch({ unit: op.start, fn: onStart, scope });
-  const resumeUnwatch = createWatch({
-    unit: op.__.lowLevelAPI.resumeExecution,
-    fn: ({ params }) => onStart(params),
-    scope,
-  });
 
   const doneUnwatch = createWatch({
     unit: op.finished.success,
@@ -56,7 +46,6 @@ function watchRemoteOperation(op: RemoteOperationLike, scope: Scope) {
     listeners: { onSuccess, onSkip, onFailure, onFinally, onStart },
     unwatch: () => {
       startUnwatch();
-      resumeUnwatch();
       doneUnwatch();
       skipUnwatch();
       errorUnwatch();
