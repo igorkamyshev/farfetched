@@ -13,7 +13,7 @@
     "lint:workspace": "nx workspace-lint",
     "lint:changes": "changeset status",
     "build": "nx run-many --target=build --all",
-    "format": "nx format:write",
+    "format": "nx format:write --all",
     "size": "nx run-many --target=size --all",
     "changes": "changeset"
   },

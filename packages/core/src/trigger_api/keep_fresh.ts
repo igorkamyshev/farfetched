@@ -68,7 +68,7 @@ export function keepFresh<Params>(
         query.finished.success,
         sample({ clock: query.$enabled.updates, filter: query.$enabled }),
       ],
-      filer: not($alreadySetup),
+      filter: not($alreadySetup),
       target: [...triggersByProtocol.map(get('setup')), setup],
     });
 

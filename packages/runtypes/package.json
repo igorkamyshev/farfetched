@@ -1,6 +1,6 @@
 {
   "name": "@farfetched/runtypes",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "type": "commonjs",
   "peerDependencies": {
     "runtypes": "^6.6.0"
