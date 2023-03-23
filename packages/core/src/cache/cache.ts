@@ -28,6 +28,8 @@ export function cache<Q extends Query<any, any, any, any>>(
     ...rawParams,
   };
 
+  const id = queryUniqId(query);
+
   const sourcedReaders = query.__.lowLevelAPI.sourced.map(createSourcedReader);
   const readAllSourcedFx = createEffect(async (params: unknown) => {
     return Promise.all(sourcedReaders.map((readerFx) => readerFx(params)));
@@ -43,7 +45,7 @@ export function cache<Q extends Query<any, any, any, any>>(
   >(async ({ instance, params }) => {
     const sources = await readAllSourcedFx(params);
     const key = createKey({
-      sid: queryUniqId(query),
+      sid: id,
       params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
       sources,
     });
@@ -67,7 +69,7 @@ export function cache<Q extends Query<any, any, any, any>>(
     const sources = await readAllSourcedFx(params);
 
     const key = createKey({
-      sid: queryUniqId(query),
+      sid: id,
       params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
       sources,
     });
@@ -87,7 +89,7 @@ export function cache<Q extends Query<any, any, any, any>>(
     const sources = await readAllSourcedFx(params);
 
     const key = createKey({
-      sid: queryUniqId(query),
+      sid: id,
       params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
       sources,
     });
