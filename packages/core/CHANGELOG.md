@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.8.2
+
+### Patch Changes
+
+- f627cf4: Fix sharing `cache` between `attach`-ed _Queries_
+
 ## 0.8.1
 
 ### Patch Changes
