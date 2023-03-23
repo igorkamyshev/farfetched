@@ -1,19 +1,11 @@
-import {
-  attach,
-  combine,
-  createEffect,
-  Effect,
-  Event,
-  merge,
-  sample,
-} from 'effector';
+import { attach, createEffect, Event, sample } from 'effector';
 
 import { parseTime, type Time } from '../libs/date-nfs';
 import { type Query } from '../query/type';
 import { inMemoryCache } from './adapters/in_memory';
 import { type CacheAdapter, type CacheAdapterInstance } from './adapters/type';
 import { createKey, queryUniqId } from './key/key';
-import { get } from '../libs/lohyphen';
+import { createSourcedReader } from '../libs/patronus';
 
 interface CacheParameters {
   adapter?: CacheAdapter;
@@ -31,109 +23,131 @@ export function cache<Q extends Query<any, any, any, any>>(
   query: Q,
   rawParams?: CacheParameters
 ): void {
-  const anyStart = merge([query.start, query.refresh]);
-
-  const params: CacheParametersDefaulted = {
+  const { adapter, staleAfter, purge }: CacheParametersDefaulted = {
     adapter: rawParams?.adapter ?? inMemoryCache(),
     ...rawParams,
   };
 
-  const { adapter, staleAfter, purge } = params;
-
-  const removeFromCacheFx: Effect<{ params: unknown }, void, any> = attach({
-    source: {
-      instance: adapter.__.$instance,
-      sources: combine(
-        query.__.lowLevelAPI.sourced.map((sourced) =>
-          sourced(query.__.lowLevelAPI.revalidate.map(get('params')))
-        )
-      ),
-    },
-    async effect({ instance, sources }, { params }: { params: unknown }) {
-      const key = createKey({
-        sid: queryUniqId(query),
-        params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
-        sources,
-      });
-
-      if (!key) {
-        return;
-      }
-
-      await instance.unset({ key });
-    },
+  const sourcedReaders = query.__.lowLevelAPI.sourced.map(createSourcedReader);
+  const readAllSourcedFx = createEffect(async (params: unknown) => {
+    return Promise.all(sourcedReaders.map((readerFx) => readerFx(params)));
   });
 
-  const saveToCacheFx: Effect<{ params: unknown; result: unknown }, void, any> =
-    attach({
-      source: {
-        instance: adapter.__.$instance,
-        sources: combine(
-          query.__.lowLevelAPI.sourced.map((sourced) =>
-            sourced(query.finished.success.map(get('params')))
-          )
-        ),
-      },
-      async effect(
-        { instance, sources },
-        { params, result }: { params: unknown; result: unknown }
-      ) {
-        const key = createKey({
-          sid: queryUniqId(query),
-          params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
-          sources,
-        });
-
-        if (!key) {
-          return;
-        }
-
-        await instance.set({ key, value: result });
-      },
+  const unsetFx = createEffect<
+    {
+      params: unknown;
+      instance: CacheAdapterInstance;
+    },
+    void,
+    any
+  >(async ({ instance, params }) => {
+    const sources = await readAllSourcedFx(params);
+    const key = createKey({
+      sid: queryUniqId(query),
+      params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
+      sources,
     });
 
-  const getFromCacheFx: Effect<
-    { params: unknown },
+    if (!key) {
+      return;
+    }
+
+    await instance.unset({ key });
+  });
+
+  const setFx = createEffect<
+    {
+      params: unknown;
+      result: unknown;
+      instance: CacheAdapterInstance;
+    },
+    void,
+    any
+  >(async ({ instance, params, result }) => {
+    const sources = await readAllSourcedFx(params);
+
+    const key = createKey({
+      sid: queryUniqId(query),
+      params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
+      sources,
+    });
+
+    if (!key) {
+      return;
+    }
+
+    await instance.set({ key, value: result });
+  });
+
+  const getFx = createEffect<
+    { params: unknown; instance: CacheAdapterInstance },
     { result: unknown; stale: boolean } | null,
     any
-  > = attach({
-    source: {
-      instance: adapter.__.$instance,
-      sources: combine(
-        query.__.lowLevelAPI.sourced.map((sourced) => sourced(anyStart))
-      ),
-    },
-    async effect({ instance, sources }, { params }: { params: unknown }) {
-      const key = createKey({
-        sid: queryUniqId(query),
-        params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
-        sources,
-      });
+  >(async ({ params, instance }) => {
+    const sources = await readAllSourcedFx(params);
 
-      if (!key) {
-        return null;
-      }
+    const key = createKey({
+      sid: queryUniqId(query),
+      params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
+      sources,
+    });
 
-      const result = await instance.get({ key });
+    if (!key) {
+      return null;
+    }
 
-      if (!result) {
-        return null;
-      }
+    const result = await instance.get({ key });
 
-      const stale = staleAfter
-        ? result.cachedAt + parseTime(staleAfter!) <= Date.now()
-        : true;
+    if (!result) {
+      return null;
+    }
 
-      return { result: result.value, stale };
-    },
+    const stale = staleAfter
+      ? result.cachedAt + parseTime(staleAfter!) <= Date.now()
+      : true;
+
+    return { result: result.value, stale };
   });
 
-  query.__.lowLevelAPI.dataSources.unshift({
+  const cacheDatSource = {
     name: 'cache',
-    get: getFromCacheFx,
-    set: saveToCacheFx,
-    unset: removeFromCacheFx,
-  });
+    get: attach({
+      source: {
+        instance: adapter.__.$instance,
+      },
+      mapParams: ({ params }: { params: unknown }, { instance }) => ({
+        params,
+        instance,
+      }),
+      effect: getFx,
+    }),
+    set: attach({
+      source: {
+        instance: adapter.__.$instance,
+      },
+      mapParams: (
+        { params, result }: { params: unknown; result: unknown },
+        { instance }
+      ) => ({
+        params,
+        result,
+        instance,
+      }),
+      effect: setFx,
+    }),
+    unset: attach({
+      source: {
+        instance: adapter.__.$instance,
+      },
+      mapParams: ({ params }: { params: unknown }, { instance }) => ({
+        instance,
+        params,
+      }),
+      effect: unsetFx,
+    }),
+  };
+
+  query.__.lowLevelAPI.dataSources.unshift(cacheDatSource);
 
   if (purge) {
     sample({

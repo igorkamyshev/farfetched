@@ -9,8 +9,14 @@ import {
 } from 'effector';
 
 import { type Query } from '../query/type';
-import { isEqual, divide, get } from '../libs/lohyphen';
-import { not, and, delay } from '../libs/patronus';
+import { divide, get, isEqual } from '../libs/lohyphen';
+import {
+  not,
+  and,
+  delay,
+  normalizeSourced,
+  extractSource,
+} from '../libs/patronus';
 import { type TriggerProtocol } from './trigger_protocol';
 
 export function keepFresh<Params>(
@@ -84,24 +90,28 @@ export function keepFresh<Params>(
   if (config.automatically) {
     const finalyParams = query.finished.finally.map(get('params'));
     const $previousSources = combine(
-      query.__.lowLevelAPI.sourced.map((sourced) => sourced(finalyParams))
+      query.__.lowLevelAPI.sourced.map((sourced) =>
+        normalizeSourced({ field: sourced, clock: finalyParams })
+      )
     );
 
     const sourcesUpdated = sample({
-      clock: query.__.lowLevelAPI.sources,
+      clock: query.__.lowLevelAPI.sourced.map(extractSource).filter(is.store),
       source: query.__.$latestParams,
       filter: not(query.$idle),
       fn: (params): Params => params!,
     });
     const $nextSources = combine(
-      query.__.lowLevelAPI.sourced.map((sourced) => sourced(sourcesUpdated))
+      query.__.lowLevelAPI.sourced.map((sourced) =>
+        normalizeSourced({ field: sourced, clock: sourcesUpdated })
+      )
     );
 
     triggers.push(
       sample({
         clock: $nextSources.updates,
-        source: { prev: $nextSources, next: $previousSources },
-        filter: ({ prev, next }) => !isEqual(prev, next),
+        source: [$nextSources, $previousSources] as const,
+        filter: ([next, prev]) => !isEqual(next, prev),
       })
     );
   }

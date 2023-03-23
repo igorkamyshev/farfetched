@@ -6,7 +6,7 @@ import { createQuery } from '../../query/create_query';
 import { declareParams } from '../../remote_operation/params';
 import { keepFresh } from '../keep_fresh';
 
-describe('keepFresh, triggers', () => {
+describe('keepFresh, automatically', () => {
   test('execute query on setup', async () => {
     const listener = vi.fn(async (_: void) => 42);
 

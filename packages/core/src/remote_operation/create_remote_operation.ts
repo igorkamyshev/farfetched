@@ -2,10 +2,8 @@ import {
   createEffect,
   createEvent,
   createStore,
-  Event,
   sample,
   split,
-  Store,
 } from 'effector';
 
 import {
@@ -15,6 +13,7 @@ import {
   type DynamicallySourcedField,
   type StaticOrReactive,
   type FetchingStatus,
+  SourcedField,
 } from '../libs/patronus';
 import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
@@ -46,7 +45,6 @@ export function createRemoteOperation<
   contract,
   validate,
   mapData,
-  sources,
   sourced,
   paramsAreMeaningless,
 }: {
@@ -62,8 +60,7 @@ export function createRemoteOperation<
     MappedData,
     MapDataSource
   >;
-  sources?: Array<Store<unknown>>;
-  sourced?: Array<(clock: Event<Params>) => Store<unknown>>;
+  sourced?: SourcedField<Params, unknown, unknown>[];
   paramsAreMeaningless?: boolean;
 }): RemoteOperation<Params, MappedData, Error | InvalidDataError, Meta> {
   const revalidate = createEvent<{ params: Params; refresh: boolean }>();
@@ -169,7 +166,7 @@ export function createRemoteOperation<
     fn(params) {
       return {
         params,
-        meta: { stopErrorPropagation: false, isFreshData: true },
+        meta: { stopErrorPropagation: false, stale: false },
       };
     },
     target: finished.skip,
@@ -200,7 +197,7 @@ export function createRemoteOperation<
     fn: ({ params, result }) => ({
       params: params.params,
       result: result.result as Data,
-      meta: { stopErrorPropagation: false, isFreshData: !result.stale },
+      meta: { stopErrorPropagation: false, stale: result.stale },
     }),
     filter: $enabled,
     target: applyContractFx,
@@ -211,7 +208,7 @@ export function createRemoteOperation<
     fn: ({ error, params }) => ({
       error: error,
       params: params.params,
-      meta: { stopErrorPropagation: false, isFreshData: true },
+      meta: { stopErrorPropagation: false, stale: false },
     }),
     filter: $enabled,
     target: finished.failure,
@@ -256,14 +253,14 @@ export function createRemoteOperation<
 
   sample({
     clock: finished.success,
-    filter: ({ meta }) => !meta.isFreshData,
+    filter: ({ meta }) => meta.stale,
     fn: ({ params }) => ({ params, skipStale: true }),
     target: retrieveDataFx,
   });
 
   sample({
     clock: validDataRecieved,
-    filter: ({ meta }) => meta.isFreshData,
+    filter: ({ meta }) => !meta.stale,
     target: notifyAboutNewValidDataFx,
   });
 
@@ -302,7 +299,7 @@ export function createRemoteOperation<
       params,
       meta: {
         stopErrorPropagation: false,
-        isFreshData: false,
+        stale: true,
       },
     }),
     target: finished.skip,
@@ -334,7 +331,6 @@ export function createRemoteOperation<
       lowLevelAPI: {
         dataSources,
         dataSourceRetrieverFx: retrieveDataFx,
-        sources: sources ?? [],
         sourced: sourced ?? [],
         paramsAreMeaningless: paramsAreMeaningless ?? false,
         revalidate,

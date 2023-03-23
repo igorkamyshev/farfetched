@@ -1,4 +1,4 @@
-import { createStore, Store } from 'effector';
+import { createStore, type Store } from 'effector';
 
 import { Mutation } from '../mutation/type';
 import { Query, QueryInitialData } from '../query/type';

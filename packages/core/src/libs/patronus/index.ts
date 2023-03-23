@@ -10,6 +10,7 @@ export {
   normalizeSourced,
   normalizeStaticOrReactive,
   combineSourced,
+  createSourcedReader,
   type SourcedField,
   type DynamicallySourcedField,
   type StaticOrReactive,

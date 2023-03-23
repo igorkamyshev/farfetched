@@ -1,6 +1,6 @@
 import { Effect, Event, EventPayload, Store } from 'effector';
 
-import { type FetchingStatus } from '../libs/patronus';
+import { SourcedField, type FetchingStatus } from '../libs/patronus';
 
 interface DefaultMeta {
   name: string;
@@ -87,8 +87,7 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
         { result: unknown; stale: boolean },
         any
       >;
-      sources: Array<Store<unknown>>;
-      sourced: Array<(clock: Event<Params>) => Store<unknown>>;
+      sourced: SourcedField<Params, unknown, unknown>[];
       paramsAreMeaningless: boolean;
       revalidate: Event<{ params: Params; refresh: boolean }>;
     };
@@ -113,7 +112,7 @@ export type RemoteOperationParams<
 
 export interface ExecutionMeta {
   stopErrorPropagation: boolean;
-  isFreshData: boolean;
+  stale: boolean;
 }
 
 export type DataSource<Params> = {

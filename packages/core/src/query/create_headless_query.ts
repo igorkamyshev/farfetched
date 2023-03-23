@@ -9,6 +9,7 @@ import {
   type Serialize,
   type StaticOrReactive,
   type DynamicallySourcedField,
+  SourcedField,
 } from '../libs/patronus';
 import { Validator } from '../validation/type';
 import { Query, QueryMeta, QuerySymbol } from './type';
@@ -47,8 +48,7 @@ export function createHeadlessQuery<
       MapDataSource
     >;
     validate?: Validator<ContractData, Params, ValidationSource>;
-    sources?: Array<Store<unknown>>;
-    sourced?: Array<(clock: Event<Params>) => Store<unknown>>;
+    sourced?: SourcedField<Params, unknown, unknown>[];
     paramsAreMeaningless?: boolean;
   } & SharedQueryFactoryConfig<MappedData, Initial>
 ): Query<Params, MappedData, Error | InvalidDataError, Initial> {
@@ -60,7 +60,6 @@ export function createHeadlessQuery<
     validate,
     name,
     serialize,
-    sources,
     sourced,
     paramsAreMeaningless,
   } = config;
@@ -85,7 +84,6 @@ export function createHeadlessQuery<
     contract,
     validate,
     mapData,
-    sources,
     sourced,
     paramsAreMeaningless,
   });
@@ -128,7 +126,7 @@ export function createHeadlessQuery<
 
   sample({
     clock: operation.finished.finally,
-    fn: ({ meta }) => !meta.isFreshData,
+    fn: ({ meta }) => meta.stale,
     target: $stale,
   });
 
