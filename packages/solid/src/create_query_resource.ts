@@ -9,8 +9,8 @@ import { type Query } from '@farfetched/core';
 
 import { createDefer } from './defer';
 
-function createQueryResource<Params, Data, Error>(
-  query: Query<Params, Data, Error>
+function createQueryResource<Params, Data, QueryError>(
+  query: Query<Params, Data, QueryError>
 ): [
   Resource<Data | undefined>,
   {
@@ -23,7 +23,7 @@ function createQueryResource<Params, Data, Error>(
 
   const { data, error, pending, start } = useUnit(query);
 
-  let dataDefer = createDefer<Data, Error>();
+  let dataDefer = createDefer<Data, QueryError & Error>();
 
   createComputed(() => {
     // Start Resource after Query state changes
@@ -41,7 +41,22 @@ function createQueryResource<Params, Data, Error>(
     // Reject Resource after Query returns error
     const currentError = error();
     if (currentError !== null) {
-      dataDefer.reject(currentError);
+      /*
+      SolidJS introduced a breaking change in 1.5 — https://github.com/solidjs/solid/pull/1176
+      Since we can't pass plain objects (which are used to make errors serializable) to `reject`
+      So, we have to convert them to `Error` instances for SolidJS
+      */
+      if (currentError instanceof Error || typeof currentError === 'string') {
+        dataDefer.reject(currentError as any);
+      } else {
+        const errorForSolid = new Error((currentError as any)?.message);
+
+        if (typeof currentError === 'object') {
+          Object.assign(errorForSolid, currentError);
+        }
+
+        dataDefer.reject(errorForSolid as any);
+      }
     }
   });
 

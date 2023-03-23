@@ -3,11 +3,16 @@
  */
 
 import { allSettled, fork, sample, scopeBind } from 'effector';
-import { describe, expect, test, afterEach } from 'vitest';
+import { describe, expect, test, afterEach, vi } from 'vitest';
 import { ErrorBoundary, For, Suspense } from 'solid-js/web';
 import { render, cleanup, screen } from 'solid-testing-library';
 import { Provider } from 'effector-solid';
-import { createMutation, createQuery, update } from '@farfetched/core';
+import {
+  createMutation,
+  createQuery,
+  httpError,
+  update,
+} from '@farfetched/core';
 import { setTimeout } from 'timers/promises';
 
 import { createDefer } from '../defer';
@@ -332,5 +337,60 @@ describe('createQueryResource', () => {
 
     const mutationText = await screen.findByText('Mutation success');
     expect(mutationText).toBeInTheDocument();
+  });
+
+  test('passes original FarfetchedError to ErrorBoundary', async () => {
+    const query = createQuery({
+      handler: vi.fn().mockImplementation(() => {
+        throw httpError({
+          status: 500,
+          statusText: 'Sorry',
+          response: 'Cannot',
+        });
+      }),
+    });
+
+    const scope = fork();
+
+    function App() {
+      const [data, { start }] = createQueryResource(query);
+
+      return (
+        <>
+          <button onClick={start}>Start</button>
+          <ErrorBoundary
+            fallback={(error) => (
+              <section>
+                <div>Status: {error.status}</div>
+                <div>Status Text: {error.statusText}</div>
+                <div>Response: {error.response}</div>
+              </section>
+            )}
+          >
+            <p>{JSON.stringify(data(), null, 2)}</p>
+          </ErrorBoundary>
+        </>
+      );
+    }
+
+    render(() => (
+      <Provider value={scope}>
+        <App />
+      </Provider>
+    ));
+
+    const startButton = await screen.findByText('Start');
+    startButton.click();
+
+    await allSettled(scope);
+
+    const statusText = await screen.findByText('Status: 500');
+    expect(statusText).toBeInTheDocument();
+
+    const statusTextText = await screen.findByText('Status Text: Sorry');
+    expect(statusTextText).toBeInTheDocument();
+
+    const responseText = await screen.findByText('Response: Cannot');
+    expect(responseText).toBeInTheDocument();
   });
 });

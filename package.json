@@ -80,7 +80,7 @@
     "react-dom": "18.2.0",
     "react-router-dom": "^6.4.2",
     "runtypes": "^6.5.1",
-    "solid-js": "1.4.8",
+    "solid-js": "1.5",
     "typed-contracts": "^3.0.0"
   }
 }
