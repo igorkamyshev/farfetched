@@ -22,10 +22,10 @@ Read more detailed description of data-flow in [Data flow in Remote Operation](/
 User-land code can't access the cached data directly. It is only available through the [_Query_](/api/primitives/query) object. So, invalid cached data is not exposed to the user.
 :::
 
-To achieve this, Every remote operation ([_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutation)) exposes [_Event_](https://effector.dev/docs/api/effector/event) `.__.lowLevelAPI.fillData` that will push any data through the validation flow.
+To achieve this, Every [_Query_](/api/primitives/query) exposes `.__.lowLevelAPI.dataSources` which contains an array of data sources that are used to retrieve the data for the [_Query_](/api/primitives/query). By default, the first element of this array is always the original handler of the [_Query_](/api/primitives/query). We can mutate this array to add new data sources to the [_Query_](/api/primitives/query). [`cache`](/api/operators/cache) operator does exactly this, it adds a new data source to the array that is responsible for the cached data.
 
 ::: danger
-`.__.lowLevelAPI.fillData` is a low-level API that is not recommended using it directly in user-land.
+`.__.lowLevelAPI.dataSources` is a low-level API that is not recommended using it directly in user-land.
 :::
 
 ## Cache key generation
@@ -36,7 +36,7 @@ To achieve this, Every remote operation ([_Query_](/api/primitives/query) or [_M
 
 Due to static nature of [Effector](/statements/effector) we can extract all external [_Stores_](https://effector.dev/docs/api/effector/store) that affect [_Query_](/api/primitives/query) right after application loading and use their values in key generation process.
 
-Every factory has to pass a list of external [_Stores_](https://effector.dev/docs/api/effector/store) to field `.__.lowLevelAPI.sources`. It is a list of [_Stores_](https://effector.dev/docs/api/effector/store) that are used in the [_Query_](/api/primitives/query) creation process.
+Every factory has to pass a list of [_Sourced_][_sourced_](/api/primitives/sourced) fields used in the [_Query_](/api/primitives/query) creation process to field `.__.lowLevelAPI.sourced`.
 
 For example, the following [_Query_](/api/primitives/query) uses `$language` and `$region` [_Stores_](https://effector.dev/docs/api/effector/store) to define the final value of the field `url`:
 
@@ -54,7 +54,7 @@ const locationQuery = createJsonQuery({
 });
 ```
 
-Of course, we can just save both `$language` and `$region` to `.__.lowLevelAPI.sources` and use them in key generation process, but it is not the best solution. Final URL does not include the value of `$region` directly, it cares only if it is `"us"` or not, so we have to emphasize this fact in `.__.lowLevelAPI.sources`. To solve this issue, let's check internal implementation of [_Sourced_](/api/primitives/sourced) fields.
+Of course, we can just save both `$language` and `$region` to `.__.lowLevelAPI.sourced` and use them in key generation process, but it is not the best solution. Final URL does not include the value of `$region` directly, it cares only if it is `"us"` or not, so we have to emphasize this fact in `.__.lowLevelAPI.sourced`. To solve this issue, let's check internal implementation of [_Sourced_](/api/primitives/sourced) fields.
 
 ::: info
 [_Sourced_](/api/primitives/sourced) fields are special fields in Farfetched that are allows to use any combination of [_Stores_](https://effector.dev/docs/api/effector/store) and functions to define the final value of the field.
@@ -178,18 +178,6 @@ Operator [`cache`](/api/operators/cache) does not use `.get`, `.set` and `.purge
 
 ## [_Query_](/api/primitives/query) interruption
 
-[`cache`](/api/operators/cache) allows skipping [_Query_](/api/primitives/query) execution if the result is already in the cache and does not exceed the `staleAfter` time. It uses internal Interruption API to do this.
+[`cache`](/api/operators/cache) allows skipping [_Query_](/api/primitives/query) execution if the result is already in the cache and does not exceed the `staleAfter` time. It uses `.__.lowLevelAPI.dataSources` as well.
 
-### Interruption API
-
-::: danger
-Interruption API is an internal API that is not recommended using directly in user-land.
-:::
-
-Every remote operation ([_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutation)) has internal flag — `withInterruption`. If it is `true` — [_Event_](https://effector.dev/docs/api/effector/event) `.start` will not start execution of the operation immediately, instead it will wait for the second [_Event_](https://effector.dev/docs/api/effector/event) — `.__.lowLevelAPI.resumeExecution` that could be called with a delay or with different parameters, or even could never be called at all to skip the operation execution.
-
-By default, `withInterruption` is `false`, but it could be switched to false via `.__.lowLevelAPI.registerInterruption` function.
-
-::: info
-`.__.lowLevelAPI.registerInterruption` is not an [_Event_](https://effector.dev/docs/api/effector/event), so it must not be called during application runtime, it has to be called only during application startup.
-:::
+To retrieve new data a [_Query_](/api/primitives/query) iterates over all data sources and calls `.get` method on them. If the result is not empty it stops iteration and returns the result. So, `cache` operator just adds a new data source to the start of the list of data sources.
