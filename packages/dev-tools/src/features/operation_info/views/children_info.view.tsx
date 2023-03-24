@@ -1,4 +1,6 @@
 import { reflect } from '@effector/reflect';
+import { List, Button } from 'antd';
+import { AimOutlined } from '@ant-design/icons';
 
 import {
   $dependantQueries,
@@ -17,16 +19,20 @@ function ChildrenInfoView({
   }
 
   return (
-    <div>
-      <p>Children</p>
-      <ul>
-        {children.map((query) => (
-          <li key={query.id}>
-            <button onClick={() => onClick(query.id)}>{query.name}</button>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <List header="children">
+      {children.map((query) => (
+        <List.Item
+          key={query.id}
+          actions={[
+            <Button type="ghost" onClick={() => onClick(query.id)}>
+              <AimOutlined />
+            </Button>,
+          ]}
+        >
+          {query.name}
+        </List.Item>
+      ))}
+    </List>
   );
 }
 

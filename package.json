@@ -70,7 +70,9 @@
     "vue": "^3.2.37"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.0.1",
     "@effector/reflect": "^8.2.0",
+    "antd": "^5.3.2",
     "atomic-router": "0.6",
     "atomic-router-solid": "0.5",
     "dagre": "^0.8.5",

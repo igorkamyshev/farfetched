@@ -1,16 +1,30 @@
-import { variant } from '@effector/reflect';
+import { Modal, Row, Col } from 'antd';
+import { useUnit } from 'effector-react';
 
 import { Graph } from './features/graph';
 import { OperationInfo } from './features/operation_info';
-import { $visible } from './services/visibility';
+import { $visible, hide } from './services/visibility';
 
-export const App = variant({ if: $visible, then: DevTools });
+export function App() {
+  const { open, onClose } = useUnit({ open: $visible, onClose: hide });
 
-function DevTools() {
   return (
-    <>
-      <Graph />
-      <OperationInfo />
-    </>
+    <Modal
+      title="Farfetched DevTools"
+      open={open}
+      onCancel={onClose}
+      footer={null}
+      width={'100vw'}
+      centered
+    >
+      <Row gutter={24}>
+        <Col span={16}>
+          <Graph />
+        </Col>
+        <Col span={8}>
+          <OperationInfo />
+        </Col>
+      </Row>
+    </Modal>
   );
 }

@@ -1,5 +1,6 @@
 import { variant } from '@effector/reflect';
 import { useUnit } from 'effector-react';
+import { Card, Collapse } from 'antd';
 
 import {
   $activeQuery,
@@ -17,21 +18,18 @@ function OperationInfoView() {
   });
 
   return (
-    <section
-      style={{
-        zIndex: 2,
-        backgroundColor: 'white',
-        position: 'absolute',
-        top: '10px',
-        left: '10px',
-      }}
-    >
-      <p>{activeQuery?.name}</p>
-      <ChildrenInfo />
-      <ParentsInfo />
-      <RetryInfo />
-      <CacheInfo />
-    </section>
+    <Card title={activeQuery?.name}>
+      <Collapse>
+        <Collapse.Panel header="Connections" key="connections">
+          <ChildrenInfo />
+          <ParentsInfo />
+        </Collapse.Panel>
+        <Collapse.Panel header="Modificators" key="modificators">
+          <RetryInfo />
+          <CacheInfo />
+        </Collapse.Panel>
+      </Collapse>
+    </Card>
   );
 }
 
