@@ -60,19 +60,6 @@
         "config": "vite.config.ts",
         "mode": "typecheck"
       }
-    },
-    "size": {
-      "executor": "./tools/executors/size-limit:size-limit",
-      "options": {
-        "limit": "0.6 kB",
-        "outputPath": "dist/packages/dev-tools"
-      },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
     }
   },
   "implicitDependencies": ["!test-utils"],
