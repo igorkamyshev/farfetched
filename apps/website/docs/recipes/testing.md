@@ -46,7 +46,7 @@ test('let us mock function', async () => {
 
 ## Wait for all computations
 
-So, we have created an isolated instance of our application with fake handlers. Now we have to start Query and wait for all computations settled. There is special function for this purpose — [`allSetteld`](https://effector.dev/docs/api/effector/allSettled).
+So, we have created an isolated instance of our application with fake handlers. Now we have to start Query and wait for all computations settled. There is special function for this purpose — [`allSettled`](https://effector.dev/docs/api/effector/allSettled).
 
 ```ts
 const locationQuery = createQuery({ handler: /* some fetcher function */ })

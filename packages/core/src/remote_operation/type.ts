@@ -1,6 +1,6 @@
 import { Effect, Event, EventPayload, Store } from 'effector';
 
-import { type FetchingStatus } from '../libs/patronus';
+import { SourcedField, type FetchingStatus } from '../libs/patronus';
 
 interface DefaultMeta {
   name: string;
@@ -81,18 +81,15 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
      * Low-level API, it can be changed anytime without any notice!
      */
     lowLevelAPI: {
-      sources: Array<Store<unknown>>;
-      sourced: Array<(clock: Event<Params>) => Store<unknown>>;
+      dataSources: Array<DataSource<Params>>;
+      dataSourceRetrieverFx: Effect<
+        { params: Params },
+        { result: unknown; stale: boolean },
+        any
+      >;
+      sourced: SourcedField<Params, unknown, unknown>[];
       paramsAreMeaningless: boolean;
-      registerInterruption: () => void;
-      validatedSuccessfully: Event<{ params: Params; result: unknown }>;
-      fillData: Event<{
-        params: Params;
-        result: unknown;
-        meta: ExecutionMeta;
-      }>;
-      resumeExecution: Event<{ params: Params }>;
-      forced: Event<{ params: Params }>;
+      revalidate: Event<{ params: Params; refresh: boolean }>;
     };
     experimentalAPI?: {
       attach: <Source, NewParams>(config: {
@@ -115,5 +112,16 @@ export type RemoteOperationParams<
 
 export interface ExecutionMeta {
   stopErrorPropagation: boolean;
-  isFreshData: boolean;
+  stale: boolean;
 }
+
+export type DataSource<Params> = {
+  name: string;
+  get: Effect<
+    { params: Params },
+    { result: unknown; stale: boolean } | null,
+    unknown
+  >;
+  set?: Effect<{ params: Params; result: unknown }, void, unknown>;
+  unset?: Effect<{ params: Params }, void, unknown>;
+};

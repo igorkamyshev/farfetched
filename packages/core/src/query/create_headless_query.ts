@@ -2,25 +2,28 @@ import {
   createStore,
   sample,
   createEvent,
-  Store,
   attach,
   withRegion,
   createNode,
+  type Store,
+  type Event,
 } from 'effector';
 
 import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
 import { createRemoteOperation } from '../remote_operation/create_remote_operation';
 import {
+  postpone,
   serializationForSideStore,
   type Serialize,
   type StaticOrReactive,
   type DynamicallySourcedField,
+  SourcedField,
 } from '../libs/patronus';
 import { Validator } from '../validation/type';
 import { Query, QueryMeta, QuerySymbol } from './type';
-import { Event } from 'effector';
 import { NodeMetaSumbol } from '../inspect/symbol';
+import { isEqual } from '../libs/lohyphen';
 
 export interface SharedQueryFactoryConfig<Data, Initial = Data> {
   name?: string;
@@ -54,8 +57,7 @@ export function createHeadlessQuery<
       MapDataSource
     >;
     validate?: Validator<ContractData, Params, ValidationSource>;
-    sources?: Array<Store<unknown>>;
-    sourced?: Array<(clock: Event<Params>) => Store<unknown>>;
+    sourced?: SourcedField<Params, unknown, unknown>[];
     paramsAreMeaningless?: boolean;
   } & SharedQueryFactoryConfig<MappedData, Initial>
 ): Query<Params, MappedData, Error | InvalidDataError, Initial> {
@@ -67,7 +69,6 @@ export function createHeadlessQuery<
     validate,
     name,
     serialize,
-    sources,
     sourced,
     paramsAreMeaningless,
   } = config;
@@ -97,7 +98,6 @@ export function createHeadlessQuery<
       contract,
       validate,
       mapData,
-      sources,
       sourced,
       paramsAreMeaningless,
     });
@@ -144,15 +144,23 @@ export function createHeadlessQuery<
 
     sample({
       clock: operation.finished.finally,
-      fn: ({ meta }) => !meta.isFreshData,
+      fn: ({ meta }) => meta.stale,
       target: $stale,
     });
 
     // -- Trigger API
 
-    sample({
+    const postponedRefresh: Event<Params> = postpone({
       clock: refresh,
-      filter: $stale,
+      until: operation.$enabled,
+    });
+
+    sample({
+      clock: postponedRefresh,
+      source: { stale: $stale, latestParams: operation.__.$latestParams },
+      filter: ({ stale, latestParams }, params) =>
+        stale || !isEqual(params ?? null, latestParams),
+      fn: (_, params) => params,
       target: operation.start,
     });
 
@@ -187,7 +195,32 @@ export function createHeadlessQuery<
       source: Store<Source>;
       mapParams: (params: NewParams, source: Source) => Params;
     }) => {
-      const attachedQuery = createHeadlessQuery(config);
+      const attachedQuery = createHeadlessQuery<
+        NewParams,
+        Response,
+        unknown,
+        ContractData,
+        MappedData,
+        MapDataSource,
+        ValidationSource,
+        Initial
+      >(config as any);
+
+      attachedQuery.__.lowLevelAPI.dataSourceRetrieverFx.use(
+        attach({
+          source,
+          mapParams: (
+            { params, ...rest }: { params: NewParams },
+            sourceValue
+          ): { params: Params } => ({
+            params: (mapParams
+              ? mapParams(params, sourceValue)
+              : params) as Params,
+            ...rest,
+          }),
+          effect: operation.__.lowLevelAPI.dataSourceRetrieverFx,
+        })
+      );
 
       const originalHandler = attach({
         source,

@@ -1,5 +1,15 @@
 # @farfetched/solid
 
+## 0.8.3
+
+### Patch Changes
+
+- 9a02a31: Support ErrorBoundary in SolidJS 1.5
+
+## 0.8.2
+
+## 0.8.1
+
 ## 0.8.0
 
 ### Minor Changes
