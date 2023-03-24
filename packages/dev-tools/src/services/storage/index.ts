@@ -6,3 +6,4 @@ export {
   $all,
   $usedStoreIds,
 } from './model';
+export { declarations } from './collect';

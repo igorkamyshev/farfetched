@@ -7,18 +7,18 @@ import { App } from './app';
 import './services/storage';
 import { startInspection } from './services/tracker';
 
-export function attachDevTools({ scope: outerScope }: { scope?: Scope }) {
-  const innerScope = fork();
+export function attachDevTools({ scope: userLandScope }: { scope?: Scope }) {
+  const devToolsScope = fork();
 
-  startInspection({ outerScope, innerScope });
+  startInspection({ userLandScope, devToolsScope });
 
   const container = document.createElement('div');
   document.body.appendChild(container);
 
-  allSettled(appStarted, { scope: innerScope });
+  allSettled(appStarted, { scope: devToolsScope });
 
   createRoot(container).render(
-    <Provider value={innerScope}>
+    <Provider value={devToolsScope}>
       <App />
     </Provider>
   );

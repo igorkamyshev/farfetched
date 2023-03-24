@@ -5,25 +5,25 @@ import { $usedStoreIds } from '../storage';
 import { newState } from './states.model';
 
 export function startInspection({
-  outerScope,
-  innerScope,
+  userLandScope,
+  devToolsScope,
 }: {
-  outerScope?: Scope;
-  innerScope: Scope;
+  userLandScope?: Scope;
+  devToolsScope: Scope;
 }) {
-  const reportNewState = scopeBind(newState, { scope: innerScope });
+  const reportNewState = scopeBind(newState, { scope: devToolsScope });
 
-  inspect({
-    scope: outerScope,
-    fn: (msg) => {
-      if (msg.type !== 'update') {
+  return inspect({
+    scope: userLandScope,
+    fn: ({ type, meta, value }) => {
+      if (type !== 'update') {
         return;
       }
 
-      const unitIds = innerScope.getState($usedStoreIds);
+      const unitIds = devToolsScope.getState($usedStoreIds);
 
-      if (unitIds.includes(msg.meta['unitId'])) {
-        reportNewState({ id: msg.meta['unitId'], value: msg.value });
+      if (unitIds.includes(meta['unitId'] as string)) {
+        reportNewState({ id: meta['unitId'] as string, value });
       }
     },
   });
