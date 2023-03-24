@@ -6,12 +6,11 @@ const $initialStates = combine(
   { all: $all, usedStoreIds: $usedStoreIds },
   ({ all, usedStoreIds }) =>
     all
-      .filter((i) => usedStoreIds.includes(i.meta['unitId']))
+      .filter(({ meta }) => usedStoreIds.includes(meta['unitId'] as string))
       .reduce(
-        (acc, declaration) => ({
+        (acc, { meta }) => ({
           ...acc,
-          [declaration.meta['unitId'] as string]:
-            declaration.meta['defaultState'],
+          [meta['unitId'] as string]: meta['defaultState'],
         }),
         {} as Record<string, unknown>
       )
@@ -28,5 +27,3 @@ export const $states = combine(
   { initial: $initialStates, updated: $updatedStates },
   ({ initial, updated }) => ({ ...initial, ...updated })
 );
-
-$updatedStates.watch(console.log);

@@ -98,8 +98,6 @@ export const $caches = combine(
     }))
 );
 
-$caches.watch(console.log);
-
 // -- For tracking
 export const $usedStoreIds = combine({ retries: $retries }, ({ retries }) =>
   retries.flatMap((retry) => retry.info.flatMap((info) => info.storeId))
