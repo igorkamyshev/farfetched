@@ -5,9 +5,13 @@ import ReactFlow, { useNodesState, useEdgesState } from 'reactflow';
 import 'reactflow/dist/style.css';
 
 import { $state } from './graph.view-model';
+import { selectDeclaration } from '../operation_info';
 
 export function Graph() {
-  const initial = useUnit($state);
+  const { initial, handleClick } = useUnit({
+    initial: $state,
+    handleClick: selectDeclaration,
+  });
 
   const [nodes, _setNodes, onNodesChange] = useNodesState(initial.nodes);
   const [edges, _setEdges, onEgdesChange] = useEdgesState(initial.edges);
@@ -26,6 +30,7 @@ export function Graph() {
       <ReactFlow
         nodes={nodes}
         onNodesChange={onNodesChange}
+        onNodeClick={(event, node) => handleClick(node.id)}
         edges={edges}
         onEdgesChange={onEgdesChange}
       />

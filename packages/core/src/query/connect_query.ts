@@ -7,8 +7,8 @@ import {
   sample,
   withRegion,
 } from 'effector';
-import { NodeMetaSumbol } from '../inspect/symbol';
 
+import { NodeMetaSumbol } from '../inspect/symbol';
 import { mapValues, zipObject } from '../libs/lohyphen';
 import { every, postpone } from '../libs/patronus';
 import { isQuery, Query } from '../query/type';

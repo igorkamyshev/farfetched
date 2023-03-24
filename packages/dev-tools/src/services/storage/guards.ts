@@ -11,6 +11,12 @@ export type ConnectQueryMeta = {
   target: (Node & { meta: { [NodeMetaSumbol]: QueryMeta } })[];
 };
 
+export type RetryMeta = {
+  type: 'operator';
+  operator: 'retry';
+  target: Node & { meta: { [NodeMetaSumbol]: QueryMeta } };
+};
+
 export type FarfetchedDeclaration<
   Meta extends { type: string } = { type: string }
 > = Declaration & {
@@ -37,5 +43,14 @@ export function isConnectQueryDeclaration(
   return (
     declaration.meta[NodeMetaSumbol].type === 'operator' &&
     (declaration.meta[NodeMetaSumbol] as any).operator === 'connectQuery'
+  );
+}
+
+export function isRetryDeclaration(
+  declaration: FarfetchedDeclaration
+): declaration is FarfetchedDeclaration<RetryMeta> {
+  return (
+    declaration.meta[NodeMetaSumbol].type === 'operator' &&
+    (declaration.meta[NodeMetaSumbol] as any).operator === 'retry'
   );
 }

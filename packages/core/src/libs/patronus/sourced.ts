@@ -48,16 +48,18 @@ function normalizeSourced<Data, Result, Source>({
   clock?: Event<Data>;
   source?: Store<Data>;
 }): Store<Result | null> {
-  let $target = createStore<any>(null, { serialize: 'ignore' });
-
   if (clock) {
     if (field === undefined) {
-      // do nothing
+      return createStore<any>(null, { serialize: 'ignore' });
     } else if (is.store(field)) {
-      const $storeField = field as Store<Result>;
+      const $target = createStore<any>(null, { serialize: 'ignore' });
 
-      sample({ clock, source: $storeField, target: $target });
+      sample({ clock, source: field as Store<Result>, target: $target });
+
+      return $target;
     } else if (field?.source && field?.fn) {
+      const $target = createStore<any>(null, { serialize: 'ignore' });
+
       const callbackField = field as CallbackWithSource<Data, Result, Source>;
 
       sample({
@@ -66,41 +68,43 @@ function normalizeSourced<Data, Result, Source>({
         fn: (source, params) => callbackField.fn(params, source),
         target: $target,
       });
+
+      return $target;
     } else if (typeof field === 'function') {
-      const callbackField = field as Callback<Data, Result>;
+      const $target = createStore<any>(null, { serialize: 'ignore' });
 
-      sample({ clock, fn: (data) => callbackField(data), target: $target });
+      sample({ clock, fn: field as Callback<Data, Result>, target: $target });
+
+      return $target;
     } else {
-      const valueField = field as Result;
-
-      sample({ clock, fn: () => valueField, target: $target });
+      return createStore<any>(field as Result, { serialize: 'ignore' });
     }
   }
 
   if (source) {
     const $source = source as Store<Data>;
     if (field === undefined) {
-      // do nothing
+      return createStore<any>(null, { serialize: 'ignore' });
     } else if (is.store(field)) {
       const $storeField = field as Store<Result>;
 
-      $target = $storeField;
+      return $storeField.map((i) => i as Result | null);
     } else if (field?.source && field?.fn) {
-      const callbackField = field as CallbackWithSource<Data, Result, Source>;
+      const callbackField = field as CallbackWithSource<
+        Data,
+        Result | null,
+        Source
+      >;
 
-      $target = combine($source, callbackField.source, callbackField.fn);
+      return combine($source, callbackField.source, callbackField.fn);
     } else if (typeof field === 'function') {
-      const callbackField = field as Callback<Data, Result>;
-
-      $target = $source.map(callbackField);
+      return $source.map(field as Callback<Data, Result | null>);
     } else {
-      const valueField = field as Result;
-
-      $target = createStore(valueField, { serialize: 'ignore' });
+      return createStore(field as Result | null, { serialize: 'ignore' });
     }
   }
 
-  return $target;
+  return createStore<any>(null, { serialize: 'ignore' });
 }
 
 // -- Reader case --

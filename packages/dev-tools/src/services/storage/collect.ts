@@ -1,13 +1,9 @@
-import { inspectGraph } from 'effector/inspect';
+import { inspectGraph, type Declaration } from 'effector/inspect';
 
-import { type FarfetchedDeclaration, isFarfetchedDeclaration } from './guards';
-
-export const declarations: FarfetchedDeclaration[] = [];
+export const declarations: Declaration[] = [];
 
 inspectGraph({
   fn: (declaration) => {
-    if (isFarfetchedDeclaration(declaration)) {
-      declarations.push(declaration);
-    }
+    declarations.push(declaration);
   },
 });

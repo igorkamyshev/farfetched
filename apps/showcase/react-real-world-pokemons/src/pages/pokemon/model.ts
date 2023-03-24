@@ -1,4 +1,10 @@
-import { connectQuery, createJsonQuery, declareParams } from '@farfetched/core';
+import {
+  connectQuery,
+  createJsonQuery,
+  declareParams,
+  linearDelay,
+  retry,
+} from '@farfetched/core';
 import { runtypeContract } from '@farfetched/runtypes';
 import { createGate } from 'effector-react';
 import { combine, sample } from 'effector';
@@ -40,6 +46,8 @@ const speciesQuery = createJsonQuery({
     contract: runtypeContract(Species),
   },
 });
+
+retry(speciesQuery, { times: 2, delay: linearDelay(1000) });
 
 export const $pending = pokemonQuery.$pending;
 export const $pokemon = combine(

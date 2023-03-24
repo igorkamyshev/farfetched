@@ -1,1 +1,7 @@
-export { $queries, $queryConnections } from './model';
+export {
+  $queries,
+  $queryConnections,
+  $retries,
+  $all,
+  $usedStoreIds,
+} from './model';

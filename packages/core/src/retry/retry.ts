@@ -1,12 +1,15 @@
 import {
+  type Event,
+  withRegion,
+  createNode,
   combine,
   createEvent,
   createStore,
-  Event,
   sample,
   split,
 } from 'effector';
 
+import { NodeMetaSumbol } from '../inspect/symbol';
 import {
   delay,
   normalizeSourced,
@@ -15,14 +18,14 @@ import {
   type SourcedField,
   type StaticOrReactive,
 } from '../libs/patronus';
-import { Time, parseTime } from '../libs/date-nfs';
+import { type Time, parseTime } from '../libs/date-nfs';
 
 import {
-  RemoteOperation,
-  RemoteOperationError,
-  RemoteOperationParams,
+  type RemoteOperation,
+  type RemoteOperationError,
+  type RemoteOperationParams,
 } from '../remote_operation/type';
-import { RetryMeta } from './type';
+import { type RetryMeta } from './type';
 
 type FailInfo<Q extends RemoteOperation<any, any, any, any>> = {
   params: RemoteOperationParams<Q>;
@@ -61,59 +64,85 @@ export function retry<
     otherwise,
   }: RetryConfig<Q, DelaySource, FilterSource, MapParamsSource>
 ): void {
-  const $maxAttempts = normalizeStaticOrReactive(times);
-  const $attempt = createStore(1, {
-    serialize: 'ignore',
-  });
-
-  const $meta = combine({
-    attempt: $attempt,
-  });
-
-  const newAttempt = createEvent();
-
-  const { planNextAttempt, __: retriesAreOver } = split(
-    sample({
-      clock: operation.finished.failure,
-      source: {
-        maxAttempts: $maxAttempts,
-        attempt: $attempt,
+  return withRegion(
+    createNode({
+      meta: {
+        [NodeMetaSumbol]: {
+          type: 'operator',
+          operator: 'retry',
+          target: operation.__.meta.node,
+        },
       },
-      filter: normalizeSourced({
-        field: (filter ?? true) as any,
-        clock: operation.finished.failure,
-      }),
-      fn: ({ attempt, maxAttempts }, { params, error }) => ({
-        params,
-        error,
-        meta: { attempt, maxAttempts },
-      }),
     }),
-    { planNextAttempt: ({ meta }) => meta.attempt <= meta.maxAttempts }
-  );
+    () => {
+      const $maxAttempts = withRegion(
+        createNode({ meta: { [NodeMetaSumbol]: { name: 'times' } } }),
+        () => normalizeStaticOrReactive(times)
+      );
+      const $attempt = withRegion(
+        createNode({ meta: { [NodeMetaSumbol]: { name: 'attempt' } } }),
+        () =>
+          createStore(1, {
+            serialize: 'ignore',
+          })
+      );
 
-  sample({
-    clock: delay({
-      clock: sample({
-        clock: planNextAttempt,
-        source: normalizeSourced({
-          field: (mapParams ?? (({ params }: any) => params)) as any,
-          clock: planNextAttempt,
+      const $meta = combine({
+        attempt: $attempt,
+      });
+
+      const $timeout = withRegion(
+        createNode({ meta: { [NodeMetaSumbol]: { name: 'timeout' } } }),
+        () =>
+          normalizeSourced({
+            field: timeout,
+            source: $meta,
+          }).map(parseTime)
+      );
+
+      const newAttempt = createEvent();
+
+      const { planNextAttempt, __: retriesAreOver } = split(
+        sample({
+          clock: operation.finished.failure,
+          source: {
+            maxAttempts: $maxAttempts,
+            attempt: $attempt,
+          },
+          filter: normalizeSourced({
+            field: (filter ?? true) as any,
+            clock: operation.finished.failure,
+          }),
+          fn: ({ attempt, maxAttempts }, { params, error }) => ({
+            params,
+            error,
+            meta: { attempt, maxAttempts },
+          }),
         }),
-      }),
-      timeout: normalizeSourced({
-        field: timeout,
-        source: $meta,
-      }).map(parseTime),
-    }),
-    target: [newAttempt, operation.start],
-  });
+        { planNextAttempt: ({ meta }) => meta.attempt <= meta.maxAttempts }
+      );
 
-  $attempt
-    .on(newAttempt, (attempt) => attempt + 1)
-    .reset(operation.finished.success);
+      sample({
+        clock: delay({
+          clock: sample({
+            clock: planNextAttempt,
+            source: normalizeSourced({
+              field: (mapParams ?? (({ params }: any) => params)) as any,
+              clock: planNextAttempt,
+            }),
+          }),
+          timeout: $timeout,
+        }),
+        target: [newAttempt, operation.start],
+      });
 
-  if (otherwise) {
-    sample({ clock: retriesAreOver, target: otherwise });
-  }
+      $attempt
+        .on(newAttempt, (attempt) => attempt + 1)
+        .reset(operation.finished.success);
+
+      if (otherwise) {
+        sample({ clock: retriesAreOver, target: otherwise });
+      }
+    }
+  );
 }

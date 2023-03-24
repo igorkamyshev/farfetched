@@ -1,22 +1,27 @@
 import { NodeMetaSumbol } from '@farfetched/core';
-import { createStore, sample } from 'effector';
+import { combine, createStore, sample } from 'effector';
+import { type Declaration } from 'effector/inspect';
 
 import { appStarted } from '../viewer';
 import { declarations } from './collect';
 import {
-  FarfetchedDeclaration,
+  isFarfetchedDeclaration,
   isConnectQueryDeclaration,
   isQueryDeclaration,
+  isRetryDeclaration,
 } from './guards';
 
 // -- Declarations
 
-const $declarations = createStore<FarfetchedDeclaration[]>([]);
+export const $all = createStore<Declaration[]>([]);
+const $declarations = $all.map((declarations) =>
+  declarations.filter(isFarfetchedDeclaration)
+);
 
 sample({
   clock: appStarted,
   fn: () => declarations,
-  target: $declarations,
+  target: $all,
 });
 
 // -- Query
@@ -55,4 +60,30 @@ export const $queryConnections = $declarations.map((declarations) =>
       )
     )
   )
+);
+
+// -- retry
+
+export const $retries = combine(
+  { declarations: $declarations, all: $all },
+  ({ declarations, all }) =>
+    declarations.filter(isRetryDeclaration).map((declaration) => ({
+      id: declaration.id,
+      targetId: declaration.meta[NodeMetaSumbol].target.id,
+      info: declarations
+        .filter((d) => d.region?.id === declaration.id)
+        .map((info) => ({
+          name: info.meta[NodeMetaSumbol].name,
+          storeId: all
+            .filter((i) => i.kind === 'store')
+            .filter((i) => i.region?.id === info.id)
+            .map((i) => i.meta['unitId'])
+            .at(0),
+        })),
+    }))
+);
+
+// -- For tracking
+export const $usedStoreIds = combine({ retries: $retries }, ({ retries }) =>
+  retries.flatMap((retry) => retry.info.flatMap((info): string => info.storeId))
 );
