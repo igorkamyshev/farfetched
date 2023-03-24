@@ -23,9 +23,11 @@ function RetryInfoView({ info }: { info: Array<Info> }) {
         {info.map((retry) => (
           <li key={retry.id}>
             <ul>
-              {retry.info.map((info, idx) => (
+              {retry.info.map((info) => (
                 <li key={info.name}>
-                  {info.name}: {info.value}
+                  <>
+                    {info.name}: {info.value}
+                  </>
                 </li>
               ))}
             </ul>
