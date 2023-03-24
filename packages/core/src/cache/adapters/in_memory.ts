@@ -108,7 +108,7 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
     events: { itemExpired, itemEvicted },
   });
 
-  return createAdapter(adapter);
+  return createAdapter(adapter, { name: 'inMemoryCache' });
 }
 
 function applyMaxEntries(

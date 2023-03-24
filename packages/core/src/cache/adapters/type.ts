@@ -3,6 +3,7 @@ import { Effect, Event, Store } from 'effector';
 import { Time } from '../../libs/date-nfs';
 
 export interface CacheAdapterInstance {
+  name?: string;
   get: Effect<{ key: string }, { value: unknown; cachedAt: number } | null>;
   set: Effect<{ key: string; value: unknown }, void>;
   purge: Event<void>;

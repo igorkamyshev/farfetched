@@ -1,5 +1,5 @@
 import { NodeMetaSumbol } from '@farfetched/core';
-import { combine, createStore, sample } from 'effector';
+import { combine, createStore } from 'effector';
 import { type Declaration } from 'effector/inspect';
 
 import { appStarted } from '../viewer';
@@ -9,20 +9,22 @@ import {
   isConnectQueryDeclaration,
   isQueryDeclaration,
   isRetryDeclaration,
+  childDeclaration,
+  isInfoDeclaration,
+  inRegion,
+  isCacheDeclaration,
 } from './guards';
 
 // -- Declarations
 
-export const $all = createStore<Declaration[]>([]);
+export const $all = createStore<Declaration[]>([]).on(
+  appStarted,
+  () => declarations
+);
+
 const $declarations = $all.map((declarations) =>
   declarations.filter(isFarfetchedDeclaration)
 );
-
-sample({
-  clock: appStarted,
-  fn: () => declarations,
-  target: $all,
-});
 
 // -- Query
 
@@ -71,19 +73,34 @@ export const $retries = combine(
       id: declaration.id,
       targetId: declaration.meta[NodeMetaSumbol].target.id,
       info: declarations
-        .filter((d) => d.region?.id === declaration.id)
+        .filter(childDeclaration(declaration))
+        .filter(isInfoDeclaration)
         .map((info) => ({
           name: info.meta[NodeMetaSumbol].name,
           storeId: all
-            .filter((i) => i.kind === 'store')
-            .filter((i) => i.region?.id === info.id)
-            .map((i) => i.meta['unitId'])
-            .at(0),
+            .filter(inRegion({ regionId: info.id, kind: 'store' }))
+            .map(({ meta }) => meta['unitId'] as string)[0],
         })),
     }))
 );
 
+// -- cache
+
+export const $caches = combine(
+  { declarations: $declarations, all: $all },
+  ({ declarations, all }) =>
+    declarations.filter(isCacheDeclaration).map((declaration) => ({
+      id: declaration.id,
+      targetId: declaration.meta[NodeMetaSumbol].target.id,
+      info: {
+        adapter: declaration.meta[NodeMetaSumbol].adapter ?? 'Unkown Cache',
+      },
+    }))
+);
+
+$caches.watch(console.log);
+
 // -- For tracking
 export const $usedStoreIds = combine({ retries: $retries }, ({ retries }) =>
-  retries.flatMap((retry) => retry.info.flatMap((info): string => info.storeId))
+  retries.flatMap((retry) => retry.info.flatMap((info) => info.storeId))
 );

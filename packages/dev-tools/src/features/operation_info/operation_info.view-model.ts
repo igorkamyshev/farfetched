@@ -1,6 +1,11 @@
 import { combine, createEvent, createStore } from 'effector';
 
-import { $queries, $queryConnections, $retries } from '../../services/storage';
+import {
+  $queries,
+  $queryConnections,
+  $retries,
+  $caches,
+} from '../../services/storage';
 import { $states } from '../../services/tracker';
 
 const $activeId = createStore<string | null>(null);
@@ -61,4 +66,10 @@ export const $retryInfo = combine(
           value: states[i.storeId],
         })),
       }))
+);
+
+export const $cacheInfo = combine(
+  { activeQuery: $activeQuery, caches: $caches },
+  ({ activeQuery, caches }) =>
+    caches.filter((retry) => retry.targetId === activeQuery?.id)
 );

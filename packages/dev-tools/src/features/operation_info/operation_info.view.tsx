@@ -3,21 +3,18 @@ import { useUnit } from 'effector-react';
 
 import {
   $activeQuery,
-  $dependantQueries,
   $operationInfoIsOpen,
-  $dependOnQueries,
-  $retryInfo,
 } from './operation_info.view-model';
+import { CacheInfo } from './views/cache_info.view';
+import { ChildrenInfo } from './views/children_info.view';
+import { ParentsInfo } from './views/parents_info.view';
+
+import { RetryInfo } from './views/retry_info.view';
 
 function OperationInfoView() {
-  const { activeQuery, dependantQueries, dependOnQueries, retryInfo } = useUnit(
-    {
-      activeQuery: $activeQuery,
-      dependantQueries: $dependantQueries,
-      dependOnQueries: $dependOnQueries,
-      retryInfo: $retryInfo,
-    }
-  );
+  const { activeQuery } = useUnit({
+    activeQuery: $activeQuery,
+  });
 
   return (
     <section
@@ -30,39 +27,10 @@ function OperationInfoView() {
       }}
     >
       <p>{activeQuery?.name}</p>
-      <div>
-        <p>Dependant</p>
-        <ul>
-          {dependantQueries.map((query) => (
-            <li key={query.id}>{query.name}</li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <p>Parends</p>
-        <ul>
-          {dependOnQueries.map((query) => (
-            <li key={query.id}>{query.name}</li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <p>Retries</p>
-        <ol>
-          {retryInfo.map((retry) => (
-            <li key={retry.id}>
-              retry
-              <ul>
-                {retry.info.map((info, idx) => (
-                  <li key={idx}>
-                    {info.name}: {info.value}
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ol>
-      </div>
+      <ChildrenInfo />
+      <ParentsInfo />
+      <RetryInfo />
+      <CacheInfo />
     </section>
   );
 }

@@ -70,22 +70,29 @@ export function retry<
       target: operation.__.meta.node,
     }),
     () => {
-      const $maxAttempts = withRegion(createMetaNode({ name: 'times' }), () =>
-        normalizeStaticOrReactive(times)
+      const $maxAttempts = withRegion(
+        createMetaNode({ type: 'info', name: 'times' }),
+        () => normalizeStaticOrReactive(times)
       );
-      const $attempt = withRegion(createMetaNode({ name: 'attempt' }), () =>
-        createStore(1, {
-          serialize: 'ignore',
-        })
+      const $attempt = withRegion(
+        createMetaNode({ type: 'info', name: 'attempt' }),
+        () =>
+          createStore(1, {
+            serialize: 'ignore',
+          })
       );
 
-      const $timeout = withRegion(createMetaNode({ name: 'timeout' }), () =>
-        normalizeSourced({
-          field: timeout,
-          source: combine({
-            attempt: $attempt,
-          }),
-        }).map(parseTime)
+      const $meta = combine({
+        attempt: $attempt,
+      });
+
+      const $timeout = withRegion(
+        createMetaNode({ type: 'info', name: 'timeout' }),
+        () =>
+          normalizeSourced({
+            field: timeout,
+            source: $meta,
+          }).map(parseTime)
       );
 
       const newAttempt = createEvent();

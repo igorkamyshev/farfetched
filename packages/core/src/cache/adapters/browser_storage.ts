@@ -12,9 +12,10 @@ export const META_KEY = '__farfetched_meta__';
 export function browserStorageCache(
   config: {
     storage: () => Storage;
+    name: string;
   } & CacheAdapterOptions
 ): CacheAdapter {
-  const { storage, observability, maxAge, maxEntries } = config;
+  const { storage, observability, maxAge, maxEntries, name } = config;
   // -- adapter
   function storageCache(): CacheAdapter {
     const getSavedItemFx = createEffect(async (key: string) => {
@@ -125,7 +126,7 @@ export function browserStorageCache(
       events: { itemExpired, itemEvicted },
     });
 
-    return createAdapter(adapter);
+    return createAdapter(adapter, { name });
   }
 
   interface SavedItem {

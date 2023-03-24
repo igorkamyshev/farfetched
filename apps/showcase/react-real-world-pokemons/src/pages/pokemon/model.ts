@@ -1,4 +1,5 @@
 import {
+  cache,
   connectQuery,
   createJsonQuery,
   declareParams,
@@ -48,6 +49,7 @@ const speciesQuery = createJsonQuery({
 });
 
 retry(speciesQuery, { times: 2, delay: linearDelay(1000) });
+cache(speciesQuery);
 
 export const $pending = pokemonQuery.$pending;
 export const $pokemon = combine(
