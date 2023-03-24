@@ -79,14 +79,12 @@ export function retry<
         })
       );
 
-      const $meta = combine({
-        attempt: $attempt,
-      });
-
       const $timeout = withRegion(createMetaNode({ name: 'timeout' }), () =>
         normalizeSourced({
           field: timeout,
-          source: $meta,
+          source: combine({
+            attempt: $attempt,
+          }),
         }).map(parseTime)
       );
 
