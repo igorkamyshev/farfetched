@@ -4,13 +4,12 @@ import {
   createEvent,
   attach,
   withRegion,
-  createNode,
   type Store,
   type Event,
 } from 'effector';
 
-import { Contract } from '../contract/type';
-import { InvalidDataError } from '../errors/type';
+import { type Contract } from '../contract/type';
+import { type InvalidDataError } from '../errors/type';
 import { createRemoteOperation } from '../remote_operation/create_remote_operation';
 import {
   postpone,
@@ -18,12 +17,12 @@ import {
   type Serialize,
   type StaticOrReactive,
   type DynamicallySourcedField,
-  SourcedField,
+  type SourcedField,
 } from '../libs/patronus';
-import { Validator } from '../validation/type';
-import { Query, QueryMeta, QuerySymbol } from './type';
-import { NodeMetaSumbol } from '../inspect/symbol';
+import { type Validator } from '../validation/type';
+import { type Query, type QueryMeta, QuerySymbol } from './type';
 import { isEqual } from '../libs/lohyphen';
+import { createMetaNode } from '../inspect/node';
 
 export interface SharedQueryFactoryConfig<Data, Initial = Data> {
   name?: string;
@@ -75,9 +74,7 @@ export function createHeadlessQuery<
 
   const initialData = initialDataRaw ?? (null as unknown as Initial);
 
-  const node = createNode({
-    meta: { [NodeMetaSumbol]: { type: 'query' } },
-  });
+  const node = createMetaNode({ type: 'query' });
 
   return withRegion(node, () => {
     const operation = createRemoteOperation<

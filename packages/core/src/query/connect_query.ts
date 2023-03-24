@@ -1,20 +1,19 @@
 import {
+  type Event,
   combine,
-  createNode,
   createStore,
-  Event,
   merge,
   sample,
   withRegion,
 } from 'effector';
 
-import { NodeMetaSumbol } from '../inspect/symbol';
+import { createMetaNode } from '../inspect/node';
 import { mapValues, zipObject } from '../libs/lohyphen';
 import { every, postpone } from '../libs/patronus';
-import { isQuery, Query } from '../query/type';
+import { isQuery, type Query } from '../query/type';
 import {
-  RemoteOperationResult,
-  RemoteOperationParams,
+  type RemoteOperationResult,
+  type RemoteOperationParams,
 } from '../remote_operation/type';
 
 type NonExtendable = {
@@ -62,15 +61,11 @@ export function connectQuery<Sources, Target extends Query<any, any, any>>(
   const mapperFn = args?.fn as (args: any) => { params?: any };
 
   withRegion(
-    createNode({
-      meta: {
-        [NodeMetaSumbol]: {
-          type: 'operator',
-          operator: 'connectQuery',
-          source: parents.map((query) => query.__.meta.node),
-          target: children.map((query) => query.__.meta.node),
-        },
-      },
+    createMetaNode({
+      type: 'operator',
+      operator: 'connectQuery',
+      source: parents.map((query) => query.__.meta.node),
+      target: children.map((query) => query.__.meta.node),
     }),
     () => {
       // Helper untis

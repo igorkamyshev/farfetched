@@ -1,7 +1,6 @@
 import {
   type Event,
   withRegion,
-  createNode,
   combine,
   createEvent,
   createStore,
@@ -9,7 +8,6 @@ import {
   split,
 } from 'effector';
 
-import { NodeMetaSumbol } from '../inspect/symbol';
 import {
   delay,
   normalizeSourced,
@@ -26,6 +24,7 @@ import {
   type RemoteOperationParams,
 } from '../remote_operation/type';
 import { type RetryMeta } from './type';
+import { createMetaNode } from '../inspect/node';
 
 type FailInfo<Q extends RemoteOperation<any, any, any, any>> = {
   params: RemoteOperationParams<Q>;
@@ -65,39 +64,30 @@ export function retry<
   }: RetryConfig<Q, DelaySource, FilterSource, MapParamsSource>
 ): void {
   return withRegion(
-    createNode({
-      meta: {
-        [NodeMetaSumbol]: {
-          type: 'operator',
-          operator: 'retry',
-          target: operation.__.meta.node,
-        },
-      },
+    createMetaNode({
+      type: 'operator',
+      operator: 'retry',
+      target: operation.__.meta.node,
     }),
     () => {
-      const $maxAttempts = withRegion(
-        createNode({ meta: { [NodeMetaSumbol]: { name: 'times' } } }),
-        () => normalizeStaticOrReactive(times)
+      const $maxAttempts = withRegion(createMetaNode({ name: 'times' }), () =>
+        normalizeStaticOrReactive(times)
       );
-      const $attempt = withRegion(
-        createNode({ meta: { [NodeMetaSumbol]: { name: 'attempt' } } }),
-        () =>
-          createStore(1, {
-            serialize: 'ignore',
-          })
+      const $attempt = withRegion(createMetaNode({ name: 'attempt' }), () =>
+        createStore(1, {
+          serialize: 'ignore',
+        })
       );
 
       const $meta = combine({
         attempt: $attempt,
       });
 
-      const $timeout = withRegion(
-        createNode({ meta: { [NodeMetaSumbol]: { name: 'timeout' } } }),
-        () =>
-          normalizeSourced({
-            field: timeout,
-            source: $meta,
-          }).map(parseTime)
+      const $timeout = withRegion(createMetaNode({ name: 'timeout' }), () =>
+        normalizeSourced({
+          field: timeout,
+          source: $meta,
+        }).map(parseTime)
       );
 
       const newAttempt = createEvent();
