@@ -3,6 +3,7 @@
   "version": 2,
   "projects": {
     "core": "packages/core",
+    "dev-tools": "packages/dev-tools",
     "io-ts": "packages/io-ts",
     "runtypes": "packages/runtypes",
     "showcase-forest-real-world-breaking-bad": "apps/showcase/forest-real-world-breaking-bad",
@@ -13,7 +14,6 @@
     "test-utils": "packages/test-utils",
     "typed-contracts": "packages/typed-contracts",
     "website": "apps/website",
-    "dev-tools": "packages/dev-tools",
     "zod": "packages/zod"
   }
 }
