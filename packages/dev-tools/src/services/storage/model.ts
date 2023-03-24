@@ -28,18 +28,22 @@ const $declarations = $all.map((declarations) =>
 
 // -- Query
 
-type QueryReport = {
-  id: string;
-  name: string;
-};
-
-export const $queries = $declarations.map((declarations) =>
-  declarations.filter(isQueryDeclaration).map(
-    (declaration): QueryReport => ({
+export const $queries = combine(
+  { declarations: $declarations, all: $all },
+  ({ declarations, all }) =>
+    declarations.filter(isQueryDeclaration).map((declaration) => ({
       id: declaration.id,
       name: (declaration.region?.meta['name'] ?? 'Unknown Query') as string,
-    })
-  )
+      info: declarations
+        .filter(childDeclaration(declaration))
+        .filter(isInfoDeclaration)
+        .map((info) => ({
+          name: info.meta[NodeMetaSumbol].name,
+          storeId: all
+            .filter(inRegion({ regionId: info.id, kind: 'store' }))
+            .map(({ meta }) => meta['unitId'] as string)[0],
+        })),
+    }))
 );
 
 // -- connectQuery
@@ -99,6 +103,10 @@ export const $caches = combine(
 );
 
 // -- For tracking
-export const $usedStoreIds = combine({ retries: $retries }, ({ retries }) =>
-  retries.flatMap((retry) => retry.info.flatMap((info) => info.storeId))
+export const $usedStoreIds = combine(
+  { retries: $retries, queries: $queries },
+  ({ retries, queries }) => [
+    ...retries.flatMap((retry) => retry.info.flatMap((info) => info.storeId)),
+    ...queries.flatMap((query) => query.info.flatMap((info) => info.storeId)),
+  ]
 );

@@ -103,16 +103,24 @@ export function createHeadlessQuery<
     const reset = createEvent();
 
     // -- Main stores --
-    const $data = createStore<MappedData | Initial>(initialData, {
-      sid: `ff.${operation.__.meta.name}.$data`,
-      name: `${operation.__.meta.name}.$data`,
-      serialize,
-    });
-    const $error = createStore<Error | InvalidDataError | null>(null, {
-      sid: `ff.${operation.__.meta.name}.$error`,
-      name: `${operation.__.meta.name}.$error`,
-      serialize: serializationForSideStore(serialize),
-    });
+    const $data = withRegion(
+      createMetaNode({ type: 'info', name: 'data' }),
+      () =>
+        createStore<MappedData | Initial>(initialData, {
+          sid: `ff.${operation.__.meta.name}.$data`,
+          name: `${operation.__.meta.name}.$data`,
+          serialize,
+        })
+    );
+    const $error = withRegion(
+      createMetaNode({ type: 'info', name: 'error' }),
+      () =>
+        createStore<Error | InvalidDataError | null>(null, {
+          sid: `ff.${operation.__.meta.name}.$error`,
+          name: `${operation.__.meta.name}.$error`,
+          serialize: serializationForSideStore(serialize),
+        })
+    );
     const $stale = createStore<boolean>(true, {
       sid: `ff.${operation.__.meta.name}.$stale`,
       name: `${operation.__.meta.name}.$stale`,

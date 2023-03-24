@@ -68,6 +68,14 @@ export const $retryInfo = combine(
       }))
 );
 
+export const $stateInfo = combine(
+  { activeQuery: $activeQuery, states: $states },
+  ({ activeQuery, states }) =>
+    activeQuery?.info.map(
+      (info) => [info.name, states[info.storeId]] as const
+    ) ?? []
+);
+
 export const $cacheInfo = combine(
   { activeQuery: $activeQuery, caches: $caches },
   ({ activeQuery, caches }) =>

@@ -1,8 +1,10 @@
 import { variant } from '@effector/reflect';
 import { useUnit } from 'effector-react';
 import { Card, Collapse } from 'antd';
+import { JsonViewer } from '@textea/json-viewer';
 
 import {
+  $stateInfo,
   $activeQuery,
   $operationInfoIsOpen,
 } from './operation_info.view-model';
@@ -13,18 +15,29 @@ import { ParentsInfo } from './views/parents_info.view';
 import { RetryInfo } from './views/retry_info.view';
 
 function OperationInfoView() {
-  const { activeQuery } = useUnit({
+  const { activeQuery, stateInfo } = useUnit({
     activeQuery: $activeQuery,
+    stateInfo: $stateInfo,
   });
 
   return (
     <Card title={activeQuery?.name}>
       <Collapse>
-        <Collapse.Panel header="Connections" key="connections">
+        {stateInfo.map(([name, value]) => (
+          <Collapse.Panel header={`$${name}`} key={name}>
+            <JsonViewer
+              value={value}
+              rootName={false}
+              defaultInspectDepth={1}
+              collapseStringsAfterLength={7}
+            />
+          </Collapse.Panel>
+        ))}
+        <Collapse.Panel header="connections" key="connections">
           <ChildrenInfo />
           <ParentsInfo />
         </Collapse.Panel>
-        <Collapse.Panel header="Modificators" key="modificators">
+        <Collapse.Panel header="modificators" key="modificators">
           <RetryInfo />
           <CacheInfo />
         </Collapse.Panel>
