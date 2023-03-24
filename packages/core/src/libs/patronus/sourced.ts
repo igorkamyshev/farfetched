@@ -73,7 +73,9 @@ function normalizeSourced<Data, Result, Source>({
     } else if (typeof field === 'function') {
       const $target = createStore<any>(null, { serialize: 'ignore' });
 
-      sample({ clock, fn: field as Callback<Data, Result>, target: $target });
+      const fn = field as Callback<Data, Result>;
+
+      sample({ clock, fn: (c) => fn(c), target: $target });
 
       return $target;
     } else {
