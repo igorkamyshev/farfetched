@@ -1,5 +1,4 @@
 import { useUnit } from 'effector-react';
-import { Card } from 'antd';
 
 import ReactFlow, { useNodesState, useEdgesState } from 'reactflow';
 
@@ -27,15 +26,13 @@ export function Graph() {
   }, [initial.edges]);
 
   return (
-    <Card type="inner" bodyStyle={{ height: '70vh' }}>
-      <ReactFlow
-        nodes={nodes}
-        onNodesChange={onNodesChange}
-        onNodeClick={(event, node) => handleClick(node.id)}
-        edges={edges}
-        onEdgesChange={onEgdesChange}
-        proOptions={{ hideAttribution: true }}
-      />
-    </Card>
+    <ReactFlow
+      nodes={nodes}
+      onNodesChange={onNodesChange}
+      onNodeClick={(event, node) => handleClick(node.id)}
+      edges={edges}
+      onEdgesChange={onEgdesChange}
+      proOptions={{ hideAttribution: true }}
+    />
   );
 }

@@ -2,8 +2,8 @@ import { type Node, type Edge, Position, MarkerType } from 'reactflow';
 import { graphlib, layout } from 'dagre';
 import { combine } from 'effector';
 
-import { $queries, $queryConnections } from '../../services/storage';
-import { $search } from '../../services/filters';
+import { $queryConnections } from '../../services/storage';
+import { $foundQueries } from '../../services/filters';
 
 const dagreGraph = new graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
@@ -47,16 +47,6 @@ function getLayoutedElements({
 
   return { nodes, edges };
 }
-
-const $foundQueries = combine(
-  { queries: $queries, search: $search },
-  ({ queries, search }) =>
-    search.length === 0
-      ? queries
-      : queries.filter((query) =>
-          query.name.toLowerCase().includes(search.toLowerCase())
-        )
-);
 
 export const $state = combine(
   { queries: $foundQueries, queryConnections: $queryConnections },
