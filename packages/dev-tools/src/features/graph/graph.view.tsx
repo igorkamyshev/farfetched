@@ -7,6 +7,7 @@ import 'reactflow/dist/style.css';
 
 import { $state } from './graph.view-model';
 import { selectDeclaration } from '../operation_info';
+import { useEffect } from 'react';
 
 export function Graph() {
   const { initial, handleClick } = useUnit({
@@ -14,8 +15,16 @@ export function Graph() {
     handleClick: selectDeclaration,
   });
 
-  const [nodes, _setNodes, onNodesChange] = useNodesState(initial.nodes);
-  const [edges, _setEdges, onEgdesChange] = useEdgesState(initial.edges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initial.nodes);
+  const [edges, setEdges, onEgdesChange] = useEdgesState(initial.edges);
+
+  useEffect(() => {
+    setNodes(initial.nodes);
+  }, [initial.nodes]);
+
+  useEffect(() => {
+    setEdges(initial.edges);
+  }, [initial.edges]);
 
   return (
     <Card type="inner" bodyStyle={{ height: '70vh' }}>

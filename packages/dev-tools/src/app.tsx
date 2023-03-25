@@ -1,8 +1,9 @@
-import { Modal, Row, Col } from 'antd';
+import { Modal, Row, Col, Space } from 'antd';
 import { useUnit } from 'effector-react';
 
 import { Graph } from './features/graph';
 import { OperationInfo } from './features/operation_info';
+import { Search } from './features/search';
 import { $visible, hide } from './services/visibility';
 
 export function App() {
@@ -17,14 +18,19 @@ export function App() {
       width={'100vw'}
       centered
     >
-      <Row gutter={24}>
-        <Col span={12}>
-          <Graph />
-        </Col>
-        <Col span={12}>
-          <OperationInfo />
-        </Col>
-      </Row>
+      <Space direction="vertical" size={12} style={{ width: '100%' }}>
+        <Row>
+          <Search />
+        </Row>
+        <Row gutter={12}>
+          <Col span={12}>
+            <Graph />
+          </Col>
+          <Col span={12}>
+            <OperationInfo />
+          </Col>
+        </Row>
+      </Space>
     </Modal>
   );
 }

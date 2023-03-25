@@ -3,6 +3,7 @@ import { graphlib, layout } from 'dagre';
 import { combine } from 'effector';
 
 import { $queries, $queryConnections } from '../../services/storage';
+import { $search } from '../../services/filters';
 
 const dagreGraph = new graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
@@ -47,8 +48,18 @@ function getLayoutedElements({
   return { nodes, edges };
 }
 
+const $foundQueries = combine(
+  { queries: $queries, search: $search },
+  ({ queries, search }) =>
+    search.length === 0
+      ? queries
+      : queries.filter((query) =>
+          query.name.toLowerCase().includes(search.toLowerCase())
+        )
+);
+
 export const $state = combine(
-  { queries: $queries, queryConnections: $queryConnections },
+  { queries: $foundQueries, queryConnections: $queryConnections },
   ({ queries, queryConnections }) =>
     getLayoutedElements({
       nodes: queries.map((query) => ({
