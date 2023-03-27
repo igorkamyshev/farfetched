@@ -26,7 +26,10 @@
         "tsConfig": "packages/dev-tools/tsconfig.json",
         "format": ["esm", "cjs"],
         "generateExportsField": true,
-        "compiler": "babel"
+        "updateBuildableProjectDepsInPackageJson": false,
+        "extractCss": false,
+        "compiler": "babel",
+        "rollupConfig": ["packages/dev-tools/rollup.config.js"]
       }
     },
     "publish": {
