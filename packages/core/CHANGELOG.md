@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.8.4
+
+### Patch Changes
+
+- 8bf8b77: Allow to use booleans in FetchApiRecord
+
 ## 0.8.3
 
 ## 0.8.2
