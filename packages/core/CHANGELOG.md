@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.8.5
+
+### Patch Changes
+
+- fa0727a: Allow using _Query_ with `initialData` in `keepFresh`
+
 ## 0.8.4
 
 ### Patch Changes
