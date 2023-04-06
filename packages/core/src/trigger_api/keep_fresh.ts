@@ -20,21 +20,21 @@ import {
 import { type TriggerProtocol } from './trigger_protocol';
 
 export function keepFresh<Params>(
-  query: Query<Params, any, any>,
+  query: Query<Params, any, any, any>,
   config: {
     automatically: true;
   }
 ): void;
 
 export function keepFresh<Params>(
-  query: Query<Params, any, any>,
+  query: Query<Params, any, any, any>,
   config: {
     triggers: Array<Event<unknown> | Event<void> | TriggerProtocol>;
   }
 ): void;
 
 export function keepFresh<Params>(
-  query: Query<Params, any, any>,
+  query: Query<Params, any, any, any>,
   config: {
     automatically: true;
     triggers: Array<Event<unknown> | Event<void> | TriggerProtocol>;
@@ -42,7 +42,7 @@ export function keepFresh<Params>(
 ): void;
 
 export function keepFresh<Params>(
-  query: Query<Params, any, any>,
+  query: Query<Params, any, any, any>,
   config: {
     automatically?: true;
     triggers?: Array<Event<unknown> | Event<void> | TriggerProtocol>;
