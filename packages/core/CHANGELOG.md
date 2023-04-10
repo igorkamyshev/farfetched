@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.8.6
+
+### Patch Changes
+
+- d432e00: Expose missed `createCacheAdapter`
+
 ## 0.8.5
 
 ### Patch Changes
