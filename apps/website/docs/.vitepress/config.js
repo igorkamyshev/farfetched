@@ -311,6 +311,28 @@ export default withMermaid(
               { text: 'Automated cache', link: '/recipes/cache' },
             ],
           },
+          {
+            text: 'Showcases',
+            collapsed: true,
+            items: [
+              {
+                text: 'SolidJS',
+                link: 'https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/solid-real-world-rick-morty',
+              },
+              {
+                text: 'React and React Router',
+                link: 'https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/react-real-world-pokemons',
+              },
+              {
+                text: 'Next.js',
+                link: 'https://github.com/effector/next/tree/main/apps/playground-app',
+              },
+              {
+                text: 'Forest',
+                link: 'https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/forest-real-world-breaking-bad',
+              },
+            ],
+          },
         ],
         '/statements': [
           {
