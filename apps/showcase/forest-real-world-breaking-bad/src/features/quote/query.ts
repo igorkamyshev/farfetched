@@ -12,8 +12,8 @@ export const randomQuotesQuery = createJsonQuery({
     method: 'GET',
     url: sourced({
       source: createStore(2),
-      fn: (params, source) =>
-        `https://api.breakingbadquotes.xyz/v1/quotes/${params.amount}`,
+      fn: ({ amount }, source) =>
+        `https://api.breakingbadquotes.xyz/v1/quotes/${amount}`,
     }),
   },
   response: {
