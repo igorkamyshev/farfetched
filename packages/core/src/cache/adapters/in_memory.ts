@@ -2,7 +2,7 @@ import { createEffect, createEvent, sample, scopeBind } from 'effector';
 
 import { time } from '../../libs/patronus';
 import { parseTime } from '../../libs/date-nfs';
-import { createAdapter } from './instance';
+import { createCacheAdapter } from './instance';
 import { attachObservability } from './observability';
 import { CacheAdapter, CacheAdapterOptions } from './type';
 
@@ -108,7 +108,7 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
     events: { itemExpired, itemEvicted },
   });
 
-  return createAdapter(adapter);
+  return createCacheAdapter(adapter);
 }
 
 function applyMaxEntries(
