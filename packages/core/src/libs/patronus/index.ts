@@ -15,6 +15,7 @@ export {
   type DynamicallySourcedField,
   type StaticOrReactive,
 } from './sourced';
+export { sourced } from './sourced_future';
 export { type FetchingStatus } from './status';
 export { time } from './time';
 export { and } from './and';

@@ -17,6 +17,7 @@ import {
 } from './create_headless_query';
 import { unknownContract } from '../contract/unknown_contract';
 import { Validator } from '../validation/type';
+import { PartialStore } from '../libs/patronus/sourced_future';
 
 // -- Shared
 
@@ -25,38 +26,30 @@ type ConcurrencyConfig = {
   abort?: Event<void>;
 };
 
-type RequestConfig<Params, BodySource, QuerySource, HeadersSource, UrlSource> =
-  {
-    url: SourcedField<Params, string, UrlSource>;
-    credentials?: RequestCredentials;
-    query?:
-      | SourcedField<Params, FetchApiRecord, QuerySource>
-      | SourcedField<Params, string, QuerySource>;
-    headers?: SourcedField<Params, FetchApiRecord, HeadersSource>;
-  } & (
-    | {
-        method: 'GET' | 'HEAD';
-      }
-    | {
-        method: Exclude<HttpMethod, 'GET' | 'HEAD'>;
-        body?: SourcedField<Params, Json, BodySource>;
-      }
-  );
+type RequestConfig<Params, BodySource, QuerySource, HeadersSource> = {
+  url: PartialStore<Params, string>;
+  credentials?: RequestCredentials;
+  query?:
+    | SourcedField<Params, FetchApiRecord, QuerySource>
+    | SourcedField<Params, string, QuerySource>;
+  headers?: SourcedField<Params, FetchApiRecord, HeadersSource>;
+} & (
+  | {
+      method: 'GET' | 'HEAD';
+    }
+  | {
+      method: Exclude<HttpMethod, 'GET' | 'HEAD'>;
+      body?: SourcedField<Params, Json, BodySource>;
+    }
+);
 
 interface BaseJsonQueryConfigNoParams<
   Data,
   BodySource,
   QuerySource,
-  HeadersSource,
-  UrlSource
+  HeadersSource
 > extends SharedQueryFactoryConfig<Data> {
-  request: RequestConfig<
-    void,
-    BodySource,
-    QuerySource,
-    HeadersSource,
-    UrlSource
-  >;
+  request: RequestConfig<void, BodySource, QuerySource, HeadersSource>;
   concurrency?: ConcurrencyConfig;
 }
 
@@ -65,17 +58,10 @@ interface BaseJsonQueryConfigWithParams<
   Data,
   BodySource,
   QuerySource,
-  HeadersSource,
-  UrlSource
+  HeadersSource
 > extends SharedQueryFactoryConfig<Data> {
   params: ParamsDeclaration<Params>;
-  request: RequestConfig<
-    Params,
-    BodySource,
-    QuerySource,
-    HeadersSource,
-    UrlSource
-  >;
+  request: RequestConfig<Params, BodySource, QuerySource, HeadersSource>;
   concurrency?: ConcurrencyConfig;
 }
 
@@ -89,7 +75,6 @@ export function createJsonQuery<
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
-  UrlSource = void,
   DataSource = void,
   ValidationSource = void
 >(
@@ -98,8 +83,7 @@ export function createJsonQuery<
     TransformedData,
     BodySource,
     QuerySource,
-    HeadersSource,
-    UrlSource
+    HeadersSource
   > & {
     response: {
       contract: Contract<unknown, Data>;
@@ -120,7 +104,6 @@ export function createJsonQuery<
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
-  UrlSource = void,
   DataSource = void,
   ValidationSource = void
 >(
@@ -129,8 +112,7 @@ export function createJsonQuery<
     TransformedData,
     BodySource,
     QuerySource,
-    HeadersSource,
-    UrlSource
+    HeadersSource
   > & {
     initialData?: TransformedData;
     response: {
@@ -152,7 +134,6 @@ export function createJsonQuery<
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
-  UrlSource = void,
   ValidationSource = void
 >(
   config: BaseJsonQueryConfigWithParams<
@@ -160,8 +141,7 @@ export function createJsonQuery<
     Data,
     BodySource,
     QuerySource,
-    HeadersSource,
-    UrlSource
+    HeadersSource
   > & {
     response: {
       contract: Contract<unknown, Data>;
@@ -176,7 +156,6 @@ export function createJsonQuery<
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
-  UrlSource = void,
   ValidationSource = void
 >(
   config: BaseJsonQueryConfigWithParams<
@@ -184,8 +163,7 @@ export function createJsonQuery<
     Data,
     BodySource,
     QuerySource,
-    HeadersSource,
-    UrlSource
+    HeadersSource
   > & {
     initialData?: Data;
     response: {
@@ -202,7 +180,6 @@ export function createJsonQuery<
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
-  UrlSource = void,
   DataSource = void,
   ValidationSource = void
 >(
@@ -210,8 +187,7 @@ export function createJsonQuery<
     TransformedData,
     BodySource,
     QuerySource,
-    HeadersSource,
-    UrlSource
+    HeadersSource
   > & {
     response: {
       contract: Contract<unknown, Data>;
@@ -231,7 +207,6 @@ export function createJsonQuery<
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
-  UrlSource = void,
   DataSource = void,
   ValidationSource = void
 >(
@@ -239,8 +214,7 @@ export function createJsonQuery<
     TransformedData,
     BodySource,
     QuerySource,
-    HeadersSource,
-    UrlSource
+    HeadersSource
   > & {
     initialData?: TransformedData;
     response: {
@@ -261,15 +235,13 @@ export function createJsonQuery<
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
-  UrlSource = void,
   ValidationSource = void
 >(
   config: BaseJsonQueryConfigNoParams<
     Data,
     BodySource,
     QuerySource,
-    HeadersSource,
-    UrlSource
+    HeadersSource
   > & {
     response: {
       contract: Contract<unknown, Data>;
@@ -283,15 +255,13 @@ export function createJsonQuery<
   BodySource = void,
   QuerySource = void,
   HeadersSource = void,
-  UrlSource = void,
   ValidationSource = void
 >(
   config: BaseJsonQueryConfigNoParams<
     Data,
     BodySource,
     QuerySource,
-    HeadersSource,
-    UrlSource
+    HeadersSource
   > & {
     initialData?: Data;
     response: {

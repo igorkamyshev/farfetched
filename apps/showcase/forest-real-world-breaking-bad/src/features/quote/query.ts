@@ -1,5 +1,6 @@
-import { createJsonQuery, declareParams } from '@farfetched/core';
+import { createJsonQuery, declareParams, sourced } from '@farfetched/core';
 import { runtypeContract } from '@farfetched/runtypes';
+import { createStore } from 'effector';
 import { Array } from 'runtypes';
 
 import { Quote } from './contract';
@@ -9,8 +10,11 @@ export const randomQuotesQuery = createJsonQuery({
   initialData: [],
   request: {
     method: 'GET',
-    url: ({ amount }) =>
-      `https://api.breakingbadquotes.xyz/v1/quotes/${amount}`,
+    url: sourced({
+      source: createStore(2),
+      fn: (params, source) =>
+        `https://api.breakingbadquotes.xyz/v1/quotes/${params.amount}`,
+    }),
   },
   response: {
     contract: runtypeContract(Array(Quote)),

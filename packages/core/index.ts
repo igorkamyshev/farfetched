@@ -39,6 +39,7 @@ export {
   normalizeSourced,
   combineSourced,
   type DynamicallySourcedField,
+  sourced,
 } from './src/libs/patronus';
 export { type FetchingStatus } from './src/libs/patronus';
 
