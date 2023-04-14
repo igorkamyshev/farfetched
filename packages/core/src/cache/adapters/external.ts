@@ -1,6 +1,6 @@
 import { createEffect, createEvent, Event, sample } from 'effector';
 
-import { createAdapter } from './instance';
+import { createCacheAdapter } from './instance';
 import { attachObservability } from './observability';
 import { CacheAdapter } from './type';
 
@@ -37,5 +37,5 @@ export function externalCache(config: {
 
   attachObservability({ adapter, options: config.observability });
 
-  return createAdapter(adapter);
+  return createCacheAdapter(adapter);
 }

@@ -2,7 +2,7 @@ import { createStore } from 'effector';
 
 import { CacheAdapter, CacheAdapterInstance } from './type';
 
-export function createAdapter(
+export function createCacheAdapter(
   adapter: CacheAdapterInstance,
   opts?: { name: string }
 ): CacheAdapter {

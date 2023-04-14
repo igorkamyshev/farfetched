@@ -2,7 +2,7 @@ import { createEffect, createEvent, createStore, sample } from 'effector';
 
 import { delay } from '../../libs/patronus';
 import { parseTime } from '../../libs/date-nfs';
-import { createAdapter } from './instance';
+import { createCacheAdapter } from './instance';
 import { attachObservability } from './observability';
 import { CacheAdapter, CacheAdapterOptions } from './type';
 import { get } from '../../libs/lohyphen';
@@ -126,7 +126,7 @@ export function browserStorageCache(
       events: { itemExpired, itemEvicted },
     });
 
-    return createAdapter(adapter, { name });
+    return createCacheAdapter(adapter, { name });
   }
 
   interface SavedItem {

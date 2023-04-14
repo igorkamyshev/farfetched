@@ -71,15 +71,15 @@ npm install ioredis
 Then we need to create a [custom adapter for `cache`](/api/operators/cache.html#adapters) operator to store the cache in Redis. In Farfetched custom adapters are just functions that accept some options and return a special object with some methods — `get`, `set`, `unset` and `purge`. Let's implement the adapter with a Redis as a storage.
 
 ::: tip
-`createAdapter` is a helper function that helps to create custom adapters. It accepts an object with `get`, `set`, `unset` and `purge` methods and returns an adapter object with the same methods and some additional properties. It has to be used in order to make the adapter compatible with the `cache` operator.
+`createCacheAdapter` is a helper function that helps to create custom adapters. It accepts an object with `get`, `set`, `unset` and `purge` methods and returns an adapter object with the same methods and some additional properties. It has to be used in order to make the adapter compatible with the `cache` operator.
 :::
 
 ```ts
 import { createEffect } from 'effector';
-import { createAdapter } from '@farfetched/core';
+import { createCacheAdapter } from '@farfetched/core';
 
 function redisCache({ maxAge }: { maxAge: number }) {
-  return createAdapter({
+  return createCacheAdapter({
     get: createEffect(
       (_: { key: string }): { value: unknown; cachedAt: number } | null => {
         // TODO: implement
@@ -120,7 +120,7 @@ import Redis from 'ioreis';
 function redisCache({ maxAge }) {
   const redis = new Redis();
 
-  return createAdapter({
+  return createCacheAdapter({
     get: createEffect(async ({ key }) => {
       // NOTE: we store stringified object with {value, cachedAt} in the Redis
       const valueFromCache = await redis.get(key);
@@ -150,7 +150,7 @@ import Redis from 'ioreis';
 function redisCache({ maxAge }) {
   const redis = new Redis();
 
-  return createAdapter({
+  return createCacheAdapter({
     get,
     set: createEffect(
       async ({ key, value }) => {
@@ -180,7 +180,7 @@ import Redis from 'ioredis';
 function redisCache({ maxAge }) {
   const redis = new Redis();
 
-  return createAdapter({
+  return createCacheAdapter({
     get,
     set,
     unset: createEffect(async ({ key } => {
@@ -203,7 +203,7 @@ import Redis from 'ioredis';
 function redisCache({ maxAge }) {
   const redis = new Redis();
 
-  return createAdapter({
+  return createCacheAdapter({
     get,
     set,
     unset,
@@ -289,7 +289,7 @@ In the adapter, we can use [`attach`](https://effector.dev/docs/api/effector/att
 import { attach } from 'effector';
 
 function redisCache({ maxAge }) {
-  return createAdapter({
+  return createCacheAdapter({
     get,
     set,
     unset: attach({
@@ -324,5 +324,5 @@ function handleHttp(req, res) {
 
 We have set up server side cache for our [_Queries_](/api/primitives/query) using external Redis. It's not a complete solution, but it's a good start. Key points of this article:
 
-- use `createAdapter` to create custom adapters for [`cache`](/api/operators/cache) operator
+- use `createCacheAdapter` to create custom adapters for [`cache`](/api/operators/cache) operator
 - use Fork API to inject different adapters in different environments

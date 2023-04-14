@@ -1,5 +1,23 @@
 # @farfetched/core
 
+## 0.8.6
+
+### Patch Changes
+
+- d432e00: Expose missed `createCacheAdapter`
+
+## 0.8.5
+
+### Patch Changes
+
+- fa0727a: Allow using _Query_ with `initialData` in `keepFresh`
+
+## 0.8.4
+
+### Patch Changes
+
+- 8bf8b77: Allow to use booleans in FetchApiRecord
+
 ## 0.8.3
 
 ## 0.8.2

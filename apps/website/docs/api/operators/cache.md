@@ -85,7 +85,7 @@ function myCustomAdapter({
     evicted?: Event<{ key: string }>;
   };
 }) {
-  const adapter = createAdapter({
+  const adapter = createCacheAdapter({
     // ...
   });
 

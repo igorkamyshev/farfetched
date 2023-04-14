@@ -1,4 +1,7 @@
-export type FetchApiRecord = Record<string, string | string[] | number>;
+export type FetchApiRecord = Record<
+  string,
+  string | string[] | number | boolean
+>;
 
 export function mergeRecords(
   ...records: (FetchApiRecord | undefined | null)[]
@@ -96,8 +99,10 @@ function recordToUrlSearchParams(record: FetchApiRecord): URLSearchParams {
   return params;
 }
 
-function clearValue(value: string | string[] | number): string | string[] {
-  if (typeof value === 'number') {
+function clearValue(
+  value: string | string[] | number | boolean
+): string | string[] {
+  if (typeof value === 'number' || typeof value === 'boolean') {
     return value.toString();
   }
 
