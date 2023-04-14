@@ -54,6 +54,11 @@ export const $dependOnQueries = combine(
     )
 );
 
+export const $hasConnections = combine(
+  [$dependantQueries, $dependOnQueries],
+  hasSomething
+);
+
 export const $retryInfo = combine(
   { activeQuery: $activeQuery, retries: $retries, states: $states },
   ({ activeQuery, retries, states }) =>
@@ -81,3 +86,9 @@ export const $cacheInfo = combine(
   ({ activeQuery, caches }) =>
     caches.filter((retry) => retry.targetId === activeQuery?.id)
 );
+
+export const $hasModificators = combine([$retryInfo, $cacheInfo], hasSomething);
+
+function hasSomething(lists: any[]) {
+  return lists.map((dependency) => dependency.length).some((len) => len > 0);
+}
