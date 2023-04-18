@@ -13,6 +13,7 @@ export interface QueryMeta<Data, InitialData> {
    */
   serialize: Serialize<Data | InitialData>;
   initialData: InitialData;
+  sid: string | null;
 }
 
 export interface Query<Params, Data, Error, InitialData = null>

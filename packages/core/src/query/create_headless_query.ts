@@ -1,7 +1,8 @@
-import { createStore, sample, createEvent, Store, attach } from 'effector';
+import { createStore, sample, createEvent, type Store, attach } from 'effector';
+import { type Event } from 'effector';
 
-import { Contract } from '../contract/type';
-import { InvalidDataError } from '../errors/type';
+import { type Contract } from '../contract/type';
+import { type InvalidDataError } from '../errors/type';
 import { createRemoteOperation } from '../remote_operation/create_remote_operation';
 import {
   postpone,
@@ -11,10 +12,11 @@ import {
   type DynamicallySourcedField,
   SourcedField,
 } from '../libs/patronus';
-import { Validator } from '../validation/type';
-import { Query, QueryMeta, QuerySymbol } from './type';
-import { Event } from 'effector';
+import { type Validator } from '../validation/type';
+import { type Query, type QueryMeta, QuerySymbol } from './type';
+
 import { isEqual } from '../libs/lohyphen';
+import { readonly } from '../libs/patronus';
 
 export interface SharedQueryFactoryConfig<Data, Initial = Data> {
   name?: string;
@@ -80,7 +82,11 @@ export function createHeadlessQuery<
     kind: QuerySymbol,
     serialize: serializationForSideStore(serialize),
     enabled,
-    meta: { serialize, initialData },
+    meta: {
+      serialize,
+      initialData,
+      sid: querySid(createStore(null, { sid: 'dummy' })),
+    },
     contract,
     validate,
     mapData,
@@ -128,6 +134,16 @@ export function createHeadlessQuery<
     clock: operation.finished.finally,
     fn: ({ meta }) => meta.stale,
     target: $stale,
+  });
+
+  sample({
+    clock: operation.__.lowLevelAPI.pushData,
+    target: [$data, $error.reinit!],
+  });
+
+  sample({
+    clock: operation.__.lowLevelAPI.pushError,
+    target: [$error, $data.reinit!],
   });
 
   // -- Trigger API
@@ -210,16 +226,38 @@ export function createHeadlessQuery<
   // -- Public API --
 
   return {
-    $data,
-    $error,
-    $stale,
     reset,
     refresh,
-    ...operation,
+    start: operation.start,
+    $data: readonly($data),
+    $error: readonly($error),
+    $status: readonly(operation.$status),
+    $idle: readonly(operation.$idle),
+    $pending: readonly(operation.$pending),
+    $succeeded: readonly(operation.$succeeded),
+    $failed: readonly(operation.$failed),
+    $enabled: readonly(operation.$enabled),
+    $stale,
+    finished: {
+      success: readonly(operation.finished.success),
+      failure: readonly(operation.finished.failure),
+      finally: readonly(operation.finished.finally),
+      skip: readonly(operation.finished.skip),
+    },
     __: {
       ...operation.__,
       experimentalAPI: { attach: attachProtocol },
     },
     '@@unitShape': unitShapeProtocol,
   };
+}
+
+function querySid($data: Store<any>): string | null {
+  const sid = $data.sid;
+
+  if (!sid?.includes('|')) {
+    return null;
+  }
+
+  return sid;
 }

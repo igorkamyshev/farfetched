@@ -14,6 +14,7 @@ import {
   type StaticOrReactive,
   type FetchingStatus,
   SourcedField,
+  readonly,
 } from '../libs/patronus';
 import { createContractApplier } from '../contract/apply_contract';
 import { Contract } from '../contract/type';
@@ -64,6 +65,8 @@ export function createRemoteOperation<
   paramsAreMeaningless?: boolean;
 }): RemoteOperation<Params, MappedData, Error | InvalidDataError, Meta> {
   const revalidate = createEvent<{ params: Params; refresh: boolean }>();
+  const pushData = createEvent<MappedData>();
+  const pushError = createEvent<Error | InvalidDataError>();
 
   const applyContractFx = createContractApplier<Params, Data, ContractData>(
     contract
@@ -327,13 +330,15 @@ export function createRemoteOperation<
       executeFx,
       meta: { ...meta, name },
       kind,
-      $latestParams,
+      $latestParams: readonly($latestParams),
       lowLevelAPI: {
         dataSources,
         dataSourceRetrieverFx: retrieveDataFx,
         sourced: sourced ?? [],
         paramsAreMeaningless: paramsAreMeaningless ?? false,
         revalidate,
+        pushError,
+        pushData,
       },
     },
   };

@@ -90,6 +90,8 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
       sourced: SourcedField<Params, unknown, unknown>[];
       paramsAreMeaningless: boolean;
       revalidate: Event<{ params: Params; refresh: boolean }>;
+      pushData: Event<Data>;
+      pushError: Event<Error>;
     };
     experimentalAPI?: {
       attach: <Source, NewParams>(config: {
