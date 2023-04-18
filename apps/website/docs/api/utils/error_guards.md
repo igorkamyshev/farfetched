@@ -71,7 +71,11 @@ const httpError = sample({
 
 ### `isHttpErrorCode`
 
-This function is a more specific version of `isHttpError`. It takes a number as an argument and returns a function that checks if the error is a `HttpError` with the given status code.
+This function is a more specific version of `isHttpError`.
+
+#### `isHttpErrorCode(statusCode: number)`
+
+It takes a number as an argument and returns a function that checks if the error is a `HttpError` with the given status code.
 
 ```ts
 import { isHttpErrorCode } from '@farfetched/core';
@@ -79,6 +83,19 @@ import { isHttpErrorCode } from '@farfetched/core';
 const notFound = sample({
   clock: query.finished.failure,
   filter: isHttpErrorCode(404),
+});
+```
+
+#### `isHttpErrorCode(statusCodes: number[])` <Badge type="tip" text="since v0.9.0" />
+
+It takes an array of numbers as an argument and returns a function that checks if the error is a `HttpError` with one of the given status codes.
+
+```ts
+import { isHttpErrorCode } from '@farfetched/core';
+
+const notFoundOrForbidden = sample({
+  clock: query.finished.failure,
+  filter: isHttpErrorCode([404, 403]),
 });
 ```
 
