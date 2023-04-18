@@ -4,17 +4,17 @@ Farfetched is under development now, before the first stable release we are goin
 
 ## The next release
 
-### v.0.9
+### v.0.10
 
-- DevTools interface
+- Finalize DevTools interface
 
 ## Future releases
 
-### v.0.10
+### v.0.11
 
 - Pagination and infinite scroll
 
-### v.0.11
+### v.0.12
 
 - GraphQL add-on — `@farfetched/graphql`
   - `createGraphQLQuery`
@@ -23,13 +23,13 @@ Farfetched is under development now, before the first stable release we are goin
   - import, parsing, and usage of schema
   - automatic optimistic update for Query based on Mutation and schema
 
-### v.0.12
+### v.0.13
 
 - WebSocket
 - Server Sent Events
 - HTTP Polling
 
-### v.0.13
+### v.0.14
 
 - Add-on `@farfetched/rest`
   - `createREST` — return set of Queries and Mutations for typical REST API
