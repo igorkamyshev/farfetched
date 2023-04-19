@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.8.7
+
+### Patch Changes
+
+- d393e78: Fix extra refresh in `keepFresh` while source is changing for disabled _Query_
+
 ## 0.8.6
 
 ### Patch Changes
