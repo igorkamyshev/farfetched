@@ -24,7 +24,7 @@ export function postpone<T>({
 }): EventAsReturnType<T> {
   const target = createEvent<T>();
 
-  const $planned = createStore({ ref: new Set<T>() });
+  const $planned = createStore({ ref: new Set<T>() }, { serialize: 'ignore' });
 
   sample({ clock, filter: until, target });
 
