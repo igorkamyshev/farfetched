@@ -118,7 +118,10 @@ export function keepFresh<Params>(
 
     triggers.push(
       sample({
-        clock: $nextSources.updates,
+        clock: [
+          $nextSources.updates,
+          query.$enabled.updates.filter({ fn: Boolean }),
+        ],
         source: [$nextSources, $previousSources] as const,
         filter: ([next, prev]) => !isEqual(next, prev),
       })

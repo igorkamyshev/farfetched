@@ -245,4 +245,37 @@ describe('keepFresh, automatically', () => {
 
     expect(listener).toBeCalledTimes(1);
   });
+
+  test('check source after enabling', async () => {
+    const $url = createStore('https://api.salo.com');
+    const $enabled = createStore(true);
+
+    const query = createJsonQuery({
+      enabled: $enabled,
+      request: {
+        method: 'GET',
+        url: $url,
+      },
+      response: { contract: unknownContract },
+    });
+
+    keepFresh(query, { automatically: true });
+
+    const scope = fork({
+      handlers: [[query.__.executeFx, vi.fn(async () => 42)]],
+    });
+
+    const listener = vi.fn();
+
+    createWatch({ unit: query.refresh, fn: listener, scope });
+
+    await allSettled(query.refresh, { scope });
+    expect(listener).toBeCalledTimes(1);
+
+    await allSettled($enabled, { scope, params: false });
+    await allSettled($url, { scope, params: 'https://api.v2.salo.com' });
+    await allSettled($enabled, { scope, params: true });
+
+    expect(listener).toBeCalledTimes(2);
+  });
 });
