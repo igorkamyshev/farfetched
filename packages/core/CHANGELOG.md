@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.8.9
+
+### Patch Changes
+
+- 8c61933: Fix refreshing after enabling _Query_ with different sources
+
 ## 0.8.8
 
 ### Patch Changes
