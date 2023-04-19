@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.8.8
+
+### Patch Changes
+
+- 6cbe074: Fix re-run old refreshes after enabling and disabling _Query_
+
 ## 0.8.7
 
 ### Patch Changes
