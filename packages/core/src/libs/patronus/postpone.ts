@@ -1,4 +1,14 @@
-import { Event, EventAsReturnType, sample, Store } from 'effector';
+import {
+  createEvent,
+  createStore,
+  sample,
+  type Event,
+  type EventAsReturnType,
+  type Store,
+} from 'effector';
+
+import { and } from './and';
+import { not } from './not';
 
 /**
  * Откладывает выполнение события до переданного указанного стора в состояние `true`
@@ -12,9 +22,18 @@ export function postpone<T>({
   clock: Event<T>;
   until: Store<boolean>;
 }): EventAsReturnType<T> {
-  return sample({
+  const target = createEvent<T>();
+
+  const $fired = createStore(false, { serialize: 'ignore' })
+    .on(target, () => true)
+    .on(clock, () => false);
+
+  sample({
     clock: [clock, until],
     source: clock,
-    filter: until,
+    filter: and(until, not($fired)),
+    target,
   });
+
+  return target;
 }
