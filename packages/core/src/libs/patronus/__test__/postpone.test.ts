@@ -1,4 +1,10 @@
-import { allSettled, createEvent, createStore, fork } from 'effector';
+import {
+  allSettled,
+  createEvent,
+  createStore,
+  createWatch,
+  fork,
+} from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
 import { postpone } from '../postpone';
@@ -76,5 +82,55 @@ describe('postpone', () => {
 
     await allSettled($until, { scope, params: true });
     expect(mock).toHaveBeenCalledTimes(0);
+  });
+
+  test('DO NOT re-fire already fired event while change until value', async () => {
+    const $until = createStore(true);
+
+    const clock = createEvent();
+
+    const target = postpone({ clock, until: $until });
+
+    const scope = fork();
+
+    const listener = vi.fn();
+
+    createWatch({ unit: target, fn: listener, scope });
+
+    await allSettled(clock, { scope });
+
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    await allSettled($until, { scope, params: false });
+    await allSettled($until, { scope, params: true });
+
+    expect(listener).toHaveBeenCalledTimes(1);
+  });
+
+  test('DO NOT re-fire already fired event', async () => {
+    const $until = createStore(false);
+
+    const clock = createEvent<string>();
+
+    const target = postpone({ clock, until: $until });
+
+    const scope = fork();
+
+    const listener = vi.fn();
+
+    createWatch({ unit: target, fn: listener, scope });
+
+    await allSettled(clock, { scope, params: 'first' });
+    await allSettled($until, { scope, params: true });
+
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenCalledWith('first');
+    await allSettled($until, { scope, params: false });
+
+    await allSettled(clock, { scope, params: 'second' });
+    await allSettled($until, { scope, params: true });
+
+    expect(listener).toHaveBeenCalledTimes(2);
+    expect(listener).toHaveBeenCalledWith('second');
   });
 });
