@@ -1,3 +1,7 @@
+---
+outline: [2, 3]
+---
+
 # `cache` <Badge type="tip" text="since v0.3.0" />
 
 Saves result of the [_Query_](/api/primitives/query) to some storage and allows to restore it back.
@@ -103,3 +107,28 @@ function myCustomAdapter({
 ```
 
 However, we still need to trigger `itemEvicted` and `itemExpired` events in our adapter.
+
+### Custom serialization <Badge type="tip" text="since v0.9.0" />
+
+Adapters that use `localStorage` and `sessionStorage` as a storage for cached results use `JSON.stringify` and `JSON.parse` to serialize and deserialize data. If you need to use custom serialization, you can use `serialize` field in the adapter config:
+
+```ts
+import { cache, localStorageCache } from '@farfetched/core';
+
+cache(query, {
+  adapter: localStorageCache({
+    serialize: {
+      read: (data) => {
+        // Do your custom serialization here
+
+        return parsedData;
+      },
+      write: (data) => {
+        // Do your custom deserialization here
+
+        return serializedData;
+      },
+    },
+  }),
+});
+```

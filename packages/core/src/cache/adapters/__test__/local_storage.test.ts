@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 
-import { createEvent, fork, scopeBind } from 'effector';
+import { createEvent, fork, type Json, scopeBind } from 'effector';
 import { describe, beforeEach, test, expect, vi } from 'vitest';
 
 import { META_KEY } from '../browser_storage';
