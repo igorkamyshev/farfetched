@@ -89,11 +89,20 @@ export function keepFresh<Params>(
 
   if (config.automatically) {
     const finalyParams = query.finished.finally.map(get('params'));
-    const $previousSources = combine(
-      query.__.lowLevelAPI.sourced.map((sourced) =>
-        normalizeSourced({ field: sourced, clock: finalyParams })
-      )
-    );
+
+    const $previousSources = createStore<any[]>([], { serialize: 'ignore' });
+
+    // @ts-expect-error I have no idea
+    sample({
+      clock: finalyParams,
+      source: combine(
+        query.__.lowLevelAPI.sourced.map((sourced) =>
+          normalizeSourced({ field: sourced, clock: finalyParams })
+        )
+      ),
+      filter: query.$enabled,
+      target: $previousSources,
+    });
 
     const sourcesUpdated = sample({
       clock: query.__.lowLevelAPI.sourced.map(extractSource).filter(is.store),
@@ -116,7 +125,7 @@ export function keepFresh<Params>(
     );
   }
 
-  const forceFresh = merge(triggers);
+  const forceFresh = sample({ clock: triggers, filter: query.$enabled });
 
   sample({
     clock: forceFresh,

@@ -1,4 +1,4 @@
-import { allSettled, createStore, fork } from 'effector';
+import { allSettled, createStore, createWatch, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 import { unknownContract } from '../../contract/unknown_contract';
 import { createJsonQuery } from '../../query/create_json_query';
@@ -214,5 +214,35 @@ describe('keepFresh, automatically', () => {
     await allSettled(scope);
 
     expect(listener).toBeCalledTimes(2);
+  });
+
+  test('does not use sources while disabled as source for refresh', async () => {
+    const $url = createStore('https://api.salo.com');
+
+    const query = createJsonQuery({
+      enabled: $url.map((url) => url.length > 0),
+      request: {
+        method: 'GET',
+        url: $url,
+      },
+      response: { contract: unknownContract },
+    });
+
+    keepFresh(query, { automatically: true });
+
+    const scope = fork({
+      handlers: [[query.__.executeFx, vi.fn(async () => 42)]],
+    });
+
+    const listener = vi.fn();
+
+    createWatch({ unit: query.refresh, fn: listener, scope });
+
+    await allSettled(query.refresh, { scope });
+
+    await allSettled($url, { scope, params: '' });
+    await allSettled($url, { scope, params: 'https://api.salo.com' });
+
+    expect(listener).toBeCalledTimes(1);
   });
 });
