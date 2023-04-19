@@ -1,5 +1,4 @@
 import {
-  createEffect,
   createEvent,
   createStore,
   sample,
@@ -8,6 +7,7 @@ import {
   type Store,
 } from 'effector';
 
+import { and } from './and';
 import { not } from './not';
 
 /**
@@ -24,36 +24,15 @@ export function postpone<T>({
 }): EventAsReturnType<T> {
   const target = createEvent<T>();
 
-  const $planned = createStore({ ref: new Set<T>() }, { serialize: 'ignore' });
-
-  sample({ clock, filter: until, target });
-
-  sample({
-    clock,
-    source: $planned,
-    filter: not(until),
-    fn: (planned, value) => ({ ref: planned.ref.add(value) }),
-    target: $planned,
-  });
-
-  const runAllPostponedFx = createEffect((params: Set<T>) => {
-    for (const param of params.values()) {
-      target(param);
-    }
-  });
+  const $fired = createStore(false, { serialize: 'ignore' })
+    .on(target, () => true)
+    .on(clock, () => false);
 
   sample({
-    clock: until,
-    source: $planned,
-    filter: until,
-    fn: (planned) => planned.ref,
-    target: runAllPostponedFx,
-  });
-
-  sample({
-    clock: runAllPostponedFx.done,
-    fn: () => ({ ref: new Set<T>() }),
-    target: $planned,
+    clock: [clock, until],
+    source: clock,
+    filter: and(until, not($fired)),
+    target,
   });
 
   return target;
