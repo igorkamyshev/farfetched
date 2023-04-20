@@ -18,7 +18,7 @@ export function resolveExecuteEffect<Params, Response, Error = unknown>(
   );
 }
 
-class InvalidConfigException extends Error {
+export class InvalidConfigException extends Error {
   constructor(message: string) {
     super(message);
   }

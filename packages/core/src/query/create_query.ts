@@ -1,28 +1,32 @@
-import { Effect } from 'effector';
+import { createEvent, is, sample, type Effect } from 'effector';
 
 import {
   createHeadlessQuery,
-  SharedQueryFactoryConfig,
+  type SharedQueryFactoryConfig,
 } from './create_headless_query';
-import { Query } from './type';
-import { Contract } from '../contract/type';
+import { type Query } from './type';
+import { type Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
-import { type DynamicallySourcedField } from '../libs/patronus';
-import { InvalidDataError } from '../errors/type';
-import { Validator } from '../validation/type';
-import { resolveExecuteEffect } from '../remote_operation/resolve_execute_effect';
+import {
+  abortable,
+  type AbortContext,
+  type DynamicallySourcedField,
+} from '../libs/patronus';
+import { type InvalidDataError } from '../errors/type';
+import { type Validator } from '../validation/type';
+import { InvalidConfigException } from '../remote_operation/resolve_execute_effect';
 
 // Overload: Only handler
 export function createQuery<Params, Response>(
   config: {
-    handler: (p: Params) => Promise<Response>;
+    handler: (p: Params, ctx: AbortContext) => Promise<Response>;
   } & SharedQueryFactoryConfig<Response>
 ): Query<Params, Response, unknown>;
 
 export function createQuery<Params, Response>(
   config: {
     initialData: Response;
-    handler: (p: Params) => Promise<Response>;
+    handler: (p: Params, ctx: AbortContext) => Promise<Response>;
   } & SharedQueryFactoryConfig<Response>
 ): Query<Params, Response, unknown, Response>;
 
@@ -187,7 +191,28 @@ export function createQuery<
     serialize: config.serialize,
   });
 
-  query.__.executeFx.use(resolveExecuteEffect(config));
+  const abortSignal = createEvent();
+
+  query.__.executeFx.use(
+    abortable({
+      abort: { signal: abortSignal },
+      effect(params, abortContext) {
+        if (is.effect(config.effect)) {
+          return config.effect(params);
+        } else if (typeof config.handler === 'function') {
+          return config.handler(params, abortContext);
+        }
+
+        throw new InvalidConfigException(
+          'handler or effect must be passed to the config'
+        );
+      },
+    })
+  );
+
+  if (config.concurrency.abort && is.event(config.concurrency.abort)) {
+    sample({ clock: config.concurrency.abort, target: abortSignal });
+  }
 
   return query;
 }

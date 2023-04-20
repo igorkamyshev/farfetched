@@ -35,10 +35,12 @@ export { createCacheAdapter } from './src/cache/adapters/instance';
 
 // Exposed libs
 export {
-  type SourcedField,
   normalizeSourced,
   combineSourced,
+  type SourcedField,
   type DynamicallySourcedField,
+  abortable,
+  type AbortContext,
 } from './src/libs/patronus';
 export { type FetchingStatus } from './src/libs/patronus';
 

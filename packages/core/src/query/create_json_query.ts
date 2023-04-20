@@ -1,4 +1,4 @@
-import { attach, createEvent, Event, sample, type Json } from 'effector';
+import { attach, createEvent, sample, type Json } from 'effector';
 
 import { Contract } from '../contract/type';
 import { createJsonApiRequest } from '../fetch/json';
@@ -19,11 +19,6 @@ import { unknownContract } from '../contract/unknown_contract';
 import { Validator } from '../validation/type';
 
 // -- Shared
-
-type ConcurrencyConfig = {
-  strategy?: 'TAKE_EVERY' | 'TAKE_FIRST' | 'TAKE_LATEST';
-  abort?: Event<void>;
-};
 
 type RequestConfig<Params, BodySource, QuerySource, HeadersSource, UrlSource> =
   {
@@ -57,7 +52,6 @@ interface BaseJsonQueryConfigNoParams<
     HeadersSource,
     UrlSource
   >;
-  concurrency?: ConcurrencyConfig;
 }
 
 interface BaseJsonQueryConfigWithParams<
@@ -76,7 +70,6 @@ interface BaseJsonQueryConfigWithParams<
     HeadersSource,
     UrlSource
   >;
-  concurrency?: ConcurrencyConfig;
 }
 
 // -- Overloads

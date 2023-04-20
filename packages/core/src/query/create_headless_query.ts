@@ -1,5 +1,11 @@
-import { createStore, sample, createEvent, type Store, attach } from 'effector';
-import { type Event } from 'effector';
+import {
+  createStore,
+  sample,
+  createEvent,
+  type Store,
+  type Event,
+  attach,
+} from 'effector';
 
 import { type Contract } from '../contract/type';
 import { type InvalidDataError } from '../errors/type';
@@ -19,10 +25,16 @@ import { isEqual } from '../libs/lohyphen';
 import { readonly } from '../libs/patronus';
 import { isAbortError } from '../errors/guards';
 
+type ConcurrencyConfig = {
+  strategy?: 'TAKE_EVERY' | 'TAKE_FIRST' | 'TAKE_LATEST';
+  abort?: Event<void>;
+};
+
 export interface SharedQueryFactoryConfig<Data, Initial = Data> {
   name?: string;
   enabled?: StaticOrReactive<boolean>;
   serialize?: Serialize<Data | Initial>;
+  concurrency?: ConcurrencyConfig;
 }
 
 /**
