@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.8.10
+
+### Patch Changes
+
+- 33b32c8: Fix sync batching in `keepFresh`
+
 ## 0.8.9
 
 ### Patch Changes
