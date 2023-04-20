@@ -5,7 +5,6 @@ import {
   sample,
   is,
   createStore,
-  merge,
 } from 'effector';
 
 import { type Query } from '../query/type';
@@ -13,7 +12,7 @@ import { divide, get, isEqual } from '../libs/lohyphen';
 import {
   not,
   and,
-  delay,
+  syncBatch,
   normalizeSourced,
   extractSource,
 } from '../libs/patronus';
@@ -139,8 +138,7 @@ export function keepFresh<Params>(
 
   // @ts-expect-error TS cannot get that if query.$idle is false, then $latestParams is Params
   sample({
-    // Use sync batching
-    clock: delay({ clock: forceFresh, timeout: 0 }),
+    clock: syncBatch(forceFresh),
     source: query.__.$latestParams,
     filter: not(query.$idle),
     target: query.refresh,

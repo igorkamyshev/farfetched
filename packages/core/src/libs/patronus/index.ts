@@ -18,3 +18,4 @@ export {
 export { type FetchingStatus } from './status';
 export { time } from './time';
 export { and } from './and';
+export { syncBatch } from './sync_batch';
