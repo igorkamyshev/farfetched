@@ -5,7 +5,6 @@ import {
   sample,
   is,
   createStore,
-  merge,
 } from 'effector';
 
 import { type Query } from '../query/type';
@@ -13,7 +12,7 @@ import { divide, get, isEqual } from '../libs/lohyphen';
 import {
   not,
   and,
-  delay,
+  syncBatch,
   normalizeSourced,
   extractSource,
 } from '../libs/patronus';
@@ -89,11 +88,20 @@ export function keepFresh<Params>(
 
   if (config.automatically) {
     const finalyParams = query.finished.finally.map(get('params'));
-    const $previousSources = combine(
-      query.__.lowLevelAPI.sourced.map((sourced) =>
-        normalizeSourced({ field: sourced, clock: finalyParams })
-      )
-    );
+
+    const $previousSources = createStore<any[]>([], { serialize: 'ignore' });
+
+    // @ts-expect-error I have no idea
+    sample({
+      clock: finalyParams,
+      source: combine(
+        query.__.lowLevelAPI.sourced.map((sourced) =>
+          normalizeSourced({ field: sourced, clock: finalyParams })
+        )
+      ),
+      filter: query.$enabled,
+      target: $previousSources,
+    });
 
     const sourcesUpdated = sample({
       clock: query.__.lowLevelAPI.sourced.map(extractSource).filter(is.store),
@@ -109,14 +117,17 @@ export function keepFresh<Params>(
 
     triggers.push(
       sample({
-        clock: $nextSources.updates,
+        clock: [
+          $nextSources.updates,
+          query.$enabled.updates.filter({ fn: Boolean }),
+        ],
         source: [$nextSources, $previousSources] as const,
         filter: ([next, prev]) => !isEqual(next, prev),
       })
     );
   }
 
-  const forceFresh = merge(triggers);
+  const forceFresh = sample({ clock: triggers, filter: query.$enabled });
 
   sample({
     clock: forceFresh,
@@ -127,8 +138,7 @@ export function keepFresh<Params>(
 
   // @ts-expect-error TS cannot get that if query.$idle is false, then $latestParams is Params
   sample({
-    // Use sync batching
-    clock: delay({ clock: forceFresh, timeout: 0 }),
+    clock: syncBatch(forceFresh),
     source: query.__.$latestParams,
     filter: not(query.$idle),
     target: query.refresh,

@@ -1,5 +1,29 @@
 # @farfetched/core
 
+## 0.8.10
+
+### Patch Changes
+
+- 33b32c8: Fix sync batching in `keepFresh`
+
+## 0.8.9
+
+### Patch Changes
+
+- 8c61933: Fix refreshing after enabling _Query_ with different sources
+
+## 0.8.8
+
+### Patch Changes
+
+- 6cbe074: Fix re-run old refreshes after enabling and disabling _Query_
+
+## 0.8.7
+
+### Patch Changes
+
+- d393e78: Fix extra refresh in `keepFresh` while source is changing for disabled _Query_
+
 ## 0.8.6
 
 ### Patch Changes
