@@ -86,3 +86,14 @@ This section describes the [_Event_](https://effector.dev/docs/api/effector/even
 
 - `params` with the parameters that were used to start the _Query_
 - `meta` with the execution metadata
+
+## `aborted` <Badge type="tip" text="since v0.9.0" />
+
+[_Event_](https://effector.dev/docs/api/effector/event) that will be triggered when the _Query_ is aborted. Payload will contain the object with the following fields:
+
+- `params` with the parameters that were used to start the _Query_
+- `meta` with the execution metadata
+
+::: tip
+Now, aborted _Queries_ are treated as failed. This means that `.finished.failure` will be triggered as well as `.aborted`. In v0.10 we will change this behavior and `.aborted` will not trigger `.finished.failure` and _Query_ will not be moved to the `"fail"` state.
+:::
