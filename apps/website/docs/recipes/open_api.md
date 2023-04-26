@@ -1,6 +1,6 @@
 # Code generation with OpenAPI
 
-Farfetched itself does not have any code generation capabilities. However, it is possible to use the OpenAPI specification to generate code for the client with external open-source tools.
+Farfetched itself does not have any code generation capabilities. However, it is possible to use the OpenAPI specification (and its implementation Swagger) to generate code for the client with external open-source tools.
 
 In this recipe, we will use the [OpenAPI Generator](https://github.com/openapi/openapi) with a special [preset for Effector](https://github.com/openapi/preset-effector).
 
