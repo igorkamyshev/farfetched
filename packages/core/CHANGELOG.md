@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.8.11
+
+### Patch Changes
+
+- 528416b: Export missed types for custom cache adapters
+
 ## 0.8.10
 
 ### Patch Changes
