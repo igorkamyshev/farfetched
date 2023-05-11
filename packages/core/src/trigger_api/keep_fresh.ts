@@ -28,7 +28,7 @@ export function keepFresh<Params>(
 export function keepFresh<Params>(
   query: Query<Params, any, any, any>,
   config: {
-    triggers: Array<Event<unknown> | Event<any> | TriggerProtocol>;
+    triggers: Array<Event<any> | TriggerProtocol>;
   }
 ): void;
 
@@ -36,7 +36,7 @@ export function keepFresh<Params>(
   query: Query<Params, any, any, any>,
   config: {
     automatically: true;
-    triggers: Array<Event<unknown> | Event<any> | TriggerProtocol>;
+    triggers: Array<Event<any> | TriggerProtocol>;
   }
 ): void;
 
@@ -44,7 +44,7 @@ export function keepFresh<Params>(
   query: Query<Params, any, any, any>,
   config: {
     automatically?: true;
-    triggers?: Array<Event<unknown> | Event<void> | TriggerProtocol>;
+    triggers?: Array<Event<any> | TriggerProtocol>;
   }
 ): void {
   const triggers: Array<Event<any>> = [];
