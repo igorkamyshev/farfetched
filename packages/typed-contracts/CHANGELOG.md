@@ -1,5 +1,7 @@
 # @farfetched/typed-contracts
 
+## 0.8.12
+
 ## 0.8.11
 
 ## 0.8.10
