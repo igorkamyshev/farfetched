@@ -1,5 +1,12 @@
 # @farfetched/core
 
+## 0.8.12
+
+### Patch Changes
+
+- 4a1f222: Simplify `keepFresh` typings
+- 461fbc8: Fix incorrect typings of `triggers` in `keepFresh`
+
 ## 0.8.11
 
 ### Patch Changes
