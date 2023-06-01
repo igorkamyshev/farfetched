@@ -113,6 +113,7 @@ export function createHeadlessQuery<
     clock: operation.finished.success,
     fn: ({ result }) => result,
     target: $data,
+    greedy: true,
   });
 
   $data.reset(operation.finished.failure);

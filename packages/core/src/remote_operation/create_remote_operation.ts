@@ -155,6 +155,7 @@ export function createRemoteOperation<
       finished.failure.map(() => 'fail' as const),
     ],
     target: $status,
+    greedy: true,
   });
 
   sample({ clock: start, filter: $enabled, target: $latestParams });
