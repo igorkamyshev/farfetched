@@ -1,4 +1,4 @@
-import { allSettled, createStore, fork } from 'effector';
+import { allSettled, createEvent, createStore, fork, sample } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 import { unknownContract } from '../../contract/unknown_contract';
 import { fetchFx } from '../../fetch/fetch';
@@ -6,6 +6,7 @@ import { withFactory } from '../../libs/patronus';
 import { createJsonQuery } from '../../query/create_json_query';
 
 import { createQuery } from '../../query/create_query';
+import { declareParams } from '../../remote_operation/params';
 import { attachOperation } from '../attach';
 
 describe('attach for query', () => {
@@ -186,5 +187,42 @@ describe('attach for query', () => {
 
     expect(fetchMock).toBeCalledTimes(1);
     expect(await fetchMock.mock.calls[0][0].url).toBe('https://api.salo.com/');
+  });
+
+  test('do not mess sourced fields, issue #327', async () => {
+    const originalHandler = vi.fn();
+    const originalQuery = createJsonQuery({
+      params: declareParams<{ id: number }>(),
+      request: {
+        method: 'GET',
+        url: (params) => `https://api.salo.com/${params.id}`,
+      },
+      response: {
+        contract: unknownContract,
+      },
+    });
+
+    const firstQuery = attachOperation(originalQuery);
+    const secondQuery = attachOperation(originalQuery);
+
+    const start = createEvent();
+
+    sample({ clock: start, fn: () => ({ id: 1 }), target: firstQuery.refresh });
+    sample({
+      clock: start,
+      fn: () => ({ id: 2 }),
+      target: secondQuery.refresh,
+    });
+
+    const scope = fork({
+      handlers: [[originalQuery.__.executeFx, originalHandler]],
+    });
+
+    await allSettled(start, { scope });
+
+    expect(originalHandler).toBeCalledTimes(2);
+
+    expect(originalHandler.mock.calls[0][0].url).toBe('https://api.salo.com/1');
+    expect(originalHandler.mock.calls[1][0].url).toBe('https://api.salo.com/2');
   });
 });
