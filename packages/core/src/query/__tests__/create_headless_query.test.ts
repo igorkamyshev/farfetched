@@ -1,4 +1,4 @@
-import { allSettled, createStore, fork } from 'effector';
+import { allSettled, combine, createStore, createWatch, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
 import { watchRemoteOperation } from '@farfetched/test-utils';
@@ -430,5 +430,44 @@ describe('createHeadlessQuery#refresh', () => {
 
     expect(listener).toBeCalledTimes(1);
     expect(scope.getState(query.$data)).toBe(2);
+  });
+
+  test('change $pending and $data simultaneously, issue #325', async () => {
+    const query = createHeadlessQuery({
+      contract: unknownContract,
+      mapData: ({ result }) => result,
+    });
+
+    const $combined = combine({ pending: query.$pending, data: query.$data });
+
+    const combinedListener = vi.fn();
+
+    const exectorMock = vi.fn().mockResolvedValue('data');
+
+    const scope = fork({ handlers: [[query.__.executeFx, exectorMock]] });
+
+    const unwatch = createWatch({
+      scope,
+      unit: $combined,
+      fn: combinedListener,
+    });
+
+    await allSettled(query.refresh, { scope, params: null });
+
+    // one for pending true -> false
+    expect(combinedListener).toHaveBeenNthCalledWith(1, {
+      pending: true,
+      data: null,
+    });
+
+    // one for data null -> 'data' AND pending false -> true
+    expect(combinedListener).toHaveBeenNthCalledWith(2, {
+      pending: false,
+      data: 'data',
+    });
+
+    expect(combinedListener).toBeCalledTimes(2);
+
+    unwatch();
   });
 });
