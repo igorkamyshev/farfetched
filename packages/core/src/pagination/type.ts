@@ -38,7 +38,7 @@ export interface Pagination<
   reset: Event<void>;
   next: Event<void>;
   prev: Event<void>;
-  specific: Event<number>;
+  specific: Event<RequiredPageParams>;
 
   readonly '@@unitShape': () => {
     data: Store<Data | InitialData>;
@@ -48,7 +48,7 @@ export interface Pagination<
     start: Event<Params>;
     next: Event<void>;
     prev: Event<void>;
-    specific: Event<number>;
+    specific: Event<RequiredPageParams>;
   };
 }
 

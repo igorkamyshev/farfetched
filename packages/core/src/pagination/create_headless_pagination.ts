@@ -126,12 +126,24 @@ export function createHeadlessPagination<
   const reset = createEvent();
   const next = createEvent();
   const prev = createEvent();
-  const specific = createEvent<number>();
+  const specific = createEvent<RequiredPageParams>();
 
   sample({
     clock: operation.finished.success,
     fn: ({ params, result }) => ({ params, result }),
     target: [updateCurrentPage, checkExistingPage],
+  });
+
+  sample({
+    clock: operation.finished.success,
+    fn: ({ result }) => result,
+    target: $data,
+  });
+
+  sample({
+    clock: operation.finished.success,
+    fn: () => null,
+    target: $error,
   });
 
   sample({
@@ -153,11 +165,33 @@ export function createHeadlessPagination<
   });
 
   sample({
+    clock: operation.finished.failure,
+    fn: ({ error }) => error,
+    target: $error,
+  });
+
+  sample({
+    clock: operation.finished.failure,
+    target: $data.reinit!,
+  });
+
+  sample({
     clock: next,
     source: { page: $page, params: $lastParams },
     filter: and($hasNext, not(operation.$pending), $hasLatestParams),
     fn: ({ page, params }) => ({ ...params!, page: page + 1 }),
-    target: operation.__.executeFx,
+    target: operation.start,
+  });
+
+  sample({
+    clock: next,
+    source: { page: $page, params: $lastParams },
+    filter: not($hasNext),
+    fn: ({ page, params = {} }) => ({
+      params: { ...(params as Params), page: page + 1 },
+      meta: { stopErrorPropagation: false, stale: false },
+    }),
+    target: operation.finished.skip,
   });
 
   sample({
@@ -165,15 +199,26 @@ export function createHeadlessPagination<
     source: { page: $page, params: $lastParams },
     filter: and($hasPrev, not(operation.$pending), $hasLatestParams),
     fn: ({ page, params }) => ({ ...params!, page: page - 1 }),
-    target: operation.__.executeFx,
+    target: operation.start,
+  });
+
+  sample({
+    clock: prev,
+    source: { page: $page, params: $lastParams },
+    filter: not($hasPrev),
+    fn: ({ page, params = {} }) => ({
+      params: { ...(params as Params), page: page - 1 },
+      meta: { stopErrorPropagation: false, stale: false },
+    }),
+    target: operation.finished.skip,
   });
 
   sample({
     clock: specific,
     source: $lastParams,
     filter: and(not(operation.$pending), $hasLatestParams),
-    fn: (params, page) => ({ ...params!, page }),
-    target: operation.__.executeFx,
+    fn: (params, { page }) => ({ ...params!, page }),
+    target: operation.start,
   });
 
   sample({
@@ -184,6 +229,7 @@ export function createHeadlessPagination<
       $page.reinit!,
       $hasNext.reinit!,
       $hasPrev.reinit!,
+      operation.__.$latestParams.reinit!,
     ],
   });
 
