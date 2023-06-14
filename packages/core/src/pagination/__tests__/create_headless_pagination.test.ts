@@ -7,7 +7,6 @@ import {
   createHeadlessPagination,
 } from '../create_headless_pagination';
 import { watchRemoteOperation } from '@farfetched/test-utils';
-import { isPagination } from '../type';
 import { invalidDataError } from '../../errors/create_error';
 
 const baseConfig: HeadlessPaginationFactoryConfig<
@@ -26,10 +25,6 @@ const baseConfig: HeadlessPaginationFactoryConfig<
 
 describe('createHeadlessPagination simple', () => {
   const pagination = createHeadlessPagination(baseConfig);
-
-  test('return pagination object', async () => {
-    expect(isPagination(pagination)).toBeTruthy();
-  });
 
   test('start trigger executeFx', async () => {
     const mockFn = vi.fn();

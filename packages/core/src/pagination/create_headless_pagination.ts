@@ -4,33 +4,24 @@ import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
 import {
   DynamicallySourcedField,
-  Serialize,
   SourcedField,
-  StaticOrReactive,
   and,
   not,
-  serializationForSideStore,
 } from '../libs/patronus';
-import { createRemoteOperation } from '../remote_operation/create_remote_operation';
 import { Validator } from '../validation/type';
+import { Pagination, ParamsAndResult, RequiredPageParams } from './type';
 import {
-  Pagination,
-  PaginationMeta,
-  PaginationSymbol,
-  ParamsAndResult,
-  RequiredPageParams,
-} from './type';
+  SharedQueryFactoryConfig,
+  createHeadlessQuery,
+} from '../query/create_headless_query';
 
 export interface SharedPaginationFactoryConfig<
   Params extends RequiredPageParams,
   Data,
   InitialData = Data
-> {
+> extends SharedQueryFactoryConfig<Data, InitialData> {
   hasNextPage: (options: ParamsAndResult<Params, Data>) => boolean;
   hasPrevPage: (options: ParamsAndResult<Params, Data>) => boolean;
-  name?: string;
-  enabled?: StaticOrReactive<boolean>;
-  serialize?: Serialize<Data | InitialData>;
 }
 
 export interface HeadlessPaginationFactoryConfig<
@@ -74,76 +65,39 @@ export function createHeadlessPagination<
     InitialData
   >
 ): Pagination<Params, MappedData, Error | InvalidDataError, InitialData> {
-  const {
-    name,
-    enabled,
-    serialize,
-    contract,
-    initialData: initialDataRaw,
-    paramsAreMeaningless,
-    sourced,
-    validate,
-    mapData,
-    hasNextPage,
-    hasPrevPage,
-  } = config;
-  const initialData = (initialDataRaw ?? null) as InitialData;
+  const { hasNextPage, hasPrevPage, ...queryConfig } = config;
 
-  const operation = createRemoteOperation<
+  const operation = createHeadlessQuery<
     Params,
     Response,
+    Error,
     ContractData,
     MappedData,
-    Error,
-    PaginationMeta<MappedData, InitialData>,
     MapDataSource,
-    ValidationSource
-  >({
-    name,
-    kind: PaginationSymbol,
-    meta: { serialize, initialData },
-    enabled,
-    serialize: serializationForSideStore(serialize),
-    contract,
-    paramsAreMeaningless,
-    sourced,
-    validate,
-    mapData,
-  });
+    ValidationSource,
+    InitialData
+  >(queryConfig);
 
-  const $data = createStore<MappedData | InitialData>(initialData);
-  const $error = createStore<Error | InvalidDataError | null>(null);
+  const $latestParams = operation.__.$latestParams;
 
-  const $lastParams = operation.__.$latestParams;
-  const $hasLatestParams = $lastParams.map((params) => params !== null);
-
+  // Addition stores
   const $page = createStore(0);
   const $hasNext = createStore(false);
   const $hasPrev = createStore(false);
+
+  // Update triggers for page predicates
   const updateCurrentPage = createEvent<ParamsAndResult<Params, MappedData>>();
   const checkExistingPage = createEvent<ParamsAndResult<Params, MappedData>>();
 
-  const reset = createEvent();
   const next = createEvent();
   const prev = createEvent();
   const specific = createEvent<RequiredPageParams>();
 
+  // Updating predicates
   sample({
     clock: operation.finished.success,
     fn: ({ params, result }) => ({ params, result }),
     target: [updateCurrentPage, checkExistingPage],
-  });
-
-  sample({
-    clock: operation.finished.success,
-    fn: ({ result }) => result,
-    target: $data,
-  });
-
-  sample({
-    clock: operation.finished.success,
-    fn: () => null,
-    target: $error,
   });
 
   sample({
@@ -164,28 +118,18 @@ export function createHeadlessPagination<
     target: $hasPrev,
   });
 
-  sample({
-    clock: operation.finished.failure,
-    fn: ({ error }) => error,
-    target: $error,
-  });
-
-  sample({
-    clock: operation.finished.failure,
-    target: $data.reinit!,
-  });
-
+  // Forward pagination
   sample({
     clock: next,
-    source: { page: $page, params: $lastParams },
-    filter: and($hasNext, not(operation.$pending), $hasLatestParams),
+    source: { page: $page, params: $latestParams },
+    filter: and($hasNext, not(operation.$pending), not(operation.$idle)),
     fn: ({ page, params }) => ({ ...params!, page: page + 1 }),
     target: operation.start,
   });
 
   sample({
     clock: next,
-    source: { page: $page, params: $lastParams },
+    source: { page: $page, params: $latestParams },
     filter: not($hasNext),
     fn: ({ page, params = {} }) => ({
       params: { ...(params as Params), page: page + 1 },
@@ -194,17 +138,18 @@ export function createHeadlessPagination<
     target: operation.finished.skip,
   });
 
+  // Back pagination
   sample({
     clock: prev,
-    source: { page: $page, params: $lastParams },
-    filter: and($hasPrev, not(operation.$pending), $hasLatestParams),
+    source: { page: $page, params: $latestParams },
+    filter: and($hasPrev, not(operation.$pending), not(operation.$idle)),
     fn: ({ page, params }) => ({ ...params!, page: page - 1 }),
     target: operation.start,
   });
 
   sample({
     clock: prev,
-    source: { page: $page, params: $lastParams },
+    source: { page: $page, params: $latestParams },
     filter: not($hasPrev),
     fn: ({ page, params = {} }) => ({
       params: { ...(params as Params), page: page - 1 },
@@ -213,30 +158,32 @@ export function createHeadlessPagination<
     target: operation.finished.skip,
   });
 
+  // Specific pagination
   sample({
     clock: specific,
-    source: $lastParams,
-    filter: and(not(operation.$pending), $hasLatestParams),
+    source: $latestParams,
+    filter: and(not(operation.$pending), not(operation.$idle)),
     fn: (params, { page }) => ({ ...params!, page }),
     target: operation.start,
   });
 
+  // Addition resets
   sample({
-    clock: reset,
+    clock: operation.reset,
     target: [
-      $data.reinit!,
-      $error.reinit!,
       $page.reinit!,
       $hasNext.reinit!,
       $hasPrev.reinit!,
-      operation.__.$latestParams.reinit!,
+      $latestParams.reinit!,
     ],
   });
 
+  // Protocols
   const unitShape = {
-    data: $data,
-    error: $error,
+    data: operation.$data,
+    error: operation.$error,
     pending: operation.$pending,
+    stale: operation.$stale,
     page: $page,
     start: operation.start,
     next,
@@ -247,16 +194,13 @@ export function createHeadlessPagination<
   const unitShapeProtocol = () => unitShape;
 
   return {
-    $data,
-    $error,
+    ...operation,
     $page,
     $hasNext,
     $hasPrev,
-    reset,
     next,
     prev,
     specific,
-    ...operation,
     '@@unitShape': unitShapeProtocol,
   };
 }

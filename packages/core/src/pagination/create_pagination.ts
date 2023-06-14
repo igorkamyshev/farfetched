@@ -1,4 +1,4 @@
-import { Effect, createEffect } from 'effector';
+import { Effect } from 'effector';
 
 import { unknownContract } from '../contract/unknown_contract';
 import { InvalidDataError } from '../errors/type';
@@ -38,6 +38,7 @@ type ExecutionPaginationFactoryConfig<
   | HandlerPaginationFactoryConfig<Params, Data>
   | EffectPaginationFactoryConfig<Params, Data, Error>;
 
+// Only handler/effect overload
 export function createPagination<
   Params extends RequiredPageParams,
   Response,
@@ -58,6 +59,7 @@ export function createPagination<
     SharedPaginationFactoryConfig<Params, Response>
 ): Pagination<Params, Response, Error, Response>;
 
+// MapData overload
 export function createPagination<
   Params extends RequiredPageParams,
   Response,
@@ -97,6 +99,7 @@ export function createPagination<
     SharedPaginationFactoryConfig<Params, MappedData>
 ): Pagination<Params, MappedData, Error, MappedData>;
 
+// Contract overload
 export function createPagination<
   Params extends RequiredPageParams,
   Response,
@@ -126,6 +129,7 @@ export function createPagination<
     SharedPaginationFactoryConfig<Params, ContractData>
 ): Pagination<Params, ContractData, Error | InvalidDataError, ContractData>;
 
+// MapData and Contract overload
 export function createPagination<
   Params extends RequiredPageParams,
   Response,
@@ -169,6 +173,7 @@ export function createPagination<
     SharedPaginationFactoryConfig<Params, MappedData, MappedData>
 ): Pagination<Params, MappedData, Error | InvalidDataError, MappedData>;
 
+// Implementations
 export function createPagination<
   Params extends RequiredPageParams,
   Response,
@@ -191,11 +196,11 @@ export function createPagination<
     ValidationSource,
     InitialData
   >({
-    initialData: config.initialData ?? null,
-    contract: config.contract ?? unknownContract,
+    initialData: config.initialData,
+    contract: config.contract,
     hasNextPage: config.hasNextPage,
     hasPrevPage: config.hadPrevPage,
-    mapData: config.mapData ?? (({ result }) => result),
+    mapData: config.mapData,
     enabled: config.enabled,
     name: config.name,
   });

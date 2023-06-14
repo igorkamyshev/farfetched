@@ -1,47 +1,75 @@
 import { Event, Store } from 'effector';
-import { Serialize } from '../libs/patronus';
-import { RemoteOperation } from '../remote_operation/type';
+import { Query } from '../query/type';
 
-export const PaginationSymbol = Symbol('Pagination');
-
+/**
+ * Params passing to mapData, predicates and other fn's of pagination.
+ */
+// Maybe it should be made as a shared type for other operations.
 export interface ParamsAndResult<Params, Result> {
   params: Params;
   result: Result;
 }
 
+/**
+ * Base interface for params of pagination operation.
+ */
 export interface RequiredPageParams {
   page: number;
 }
 
-export interface PaginationMeta<Data, InitialData = Data> {
-  serialize: Serialize<Data | InitialData>;
-  initialData: InitialData;
-}
-
+// Pagination is just a special kind of query.
 export interface Pagination<
   Params extends RequiredPageParams,
   Data,
   Error,
   InitialData = null
-> extends RemoteOperation<
-    Params,
-    Data,
-    Error,
-    PaginationMeta<Data, InitialData>
-  > {
-  $data: Store<Data | InitialData>;
-  $error: Store<Error | null>;
+> extends Query<Params, Data, Error, InitialData> {
+  /**
+   * Last fetched page which should be equal "opened" by user.
+   *
+   * @default 0
+   */
   $page: Store<number>;
+  /**
+   * There is next page.
+   *
+   * Filled by value from predicate 'hasNextPage' calling after every donned request.
+   * @default false
+   */
   $hasNext: Store<boolean>;
+  /**
+   * There is prevision page.
+   *
+   * Filled by value from predicate 'hasPrevPage' calling after every donned request.
+   * @default false
+   */
   $hasPrev: Store<boolean>;
 
-  reset: Event<void>;
+  /**
+   * Fetch next page if exists.
+   * Using params from latest request and incrementing page prop.
+   *
+   * Requests won't be sent if status is initial.
+   */
   next: Event<void>;
+  /**
+   * Fetch prevision page if exists.
+   * Using params from latest request and incrementing page prop.
+   *
+   * Requests won't be sent if status is initial.
+   */
   prev: Event<void>;
+  /**
+   * Fetch specific page. No check if it existing before request. Be careful.
+   * Using params from latest request and incrementing page prop.
+   *
+   * Requests won't be sent if status is initial.
+   */
   specific: Event<RequiredPageParams>;
 
   '@@unitShape': () => {
     data: Store<Data | InitialData>;
+    stale: Store<boolean>;
     error: Store<Error | null>;
     page: Store<number>;
     pending: Store<boolean>;
@@ -50,8 +78,4 @@ export interface Pagination<
     prev: Event<void>;
     specific: Event<RequiredPageParams>;
   };
-}
-
-export function isPagination(value: any): value is Pagination<any, any, any> {
-  return value?.__?.kind === PaginationSymbol;
 }
