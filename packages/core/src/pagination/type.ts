@@ -14,8 +14,8 @@ export interface RequiredPageParams {
 }
 
 export interface PaginationMeta<Data, InitialData = Data> {
-  readonly serialize: Serialize<Data | InitialData>;
-  readonly initialData: InitialData;
+  serialize: Serialize<Data | InitialData>;
+  initialData: InitialData;
 }
 
 export interface Pagination<
@@ -40,7 +40,7 @@ export interface Pagination<
   prev: Event<void>;
   specific: Event<RequiredPageParams>;
 
-  readonly '@@unitShape': () => {
+  '@@unitShape': () => {
     data: Store<Data | InitialData>;
     error: Store<Error | null>;
     page: Store<number>;
