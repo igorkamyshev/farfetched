@@ -9,11 +9,11 @@ import {
   not,
 } from '../libs/patronus';
 import { Validator } from '../validation/type';
-import { Pagination, ParamsAndResult, RequiredPageParams } from './type';
 import {
   SharedQueryFactoryConfig,
   createHeadlessQuery,
 } from '../query/create_headless_query';
+import { Pagination, ParamsAndResult, RequiredPageParams } from './type';
 
 export interface SharedPaginationFactoryConfig<
   Params extends RequiredPageParams,
@@ -45,6 +45,14 @@ export interface HeadlessPaginationFactoryConfig<
   paramsAreMeaningless?: boolean;
 }
 
+/**
+ *
+ * Create pagination query without executor.
+ * Shouldn't be used as-is
+ *
+ * @param {HeadlessPaginationFactoryConfig} config
+ * @returns {Pagination}
+ */
 export function createHeadlessPagination<
   Params extends RequiredPageParams,
   Response,

@@ -1,4 +1,5 @@
 import { Event, Store } from 'effector';
+
 import { Query } from '../query/type';
 
 /**
@@ -6,8 +7,8 @@ import { Query } from '../query/type';
  */
 // Maybe it should be made as a shared type for other operations.
 export interface ParamsAndResult<Params, Result> {
-  params: Params;
   result: Result;
+  params: Params;
 }
 
 /**

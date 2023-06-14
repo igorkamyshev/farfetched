@@ -1,9 +1,10 @@
 import { describe, test, expectTypeOf } from 'vitest';
-import { createHeadlessPagination } from '../create_headless_pagination';
-import { unknownContract } from '../../contract/unknown_contract';
-import { Pagination, ParamsAndResult, RequiredPageParams } from '../type';
-import { Contract } from '../../contract/type';
 import { createStore } from 'effector';
+
+import { Contract } from '../../contract/type';
+import { unknownContract } from '../../contract/unknown_contract';
+import { createHeadlessPagination } from '../create_headless_pagination';
+import { Pagination, ParamsAndResult, RequiredPageParams } from '../type';
 
 const baseConfig = {
   contract: unknownContract,

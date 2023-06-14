@@ -1,13 +1,13 @@
+import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, createStore, fork } from 'effector';
 import { vi, describe, test, expect } from 'vitest';
 
 import { unknownContract } from '../../contract/unknown_contract';
+import { invalidDataError } from '../../errors/create_error';
 import {
   HeadlessPaginationFactoryConfig,
   createHeadlessPagination,
 } from '../create_headless_pagination';
-import { watchRemoteOperation } from '@farfetched/test-utils';
-import { invalidDataError } from '../../errors/create_error';
 
 const baseConfig: HeadlessPaginationFactoryConfig<
   any,

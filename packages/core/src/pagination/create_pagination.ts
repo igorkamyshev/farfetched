@@ -1,6 +1,7 @@
 import { Effect } from 'effector';
 
 import { unknownContract } from '../contract/unknown_contract';
+import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
 import { DynamicallySourcedField } from '../libs/patronus';
 import { resolveExecuteEffect } from '../remote_operation/resolve_execute_effect';
@@ -10,13 +11,12 @@ import {
   createHeadlessPagination,
 } from './create_headless_pagination';
 import { Pagination, ParamsAndResult, RequiredPageParams } from './type';
-import { Contract } from '../contract/type';
 
 interface HandlerPaginationFactoryConfig<
   Params extends RequiredPageParams,
   Response
 > {
-  handler: (params: Params) => Response;
+  handler: (params: Params) => Response | Promise<Response>;
   effect?: never;
 }
 
@@ -70,7 +70,7 @@ export function createPagination<
 >(
   config: {
     mapData: DynamicallySourcedField<
-      ParamsAndResult<Params, Response>,
+      { result: Response; params: Params },
       MappedData,
       MapDataSource
     >;
@@ -183,9 +183,7 @@ export function createPagination<
   MapDataSource,
   ValidationSource,
   InitialData = null
->(
-  config: any
-): Pagination<Params, MappedData, Error | InvalidDataError, InitialData> {
+>(config: any): any {
   const operation = createHeadlessPagination<
     Params,
     Response,
@@ -197,10 +195,10 @@ export function createPagination<
     InitialData
   >({
     initialData: config.initialData,
-    contract: config.contract,
+    contract: config.contract ?? unknownContract,
     hasNextPage: config.hasNextPage,
     hasPrevPage: config.hadPrevPage,
-    mapData: config.mapData,
+    mapData: config.mapData ?? (({ result }) => result),
     enabled: config.enabled,
     name: config.name,
   });

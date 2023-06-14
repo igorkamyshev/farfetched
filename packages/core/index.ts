@@ -9,6 +9,11 @@ export { connectQuery } from './src/query/connect_query';
 export { createHeadlessQuery } from './src/query/create_headless_query';
 export { createJsonQuery } from './src/query/create_json_query';
 
+// Pagination public API
+export { type Pagination } from './src/pagination/type';
+export { createPagination } from './src/pagination/create_pagination';
+export { createHeadlessPagination } from './src/pagination/create_headless_pagination';
+
 // Mutation public API
 export { type Mutation } from './src/mutation/type';
 export { createMutation } from './src/mutation/create_mutation';
