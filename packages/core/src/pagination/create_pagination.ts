@@ -12,6 +12,7 @@ import {
 } from './create_headless_pagination';
 import { Pagination, ParamsAndResult, RequiredPageParams } from './type';
 
+// Shared
 interface HandlerPaginationFactoryConfig<
   Params extends RequiredPageParams,
   Response

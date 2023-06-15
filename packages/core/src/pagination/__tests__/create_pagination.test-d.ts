@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createEffect, createStore } from 'effector';
 import { expectTypeOf, describe, test } from 'vitest';
 
 import { Contract } from '../../contract/type';
 import { createPagination } from '../create_pagination';
 import { InvalidDataError } from '../../errors/type';
-import { Pagination, RequiredPageParams } from '../type';
+import { Pagination, ParamsAndResult, RequiredPageParams } from '../type';
 
 const baseConfig = {
   hasNextPage: () => true,
@@ -66,8 +67,8 @@ describe('createPagination', () => {
   test('effect and mapData', () => {
     const stringifyPagination = createPagination({
       ...baseConfig,
-      effect: createEffect((_: RequiredPageParams) => Math.random()),
-      mapData: ({ result, params }) => 'asdfasdf',
+      effect: createEffect<RequiredPageParams, { param: number }>(),
+      mapData: ({ result, params }) => result.param,
     });
 
     expectTypeOf(stringifyPagination).toEqualTypeOf<
@@ -75,12 +76,13 @@ describe('createPagination', () => {
     >();
 
     const sourcedMapDataPagination = createPagination({
-      ...baseConfig,
+      hasNextPage: (params) => true,
+      hasPrevPage: (params) => true,
       effect: createEffect<RequiredPageParams, number, Error>(),
       mapData: {
         source: createStore(0),
         fn: ({ result, params }, source) => {
-          return 'string';
+          return result.toString();
         },
       },
     });
@@ -103,6 +105,7 @@ describe('createPagination', () => {
 
     const incorrect1 = createPagination({
       ...baseConfig,
+      // @ts-expect-error it's impossiple to pass invalid type to extract (expect `number`, given `string`)
       effect: createEffect<RequiredPageParams, number, { error: boolean }>(),
       // @ts-expect-error it's impossiple to pass invalid type to extract (expect `number`, given `string`)
       contract: {} as Contract<string, 6>,

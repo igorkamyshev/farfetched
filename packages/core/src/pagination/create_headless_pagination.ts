@@ -15,13 +15,18 @@ import {
 } from '../query/create_headless_query';
 import { Pagination, ParamsAndResult, RequiredPageParams } from './type';
 
+export type Predicate<Params, Data> = (
+  params: ParamsAndResult<Params, Data>
+) => boolean;
+
 export interface SharedPaginationFactoryConfig<
+// Try to remove restriction and make it with union in required places
   Params extends RequiredPageParams,
   Data,
   InitialData = Data
 > extends SharedQueryFactoryConfig<Data, InitialData> {
-  hasNextPage: (options: ParamsAndResult<Params, Data>) => boolean;
-  hasPrevPage: (options: ParamsAndResult<Params, Data>) => boolean;
+  hasNextPage: Predicate<Params, Data>;
+  hasPrevPage: Predicate<Params, Data>;
 }
 
 export interface HeadlessPaginationFactoryConfig<
@@ -31,7 +36,7 @@ export interface HeadlessPaginationFactoryConfig<
   MappedData,
   MapDataSource,
   ValidationSource,
-  InitialData = null
+  InitialData
 > extends SharedPaginationFactoryConfig<Params, MappedData, InitialData> {
   initialData?: InitialData;
   contract: Contract<Response, ContractData>;
