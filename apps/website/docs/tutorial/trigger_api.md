@@ -81,7 +81,7 @@ sample({ clock: appStarted, target: someQuery.refresh });
 
 ### External triggers
 
-It could be really useful to refresh the data on some application wide triggers like tab visibility or network reconnection. This kind of triggers is out of scope of Farfetched, so they are distributed as [separated package — `@withease/web-api`](https://withease.pages.dev/web-api.html).
+It could be really useful to refresh the data on some application wide triggers like tab visibility or network reconnection. This kind of triggers is out of scope of Farfetched, so they are distributed as [separated package — `@withease/web-api`](https://withease.pages.dev/web-api).
 
 ::: code-group
 
@@ -110,7 +110,7 @@ keepFresh(someQuery, {
 });
 ```
 
-Check [documentation of `@withease/web-api`](https://withease.pages.dev/web-api.html) for the complete list of available triggers.
+Check [documentation of `@withease/web-api`](https://withease.pages.dev/web-api) for the complete list of available triggers.
 
 ### Mix automatic and manual refresh
 
