@@ -46,7 +46,8 @@ export type HttpMethod =
   | 'PUT'
   | 'PATCH'
   | 'DELETE'
-  | 'QUERY';
+  | 'QUERY'
+  | 'OPTIONS';
 
 export type RequestBody = Blob | BufferSource | FormData | string;
 
