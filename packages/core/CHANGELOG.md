@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.8.13
+
+### Patch Changes
+
+- 55baa71: Add `OPTIONS` method to allowed `HttpMethod`
+
 ## 0.8.12
 
 ### Patch Changes
