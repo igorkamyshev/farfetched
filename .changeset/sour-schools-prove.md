@@ -2,4 +2,4 @@
 '@farfetched/core': patch
 ---
 
-Add "OPTIONS" method to "HttpMethod" type
+Add `OPTIONS` method to allowed `HttpMethod`
