@@ -81,6 +81,10 @@ sample({ clock: appStarted, target: someQuery.refresh });
 
 ### External triggers
 
+Trigger API is based on [`@@trigger`-protocol](https://withease.pages.dev/protocols/trigger.html), so any library that implements this protocol can be used as a trigger.
+
+#### Web APIs
+
 It could be really useful to refresh the data on some application wide triggers like tab visibility or network reconnection. This kind of triggers is out of scope of Farfetched, so they are distributed as [separated package — `@withease/web-api`](https://withease.pages.dev/web-api).
 
 ::: code-group
@@ -111,6 +115,40 @@ keepFresh(someQuery, {
 ```
 
 Check [documentation of `@withease/web-api`](https://withease.pages.dev/web-api) for the complete list of available triggers.
+
+#### Interval
+
+If you want to refresh the data every N seconds, you can use the `interval` method from [patronum](https://patronum.effector.dev/) which is library with numerous utilities for Effector.
+
+::: code-group
+
+```sh [pnpm]
+pnpm install patronum
+```
+
+```sh [yarn]
+yarn add patronum
+```
+
+```sh [npm]
+npm install patronum
+```
+
+:::
+
+It is compatible with Farfetched and can be used without any additional configuration.
+
+```ts
+import { keepFresh } from '@farfetched/core';
+import { interval } from 'patronum';
+
+keepFresh(someQuery, {
+  // 👇 someQuery will be refreshed every 5 seconds
+  triggers: [interval({ timeout: 5000 })],
+});
+```
+
+Check [documentation of `patronum/interval`](https://patronum.effector.dev/methods/interval/) for the complete documentation.
 
 ### Mix automatic and manual refresh
 
