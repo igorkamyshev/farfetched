@@ -74,7 +74,7 @@ export default withMermaid(
         '/tutorial': [
           {
             text: 'Thorough Tutorial',
-            collapsed: false,
+            collapsed: true,
             items: [
               { text: 'Get started', link: '/tutorial/' },
               { text: 'Installation', link: '/tutorial/install' },
@@ -135,21 +135,39 @@ export default withMermaid(
             ],
           },
           {
-            text: 'Solid',
+            text: 'With UI-libs',
             collapsed: true,
             items: [
-              { text: 'Get started', link: '/tutorial/solid/' },
-              { text: 'Suspense', link: '/tutorial/solid/suspense' },
-              { text: 'SSR and Testing', link: '/tutorial/solid/scope' },
+              {
+                text: 'Solid',
+                collapsed: true,
+                items: [
+                  { text: 'Get started', link: '/tutorial/solid/' },
+                  { text: 'Suspense', link: '/tutorial/solid/suspense' },
+                  { text: 'SSR and Testing', link: '/tutorial/solid/scope' },
+                ],
+              },
+              {
+                text: 'React',
+                collapsed: true,
+                items: [
+                  { text: 'Get started', link: '/tutorial/react/' },
+                  { text: 'Suspense', link: '/tutorial/react/suspense' },
+                  { text: 'SSR and Testing', link: '/tutorial/react/scope' },
+                ],
+              },
             ],
           },
           {
-            text: 'React',
+            text: 'Migration',
             collapsed: true,
             items: [
-              { text: 'Get started', link: '/tutorial/react/' },
-              { text: 'Suspense', link: '/tutorial/react/suspense' },
-              { text: 'SSR and Testing', link: '/tutorial/react/scope' },
+              {
+                text: 'from Effects',
+                items: [
+                  { text: 'Get started', link: '/tutorial/migrate/effector/' },
+                ],
+              },
             ],
           },
         ],
