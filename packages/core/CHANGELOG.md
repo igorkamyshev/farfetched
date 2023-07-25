@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.8.14
+
+### Patch Changes
+
+- b435591: Reset attempts count in `retry` after manual start of the operation
+
 ## 0.8.13
 
 ### Patch Changes
