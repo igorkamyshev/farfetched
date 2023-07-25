@@ -295,4 +295,28 @@ describe('retry with query', () => {
 
     expect(otherwiseListener).not.toBeCalled();
   });
+
+  test('reset failure counter for manual query start', async () => {
+    const handler = vi.fn().mockRejectedValue(new Error('Sorry'));
+
+    const query = createQuery({
+      handler,
+    });
+
+    retry(query, { times: 1, delay: 0 });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope, params: 42 });
+
+    // 1 for start
+    // 1 for retry
+    expect(handler).toBeCalledTimes(2);
+
+    await allSettled(query.start, { scope, params: 42 });
+
+    // 1 for start
+    // 1 for retry
+    expect(handler).toBeCalledTimes(4);
+  });
 });
