@@ -164,8 +164,33 @@ export default withMermaid(
             items: [
               {
                 text: 'from Effects',
+                link: '/tutorial/migrate/effector/',
+                collapsed: true,
                 items: [
-                  { text: 'Get started', link: '/tutorial/migrate/effector/' },
+                  {
+                    text: '1. Wrap existing Effects',
+                    link: '/tutorial/migrate/effector/wrap',
+                  },
+                  {
+                    text: '2. Use add-ons',
+                    link: '/tutorial/migrate/effector/addons',
+                  },
+                  {
+                    text: '3. Add Contracts',
+                    link: '/tutorial/migrate/effector/contracts',
+                  },
+                  {
+                    text: '4. Use specific factories',
+                    link: '/tutorial/migrate/effector/specific_factories',
+                  },
+                  {
+                    text: '5. Apply declarative approach',
+                    link: '/tutorial/migrate/effector/trigger_api',
+                  },
+                  {
+                    text: '6. Next steps',
+                    link: '/tutorial/migrate/effector/next',
+                  },
                 ],
               },
             ],
