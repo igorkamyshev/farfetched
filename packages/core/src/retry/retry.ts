@@ -2,9 +2,9 @@ import {
   combine,
   createEvent,
   createStore,
-  Event,
   sample,
   split,
+  type Event,
 } from 'effector';
 
 import {
@@ -15,26 +15,26 @@ import {
   type SourcedField,
   type StaticOrReactive,
 } from '../libs/patronus';
-import { Time, parseTime } from '../libs/date-nfs';
+import { type Time, parseTime } from '../libs/date-nfs';
 
 import {
-  RemoteOperation,
-  RemoteOperationError,
-  RemoteOperationParams,
+  type RemoteOperation,
+  type RemoteOperationError,
+  type RemoteOperationParams,
 } from '../remote_operation/type';
-import { RetryMeta } from './type';
+import { type RetryMeta } from './type';
 
 type FailInfo<Q extends RemoteOperation<any, any, any, any>> = {
   params: RemoteOperationParams<Q>;
   error: RemoteOperationError<Q>;
 };
 
-interface RetryConfig<
+type RetryConfig<
   Q extends RemoteOperation<any, any, any, any>,
   DelaySource = unknown,
   FilterSource = unknown,
   MapParamsSource = unknown
-> {
+> = {
   times: StaticOrReactive<number>;
   delay: SourcedField<RetryMeta, Time, DelaySource>;
   filter?: SourcedField<FailInfo<Q>, boolean, FilterSource>;
@@ -44,7 +44,7 @@ interface RetryConfig<
     MapParamsSource
   >;
   otherwise?: Event<FailInfo<Q>>;
-}
+};
 
 export function retry<
   Q extends RemoteOperation<any, any, any, any>,
