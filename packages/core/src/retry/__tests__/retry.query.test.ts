@@ -1,3 +1,4 @@
+import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, createEvent, createStore, fork } from 'effector';
 import { describe, test, vi, expect } from 'vitest';
 
@@ -294,5 +295,47 @@ describe('retry with query', () => {
     await allSettled(query.start, { scope, params: 42 });
 
     expect(otherwiseListener).not.toBeCalled();
+  });
+
+  test('reset failure counter for manual query start', async () => {
+    const handler = vi.fn().mockRejectedValue(new Error('Sorry'));
+
+    const query = createQuery({
+      handler,
+    });
+
+    retry(query, { times: 1, delay: 0 });
+
+    const scope = fork();
+
+    await allSettled(query.start, { scope, params: 42 });
+
+    // 1 for start
+    // 1 for retry
+    expect(handler).toBeCalledTimes(2);
+
+    await allSettled(query.start, { scope, params: 42 });
+
+    // 1 for start
+    // 1 for retry
+    expect(handler).toBeCalledTimes(4);
+  });
+
+  test('throw error in case of retry', async () => {
+    const query = createQuery({
+      handler: vi.fn().mockRejectedValue(new Error('Sorry')),
+    });
+
+    retry(query, { times: 1, delay: 0 });
+
+    const scope = fork();
+
+    const { listeners } = watchRemoteOperation(query, scope);
+
+    await allSettled(query.start, { scope, params: 42 });
+
+    // 1 for original start
+    // 1 for retry
+    expect(listeners.onFailure).toBeCalledTimes(2);
   });
 });

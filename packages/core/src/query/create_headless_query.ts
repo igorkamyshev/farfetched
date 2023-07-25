@@ -15,6 +15,7 @@ import { Validator } from '../validation/type';
 import { Query, QueryMeta, QuerySymbol } from './type';
 import { Event } from 'effector';
 import { isEqual } from '../libs/lohyphen';
+import { type ExecutionMeta } from '../remote_operation/type';
 
 export interface SharedQueryFactoryConfig<Data, Initial = Data> {
   name?: string;
@@ -192,9 +193,9 @@ export function createHeadlessQuery<
       attach({
         source,
         mapParams: (
-          { params, ...rest }: { params: NewParams },
+          { params, ...rest }: { params: NewParams; meta: ExecutionMeta },
           sourceValue
-        ): { params: Params } => ({
+        ): { params: Params; meta: ExecutionMeta } => ({
           params: (mapParams
             ? mapParams(params, sourceValue)
             : params) as Params,

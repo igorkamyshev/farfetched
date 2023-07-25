@@ -83,13 +83,14 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
     lowLevelAPI: {
       dataSources: Array<DataSource<Params>>;
       dataSourceRetrieverFx: Effect<
-        { params: Params },
+        { params: Params; meta: ExecutionMeta },
         { result: unknown; stale: boolean },
         any
       >;
       sourced: SourcedField<Params, unknown, unknown>[];
       paramsAreMeaningless: boolean;
       revalidate: Event<{ params: Params; refresh: boolean }>;
+      startWithMeta: Event<{ params: Params; meta: ExecutionMeta }>;
     };
     experimentalAPI?: {
       attach: <Source, NewParams>(config: {
