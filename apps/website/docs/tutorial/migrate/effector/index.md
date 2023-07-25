@@ -13,4 +13,4 @@ Farfetched is built with continues adoption in mind, so there are straightforwar
 3. [Add strict _Contracts_](/tutorial/migrate/effector/contracts) to server responses
 4. [Migrate to specific factories](/tutorial/migrate/effector/specific_factories) like `createJsonQuery` and `createJsonMutation`
 5. [Apply declarative approach](/tutorial/migrate/effector/trigger_api) with Trigger API and `keepFresh` operator
-6. [Continue migrating application step-by-step](/tutorial/migrate/effector/next_steps)
+6. [Continue migrating application step-by-step](/tutorial/migrate/effector/next)
