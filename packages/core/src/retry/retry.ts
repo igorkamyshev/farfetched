@@ -106,12 +106,16 @@ export function retry<
         source: $meta,
       }).map(parseTime),
     }),
-    target: [newAttempt, operation.start],
+    fn: (params) => ({
+      params,
+      meta: { stopErrorPropagation: false, stale: true },
+    }),
+    target: [newAttempt, operation.__.lowLevelAPI.startWithMeta],
   });
 
   $attempt
     .on(newAttempt, (attempt) => attempt + 1)
-    .reset(operation.finished.success);
+    .reset([operation.finished.success, operation.start]);
 
   if (otherwise) {
     sample({ clock: retriesAreOver, target: otherwise });
