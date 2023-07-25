@@ -5,6 +5,7 @@ import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
 import { attach, Store } from 'effector';
+import { type ExecutionMeta } from '../remote_operation/type';
 
 export interface SharedMutationFactoryConfig {
   name?: string;
@@ -82,9 +83,9 @@ export function createHeadlessMutation<
       attach({
         source,
         mapParams: (
-          { params, ...rest }: { params: NewParams },
+          { params, ...rest }: { params: NewParams; meta: ExecutionMeta },
           sourceValue
-        ): { params: Params } => ({
+        ): { params: Params; meta: ExecutionMeta } => ({
           params: (mapParams
             ? mapParams(params, sourceValue)
             : params) as Params,
