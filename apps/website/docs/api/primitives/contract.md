@@ -1,5 +1,9 @@
 # Contract
 
+::: tip
+Farfetched follows [_Contract_ protocol](https://withease.pages.dev/protocols/contract.html).
+:::
+
 A rule to statically validate received data.
 
 ## API reference

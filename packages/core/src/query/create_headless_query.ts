@@ -219,9 +219,9 @@ export function createHeadlessQuery<
       attach({
         source,
         mapParams: (
-          { params, ...rest }: { params: NewParams },
+          { params, ...rest }: { params: NewParams; meta: ExecutionMeta },
           sourceValue
-        ): { params: Params } => ({
+        ): { params: Params; meta: ExecutionMeta } => ({
           params: (mapParams
             ? mapParams(params, sourceValue)
             : params) as Params,

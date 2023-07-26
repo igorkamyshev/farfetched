@@ -8,24 +8,24 @@ import {
 
 import {
   not,
+  readonly,
   normalizeSourced,
   normalizeStaticOrReactive,
   type DynamicallySourcedField,
   type StaticOrReactive,
   type FetchingStatus,
-  SourcedField,
-  readonly,
+  type SourcedField,
 } from '../libs/patronus';
 import { createContractApplier } from '../contract/apply_contract';
-import { Contract } from '../contract/type';
+import { type Contract } from '../contract/type';
 import { invalidDataError } from '../errors/create_error';
-import { InvalidDataError } from '../errors/type';
-import { DataSource, ExecutionMeta } from './type';
+import { type InvalidDataError } from '../errors/type';
+import { type DataSource, type ExecutionMeta } from './type';
 import { checkValidationResult } from '../validation/check_validation_result';
-import { Validator } from '../validation/type';
+import { type Validator } from '../validation/type';
 import { unwrapValidationResult } from '../validation/unwrap_validation_result';
 import { validValidator } from '../validation/valid_validator';
-import { RemoteOperation } from './type';
+import { type RemoteOperation } from './type';
 import { get } from '../libs/lohyphen';
 
 export function createRemoteOperation<
@@ -67,6 +67,7 @@ export function createRemoteOperation<
   const revalidate = createEvent<{ params: Params; refresh: boolean }>();
   const pushData = createEvent<MappedData>();
   const pushError = createEvent<Error | InvalidDataError>();
+  const startWithMeta = createEvent<{ params: Params; meta: ExecutionMeta }>();
 
   const applyContractFx = createContractApplier<Params, Data, ContractData>(
     contract
@@ -115,6 +116,15 @@ export function createRemoteOperation<
    */
   const start = createEvent<Params>();
 
+  sample({
+    clock: start,
+    fn: (params) => ({
+      params,
+      meta: { stopErrorPropagation: false, stale: true },
+    }),
+    target: startWithMeta,
+  });
+
   // Signal-events
   const finished = {
     success: createEvent<{
@@ -160,7 +170,12 @@ export function createRemoteOperation<
     target: $status,
   });
 
-  sample({ clock: start, filter: $enabled, target: $latestParams });
+  sample({
+    clock: startWithMeta,
+    filter: $enabled,
+    fn: ({ params }) => params,
+    target: $latestParams,
+  });
 
   // -- Execution flow
   sample({
@@ -177,6 +192,10 @@ export function createRemoteOperation<
 
   sample({
     clock: revalidate,
+    fn: ({ params }) => ({
+      params,
+      meta: { stopErrorPropagation: false, stale: true },
+    }),
     target: notifyAboutDataInvalidationFx,
   });
 
@@ -184,14 +203,16 @@ export function createRemoteOperation<
     clock: notifyAboutDataInvalidationFx.finally,
     source: revalidate,
     filter: ({ refresh }) => refresh,
-    fn: ({ params }) => params,
-    target: start,
+    fn: ({ params }) => ({
+      params,
+      meta: { stopErrorPropagation: false, stale: true },
+    }),
+    target: startWithMeta,
   });
 
   sample({
-    clock: start,
+    clock: startWithMeta,
     filter: $enabled,
-    fn: (params) => ({ params }),
     target: retrieveDataFx,
   });
 
@@ -257,7 +278,7 @@ export function createRemoteOperation<
   sample({
     clock: finished.success,
     filter: ({ meta }) => meta.stale,
-    fn: ({ params }) => ({ params, skipStale: true }),
+    fn: ({ params, meta }) => ({ params, meta, skipStale: true }),
     target: retrieveDataFx,
   });
 
@@ -339,6 +360,7 @@ export function createRemoteOperation<
         revalidate,
         pushError,
         pushData,
+        startWithMeta,
       },
     },
   };
@@ -349,6 +371,7 @@ function createDataSourceHandlers<Params>(dataSources: DataSource<Params>[]) {
     {
       params: Params;
       skipStale?: boolean;
+      meta: ExecutionMeta;
     },
     { result: unknown; stale: boolean },
     any

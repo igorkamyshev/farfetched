@@ -1,5 +1,30 @@
 # @farfetched/core
 
+## 0.8.14
+
+### Patch Changes
+
+- b435591: Reset attempts count in `retry` after manual start of the operation
+
+## 0.8.13
+
+### Patch Changes
+
+- 55baa71: Add `OPTIONS` method to allowed `HttpMethod`
+
+## 0.8.12
+
+### Patch Changes
+
+- 4a1f222: Simplify `keepFresh` typings
+- 461fbc8: Fix incorrect typings of `triggers` in `keepFresh`
+
+## 0.8.11
+
+### Patch Changes
+
+- 528416b: Export missed types for custom cache adapters
+
 ## 0.8.10
 
 ### Patch Changes
