@@ -338,4 +338,21 @@ describe('retry with query', () => {
     // 1 for retry
     expect(listeners.onFailure).toBeCalledTimes(2);
   });
+
+  test('throw error in case of retry with supressIntermidiateErrors', async () => {
+    const query = createQuery({
+      handler: vi.fn().mockRejectedValue(new Error('Sorry')),
+    });
+
+    retry(query, { times: 1, delay: 0, supressIntermidiateErrors: true });
+
+    const scope = fork();
+
+    const { listeners } = watchRemoteOperation(query, scope);
+
+    await allSettled(query.start, { scope, params: 42 });
+
+    // 1 for retry
+    expect(listeners.onFailure).toBeCalledTimes(1);
+  });
 });
