@@ -159,6 +159,9 @@ export function retry<
 
             return result;
           } catch (error) {
+            /*
+             * Scope is not lost here, because we called only other Effects inside this Effect
+             */
             failed({ params: opts.params, error });
 
             return null;
