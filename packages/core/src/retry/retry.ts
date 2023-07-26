@@ -1,10 +1,14 @@
 import {
   combine,
+  createEffect,
   createEvent,
   createStore,
   sample,
   split,
   type Event,
+  type EffectError,
+  type EffectParams,
+  type EffectResult,
 } from 'effector';
 
 import {
@@ -34,17 +38,29 @@ type RetryConfig<
   DelaySource = unknown,
   FilterSource = unknown,
   MapParamsSource = unknown
-> = {
-  times: StaticOrReactive<number>;
-  delay: SourcedField<RetryMeta, Time, DelaySource>;
-  filter?: SourcedField<FailInfo<Q>, boolean, FilterSource>;
-  mapParams?: DynamicallySourcedField<
-    FailInfo<Q> & { meta: RetryMeta },
-    RemoteOperationParams<Q>,
-    MapParamsSource
-  >;
-  otherwise?: Event<FailInfo<Q>>;
-};
+> =
+  | {
+      times: StaticOrReactive<number>;
+      delay: SourcedField<RetryMeta, Time, DelaySource>;
+      filter?: SourcedField<FailInfo<Q>, boolean, FilterSource>;
+      mapParams?: DynamicallySourcedField<
+        FailInfo<Q> & { meta: RetryMeta },
+        RemoteOperationParams<Q>,
+        MapParamsSource
+      >;
+      otherwise?: Event<FailInfo<Q>>;
+    }
+  | {
+      times: StaticOrReactive<number>;
+      delay: SourcedField<RetryMeta, Time, DelaySource>;
+      filter?: SourcedField<FailInfo<Q>, boolean, FilterSource>;
+      mapParams?: DynamicallySourcedField<
+        FailInfo<Q> & { meta: RetryMeta },
+        RemoteOperationParams<Q>,
+        MapParamsSource
+      >;
+      supressIntermidiateErrors: true;
+    };
 
 export function retry<
   Q extends RemoteOperation<any, any, any, any>,
@@ -58,23 +74,37 @@ export function retry<
     delay: timeout,
     filter,
     mapParams,
-    otherwise,
+    ...params
   }: RetryConfig<Q, DelaySource, FilterSource, MapParamsSource>
 ): void {
+  const supressErrors =
+    'supressIntermidiateErrors' in params && params.supressIntermidiateErrors;
+
   const $maxAttempts = normalizeStaticOrReactive(times);
   const $attempt = createStore(1, {
     serialize: 'ignore',
   });
 
+  const $supressErrors = combine(
+    $attempt,
+    $maxAttempts,
+    (attemp, maxAttempts) => supressErrors && attemp < maxAttempts
+  );
+
   const $meta = combine({
     attempt: $attempt,
   });
+
+  const failed = createEvent<{
+    params: RemoteOperationParams<Q>;
+    error: RemoteOperationError<Q>;
+  }>();
 
   const newAttempt = createEvent();
 
   const { planNextAttempt, __: retriesAreOver } = split(
     sample({
-      clock: operation.finished.failure,
+      clock: failed,
       source: {
         maxAttempts: $maxAttempts,
         attempt: $attempt,
@@ -106,9 +136,10 @@ export function retry<
         source: $meta,
       }).map(parseTime),
     }),
-    fn: (params) => ({
+    source: $supressErrors,
+    fn: (stopErrorPropagation, params) => ({
       params,
-      meta: { stopErrorPropagation: false, stale: true },
+      meta: { stopErrorPropagation, stale: true },
     }),
     target: [newAttempt, operation.__.lowLevelAPI.startWithMeta],
   });
@@ -117,7 +148,11 @@ export function retry<
     .on(newAttempt, (attempt) => attempt + 1)
     .reset([operation.finished.success, operation.start]);
 
-  if (otherwise) {
-    sample({ clock: retriesAreOver, target: otherwise });
+  if ('otherwise' in params && params.otherwise) {
+    sample({ clock: retriesAreOver, target: params.otherwise });
+  }
+
+  if (!supressErrors) {
+    sample({ clock: operation.finished.failure, target: failed });
   }
 }
