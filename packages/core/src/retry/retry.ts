@@ -6,11 +6,11 @@ import {
   sample,
   split,
   attach,
+  scopeBind,
   type Event,
   type EffectError,
   type EffectParams,
   type EffectResult,
-  scopeBind,
 } from 'effector';
 
 import {
