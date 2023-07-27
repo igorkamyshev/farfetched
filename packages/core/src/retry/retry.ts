@@ -5,6 +5,7 @@ import {
   createStore,
   sample,
   split,
+  attach,
   type Event,
   type EffectError,
   type EffectParams,
@@ -22,6 +23,7 @@ import {
 import { type Time, parseTime } from '../libs/date-nfs';
 
 import {
+  DataSource,
   type RemoteOperation,
   type RemoteOperationError,
   type RemoteOperationParams,
@@ -77,6 +79,9 @@ export function retry<
     ...params
   }: RetryConfig<Q, DelaySource, FilterSource, MapParamsSource>
 ): void {
+  const supressIntermidiateErrors =
+    'supressIntermidiateErrors' in params && params.supressIntermidiateErrors;
+
   const $maxAttempts = normalizeStaticOrReactive(times);
   const $attempt = createStore(1, {
     serialize: 'ignore',
@@ -85,6 +90,13 @@ export function retry<
   const $meta = combine({
     attempt: $attempt,
   });
+
+  const $supressError = combine(
+    $attempt,
+    $maxAttempts,
+    (attempt, maxAttempts) =>
+      supressIntermidiateErrors && attempt <= maxAttempts
+  );
 
   const failed = createEvent<{
     params: RemoteOperationParams<Q>;
@@ -142,32 +154,43 @@ export function retry<
     sample({ clock: retriesAreOver, target: params.otherwise });
   }
 
-  if (
-    'supressIntermidiateErrors' in params &&
-    params.supressIntermidiateErrors
-  ) {
-    operation.__.lowLevelAPI.dataSources =
-      operation.__.lowLevelAPI.dataSources.map((dataSource) => ({
-        ...dataSource,
-        get: createEffect<
-          EffectParams<typeof dataSource.get>,
-          EffectResult<typeof dataSource.get>,
-          EffectError<typeof dataSource.get>
-        >(async (opts: { params: RemoteOperationParams<Q> }) => {
-          try {
-            const result = await dataSource.get(opts);
+  if (supressIntermidiateErrors) {
+    operation.__.lowLevelAPI.dataSources.splice(
+      0,
+      operation.__.lowLevelAPI.dataSources.length,
+      ...operation.__.lowLevelAPI.dataSources.map(
+        (dataSource): DataSource<any> => ({
+          ...dataSource,
+          get: attach({
+            source: $supressError,
+            mapParams: (opts, supressError) => ({ ...opts, supressError }),
+            effect: createEffect<
+              EffectParams<typeof dataSource.get> & { supressError: boolean },
+              EffectResult<typeof dataSource.get>,
+              EffectError<typeof dataSource.get>
+            >(async ({ supressError, ...opts }) => {
+              try {
+                const result = await dataSource.get(opts);
 
-            return result;
-          } catch (error) {
-            /*
-             * Scope is not lost here, because we called only other Effects inside this Effect
-             */
-            failed({ params: opts.params, error });
+                return result;
+              } catch (error) {
+                if (supressError) {
+                  /*
+                   * Scope is not lost here, because we called only other Effects inside this Effect
+                   */
+                  failed({ params: opts.params, error });
+                } else {
+                  throw error;
+                }
 
-            return null;
-          }
-        }),
-      }));
+                // TODO: it leads to No data source returned data
+                return null;
+              }
+            }),
+          }),
+        })
+      )
+    );
   } else {
     sample({ clock: operation.finished.failure, target: failed });
   }
