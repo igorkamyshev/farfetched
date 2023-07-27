@@ -341,18 +341,41 @@ describe('retry with query', () => {
 
   test('throw error in case of retry with supressIntermidiateErrors', async () => {
     const query = createQuery({
-      handler: vi.fn().mockRejectedValue(new Error('Sorry')),
+      handler: vi.fn().mockImplementation(({ attempt }) => {
+        throw new Error(`Sorry, attempt ${attempt}`);
+      }),
     });
 
-    retry(query, { times: 1, delay: 0, supressIntermidiateErrors: true });
+    retry(query, {
+      times: 1,
+      delay: 0,
+      mapParams({ meta }) {
+        return { attempt: meta.attempt };
+      },
+      supressIntermidiateErrors: true,
+    });
 
     const scope = fork();
 
     const { listeners } = watchRemoteOperation(query, scope);
 
-    await allSettled(query.start, { scope, params: 42 });
+    await allSettled(query.start, { scope, params: { attempt: 0 } });
 
     // 1 for retry
     expect(listeners.onFailure).toBeCalledTimes(1);
+    expect(listeners.onFailure.mock.calls[0]).toMatchInlineSnapshot(`
+      [
+        {
+          "error": [Error: Sorry, attempt 1],
+          "meta": {
+            "stale": false,
+            "stopErrorPropagation": false,
+          },
+          "params": {
+            "attempt": 1,
+          },
+        },
+      ]
+    `);
   });
 });
