@@ -23,7 +23,7 @@ import {
 import { type Time, parseTime } from '../libs/date-nfs';
 
 import {
-  DataSource,
+  type DataSource,
   type RemoteOperation,
   type RemoteOperationError,
   type RemoteOperationParams,
@@ -114,7 +114,7 @@ export function retry<
       },
       filter: normalizeSourced({
         field: (filter ?? true) as any,
-        clock: operation.finished.failure,
+        clock: failed,
       }),
       fn: ({ attempt, maxAttempts }, { params, error }) => ({
         params,
@@ -173,18 +173,17 @@ export function retry<
                 const result = await dataSource.get(opts);
 
                 return result;
-              } catch (error) {
+              } catch (error: any) {
                 if (supressError) {
                   /*
                    * Scope is not lost here, because we called only other Effects inside this Effect
                    */
-                  failed({ params: opts.params, error });
+                  failed({ params: opts.params, error: error.error });
+
+                  throw { error: error, stopErrorPropagation: true };
                 } else {
                   throw error;
                 }
-
-                // TODO: it leads to No data source returned data
-                return null;
               }
             }),
           }),
