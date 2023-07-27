@@ -339,7 +339,7 @@ describe('retry with query', () => {
     expect(listeners.onFailure).toBeCalledTimes(2);
   });
 
-  test('throw error in case of retry with supressIntermidiateErrors', async () => {
+  test('throw error in case of retry with supressIntermediateErrors', async () => {
     const query = createQuery({
       handler: vi.fn().mockImplementation(({ attempt }) => {
         throw new Error(`Sorry, attempt ${attempt}`);
@@ -352,7 +352,7 @@ describe('retry with query', () => {
         return { attempt: meta.attempt };
       },
       delay: 0,
-      supressIntermidiateErrors: true,
+      supressIntermediateErrors: true,
     });
 
     const scope = fork();

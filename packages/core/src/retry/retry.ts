@@ -61,7 +61,7 @@ type RetryConfig<
         RemoteOperationParams<Q>,
         MapParamsSource
       >;
-      supressIntermidiateErrors: true;
+      supressIntermediateErrors: true;
     };
 
 export function retry<
@@ -79,8 +79,8 @@ export function retry<
     ...params
   }: RetryConfig<Q, DelaySource, FilterSource, MapParamsSource>
 ): void {
-  const supressIntermidiateErrors =
-    'supressIntermidiateErrors' in params && params.supressIntermidiateErrors;
+  const supressIntermediateErrors =
+    'supressIntermediateErrors' in params && params.supressIntermediateErrors;
 
   const $maxAttempts = normalizeStaticOrReactive(times);
   const $attempt = createStore(1, {
@@ -95,7 +95,7 @@ export function retry<
     $attempt,
     $maxAttempts,
     (attempt, maxAttempts) =>
-      supressIntermidiateErrors && attempt <= maxAttempts
+      supressIntermediateErrors && attempt <= maxAttempts
   );
 
   const failed = createEvent<{
@@ -154,7 +154,7 @@ export function retry<
     sample({ clock: retriesAreOver, target: params.otherwise });
   }
 
-  if (supressIntermidiateErrors) {
+  if (supressIntermediateErrors) {
     const originalFx =
       operation.__.lowLevelAPI.dataSourceRetrieverFx.use.getCurrent();
 
