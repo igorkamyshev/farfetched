@@ -89,14 +89,10 @@ export function createRemoteOperation<
     get: createEffect<
       { params: Params },
       { result: unknown; stale: boolean } | null,
-      { stopErrorPropagation: boolean; error: unknown }
+      unknown
     >(async ({ params }) => {
-      try {
-        const result = await executeFx(params);
-        return { result, stale: false };
-      } catch (error) {
-        throw { stopErrorPropagation: false, error };
-      }
+      const result = await executeFx(params);
+      return { result, stale: false };
     }),
   };
 
@@ -382,14 +378,21 @@ function createDataSourceHandlers<Params>(dataSources: DataSource<Params>[]) {
   >({
     handler: async ({ params, skipStale }) => {
       for (const dataSource of dataSources) {
-        const fromSource = await dataSource.get({ params });
+        try {
+          const fromSource = await dataSource.get({ params });
 
-        if (skipStale && fromSource?.stale) {
-          continue;
-        }
+          if (skipStale && fromSource?.stale) {
+            continue;
+          }
 
-        if (fromSource) {
-          return fromSource;
+          if (fromSource) {
+            return fromSource;
+          }
+        } catch (error) {
+          throw {
+            stopErrorPropagation: false,
+            error,
+          };
         }
       }
 

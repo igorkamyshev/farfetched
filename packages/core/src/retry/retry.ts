@@ -10,6 +10,7 @@ import {
   type EffectError,
   type EffectParams,
   type EffectResult,
+  scopeBind,
 } from 'effector';
 
 import {
@@ -23,7 +24,6 @@ import {
 import { type Time, parseTime } from '../libs/date-nfs';
 
 import {
-  type DataSource,
   type RemoteOperation,
   type RemoteOperationError,
   type RemoteOperationParams,
@@ -155,42 +155,38 @@ export function retry<
   }
 
   if (supressIntermidiateErrors) {
-    operation.__.lowLevelAPI.dataSources.splice(
-      0,
-      operation.__.lowLevelAPI.dataSources.length,
-      ...operation.__.lowLevelAPI.dataSources.map(
-        (dataSource): DataSource<any> => ({
-          ...dataSource,
-          get: attach({
-            source: $supressError,
-            mapParams: (opts, supressError) => ({ ...opts, supressError }),
-            effect: createEffect<
-              EffectParams<typeof dataSource.get> & { supressError: boolean },
-              EffectResult<typeof dataSource.get>,
-              EffectError<typeof dataSource.get>
-            >(async ({ supressError, ...opts }) => {
-              try {
-                const result = await dataSource.get(opts);
+    const originalFx =
+      operation.__.lowLevelAPI.dataSourceRetrieverFx.use.getCurrent();
 
-                return result;
-              } catch (error: any) {
-                if (supressError) {
-                  /*
-                   * Scope is not lost here, because we called only other Effects inside this Effect
-                   */
-                  failed({ params: opts.params, error: error.error });
+    operation.__.lowLevelAPI.dataSourceRetrieverFx.use(
+      attach({
+        source: $supressError,
+        mapParams: (opts, supressError) => ({ ...opts, supressError }),
+        effect: createEffect<
+          EffectParams<
+            typeof operation.__.lowLevelAPI.dataSourceRetrieverFx
+          > & { supressError: boolean },
+          EffectResult<typeof operation.__.lowLevelAPI.dataSourceRetrieverFx>,
+          EffectError<typeof operation.__.lowLevelAPI.dataSourceRetrieverFx>
+        >(async ({ supressError, ...opts }) => {
+          const boundFailed = scopeBind(failed, { safe: true });
+          try {
+            const result = await originalFx(opts);
 
-                  throw { error: error, stopErrorPropagation: true };
-                } else {
-                  throw error;
-                }
-              }
-            }),
-          }),
-        })
-      )
+            return result;
+          } catch (error: any) {
+            if (supressError) {
+              boundFailed({ params: opts.params, error: error.error });
+
+              throw { error: error.error, stopErrorPropagation: true };
+            } else {
+              throw error;
+            }
+          }
+        }),
+      })
     );
-  } else {
-    sample({ clock: operation.finished.failure, target: failed });
   }
+
+  sample({ clock: operation.finished.failure, target: failed });
 }

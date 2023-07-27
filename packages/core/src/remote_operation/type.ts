@@ -123,7 +123,7 @@ export type DataSource<Params> = {
   get: Effect<
     { params: Params },
     { result: unknown; stale: boolean } | null,
-    { stopErrorPropagation: boolean; error: unknown }
+    unknown
   >;
   set?: Effect<{ params: Params; result: unknown }, void, unknown>;
   unset?: Effect<{ params: Params }, void, unknown>;
