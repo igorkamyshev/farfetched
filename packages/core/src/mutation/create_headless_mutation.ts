@@ -112,6 +112,7 @@ export function createHeadlessMutation<
     $pending: readonly(operation.$pending),
     $succeeded: readonly(operation.$succeeded),
     $failed: readonly(operation.$failed),
+    $finished: readonly(operation.$finished),
     $enabled: readonly(operation.$enabled),
     finished: {
       success: readonly(operation.finished.success),

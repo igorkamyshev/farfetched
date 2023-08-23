@@ -98,6 +98,7 @@ describe('createRemoteOperation, disable in-flight', () => {
     expect(scope.getState(operation.$pending)).toBeFalsy();
     expect(scope.getState(operation.$failed)).toBeFalsy();
     expect(scope.getState(operation.$succeeded)).toBeFalsy();
+    expect(scope.getState(operation.$finished)).toBeFalsy();
 
     // do not await
     allSettled(operation.start, { scope, params: 42 });
@@ -107,6 +108,7 @@ describe('createRemoteOperation, disable in-flight', () => {
     expect(scope.getState(operation.$pending)).toBeTruthy();
     expect(scope.getState(operation.$failed)).toBeFalsy();
     expect(scope.getState(operation.$succeeded)).toBeFalsy();
+    expect(scope.getState(operation.$finished)).toBeFalsy();
 
     executorFirstDefer.resolve('result');
     await allSettled(scope);
@@ -116,6 +118,7 @@ describe('createRemoteOperation, disable in-flight', () => {
     expect(scope.getState(operation.$pending)).toBeFalsy();
     expect(scope.getState(operation.$failed)).toBeFalsy();
     expect(scope.getState(operation.$succeeded)).toBeTruthy();
+    expect(scope.getState(operation.$finished)).toBeTruthy();
 
     // do not await
     allSettled(operation.start, { scope, params: 42 });
@@ -125,6 +128,7 @@ describe('createRemoteOperation, disable in-flight', () => {
     expect(scope.getState(operation.$pending)).toBeTruthy();
     expect(scope.getState(operation.$failed)).toBeFalsy();
     expect(scope.getState(operation.$succeeded)).toBeFalsy();
+    expect(scope.getState(operation.$finished)).toBeFalsy();
 
     executorSecondDefer.reject(new Error('error'));
     await allSettled(scope);
@@ -134,5 +138,6 @@ describe('createRemoteOperation, disable in-flight', () => {
     expect(scope.getState(operation.$pending)).toBeFalsy();
     expect(scope.getState(operation.$failed)).toBeTruthy();
     expect(scope.getState(operation.$succeeded)).toBeFalsy();
+    expect(scope.getState(operation.$finished)).toBeTruthy();
   });
 });

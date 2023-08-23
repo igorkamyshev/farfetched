@@ -247,6 +247,7 @@ export function createHeadlessQuery<
     $pending: readonly(operation.$pending),
     $succeeded: readonly(operation.$succeeded),
     $failed: readonly(operation.$failed),
+    $finished: readonly(operation.$finished),
     $enabled: readonly(operation.$enabled),
     $stale,
     aborted: readonly(aborted),

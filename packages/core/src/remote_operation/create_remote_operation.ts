@@ -167,6 +167,7 @@ export function createRemoteOperation<
   const $pending = $status.map((status) => status === 'pending');
   const $failed = $status.map((status) => status === 'fail');
   const $succeeded = $status.map((status) => status === 'done');
+  const $finished = $status.map((status) => ['fail', 'done'].includes(status));
 
   // -- Indicate status --
   sample({
@@ -379,6 +380,7 @@ export function createRemoteOperation<
     $pending,
     $failed,
     $succeeded,
+    $finished,
     $enabled,
     __: {
       executeFx,

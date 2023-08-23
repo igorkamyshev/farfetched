@@ -28,6 +28,7 @@ For convenience, there are also the following [_Stores_](https://effector.dev/do
 - `$pending` — `true` if the _Mutation_ is in the `"pending"` state, `false` otherwise.
 - `$failed` — `true` if the _Mutation_ is in the `"fail"` state, `false` otherwise.
 - `$succeeded` — `true` if the _Mutation_ is in the `"done"` state, `false` otherwise.
+- `$finished` <Badge type="tip" text="since v0.9.0" /> — `true` if the _Mutation_ is in the `"done"` or `"fail"` state, `false` otherwise.
 
 ### `$enabled`
 
