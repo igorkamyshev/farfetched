@@ -24,6 +24,7 @@ import {
 import { type Time, parseTime } from '../libs/date-nfs';
 
 import {
+  type ExecutionMeta,
   type RemoteOperation,
   type RemoteOperationError,
   type RemoteOperationParams,
@@ -33,6 +34,7 @@ import { type RetryMeta } from './type';
 type FailInfo<Q extends RemoteOperation<any, any, any, any>> = {
   params: RemoteOperationParams<Q>;
   error: RemoteOperationError<Q>;
+  meta: ExecutionMeta;
 };
 
 type RetryConfig<
@@ -89,6 +91,7 @@ export function retry<
   const failed = createEvent<{
     params: RemoteOperationParams<Q>;
     error: RemoteOperationError<Q>;
+    meta: ExecutionMeta;
   }>();
 
   const newAttempt = createEvent();
@@ -104,10 +107,10 @@ export function retry<
         field: (filter ?? true) as any,
         clock: failed,
       }),
-      fn: ({ attempt, maxAttempts }, { params, error }) => ({
+      fn: ({ attempt, maxAttempts }, { params, error, meta }) => ({
         params,
         error,
-        meta: { attempt, maxAttempts },
+        meta: { ...meta, attempt, maxAttempts },
       }),
     }),
     { planNextAttempt: ({ meta }) => meta.attempt <= meta.maxAttempts }
@@ -164,7 +167,11 @@ export function retry<
             return result;
           } catch (error: any) {
             if (supressError) {
-              boundFailed({ params: opts.params, error: error.error });
+              boundFailed({
+                params: opts.params,
+                error: error.error,
+                meta: opts.meta,
+              });
 
               throw { error: error.error, stopErrorPropagation: true };
             } else {
