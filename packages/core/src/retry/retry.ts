@@ -1,10 +1,16 @@
 import {
   combine,
+  createEffect,
   createEvent,
   createStore,
   sample,
   split,
+  attach,
+  scopeBind,
   type Event,
+  type EffectError,
+  type EffectParams,
+  type EffectResult,
 } from 'effector';
 
 import {
@@ -44,6 +50,7 @@ type RetryConfig<
     MapParamsSource
   >;
   otherwise?: Event<FailInfo<Q>>;
+  supressIntermediateErrors?: boolean;
 };
 
 export function retry<
@@ -58,9 +65,11 @@ export function retry<
     delay: timeout,
     filter,
     mapParams,
-    otherwise,
+    ...params
   }: RetryConfig<Q, DelaySource, FilterSource, MapParamsSource>
 ): void {
+  const supressIntermediateErrors = params.supressIntermediateErrors ?? false;
+
   const $maxAttempts = normalizeStaticOrReactive(times);
   const $attempt = createStore(1, {
     serialize: 'ignore',
@@ -70,18 +79,30 @@ export function retry<
     attempt: $attempt,
   });
 
+  const $supressError = combine(
+    $attempt,
+    $maxAttempts,
+    (attempt, maxAttempts) =>
+      supressIntermediateErrors && attempt <= maxAttempts
+  );
+
+  const failed = createEvent<{
+    params: RemoteOperationParams<Q>;
+    error: RemoteOperationError<Q>;
+  }>();
+
   const newAttempt = createEvent();
 
   const { planNextAttempt, __: retriesAreOver } = split(
     sample({
-      clock: operation.finished.failure,
+      clock: failed,
       source: {
         maxAttempts: $maxAttempts,
         attempt: $attempt,
       },
       filter: normalizeSourced({
         field: (filter ?? true) as any,
-        clock: operation.finished.failure,
+        clock: failed,
       }),
       fn: ({ attempt, maxAttempts }, { params, error }) => ({
         params,
@@ -117,7 +138,43 @@ export function retry<
     .on(newAttempt, (attempt) => attempt + 1)
     .reset([operation.finished.success, operation.start]);
 
-  if (otherwise) {
-    sample({ clock: retriesAreOver, target: otherwise });
+  if (params.otherwise) {
+    sample({ clock: retriesAreOver, target: params.otherwise });
   }
+
+  if (supressIntermediateErrors) {
+    const originalFx =
+      operation.__.lowLevelAPI.dataSourceRetrieverFx.use.getCurrent();
+
+    operation.__.lowLevelAPI.dataSourceRetrieverFx.use(
+      attach({
+        source: $supressError,
+        mapParams: (opts, supressError) => ({ ...opts, supressError }),
+        effect: createEffect<
+          EffectParams<
+            typeof operation.__.lowLevelAPI.dataSourceRetrieverFx
+          > & { supressError: boolean },
+          EffectResult<typeof operation.__.lowLevelAPI.dataSourceRetrieverFx>,
+          EffectError<typeof operation.__.lowLevelAPI.dataSourceRetrieverFx>
+        >(async ({ supressError, ...opts }) => {
+          const boundFailed = scopeBind(failed, { safe: true });
+          try {
+            const result = await originalFx(opts);
+
+            return result;
+          } catch (error: any) {
+            if (supressError) {
+              boundFailed({ params: opts.params, error: error.error });
+
+              throw { error: error.error, stopErrorPropagation: true };
+            } else {
+              throw error;
+            }
+          }
+        }),
+      })
+    );
+  }
+
+  sample({ clock: operation.finished.failure, target: failed });
 }

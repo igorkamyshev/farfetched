@@ -338,4 +338,44 @@ describe('retry with query', () => {
     // 1 for retry
     expect(listeners.onFailure).toBeCalledTimes(2);
   });
+
+  test('throw error in case of retry with supressIntermediateErrors', async () => {
+    const query = createQuery({
+      handler: vi.fn().mockImplementation(({ attempt }) => {
+        throw new Error(`Sorry, attempt ${attempt}`);
+      }),
+    });
+
+    retry(query, {
+      times: 1,
+      mapParams({ meta }) {
+        return { attempt: meta.attempt };
+      },
+      delay: 0,
+      supressIntermediateErrors: true,
+    });
+
+    const scope = fork();
+
+    const { listeners } = watchRemoteOperation(query, scope);
+
+    await allSettled(query.start, { scope, params: { attempt: 0 } });
+
+    // 1 for retry
+    expect(listeners.onFailure).toBeCalledTimes(1);
+    expect(listeners.onFailure.mock.calls[0]).toMatchInlineSnapshot(`
+      [
+        {
+          "error": [Error: Sorry, attempt 1],
+          "meta": {
+            "stale": false,
+            "stopErrorPropagation": false,
+          },
+          "params": {
+            "attempt": 1,
+          },
+        },
+      ]
+    `);
+  });
 });

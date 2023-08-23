@@ -145,6 +145,22 @@ retry(characterQuery, {
 
 `mapParams` accepts a function that takes current parameters, occurred error and attempt number and returns new parameters. In this example, we just add `attempt` parameter to the current parameters.
 
+## Intermediate errors
+
+By default, `retry` does not supress errors, so if the operation failed, it will fail as well. But sometimes, we want to suppress errors and check for status only after all retries are failed. To do this, we can use the `supressIntermediateErrors` option of the `retry` operator.
+
+```ts
+retry(characterQuery, {
+  times: 5,
+  delay: 500,
+  supressIntermediateErrors: true,
+});
+```
+
+::: tip
+In the next release v0.10 `supressIntermediateErrors` will be true `true` by default. To restore the previous behavior, you will have to set it to `false` explicitly. If you want to be ready for this change, you can set it to `false` already.
+:::
+
 ## API reference
 
 You can find the full API reference for the `retry` operator in the [API reference](/api/operators/retry).

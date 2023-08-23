@@ -92,7 +92,6 @@ export function createRemoteOperation<
       unknown
     >(async ({ params }) => {
       const result = await executeFx(params);
-
       return { result, stale: false };
     }),
   };
@@ -229,12 +228,13 @@ export function createRemoteOperation<
 
   sample({
     clock: retrieveDataFx.fail,
-    fn: ({ error, params }) => ({
-      error: error,
+    source: $enabled,
+    filter: (enabled, { error }) => enabled && !error.stopErrorPropagation,
+    fn: (_, { error, params }) => ({
+      error: error.error as any,
       params: params.params,
-      meta: { stopErrorPropagation: false, stale: false },
+      meta: { stopErrorPropagation: error.stopErrorPropagation, stale: false },
     }),
-    filter: $enabled,
     target: finished.failure,
   });
 
@@ -374,22 +374,32 @@ function createDataSourceHandlers<Params>(dataSources: DataSource<Params>[]) {
       meta: ExecutionMeta;
     },
     { result: unknown; stale: boolean },
-    any
+    { stopErrorPropagation: boolean; error: unknown }
   >({
     handler: async ({ params, skipStale }) => {
       for (const dataSource of dataSources) {
-        const fromSource = await dataSource.get({ params });
+        try {
+          const fromSource = await dataSource.get({ params });
 
-        if (skipStale && fromSource?.stale) {
-          continue;
-        }
+          if (skipStale && fromSource?.stale) {
+            continue;
+          }
 
-        if (fromSource) {
-          return fromSource;
+          if (fromSource) {
+            return fromSource;
+          }
+        } catch (error) {
+          throw {
+            stopErrorPropagation: false,
+            error,
+          };
         }
       }
 
-      throw new Error('No data source returned data');
+      throw {
+        stopErrorPropagation: false,
+        error: new Error('No data source returned data'),
+      };
     },
   });
 
