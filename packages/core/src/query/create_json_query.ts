@@ -5,7 +5,6 @@ import { createJsonApiRequest } from '../fetch/json';
 import { HttpMethod, JsonApiRequestError } from '../fetch/api';
 import {
   normalizeSourced,
-  type SourcedField,
   type DynamicallySourcedField,
 } from '../libs/patronus';
 import { type ParamsDeclaration } from '../remote_operation/params';
@@ -17,7 +16,7 @@ import {
 } from './create_headless_query';
 import { unknownContract } from '../contract/unknown_contract';
 import { Validator } from '../validation/type';
-import { PartialStore } from '../libs/patronus/sourced_future';
+import { type PartialStore } from '../libs/patronus/sourced_future';
 
 // -- Shared
 
@@ -26,42 +25,31 @@ type ConcurrencyConfig = {
   abort?: Event<void>;
 };
 
-type RequestConfig<Params, BodySource, QuerySource, HeadersSource> = {
+type RequestConfig<Params> = {
   url: PartialStore<Params, string>;
   credentials?: RequestCredentials;
-  query?:
-    | SourcedField<Params, FetchApiRecord, QuerySource>
-    | SourcedField<Params, string, QuerySource>;
-  headers?: SourcedField<Params, FetchApiRecord, HeadersSource>;
+  query?: PartialStore<Params, FetchApiRecord> | PartialStore<Params, string>;
+  headers?: PartialStore<Params, FetchApiRecord>;
 } & (
   | {
       method: 'GET' | 'HEAD';
     }
   | {
       method: Exclude<HttpMethod, 'GET' | 'HEAD'>;
-      body?: SourcedField<Params, Json, BodySource>;
+      body?: PartialStore<Params, Json>;
     }
 );
 
-interface BaseJsonQueryConfigNoParams<
-  Data,
-  BodySource,
-  QuerySource,
-  HeadersSource
-> extends SharedQueryFactoryConfig<Data> {
-  request: RequestConfig<void, BodySource, QuerySource, HeadersSource>;
+interface BaseJsonQueryConfigNoParams<Data>
+  extends SharedQueryFactoryConfig<Data> {
+  request: RequestConfig<void>;
   concurrency?: ConcurrencyConfig;
 }
 
-interface BaseJsonQueryConfigWithParams<
-  Params,
-  Data,
-  BodySource,
-  QuerySource,
-  HeadersSource
-> extends SharedQueryFactoryConfig<Data> {
+interface BaseJsonQueryConfigWithParams<Params, Data>
+  extends SharedQueryFactoryConfig<Data> {
   params: ParamsDeclaration<Params>;
-  request: RequestConfig<Params, BodySource, QuerySource, HeadersSource>;
+  request: RequestConfig<Params>;
   concurrency?: ConcurrencyConfig;
 }
 
@@ -72,19 +60,10 @@ export function createJsonQuery<
   Params,
   Data,
   TransformedData,
-  BodySource = void,
-  QuerySource = void,
-  HeadersSource = void,
   DataSource = void,
   ValidationSource = void
 >(
-  config: BaseJsonQueryConfigWithParams<
-    Params,
-    TransformedData,
-    BodySource,
-    QuerySource,
-    HeadersSource
-  > & {
+  config: BaseJsonQueryConfigWithParams<Params, TransformedData> & {
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
@@ -101,19 +80,10 @@ export function createJsonQuery<
   Params,
   Data,
   TransformedData,
-  BodySource = void,
-  QuerySource = void,
-  HeadersSource = void,
   DataSource = void,
   ValidationSource = void
 >(
-  config: BaseJsonQueryConfigWithParams<
-    Params,
-    TransformedData,
-    BodySource,
-    QuerySource,
-    HeadersSource
-  > & {
+  config: BaseJsonQueryConfigWithParams<Params, TransformedData> & {
     initialData?: TransformedData;
     response: {
       contract: Contract<unknown, Data>;
@@ -128,21 +98,8 @@ export function createJsonQuery<
 ): Query<Params, TransformedData, JsonApiRequestError, TransformedData>;
 
 // params + no mapData
-export function createJsonQuery<
-  Params,
-  Data,
-  BodySource = void,
-  QuerySource = void,
-  HeadersSource = void,
-  ValidationSource = void
->(
-  config: BaseJsonQueryConfigWithParams<
-    Params,
-    Data,
-    BodySource,
-    QuerySource,
-    HeadersSource
-  > & {
+export function createJsonQuery<Params, Data, ValidationSource = void>(
+  config: BaseJsonQueryConfigWithParams<Params, Data> & {
     response: {
       contract: Contract<unknown, Data>;
       validate?: Validator<Data, Params, ValidationSource>;
@@ -150,21 +107,8 @@ export function createJsonQuery<
   }
 ): Query<Params, Data, JsonApiRequestError>;
 
-export function createJsonQuery<
-  Params,
-  Data,
-  BodySource = void,
-  QuerySource = void,
-  HeadersSource = void,
-  ValidationSource = void
->(
-  config: BaseJsonQueryConfigWithParams<
-    Params,
-    Data,
-    BodySource,
-    QuerySource,
-    HeadersSource
-  > & {
+export function createJsonQuery<Params, Data, ValidationSource = void>(
+  config: BaseJsonQueryConfigWithParams<Params, Data> & {
     initialData?: Data;
     response: {
       contract: Contract<unknown, Data>;
@@ -177,18 +121,10 @@ export function createJsonQuery<
 export function createJsonQuery<
   Data,
   TransformedData,
-  BodySource = void,
-  QuerySource = void,
-  HeadersSource = void,
   DataSource = void,
   ValidationSource = void
 >(
-  config: BaseJsonQueryConfigNoParams<
-    TransformedData,
-    BodySource,
-    QuerySource,
-    HeadersSource
-  > & {
+  config: BaseJsonQueryConfigNoParams<TransformedData> & {
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
@@ -204,18 +140,10 @@ export function createJsonQuery<
 export function createJsonQuery<
   Data,
   TransformedData,
-  BodySource = void,
-  QuerySource = void,
-  HeadersSource = void,
   DataSource = void,
   ValidationSource = void
 >(
-  config: BaseJsonQueryConfigNoParams<
-    TransformedData,
-    BodySource,
-    QuerySource,
-    HeadersSource
-  > & {
+  config: BaseJsonQueryConfigNoParams<TransformedData> & {
     initialData?: TransformedData;
     response: {
       contract: Contract<unknown, Data>;
@@ -230,19 +158,8 @@ export function createJsonQuery<
 ): Query<void, TransformedData, JsonApiRequestError, TransformedData>;
 
 // No params + no mapData
-export function createJsonQuery<
-  Data,
-  BodySource = void,
-  QuerySource = void,
-  HeadersSource = void,
-  ValidationSource = void
->(
-  config: BaseJsonQueryConfigNoParams<
-    Data,
-    BodySource,
-    QuerySource,
-    HeadersSource
-  > & {
+export function createJsonQuery<Data, ValidationSource = void>(
+  config: BaseJsonQueryConfigNoParams<Data> & {
     response: {
       contract: Contract<unknown, Data>;
       validate?: Validator<Data, void, ValidationSource>;
@@ -250,19 +167,8 @@ export function createJsonQuery<
   }
 ): Query<void, Data, JsonApiRequestError>;
 
-export function createJsonQuery<
-  Data,
-  BodySource = void,
-  QuerySource = void,
-  HeadersSource = void,
-  ValidationSource = void
->(
-  config: BaseJsonQueryConfigNoParams<
-    Data,
-    BodySource,
-    QuerySource,
-    HeadersSource
-  > & {
+export function createJsonQuery<Data, ValidationSource = void>(
+  config: BaseJsonQueryConfigNoParams<Data> & {
     initialData?: Data;
     response: {
       contract: Contract<unknown, Data>;

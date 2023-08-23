@@ -18,7 +18,6 @@ import {
   normalizeSourced,
   normalizeStaticOrReactive,
   type DynamicallySourcedField,
-  type SourcedField,
   type StaticOrReactive,
 } from '../libs/patronus';
 import { type Time, parseTime } from '../libs/date-nfs';
@@ -30,6 +29,7 @@ import {
   type RemoteOperationParams,
 } from '../remote_operation/type';
 import { type RetryMeta } from './type';
+import { type PartialStore } from '../libs/patronus/sourced_future';
 
 type FailInfo<Q extends RemoteOperation<any, any, any, any>> = {
   params: RemoteOperationParams<Q>;
@@ -39,13 +39,11 @@ type FailInfo<Q extends RemoteOperation<any, any, any, any>> = {
 
 type RetryConfig<
   Q extends RemoteOperation<any, any, any, any>,
-  DelaySource = unknown,
-  FilterSource = unknown,
   MapParamsSource = unknown
 > = {
   times: StaticOrReactive<number>;
-  delay: SourcedField<RetryMeta, Time, DelaySource>;
-  filter?: SourcedField<FailInfo<Q>, boolean, FilterSource>;
+  delay: PartialStore<RetryMeta, Time>;
+  filter?: PartialStore<FailInfo<Q>, boolean>;
   mapParams?: DynamicallySourcedField<
     FailInfo<Q> & { meta: RetryMeta },
     RemoteOperationParams<Q>,
@@ -57,8 +55,6 @@ type RetryConfig<
 
 export function retry<
   Q extends RemoteOperation<any, any, any, any>,
-  DelaySource = unknown,
-  FilterSource = unknown,
   MapParamsSource = unknown
 >(
   operation: Q,
@@ -68,7 +64,7 @@ export function retry<
     filter,
     mapParams,
     ...params
-  }: RetryConfig<Q, DelaySource, FilterSource, MapParamsSource>
+  }: RetryConfig<Q, MapParamsSource>
 ): void {
   const supressIntermediateErrors = params.supressIntermediateErrors ?? false;
 

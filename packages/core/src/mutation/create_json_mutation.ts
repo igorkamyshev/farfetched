@@ -6,17 +6,14 @@ import { HttpMethod, JsonApiRequestError } from '../fetch/api';
 import { createJsonApiRequest } from '../fetch/json';
 import { FetchApiRecord } from '../fetch/lib';
 import { ParamsDeclaration } from '../remote_operation/params';
-import {
-  DynamicallySourcedField,
-  normalizeSourced,
-  SourcedField,
-} from '../libs/patronus';
+import { DynamicallySourcedField, normalizeSourced } from '../libs/patronus';
 import { Validator } from '../validation/type';
 import {
   createHeadlessMutation,
   SharedMutationFactoryConfig,
 } from './create_headless_mutation';
 import { Mutation } from './type';
+import { type PartialStore } from '../libs/patronus/sourced_future';
 
 // -- Shared --
 
@@ -24,57 +21,30 @@ type ConcurrencyConfig = {
   abort?: Event<void>;
 };
 
-type RequestConfig<Params, BodySource, QuerySource, HeadersSource, UrlSource> =
-  {
-    url: SourcedField<Params, string, UrlSource>;
-    credentials?: RequestCredentials;
-    query?:
-      | SourcedField<Params, FetchApiRecord, QuerySource>
-      | SourcedField<Params, string, QuerySource>;
-    headers?: SourcedField<Params, FetchApiRecord, HeadersSource>;
-  } & (
-    | {
-        method: 'GET' | 'HEAD';
-      }
-    | {
-        method: Exclude<HttpMethod, 'GET' | 'HEAD'>;
-        body?: SourcedField<Params, Json, BodySource>;
-      }
-  );
+type RequestConfig<Params> = {
+  url: PartialStore<Params, string>;
+  credentials?: RequestCredentials;
+  query?: PartialStore<Params, FetchApiRecord> | PartialStore<Params, string>;
+  headers?: PartialStore<Params, FetchApiRecord>;
+} & (
+  | {
+      method: 'GET' | 'HEAD';
+    }
+  | {
+      method: Exclude<HttpMethod, 'GET' | 'HEAD'>;
+      body?: PartialStore<Params, Json>;
+    }
+);
 
-interface BaseJsonMutationConfigNoParams<
-  Data,
-  BodySource,
-  QuerySource,
-  HeadersSource,
-  UrlSource
-> extends SharedMutationFactoryConfig {
-  request: RequestConfig<
-    void,
-    BodySource,
-    QuerySource,
-    HeadersSource,
-    UrlSource
-  >;
+interface BaseJsonMutationConfigNoParams extends SharedMutationFactoryConfig {
+  request: RequestConfig<void>;
   concurrency?: ConcurrencyConfig;
 }
 
-interface BaseJsonMutationConfigWithParams<
-  Params,
-  Data,
-  BodySource,
-  QuerySource,
-  HeadersSource,
-  UrlSource
-> extends SharedMutationFactoryConfig {
+interface BaseJsonMutationConfigWithParams<Params>
+  extends SharedMutationFactoryConfig {
   params: ParamsDeclaration<Params>;
-  request: RequestConfig<
-    Params,
-    BodySource,
-    QuerySource,
-    HeadersSource,
-    UrlSource
-  >;
+  request: RequestConfig<Params>;
   concurrency?: ConcurrencyConfig;
 }
 
@@ -85,21 +55,10 @@ export function createJsonMutation<
   Params,
   Data,
   TransformedData,
-  BodySource = void,
-  QuerySource = void,
-  HeadersSource = void,
-  UrlSource = void,
   DataSource = void,
   ValidationSource = void
 >(
-  config: BaseJsonMutationConfigWithParams<
-    Params,
-    TransformedData,
-    BodySource,
-    QuerySource,
-    HeadersSource,
-    UrlSource
-  > & {
+  config: BaseJsonMutationConfigWithParams<Params> & {
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
@@ -114,23 +73,8 @@ export function createJsonMutation<
 ): Mutation<Params, TransformedData, JsonApiRequestError>;
 
 // params + no mapData
-export function createJsonMutation<
-  Params,
-  Data,
-  BodySource = void,
-  QuerySource = void,
-  HeadersSource = void,
-  UrlSource = void,
-  ValidationSource = void
->(
-  config: BaseJsonMutationConfigWithParams<
-    Params,
-    Data,
-    BodySource,
-    QuerySource,
-    HeadersSource,
-    UrlSource
-  > & {
+export function createJsonMutation<Params, Data, ValidationSource = void>(
+  config: BaseJsonMutationConfigWithParams<Params> & {
     response: {
       contract: Contract<unknown, Data>;
       validate?: Validator<Data, Params, ValidationSource>;
@@ -143,20 +87,10 @@ export function createJsonMutation<
 export function createJsonMutation<
   Data,
   TransformedData,
-  BodySource = void,
-  QuerySource = void,
-  HeadersSource = void,
-  UrlSource = void,
   DataSource = void,
   ValidationSource = void
 >(
-  config: BaseJsonMutationConfigNoParams<
-    TransformedData,
-    BodySource,
-    QuerySource,
-    HeadersSource,
-    UrlSource
-  > & {
+  config: BaseJsonMutationConfigNoParams & {
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
@@ -171,21 +105,8 @@ export function createJsonMutation<
 ): Mutation<void, TransformedData, JsonApiRequestError>;
 
 // No params + no mapData
-export function createJsonMutation<
-  Data,
-  BodySource = void,
-  QuerySource = void,
-  HeadersSource = void,
-  UrlSource = void,
-  ValidationSource = void
->(
-  config: BaseJsonMutationConfigNoParams<
-    Data,
-    BodySource,
-    QuerySource,
-    HeadersSource,
-    UrlSource
-  > & {
+export function createJsonMutation<Data, ValidationSource = void>(
+  config: BaseJsonMutationConfigNoParams & {
     response: {
       contract: Contract<unknown, Data>;
       validate?: Validator<Data, void, ValidationSource>;
