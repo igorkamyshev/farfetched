@@ -40,29 +40,18 @@ type RetryConfig<
   DelaySource = unknown,
   FilterSource = unknown,
   MapParamsSource = unknown
-> =
-  | {
-      times: StaticOrReactive<number>;
-      delay: SourcedField<RetryMeta, Time, DelaySource>;
-      filter?: SourcedField<FailInfo<Q>, boolean, FilterSource>;
-      mapParams?: DynamicallySourcedField<
-        FailInfo<Q> & { meta: RetryMeta },
-        RemoteOperationParams<Q>,
-        MapParamsSource
-      >;
-      otherwise?: Event<FailInfo<Q>>;
-    }
-  | {
-      times: StaticOrReactive<number>;
-      delay: SourcedField<RetryMeta, Time, DelaySource>;
-      filter?: SourcedField<FailInfo<Q>, boolean, FilterSource>;
-      mapParams?: DynamicallySourcedField<
-        FailInfo<Q> & { meta: RetryMeta },
-        RemoteOperationParams<Q>,
-        MapParamsSource
-      >;
-      supressIntermediateErrors: true;
-    };
+> = {
+  times: StaticOrReactive<number>;
+  delay: SourcedField<RetryMeta, Time, DelaySource>;
+  filter?: SourcedField<FailInfo<Q>, boolean, FilterSource>;
+  mapParams?: DynamicallySourcedField<
+    FailInfo<Q> & { meta: RetryMeta },
+    RemoteOperationParams<Q>,
+    MapParamsSource
+  >;
+  otherwise?: Event<FailInfo<Q>>;
+  supressIntermediateErrors?: true;
+};
 
 export function retry<
   Q extends RemoteOperation<any, any, any, any>,
@@ -79,8 +68,7 @@ export function retry<
     ...params
   }: RetryConfig<Q, DelaySource, FilterSource, MapParamsSource>
 ): void {
-  const supressIntermediateErrors =
-    'supressIntermediateErrors' in params && params.supressIntermediateErrors;
+  const supressIntermediateErrors = params.supressIntermediateErrors ?? false;
 
   const $maxAttempts = normalizeStaticOrReactive(times);
   const $attempt = createStore(1, {
@@ -150,7 +138,7 @@ export function retry<
     .on(newAttempt, (attempt) => attempt + 1)
     .reset([operation.finished.success, operation.start]);
 
-  if ('otherwise' in params && params.otherwise) {
+  if (params.otherwise) {
     sample({ clock: retriesAreOver, target: params.otherwise });
   }
 
