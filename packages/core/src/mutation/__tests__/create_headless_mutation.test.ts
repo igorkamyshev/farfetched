@@ -38,7 +38,7 @@ describe('createHeadlessMutation', () => {
 
     expect(listeners.onSuccess).toHaveBeenCalledTimes(1);
     expect(listeners.onSuccess).toHaveBeenCalledWith(
-      expect.objectContaining({ params: 42, result: 42 })
+      expect.objectContaining({ params: 42, result: 42, status: 'done' })
     );
 
     expect(listeners.onSkip).not.toHaveBeenCalled();
@@ -46,7 +46,7 @@ describe('createHeadlessMutation', () => {
 
     expect(listeners.onFinally).toHaveBeenCalledTimes(1);
     expect(listeners.onFinally).toHaveBeenCalledWith(
-      expect.objectContaining({ params: 42 })
+      expect.objectContaining({ params: 42, result: 42, status: 'done' })
     );
   });
 

@@ -86,6 +86,9 @@ This section describes the [_Event_](https://effector.dev/docs/api/effector/even
 
 - `params` with the parameters that were used to start the _Query_
 - `meta` with the execution metadata
+- `status` <Badge type="tip" text="since v0.9.0" /> with a string `"done"`, `"fail"` or `"skip"` for success, failure or skip respectively
+- `result` <Badge type="tip" text="since v0.9.0" /> if the `status` is `"done"` with the result of the _Query_
+- `error` <Badge type="tip" text="since v0.9.0" /> if the `status` is `"fail"` with the error of the _Query_
 
 ## `aborted` <Badge type="tip" text="since v0.9.0" />
 
