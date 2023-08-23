@@ -1,7 +1,7 @@
-import { createEvent, UnitValue } from 'effector';
-import { describe, test, vi, expectTypeOf } from 'vitest';
+import { createEvent, type UnitValue } from 'effector';
+import { describe, test } from 'vitest';
 
-import { Query } from '../../query/type';
+import { type Query } from '../../query/type';
 import { retry } from '../retry';
 
 describe('retry', () => {
