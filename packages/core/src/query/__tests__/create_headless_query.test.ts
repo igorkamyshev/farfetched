@@ -35,7 +35,7 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(scope.getState(query.$error)).toBeNull();
     expect(listeners.onSuccess).toHaveBeenCalledTimes(1);
     expect(listeners.onSuccess).toHaveBeenCalledWith(
-      expect.objectContaining({ params: 42, result: 42 })
+      expect.objectContaining({ params: 42, result: 42, status: 'done' })
     );
 
     expect(listeners.onSkip).not.toHaveBeenCalled();
@@ -43,7 +43,7 @@ describe('core/createHeadlessQuery without contract', () => {
 
     expect(listeners.onFinally).toHaveBeenCalledTimes(1);
     expect(listeners.onFinally).toHaveBeenCalledWith(
-      expect.objectContaining({ params: 42, result: 42 })
+      expect.objectContaining({ params: 42, result: 42, status: 'done' })
     );
   });
 
@@ -79,7 +79,11 @@ describe('core/createHeadlessQuery without contract', () => {
 
     expect(listeners.onFinally).toHaveBeenCalledTimes(1);
     expect(listeners.onFinally).toHaveBeenCalledWith(
-      expect.objectContaining({ params: 42, error: new Error('from mock') })
+      expect.objectContaining({
+        params: 42,
+        error: new Error('from mock'),
+        status: 'fail',
+      })
     );
   });
 
