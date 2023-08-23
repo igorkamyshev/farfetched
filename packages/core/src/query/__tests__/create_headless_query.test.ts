@@ -43,7 +43,7 @@ describe('core/createHeadlessQuery without contract', () => {
 
     expect(listeners.onFinally).toHaveBeenCalledTimes(1);
     expect(listeners.onFinally).toHaveBeenCalledWith(
-      expect.objectContaining({ params: 42 })
+      expect.objectContaining({ params: 42, result: 42 })
     );
   });
 
@@ -79,7 +79,7 @@ describe('core/createHeadlessQuery without contract', () => {
 
     expect(listeners.onFinally).toHaveBeenCalledTimes(1);
     expect(listeners.onFinally).toHaveBeenCalledWith(
-      expect.objectContaining({ params: 42 })
+      expect.objectContaining({ params: 42, error: new Error('from mock') })
     );
   });
 

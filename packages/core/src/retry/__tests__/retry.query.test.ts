@@ -131,6 +131,8 @@ describe('retry with query', () => {
             "meta": {
               "attempt": 1,
               "maxAttempts": 3,
+              "stale": false,
+              "stopErrorPropagation": false,
             },
             "params": "Initial",
           },
@@ -141,6 +143,8 @@ describe('retry with query', () => {
             "meta": {
               "attempt": 2,
               "maxAttempts": 3,
+              "stale": false,
+              "stopErrorPropagation": false,
             },
             "params": "Initial 1",
           },
@@ -151,6 +155,8 @@ describe('retry with query', () => {
             "meta": {
               "attempt": 3,
               "maxAttempts": 3,
+              "stale": false,
+              "stopErrorPropagation": false,
             },
             "params": "Initial 1 2",
           },

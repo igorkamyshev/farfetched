@@ -137,7 +137,16 @@ export function createRemoteOperation<
       meta: ExecutionMeta;
     }>(),
     skip: createEvent<{ params: Params; meta: ExecutionMeta }>(),
-    finally: createEvent<{ params: Params; meta: ExecutionMeta }>(),
+    finally: createEvent<
+      { params: Params; meta: ExecutionMeta } & (
+        | {
+            status: 'done';
+            result: MappedData;
+          }
+        | { status: 'fail'; error: Error | InvalidDataError }
+        | { status: 'skip' }
+      )
+    >(),
   };
 
   // -- Main stores --
@@ -331,10 +340,34 @@ export function createRemoteOperation<
 
   // -- Send finally --
   sample({
-    clock: [finished.success, finished.failure, finished.skip],
-    fn({ params, meta }) {
-      return { params, meta };
-    },
+    clock: finished.success,
+    fn: ({ params, result, meta }) => ({
+      status: 'done' as const,
+      params,
+      result,
+      meta,
+    }),
+    target: finished.finally,
+  });
+
+  sample({
+    clock: finished.failure,
+    fn: ({ params, error, meta }) => ({
+      status: 'fail' as const,
+      params,
+      error,
+      meta,
+    }),
+    target: finished.finally,
+  });
+
+  sample({
+    clock: finished.skip,
+    fn: ({ params, meta }) => ({
+      status: 'skip' as const,
+      params,
+      meta,
+    }),
     target: finished.finally,
   });
 
