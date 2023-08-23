@@ -50,7 +50,7 @@ type RetryConfig<
     MapParamsSource
   >;
   otherwise?: Event<FailInfo<Q>>;
-  supressIntermediateErrors?: true;
+  supressIntermediateErrors?: boolean;
 };
 
 export function retry<
