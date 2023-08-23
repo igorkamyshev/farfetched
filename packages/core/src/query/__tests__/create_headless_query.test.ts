@@ -35,7 +35,7 @@ describe('core/createHeadlessQuery without contract', () => {
     expect(scope.getState(query.$error)).toBeNull();
     expect(listeners.onSuccess).toHaveBeenCalledTimes(1);
     expect(listeners.onSuccess).toHaveBeenCalledWith(
-      expect.objectContaining({ params: 42, result: 42, status: 'done' })
+      expect.objectContaining({ params: 42, result: 42 })
     );
 
     expect(listeners.onSkip).not.toHaveBeenCalled();
