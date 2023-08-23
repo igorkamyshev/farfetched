@@ -1,8 +1,8 @@
-import { browserStorageCache } from './browser_storage';
+import { browserStorageCache, SerializeConfig } from './browser_storage';
 import { CacheAdapter, CacheAdapterOptions } from './type';
 
 export function sessionStorageCache(
-  config?: CacheAdapterOptions
+  config?: CacheAdapterOptions & SerializeConfig
 ): CacheAdapter {
   return browserStorageCache({
     storage: () => sessionStorage,

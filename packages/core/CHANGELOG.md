@@ -1,5 +1,66 @@
 # @farfetched/core
 
+## 0.8.14
+
+### Patch Changes
+
+- b435591: Reset attempts count in `retry` after manual start of the operation
+
+## 0.8.13
+
+### Patch Changes
+
+- 55baa71: Add `OPTIONS` method to allowed `HttpMethod`
+
+## 0.8.12
+
+### Patch Changes
+
+- 4a1f222: Simplify `keepFresh` typings
+- 461fbc8: Fix incorrect typings of `triggers` in `keepFresh`
+
+## 0.8.11
+
+### Patch Changes
+
+- 528416b: Export missed types for custom cache adapters
+
+## 0.8.10
+
+### Patch Changes
+
+- 33b32c8: Fix sync batching in `keepFresh`
+
+## 0.8.9
+
+### Patch Changes
+
+- 8c61933: Fix refreshing after enabling _Query_ with different sources
+
+## 0.8.8
+
+### Patch Changes
+
+- 6cbe074: Fix re-run old refreshes after enabling and disabling _Query_
+
+## 0.8.7
+
+### Patch Changes
+
+- d393e78: Fix extra refresh in `keepFresh` while source is changing for disabled _Query_
+
+## 0.8.6
+
+### Patch Changes
+
+- d432e00: Expose missed `createCacheAdapter`
+
+## 0.8.5
+
+### Patch Changes
+
+- fa0727a: Allow using _Query_ with `initialData` in `keepFresh`
+
 ## 0.8.4
 
 ### Patch Changes

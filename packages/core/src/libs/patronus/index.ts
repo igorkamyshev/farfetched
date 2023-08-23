@@ -19,3 +19,5 @@ export { sourced } from './sourced_future';
 export { type FetchingStatus } from './status';
 export { time } from './time';
 export { and } from './and';
+export { readonly } from './readonly';
+export { syncBatch } from './sync_batch';

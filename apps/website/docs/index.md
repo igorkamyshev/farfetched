@@ -37,19 +37,11 @@ import {
 } from 'vitepress/theme'
 
 import { data as contributors} from './contributors.data';
-import members from './core_team.data.json';
 </script>
 
 <VPTeamPage>
   <VPTeamPageTitle>
-    <template #title>Meet the team</template>
-  </VPTeamPageTitle>
-  <VPTeamMembers :members="members" />
-
-  <VPTeamPageSection>
     <template #title>Contributors</template>
-    <template #members>
-      <VPTeamMembers size="small" :members="contributors" />
-    </template>
-  </VPTeamPageSection>
+  </VPTeamPageTitle>
+  <VPTeamMembers size="small" :members="contributors" />
 </VPTeamPage>

@@ -39,13 +39,7 @@ export function queryUniqId(query: Query<any, any, any>) {
 }
 
 function querySid(query: Query<any, any, any>): string | null {
-  const sid = query.$data.sid;
-
-  if (!sid?.includes('|')) {
-    return null;
-  }
-
-  return sid;
+  return query.__.meta.sid ?? null;
 }
 
 const prevNames = new Set<string>();

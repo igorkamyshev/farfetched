@@ -1,10 +1,10 @@
 import { createEffect, createEvent } from 'effector';
 
-import { createAdapter } from './instance';
+import { createCacheAdapter } from './instance';
 import { CacheAdapter } from './type';
 
 export function voidCache(): CacheAdapter {
-  return createAdapter({
+  return createCacheAdapter({
     get: createEffect<
       { key: string },
       { value: unknown; cachedAt: number } | null

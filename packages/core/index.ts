@@ -27,11 +27,15 @@ export { attachOperation } from './src/attach/attach';
 
 // Cache public API
 export { cache } from './src/cache/cache';
-export { externalCache } from './src/cache/adapters/external';
+export {
+  type CacheAdapter,
+  type CacheAdapterOptions,
+} from './src/cache/adapters/type';
 export { inMemoryCache } from './src/cache/adapters/in_memory';
 export { localStorageCache } from './src/cache/adapters/local_storage';
 export { sessionStorageCache } from './src/cache/adapters/session_storage';
 export { voidCache } from './src/cache/adapters/void';
+export { createCacheAdapter } from './src/cache/adapters/instance';
 
 // Exposed libs
 export {

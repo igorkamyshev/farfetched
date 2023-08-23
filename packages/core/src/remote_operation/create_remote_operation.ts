@@ -8,23 +8,24 @@ import {
 
 import {
   not,
+  readonly,
   normalizeSourced,
   normalizeStaticOrReactive,
   type DynamicallySourcedField,
   type StaticOrReactive,
   type FetchingStatus,
-  SourcedField,
+  type SourcedField,
 } from '../libs/patronus';
 import { createContractApplier } from '../contract/apply_contract';
-import { Contract } from '../contract/type';
+import { type Contract } from '../contract/type';
 import { invalidDataError } from '../errors/create_error';
-import { InvalidDataError } from '../errors/type';
-import { DataSource, ExecutionMeta } from './type';
+import { type InvalidDataError } from '../errors/type';
+import { type DataSource, type ExecutionMeta } from './type';
 import { checkValidationResult } from '../validation/check_validation_result';
-import { Validator } from '../validation/type';
+import { type Validator } from '../validation/type';
 import { unwrapValidationResult } from '../validation/unwrap_validation_result';
 import { validValidator } from '../validation/valid_validator';
-import { RemoteOperation } from './type';
+import { type RemoteOperation } from './type';
 import { get } from '../libs/lohyphen';
 
 export function createRemoteOperation<
@@ -64,6 +65,9 @@ export function createRemoteOperation<
   paramsAreMeaningless?: boolean;
 }): RemoteOperation<Params, MappedData, Error | InvalidDataError, Meta> {
   const revalidate = createEvent<{ params: Params; refresh: boolean }>();
+  const pushData = createEvent<MappedData>();
+  const pushError = createEvent<Error | InvalidDataError>();
+  const startWithMeta = createEvent<{ params: Params; meta: ExecutionMeta }>();
 
   const applyContractFx = createContractApplier<Params, Data, ContractData>(
     contract
@@ -88,7 +92,6 @@ export function createRemoteOperation<
       unknown
     >(async ({ params }) => {
       const result = await executeFx(params);
-
       return { result, stale: false };
     }),
   };
@@ -112,6 +115,15 @@ export function createRemoteOperation<
    */
   const start = createEvent<Params>();
 
+  sample({
+    clock: start,
+    fn: (params) => ({
+      params,
+      meta: { stopErrorPropagation: false, stale: true },
+    }),
+    target: startWithMeta,
+  });
+
   // Signal-events
   const finished = {
     success: createEvent<{
@@ -125,7 +137,16 @@ export function createRemoteOperation<
       meta: ExecutionMeta;
     }>(),
     skip: createEvent<{ params: Params; meta: ExecutionMeta }>(),
-    finally: createEvent<{ params: Params; meta: ExecutionMeta }>(),
+    finally: createEvent<
+      { params: Params; meta: ExecutionMeta } & (
+        | {
+            status: 'done';
+            result: MappedData;
+          }
+        | { status: 'fail'; error: Error | InvalidDataError }
+        | { status: 'skip' }
+      )
+    >(),
   };
 
   // -- Main stores --
@@ -146,6 +167,7 @@ export function createRemoteOperation<
   const $pending = $status.map((status) => status === 'pending');
   const $failed = $status.map((status) => status === 'fail');
   const $succeeded = $status.map((status) => status === 'done');
+  const $finished = $status.map((status) => ['fail', 'done'].includes(status));
 
   // -- Indicate status --
   sample({
@@ -157,7 +179,12 @@ export function createRemoteOperation<
     target: $status,
   });
 
-  sample({ clock: start, filter: $enabled, target: $latestParams });
+  sample({
+    clock: startWithMeta,
+    filter: $enabled,
+    fn: ({ params }) => params,
+    target: $latestParams,
+  });
 
   // -- Execution flow
   sample({
@@ -174,6 +201,10 @@ export function createRemoteOperation<
 
   sample({
     clock: revalidate,
+    fn: ({ params }) => ({
+      params,
+      meta: { stopErrorPropagation: false, stale: true },
+    }),
     target: notifyAboutDataInvalidationFx,
   });
 
@@ -181,14 +212,16 @@ export function createRemoteOperation<
     clock: notifyAboutDataInvalidationFx.finally,
     source: revalidate,
     filter: ({ refresh }) => refresh,
-    fn: ({ params }) => params,
-    target: start,
+    fn: ({ params }) => ({
+      params,
+      meta: { stopErrorPropagation: false, stale: true },
+    }),
+    target: startWithMeta,
   });
 
   sample({
-    clock: start,
+    clock: startWithMeta,
     filter: $enabled,
-    fn: (params) => ({ params }),
     target: retrieveDataFx,
   });
 
@@ -205,12 +238,13 @@ export function createRemoteOperation<
 
   sample({
     clock: retrieveDataFx.fail,
-    fn: ({ error, params }) => ({
-      error: error,
+    source: $enabled,
+    filter: (enabled, { error }) => enabled && !error.stopErrorPropagation,
+    fn: (_, { error, params }) => ({
+      error: error.error as any,
       params: params.params,
-      meta: { stopErrorPropagation: false, stale: false },
+      meta: { stopErrorPropagation: error.stopErrorPropagation, stale: false },
     }),
-    filter: $enabled,
     target: finished.failure,
   });
 
@@ -254,7 +288,7 @@ export function createRemoteOperation<
   sample({
     clock: finished.success,
     filter: ({ meta }) => meta.stale,
-    fn: ({ params }) => ({ params, skipStale: true }),
+    fn: ({ params, meta }) => ({ params, meta, skipStale: true }),
     target: retrieveDataFx,
   });
 
@@ -307,10 +341,34 @@ export function createRemoteOperation<
 
   // -- Send finally --
   sample({
-    clock: [finished.success, finished.failure, finished.skip],
-    fn({ params, meta }) {
-      return { params, meta };
-    },
+    clock: finished.success,
+    fn: ({ params, result, meta }) => ({
+      status: 'done' as const,
+      params,
+      result,
+      meta,
+    }),
+    target: finished.finally,
+  });
+
+  sample({
+    clock: finished.failure,
+    fn: ({ params, error, meta }) => ({
+      status: 'fail' as const,
+      params,
+      error,
+      meta,
+    }),
+    target: finished.finally,
+  });
+
+  sample({
+    clock: finished.skip,
+    fn: ({ params, meta }) => ({
+      status: 'skip' as const,
+      params,
+      meta,
+    }),
     target: finished.finally,
   });
 
@@ -322,18 +380,22 @@ export function createRemoteOperation<
     $pending,
     $failed,
     $succeeded,
+    $finished,
     $enabled,
     __: {
       executeFx,
       meta: { ...meta, name },
       kind,
-      $latestParams,
+      $latestParams: readonly($latestParams),
       lowLevelAPI: {
         dataSources,
         dataSourceRetrieverFx: retrieveDataFx,
         sourced: sourced ?? [],
         paramsAreMeaningless: paramsAreMeaningless ?? false,
         revalidate,
+        pushError,
+        pushData,
+        startWithMeta,
       },
     },
   };
@@ -344,24 +406,35 @@ function createDataSourceHandlers<Params>(dataSources: DataSource<Params>[]) {
     {
       params: Params;
       skipStale?: boolean;
+      meta: ExecutionMeta;
     },
     { result: unknown; stale: boolean },
-    any
+    { stopErrorPropagation: boolean; error: unknown }
   >({
     handler: async ({ params, skipStale }) => {
       for (const dataSource of dataSources) {
-        const fromSource = await dataSource.get({ params });
+        try {
+          const fromSource = await dataSource.get({ params });
 
-        if (skipStale && fromSource?.stale) {
-          continue;
-        }
+          if (skipStale && fromSource?.stale) {
+            continue;
+          }
 
-        if (fromSource) {
-          return fromSource;
+          if (fromSource) {
+            return fromSource;
+          }
+        } catch (error) {
+          throw {
+            stopErrorPropagation: false,
+            error,
+          };
         }
       }
 
-      throw new Error('No data source returned data');
+      throw {
+        stopErrorPropagation: false,
+        error: new Error('No data source returned data'),
+      };
     },
   });
 

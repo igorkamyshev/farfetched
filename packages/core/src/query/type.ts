@@ -1,6 +1,9 @@
-import { Store, Event } from 'effector';
+import { type Store, type Event } from 'effector';
 
-import { RemoteOperation } from '../remote_operation/type';
+import {
+  type ExecutionMeta,
+  type RemoteOperation,
+} from '../remote_operation/type';
 import { type Serialize } from '../libs/patronus';
 
 export const QuerySymbol = Symbol('Query');
@@ -13,6 +16,7 @@ export interface QueryMeta<Data, InitialData> {
    */
   serialize: Serialize<Data | InitialData>;
   initialData: InitialData;
+  sid: string | null;
 }
 
 export interface Query<Params, Data, Error, InitialData = null>
@@ -37,6 +41,7 @@ export interface Query<Params, Data, Error, InitialData = null>
    * Is data stale?
    */
   $stale: Store<boolean>;
+  aborted: Event<{ params: Params; meta: ExecutionMeta }>;
   /** Event to reset the whole state of the query */
   reset: Event<void>;
   '@@unitShape': () => {

@@ -131,13 +131,13 @@ export function update<
   sample({
     clock: fillQueryData,
     fn: ({ result }) => result,
-    target: [query.$data, query.$error.reinit!],
+    target: query.__.lowLevelAPI.pushData,
   });
 
   sample({
     clock: fillQueryError,
     fn: ({ error }) => error,
-    target: [query.$error, query.$data.reinit!],
+    target: query.__.lowLevelAPI.pushError,
   });
 
   // -- Refetching

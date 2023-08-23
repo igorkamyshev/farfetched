@@ -1,10 +1,10 @@
 export interface Contract<Raw, Data extends Raw> {
   /**
-   * Checks if Response is some Data
+   * Checks if Raw is some Data
    */
   isData: (prepared: Raw) => prepared is Data;
   /**
-   * - `null` or empty array is dedicated for valid response
+   * - empty array is dedicated for valid response
    * - array of string with validation erorrs for invalidDataError
    */
   getErrorMessages: (prepared: Raw) => string[];
