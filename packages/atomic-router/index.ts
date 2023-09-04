@@ -1,1 +1,2 @@
-export { ioTsContract } from './src/fresh';
+export { freshChain } from './src/fresh';
+export { startChain } from './src/start';
