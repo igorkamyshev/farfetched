@@ -252,6 +252,12 @@ export default withMermaid(
                   },
                 ],
               },
+              {
+                text: 'Routers',
+                items: [
+                  { text: 'Atomic Router', link: '/api/routers/atomic-router' },
+                ],
+              },
             ],
           },
         ],
