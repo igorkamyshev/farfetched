@@ -11,7 +11,8 @@ export interface RemoteOperation<
   Data,
   Error,
   Meta,
-  ExtraLowLevelAPI = Record<string, never>
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  ExtraLowLevelAPI = {}
 > {
   /**
    * Reactive current request status
