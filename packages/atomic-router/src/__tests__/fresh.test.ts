@@ -1,6 +1,8 @@
 import { createQuery } from '@farfetched/core';
+import { chainRoute, createRoute } from 'atomic-router';
 import { allSettled, createWatch, fork } from 'effector';
 import { describe, expect, test, vi } from 'vitest';
+
 import { createDefer } from '../defer';
 import { freshChain } from '../fresh';
 
@@ -27,7 +29,7 @@ describe('freshChain', () => {
     // First open — execute
     allSettled(chain.beforeOpen, {
       scope,
-      params: { params: undefined, query: {} },
+      params: { params: 1, query: {} },
     });
 
     expect(handler).toBeCalledTimes(1);
@@ -43,7 +45,7 @@ describe('freshChain', () => {
     // Second open — just openOp immediately
     await allSettled(chain.beforeOpen, {
       scope,
-      params: { params: undefined, query: {} },
+      params: { params: 1, query: {} },
     });
 
     expect(handler).toBeCalledTimes(1);
@@ -53,7 +55,7 @@ describe('freshChain', () => {
     // Third open — execute, because of changed params
     allSettled(chain.beforeOpen, {
       scope,
-      params: { params: undefined, query: { some: 2 } },
+      params: { params: 2, query: {} },
     });
 
     expect(handler).toBeCalledTimes(2);
@@ -65,5 +67,27 @@ describe('freshChain', () => {
 
     expect(openOnListener).toBeCalledTimes(3);
     expect(cancelOnListener).not.toBeCalled();
+  });
+
+  test('pass route params to query', async () => {
+    const handler = vi.fn().mockImplementation(() => null);
+    const query = createQuery({
+      handler,
+    });
+
+    const route = createRoute<{ id: number }>();
+    const chainedRoute = chainRoute({ route, ...freshChain(query) });
+
+    const scope = fork();
+
+    await allSettled(route.open, { scope, params: { id: 1 } });
+
+    expect(handler).toBeCalledTimes(1);
+    expect(handler).toBeCalledWith({ id: 1 });
+
+    await allSettled(route.open, { scope, params: { id: 2 } });
+
+    expect(handler).toBeCalledTimes(2);
+    expect(handler).toBeCalledWith({ id: 2 });
   });
 });

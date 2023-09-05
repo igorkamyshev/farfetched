@@ -19,7 +19,11 @@ export function startChain(
   const openOn = createEvent<any>();
   const cancelOn = createEvent<any>();
 
-  sample({ clock: beforeOpen, target: query.start });
+  sample({
+    clock: beforeOpen,
+    fn: ({ params }) => params,
+    target: query.start,
+  });
   sample({ clock: query.finished.success, target: openOn });
   sample({
     clock: [query.finished.failure, query.finished.skip],

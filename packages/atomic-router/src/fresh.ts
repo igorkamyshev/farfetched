@@ -19,7 +19,11 @@ export function freshChain(
   const openOn = createEvent<any>();
   const cancelOn = createEvent<any>();
 
-  sample({ clock: beforeOpen, target: query.refresh });
+  sample({
+    clock: beforeOpen,
+    fn: ({ params }) => params,
+    target: query.refresh,
+  });
   sample({
     clock: [
       query.finished.success,

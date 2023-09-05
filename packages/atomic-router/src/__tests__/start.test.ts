@@ -1,6 +1,8 @@
 import { createQuery } from '@farfetched/core';
+import { chainRoute, createRoute } from 'atomic-router';
 import { allSettled, createStore, createWatch, fork } from 'effector';
 import { describe, expect, test, vi } from 'vitest';
+
 import { createDefer } from '../defer';
 import { startChain } from '../start';
 
@@ -86,5 +88,27 @@ describe('startChain', () => {
     expect(handler).not.toBeCalled();
     expect(openOnListener).not.toBeCalled();
     expect(cancelOnListener).toBeCalledTimes(1);
+  });
+
+  test('pass route params to query', async () => {
+    const handler = vi.fn().mockImplementation(() => null);
+    const query = createQuery({
+      handler,
+    });
+
+    const route = createRoute<{ id: number }>();
+    const chainedRoute = chainRoute({ route, ...startChain(query) });
+
+    const scope = fork();
+
+    await allSettled(route.open, { scope, params: { id: 1 } });
+
+    expect(handler).toBeCalledTimes(1);
+    expect(handler).toBeCalledWith({ id: 1 });
+
+    await allSettled(route.open, { scope, params: { id: 2 } });
+
+    expect(handler).toBeCalledTimes(2);
+    expect(handler).toBeCalledWith({ id: 2 });
   });
 });
