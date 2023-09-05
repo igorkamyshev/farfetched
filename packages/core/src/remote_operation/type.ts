@@ -6,7 +6,14 @@ interface DefaultMeta {
   name: string;
 }
 
-export interface RemoteOperation<Params, Data, Error, Meta> {
+export interface RemoteOperation<
+  Params,
+  Data,
+  Error,
+  Meta,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  ExtraLowLevelAPI = {}
+> {
   /**
    * Reactive current request status
    *
@@ -91,7 +98,7 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
       paramsAreMeaningless: boolean;
       revalidate: Event<{ params: Params; refresh: boolean }>;
       startWithMeta: Event<{ params: Params; meta: ExecutionMeta }>;
-    };
+    } & ExtraLowLevelAPI;
     experimentalAPI?: {
       attach: <Source, NewParams>(config: {
         source: Store<Source>;

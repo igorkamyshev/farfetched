@@ -1,13 +1,13 @@
 {
-  "name": "core",
+  "name": "atomic-router",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/core/src",
+  "sourceRoot": "packages/atomic-router/src",
   "projectType": "library",
   "targets": {
     "pack": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/scripts/typepack.mjs --package core"
+        "command": "node tools/scripts/typepack.mjs --package atomic-router"
       },
       "dependsOn": [
         {
@@ -20,10 +20,10 @@
       "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/core",
-        "entryFile": "packages/core/index.ts",
-        "tsConfig": "packages/core/tsconfig.build.json",
-        "project": "packages/core/package.json",
+        "project": "packages/atomic-router/package.json",
+        "outputPath": "dist/packages/atomic-router",
+        "entryFile": "packages/atomic-router/index.ts",
+        "tsConfig": "packages/atomic-router/tsconfig.json",
         "format": ["esm", "cjs"],
         "generateExportsField": true,
         "compiler": "babel"
@@ -32,7 +32,7 @@
     "publish": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/scripts/publish.mjs core"
+        "command": "node tools/scripts/publish.mjs atomic-router"
       },
       "dependsOn": [
         {
@@ -45,20 +45,13 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/core/**/*.ts"]
+        "lintFilePatterns": ["packages/atomic-router/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/vite:test",
       "options": {
         "config": "vite.config.ts"
-      }
-    },
-    "test_watch": {
-      "executor": "@nrwl/vite:test",
-      "options": {
-        "config": "vite.config.ts",
-        "watch": true
       }
     },
     "typetest": {
@@ -71,8 +64,8 @@
     "size": {
       "executor": "./tools/executors/size-limit:size-limit",
       "options": {
-        "limit": "19 kB",
-        "outputPath": "dist/packages/core"
+        "limit": "0.6 kB",
+        "outputPath": "dist/packages/atomic-router"
       },
       "dependsOn": [
         {

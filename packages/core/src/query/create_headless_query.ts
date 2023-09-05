@@ -1,4 +1,11 @@
-import { createStore, sample, createEvent, Store, attach } from 'effector';
+import {
+  createStore,
+  sample,
+  createEvent,
+  Store,
+  attach,
+  split,
+} from 'effector';
 
 import { Contract } from '../contract/type';
 import { InvalidDataError } from '../errors/type';
@@ -138,12 +145,30 @@ export function createHeadlessQuery<
     until: operation.$enabled,
   });
 
+  const refreshSkipDueToFreshness = createEvent<void>();
+
+  const { haveToStart, __: haveToSkip } = split(
+    sample({
+      clock: postponedRefresh,
+      source: { stale: $stale, latestParams: operation.__.$latestParams },
+      fn: ({ stale, latestParams }, params) => ({
+        haveToStart: stale || !isEqual(params ?? null, latestParams),
+        params,
+      }),
+    }),
+    {
+      haveToStart: ({ haveToStart }) => haveToStart,
+    }
+  );
+
   sample({
-    clock: postponedRefresh,
-    source: { stale: $stale, latestParams: operation.__.$latestParams },
-    filter: ({ stale, latestParams }, params) =>
-      stale || !isEqual(params ?? null, latestParams),
-    fn: (_, params) => params,
+    clock: haveToSkip,
+    fn: () => null,
+    target: refreshSkipDueToFreshness,
+  });
+  sample({
+    clock: haveToStart,
+    fn: ({ params }) => params,
     target: operation.start,
   });
 
@@ -219,6 +244,7 @@ export function createHeadlessQuery<
     ...operation,
     __: {
       ...operation.__,
+      lowLevelAPI: { ...operation.__.lowLevelAPI, refreshSkipDueToFreshness },
       experimentalAPI: { attach: attachProtocol },
     },
     '@@unitShape': unitShapeProtocol,
