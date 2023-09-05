@@ -53,7 +53,7 @@ const postLoadedRoute = chainRoute({
 
 ### `startChain`
 
-After opening a route with `freshChain`, `.start` [_Event_](https://effector.dev/docs/api/effector/event) would be executed. So, [_Query_](/api/primitives/query) will be **executed unconditionally**.
+After opening a route with `startChain`, `.start` [_Event_](https://effector.dev/docs/api/effector/event) would be executed. So, [_Query_](/api/primitives/query) will be **executed unconditionally**.
 
 ```ts
 import { createJsonQuery } from '@farfetched/core';
