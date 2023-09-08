@@ -27,22 +27,14 @@ export function createQuery<Params, Response>(
 ): Query<Params, Response, unknown, Response>;
 
 // Overload: Effect and MapData
-export function createQuery<
-  Params,
-  Response,
-  Error,
-  MappedData,
-  MapDataSource = void,
-  ValidationSource = void
->(
+export function createQuery<Params, Response, Error, MappedData>(
   config: {
     effect: Effect<Params, Response, Error>;
     mapData: DynamicallySourcedField<
       { result: Response; params: Params },
-      MappedData,
-      MapDataSource
+      MappedData
     >;
-    validate?: Validator<MappedData, Params, ValidationSource>;
+    validate?: Validator<MappedData, Params>;
   } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error>;
 
@@ -65,13 +57,12 @@ export function createQuery<
   Params,
   Response,
   Error,
-  ContractData extends Response,
-  ValidationSource = void
+  ContractData extends Response
 >(
   config: {
     effect: Effect<Params, Response, Error>;
     contract: Contract<Response, ContractData>;
-    validate?: Validator<ContractData, Params, ValidationSource>;
+    validate?: Validator<ContractData, Params>;
   } & SharedQueryFactoryConfig<ContractData>
 ): Query<Params, ContractData, Error | InvalidDataError>;
 
@@ -79,34 +70,25 @@ export function createQuery<
   Params,
   Response,
   Error,
-  ContractData extends Response,
-  ValidationSource = void
+  ContractData extends Response
 >(
   config: {
     initialData: ContractData;
     effect: Effect<Params, Response, Error>;
     contract: Contract<Response, ContractData>;
-    validate?: Validator<ContractData, Params, ValidationSource>;
+    validate?: Validator<ContractData, Params>;
   } & SharedQueryFactoryConfig<ContractData>
 ): Query<Params, ContractData, Error | InvalidDataError, ContractData>;
 
-export function createQuery<
-  Params,
-  Response,
-  Error,
-  MappedData,
-  MapDataSource = void,
-  ValidationSource = void
->(
+export function createQuery<Params, Response, Error, MappedData>(
   config: {
     initialData: MappedData;
     effect: Effect<Params, Response, Error>;
     mapData: DynamicallySourcedField<
       { result: Response; params: Params },
-      MappedData,
-      MapDataSource
+      MappedData
     >;
-    validate?: Validator<MappedData, Params, ValidationSource>;
+    validate?: Validator<MappedData, Params>;
   } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error, MappedData>;
 
@@ -116,19 +98,16 @@ export function createQuery<
   Response,
   Error,
   ContractData extends Response,
-  MappedData,
-  MapDataSource = void,
-  ValidationSource = void
+  MappedData
 >(
   config: {
     effect: Effect<Params, Response, Error>;
     contract: Contract<Response, ContractData>;
     mapData: DynamicallySourcedField<
       { result: ContractData; params: Params },
-      MappedData,
-      MapDataSource
+      MappedData
     >;
-    validate?: Validator<ContractData, Params, ValidationSource>;
+    validate?: Validator<ContractData, Params>;
   } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error | InvalidDataError>;
 
@@ -137,9 +116,7 @@ export function createQuery<
   Response,
   Error,
   ContractData extends Response,
-  MappedData,
-  MapDataSource = void,
-  ValidationSource = void
+  MappedData
 >(
   config: {
     initialData: MappedData;
@@ -147,10 +124,9 @@ export function createQuery<
     contract: Contract<Response, ContractData>;
     mapData: DynamicallySourcedField<
       { result: ContractData; params: Params },
-      MappedData,
-      MapDataSource
+      MappedData
     >;
-    validate?: Validator<ContractData, Params, ValidationSource>;
+    validate?: Validator<ContractData, Params>;
   } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error | InvalidDataError, MappedData>;
 
@@ -160,9 +136,7 @@ export function createQuery<
   Response,
   Error,
   ContractData extends Response = Response,
-  MappedData = ContractData,
-  MapDataSource = void,
-  ValidationSource = void
+  MappedData = ContractData
 >(
   // Use any because of overloads
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -174,8 +148,6 @@ export function createQuery<
     Error,
     ContractData,
     MappedData,
-    MapDataSource,
-    ValidationSource,
     MappedData
   >({
     initialData: config.initialData ?? null,

@@ -1,13 +1,23 @@
-import { combine, createEvent, merge, sample, split, Store } from 'effector';
+import {
+  combine,
+  createEvent,
+  merge,
+  sample,
+  split,
+  type Store,
+} from 'effector';
 
 import { isNotEmpty } from '../libs/lohyphen';
-import { DynamicallySourcedField, normalizeSourced } from '../libs/patronus';
-import { Mutation } from '../mutation/type';
-import { Query } from '../query/type';
 import {
-  RemoteOperationError,
-  RemoteOperationParams,
-  RemoteOperationResult,
+  type DynamicallySourcedField,
+  normalizeSourced,
+} from '../libs/patronus';
+import { type Mutation } from '../mutation/type';
+import { type Query } from '../query/type';
+import {
+  type RemoteOperationError,
+  type RemoteOperationParams,
+  type RemoteOperationResult,
 } from '../remote_operation/type';
 
 type QueryState<Q extends Query<any, any, any, any>> =
@@ -37,9 +47,7 @@ type RuleResult<Q extends Query<any, any, any, any>> =
 
 export function update<
   Q extends Query<any, any, any, any>,
-  M extends Mutation<any, any, any>,
-  BySuccessSource = void,
-  ByFailureSource = void
+  M extends Mutation<any, any, any>
 >(
   query: Q,
   {
@@ -56,8 +64,7 @@ export function update<
             params: RemoteOperationParams<M>;
           };
         },
-        RuleResult<Q>,
-        BySuccessSource
+        RuleResult<Q>
       >;
       failure?: DynamicallySourcedField<
         {
@@ -67,8 +74,7 @@ export function update<
             params: RemoteOperationParams<M>;
           };
         },
-        RuleResult<Q>,
-        ByFailureSource
+        RuleResult<Q>
       >;
     };
   }

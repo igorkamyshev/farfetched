@@ -45,8 +45,6 @@ export function createHeadlessQuery<
   Error,
   ContractData extends Response,
   MappedData,
-  MapDataSource,
-  ValidationSource,
   Initial = null
 >(
   config: {
@@ -54,11 +52,10 @@ export function createHeadlessQuery<
     contract: Contract<Response, ContractData>;
     mapData: DynamicallySourcedField<
       { result: ContractData; params: Params },
-      MappedData,
-      MapDataSource
+      MappedData
     >;
-    validate?: Validator<ContractData, Params, ValidationSource>;
-    sourced?: SourcedField<Params, unknown, unknown>[];
+    validate?: Validator<ContractData, Params>;
+    sourced?: SourcedField<Params, unknown>[];
     paramsAreMeaningless?: boolean;
   } & SharedQueryFactoryConfig<MappedData, Initial>
 ): Query<Params, MappedData, Error | InvalidDataError, Initial> {
@@ -82,9 +79,7 @@ export function createHeadlessQuery<
     ContractData,
     MappedData,
     Error,
-    QueryMeta<MappedData, Initial>,
-    MapDataSource,
-    ValidationSource
+    QueryMeta<MappedData, Initial>
   >({
     name,
     kind: QuerySymbol,
@@ -235,8 +230,6 @@ export function createHeadlessQuery<
       unknown,
       ContractData,
       MappedData,
-      MapDataSource,
-      ValidationSource,
       Initial
     >(config as any);
 

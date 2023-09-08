@@ -1,45 +1,41 @@
 import {
+  type Effect,
+  type Event,
+  type Store,
+  type Subscription,
   attach,
   combine,
   createEffect,
   createStore,
-  Effect,
-  Event,
   is,
   sample,
-  Store,
 } from 'effector';
 
 // -- Main case --
 
 export type Callback<Data, Result> = (data: Data) => Result;
 
-export type CallbackWithSource<Data, Result, Source> = {
-  source: Store<Source>;
-  fn: (data: Data, source: Source) => Result;
-};
-
-export type DynamicallySourcedField<Data, Result, Source> =
+export type DynamicallySourcedField<Data, Result> =
   | Callback<Data, Result>
-  | CallbackWithSource<Data, Result, Source>;
+  | PartialStore<Data, Result>;
 
-type SourcedField<Data, Result, Source> =
+export type SourcedField<Data, Result> =
   | Result
   | Store<Result>
   | Callback<Data, Result>
-  | CallbackWithSource<Data, Result, Source>;
+  | PartialStore<Data, Result>;
 
-function normalizeSourced<Data, Result, Source>(config: {
-  field: SourcedField<Data, Result, Source>;
+export function normalizeSourced<Data, Result>(config: {
+  field: SourcedField<Data, Result>;
   clock: Event<Data>;
-}): Store<Result>;
+}): PartialStore<Data, Result>;
 
-function normalizeSourced<Data, Result, Source>(config: {
-  field: SourcedField<Data, Result, Source>;
+export function normalizeSourced<Data, Result>(config: {
+  field: SourcedField<Data, Result>;
   source: Store<Data>;
-}): Store<Result>;
+}): PartialStore<Data, Result>;
 
-function normalizeSourced<Data, Result, Source>({
+export function normalizeSourced<Data, Result>({
   field,
   clock,
   source,
@@ -47,100 +43,19 @@ function normalizeSourced<Data, Result, Source>({
   field: any;
   clock?: Event<Data>;
   source?: Store<Data>;
-}): Store<Result | null> {
-  let $target = createStore<any>(null, { serialize: 'ignore' });
+}): PartialStore<Data, Result> {
+  // TODO:
 
-  if (clock) {
-    if (field === undefined) {
-      // do nothing
-    } else if (is.store(field)) {
-      const $storeField = field as Store<Result>;
-
-      sample({ clock, source: $storeField, target: $target });
-    } else if (field?.source && field?.fn) {
-      const callbackField = field as CallbackWithSource<Data, Result, Source>;
-
-      sample({
-        clock,
-        source: callbackField.source,
-        fn: (source, params) => callbackField.fn(params, source),
-        target: $target,
-      });
-    } else if (typeof field === 'function') {
-      const callbackField = field as Callback<Data, Result>;
-
-      sample({ clock, fn: (data) => callbackField(data), target: $target });
-    } else {
-      const valueField = field as Result;
-
-      sample({ clock, fn: () => valueField, target: $target });
-    }
-  }
-
-  if (source) {
-    const $source = source as Store<Data>;
-    if (field === undefined) {
-      // do nothing
-    } else if (is.store(field)) {
-      const $storeField = field as Store<Result>;
-
-      $target = $storeField;
-    } else if (field?.source && field?.fn) {
-      const callbackField = field as CallbackWithSource<Data, Result, Source>;
-
-      $target = combine($source, callbackField.source, callbackField.fn);
-    } else if (typeof field === 'function') {
-      const callbackField = field as Callback<Data, Result>;
-
-      $target = $source.map(callbackField);
-    } else {
-      const valueField = field as Result;
-
-      $target = createStore(valueField, { serialize: 'ignore' });
-    }
-  }
-
-  return $target;
+  return () => ({} as any);
 }
 
 // -- Reader case --
 
-export function createSourcedReader<Data, Result, Source>(
-  field?: SourcedField<Data, Result, Source>
-): Effect<Data, Result, any> {
-  let readFx: Effect<Data, Result, any>;
-
-  if (field === undefined) {
-    readFx = createEffect(async (_params: Data) => null as any);
-  } else if (is.store(field)) {
-    const $storeField = field as Store<Result>;
-
-    readFx = attach({
-      source: $storeField,
-      async effect(source, _params: Data) {
-        return source;
-      },
-    });
-  } else if ((field as any).source && (field as any).fn) {
-    const callbackField = field as CallbackWithSource<Data, Result, Source>;
-
-    readFx = attach({
-      source: callbackField.source,
-      async effect(source, params: Data) {
-        return callbackField.fn(params, source);
-      },
-    });
-  } else if (typeof field === 'function') {
-    const callbackField = field as Callback<Data, Result>;
-
-    readFx = createEffect(async (params: Data) => callbackField(params));
-  } else {
-    const valueField = field as Result;
-
-    readFx = createEffect(async (_params: Data) => valueField);
-  }
-
-  return readFx;
+export function createSourcedReader<Data, Result>(
+  field?: SourcedField<Data, Result>
+): Effect<Data, Result, unknown> {
+  // TODO:
+  return {} as any;
 }
 
 // -- Extended case --
@@ -155,66 +70,45 @@ type CallbackTwoArgsWithSource<FirstData, SecondData, Result, Source> = {
   fn: (arg1: FirstData, arg2: SecondData, source: Source) => Result;
 };
 
-type TwoArgsDynamicallySourcedField<FirstData, SecondData, Result, Source> =
+export type TwoArgsDynamicallySourcedField<FirstData, SecondData, Result> =
   | CallbackTwoArgs<FirstData, SecondData, Result>
-  | CallbackTwoArgsWithSource<FirstData, SecondData, Result, Source>;
+  | CallbackTwoArgsWithSource<
+      FirstData,
+      SecondData,
+      Result,
+      unknown /*TODO: */
+    >;
 
-type ReducedField<FirstData, SecondData, Result, Source> = {
-  field: SourcedField<[FirstData, SecondData], Result, Source>;
+type ReducedField<FirstData, SecondData, Result> = {
+  field: SourcedField<[FirstData, SecondData], Result>;
   clock: Event<[FirstData, SecondData]>;
 };
 
-function reduceTwoArgs<FirstData, SecondData, Result, Source = void>(config: {
-  field: TwoArgsDynamicallySourcedField<FirstData, SecondData, Result, Source>;
+export function reduceTwoArgs<FirstData, SecondData, Result>(config: {
+  field: TwoArgsDynamicallySourcedField<FirstData, SecondData, Result>;
   clock: Event<[FirstData, SecondData]>;
-}): ReducedField<FirstData, SecondData, Result, Source>;
+}): ReducedField<FirstData, SecondData, Result>;
 
-function reduceTwoArgs<FirstData, SecondData, Result, Source = void>({
+export function reduceTwoArgs<FirstData, SecondData, Result>({
   field,
   clock,
 }: {
   field: any;
   clock: Event<[FirstData, SecondData]>;
-}): ReducedField<FirstData, SecondData, Result, Source> {
-  if (typeof field === 'function') {
-    const callbackField = field as CallbackTwoArgs<
-      FirstData,
-      SecondData,
-      Result
-    >;
-
-    return {
-      field: ([data, params]) => callbackField(data, params),
-      clock,
-    };
-  }
-
-  const callbackField = field as CallbackTwoArgsWithSource<
-    FirstData,
-    SecondData,
-    Result,
-    Source
-  >;
-
-  return {
-    clock,
-    field: {
-      source: callbackField.source,
-      fn: ([data, params], source) => callbackField.fn(data, params, source),
-    },
-  };
+}): ReducedField<FirstData, SecondData, Result> {
+  return {} as any;
 }
 
 // -- Static ot reactive case
 
-type StaticOrReactive<T> = T | Store<Exclude<T, undefined>>;
+export type StaticOrReactive<T> = T | Store<Exclude<T, undefined>>;
 
-function normalizeStaticOrReactive<T>(v: StaticOrReactive<T>): Store<T>;
-function normalizeStaticOrReactive<T>(
+export function normalizeStaticOrReactive<T>(v: StaticOrReactive<T>): Store<T>;
+export function normalizeStaticOrReactive<T>(
   v?: StaticOrReactive<T>
 ): Store<Exclude<T, undefined> | null>;
 
-function normalizeStaticOrReactive<T>(
+export function normalizeStaticOrReactive<T>(
   v?: StaticOrReactive<T>
 ): Store<Exclude<T, undefined> | null> {
   if (!v) {
@@ -234,7 +128,9 @@ function normalizeStaticOrReactive<T>(
 
 // -- Extract source
 
-function extractSource<S>(sourced: SourcedField<any, any, S>): Store<S> | null {
+export function extractSource<S>(
+  sourced: SourcedField<any, any>
+): Store<unknown> | null {
   if (is.store(sourced)) {
     return sourced;
   }
@@ -249,7 +145,7 @@ function extractSource<S>(sourced: SourcedField<any, any, S>): Store<S> | null {
 // -- Combine sourced
 
 // TODO: type it https://github.com/igorkamyshev/farfetched/issues/281
-function combineSourced(config: any, mapper?: (v: any) => any) {
+export function combineSourced(config: any, mapper?: (v: any) => any) {
   const megaStore: any = {};
   const megaFns: any = {};
 
@@ -291,15 +187,41 @@ function combineSourced(config: any, mapper?: (v: any) => any) {
   } as any;
 }
 
-// -- Exports --
+// -- Future --
 
-export {
-  type SourcedField,
-  normalizeSourced,
-  type TwoArgsDynamicallySourcedField,
-  reduceTwoArgs,
-  type StaticOrReactive,
-  normalizeStaticOrReactive,
-  extractSource,
-  combineSourced,
-};
+type TSHack<T> = {
+  watch(cb: (payloaad: T) => void): Subscription;
+} | null;
+
+type PartialStore<Params, Result> = (
+  declaration: TSHack<Params>
+) => Store<(params: Params) => Result>;
+
+export function sourced<Params, Result, Source>(
+  config:
+    | Result
+    | Store<Result>
+    | Callback<Params, Result>
+    | { source: Store<Source>; fn: (params: Params, source: Source) => Result }
+): PartialStore<Params, Result> {
+  let $partialStore: Store<(params: Params) => Result>;
+
+  if (typeof config === 'function') {
+    $partialStore = createStore(config as Callback<Params, Result>, {
+      serialize: 'ignore',
+    });
+  } else if ('source' in config) {
+    $partialStore = combine(
+      config.source,
+      (source) => (params: Params) => config.fn(params, source)
+    );
+  } else if (is.store(config)) {
+    $partialStore = combine(config, (val) => (_params: Params) => val);
+  } else {
+    $partialStore = createStore((_params: Params) => config as Result, {
+      serialize: 'ignore',
+    });
+  }
+
+  return () => $partialStore;
+}

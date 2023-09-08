@@ -22,17 +22,14 @@ export function createHeadlessMutation<
   Data,
   ContractData extends Data,
   MappedData,
-  Error,
-  MapDataSource = void,
-  ValidationSource = void
+  Error
 >(
   config: SharedMutationFactoryConfig & {
     contract: Contract<Data, ContractData>;
-    validate?: Validator<ContractData, Params, ValidationSource>;
+    validate?: Validator<ContractData, Params>;
     mapData: DynamicallySourcedField<
       { result: ContractData; params: Params },
-      MappedData,
-      MapDataSource
+      MappedData
     >;
   }
 ): Mutation<Params, MappedData, Error | InvalidDataError> {
@@ -44,9 +41,7 @@ export function createHeadlessMutation<
     ContractData,
     MappedData,
     Error,
-    null,
-    MapDataSource,
-    ValidationSource
+    null
   >({
     name,
     serialize: 'ignore',
@@ -79,9 +74,7 @@ export function createHeadlessMutation<
       Data,
       ContractData,
       MappedData,
-      unknown,
-      MapDataSource,
-      ValidationSource
+      unknown
     >(config as any);
 
     attachedMutation.__.lowLevelAPI.dataSourceRetrieverFx.use(

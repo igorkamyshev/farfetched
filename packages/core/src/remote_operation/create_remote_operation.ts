@@ -34,9 +34,7 @@ export function createRemoteOperation<
   ContractData extends Data,
   MappedData,
   Error,
-  Meta,
-  MapDataSource = void,
-  ValidationSource = void
+  Meta
 >({
   name: ownName,
   meta,
@@ -55,13 +53,12 @@ export function createRemoteOperation<
   serialize?: 'ignore';
   enabled?: StaticOrReactive<boolean>;
   contract: Contract<Data, ContractData>;
-  validate?: Validator<ContractData, Params, ValidationSource>;
+  validate?: Validator<ContractData, Params>;
   mapData: DynamicallySourcedField<
     { result: ContractData; params: Params },
-    MappedData,
-    MapDataSource
+    MappedData
   >;
-  sourced?: SourcedField<Params, unknown, unknown>[];
+  sourced?: SourcedField<Params, unknown>[];
   paramsAreMeaningless?: boolean;
 }): RemoteOperation<Params, MappedData, Error | InvalidDataError, Meta> {
   const revalidate = createEvent<{ params: Params; refresh: boolean }>();

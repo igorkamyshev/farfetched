@@ -6,6 +6,7 @@ import { HttpMethod, JsonApiRequestError } from '../fetch/api';
 import {
   normalizeSourced,
   type DynamicallySourcedField,
+  type SourcedField,
 } from '../libs/patronus';
 import { type ParamsDeclaration } from '../remote_operation/params';
 import { Query } from './type';
@@ -16,7 +17,6 @@ import {
 } from './create_headless_query';
 import { unknownContract } from '../contract/unknown_contract';
 import { Validator } from '../validation/type';
-import { type PartialStore } from '../libs/patronus/sourced_future';
 
 // -- Shared
 
@@ -26,17 +26,17 @@ type ConcurrencyConfig = {
 };
 
 type RequestConfig<Params> = {
-  url: PartialStore<Params, string>;
+  url: SourcedField<Params, string>;
   credentials?: RequestCredentials;
-  query?: PartialStore<Params, FetchApiRecord> | PartialStore<Params, string>;
-  headers?: PartialStore<Params, FetchApiRecord>;
+  query?: SourcedField<Params, FetchApiRecord> | SourcedField<Params, string>;
+  headers?: SourcedField<Params, FetchApiRecord>;
 } & (
   | {
       method: 'GET' | 'HEAD';
     }
   | {
       method: Exclude<HttpMethod, 'GET' | 'HEAD'>;
-      body?: PartialStore<Params, Json>;
+      body?: SourcedField<Params, Json>;
     }
 );
 
@@ -56,123 +56,97 @@ interface BaseJsonQueryConfigWithParams<Params, Data>
 // -- Overloads
 
 // params + mapData
-export function createJsonQuery<
-  Params,
-  Data,
-  TransformedData,
-  DataSource = void,
-  ValidationSource = void
->(
+export function createJsonQuery<Params, Data, TransformedData>(
   config: BaseJsonQueryConfigWithParams<Params, TransformedData> & {
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
         { result: Data; params: Params },
-        TransformedData,
-        DataSource
+        TransformedData
       >;
-      validate?: Validator<TransformedData, Params, ValidationSource>;
+      validate?: Validator<TransformedData, Params>;
     };
   }
 ): Query<Params, TransformedData, JsonApiRequestError>;
 
-export function createJsonQuery<
-  Params,
-  Data,
-  TransformedData,
-  DataSource = void,
-  ValidationSource = void
->(
+export function createJsonQuery<Params, Data, TransformedData>(
   config: BaseJsonQueryConfigWithParams<Params, TransformedData> & {
     initialData?: TransformedData;
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
         { result: Data; params: Params },
-        TransformedData,
-        DataSource
+        TransformedData
       >;
-      validate?: Validator<TransformedData, Params, ValidationSource>;
+      validate?: Validator<TransformedData, Params>;
     };
   }
 ): Query<Params, TransformedData, JsonApiRequestError, TransformedData>;
 
 // params + no mapData
-export function createJsonQuery<Params, Data, ValidationSource = void>(
+export function createJsonQuery<Params, Data>(
   config: BaseJsonQueryConfigWithParams<Params, Data> & {
     response: {
       contract: Contract<unknown, Data>;
-      validate?: Validator<Data, Params, ValidationSource>;
+      validate?: Validator<Data, Params>;
     };
   }
 ): Query<Params, Data, JsonApiRequestError>;
 
-export function createJsonQuery<Params, Data, ValidationSource = void>(
+export function createJsonQuery<Params, Data>(
   config: BaseJsonQueryConfigWithParams<Params, Data> & {
     initialData?: Data;
     response: {
       contract: Contract<unknown, Data>;
-      validate?: Validator<Data, Params, ValidationSource>;
+      validate?: Validator<Data, Params>;
     };
   }
 ): Query<Params, Data, JsonApiRequestError, Data>;
 
 // No params + mapData
-export function createJsonQuery<
-  Data,
-  TransformedData,
-  DataSource = void,
-  ValidationSource = void
->(
+export function createJsonQuery<Data, TransformedData>(
   config: BaseJsonQueryConfigNoParams<TransformedData> & {
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
         { result: Data; params: void },
-        TransformedData,
-        DataSource
+        TransformedData
       >;
-      validate?: Validator<TransformedData, void, ValidationSource>;
+      validate?: Validator<TransformedData, void>;
     };
   }
 ): Query<void, TransformedData, JsonApiRequestError>;
 
-export function createJsonQuery<
-  Data,
-  TransformedData,
-  DataSource = void,
-  ValidationSource = void
->(
+export function createJsonQuery<Data, TransformedData>(
   config: BaseJsonQueryConfigNoParams<TransformedData> & {
     initialData?: TransformedData;
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
         { result: Data; params: void },
-        TransformedData,
-        DataSource
+        TransformedData
       >;
-      validate?: Validator<TransformedData, void, ValidationSource>;
+      validate?: Validator<TransformedData, void>;
     };
   }
 ): Query<void, TransformedData, JsonApiRequestError, TransformedData>;
 
 // No params + no mapData
-export function createJsonQuery<Data, ValidationSource = void>(
+export function createJsonQuery<Data>(
   config: BaseJsonQueryConfigNoParams<Data> & {
     response: {
       contract: Contract<unknown, Data>;
-      validate?: Validator<Data, void, ValidationSource>;
+      validate?: Validator<Data, void>;
     };
   }
 ): Query<void, Data, JsonApiRequestError>;
 
-export function createJsonQuery<Data, ValidationSource = void>(
+export function createJsonQuery<Data>(
   config: BaseJsonQueryConfigNoParams<Data> & {
     initialData?: Data;
     response: {
       contract: Contract<unknown, Data>;
-      validate?: Validator<Data, void, ValidationSource>;
+      validate?: Validator<Data, void>;
     };
   }
 ): Query<void, Data, JsonApiRequestError, Data>;
@@ -195,16 +169,7 @@ export function createJsonQuery(config: any) {
   // Connections
   const internalStart = createEvent<any>();
 
-  const headlessQuery = createHeadlessQuery<
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any
-  >({
+  const headlessQuery = createHeadlessQuery<any, any, any, any, any, any>({
     initialData: config.initialData,
     contract: config.response.contract ?? unknownContract,
     mapData: config.response.mapData ?? (({ result }) => result),

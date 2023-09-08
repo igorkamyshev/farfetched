@@ -29,7 +29,7 @@ import {
   type RemoteOperationParams,
 } from '../remote_operation/type';
 import { type RetryMeta } from './type';
-import { type PartialStore } from '../libs/patronus/sourced_future';
+import { type SourcedField } from '../libs/patronus';
 
 type FailInfo<Q extends RemoteOperation<any, any, any, any>> = {
   params: RemoteOperationParams<Q>;
@@ -37,34 +37,21 @@ type FailInfo<Q extends RemoteOperation<any, any, any, any>> = {
   meta: ExecutionMeta;
 };
 
-type RetryConfig<
-  Q extends RemoteOperation<any, any, any, any>,
-  MapParamsSource = unknown
-> = {
+type RetryConfig<Q extends RemoteOperation<any, any, any, any>> = {
   times: StaticOrReactive<number>;
-  delay: PartialStore<RetryMeta, Time>;
-  filter?: PartialStore<FailInfo<Q>, boolean>;
+  delay: SourcedField<RetryMeta, Time>;
+  filter?: SourcedField<FailInfo<Q>, boolean>;
   mapParams?: DynamicallySourcedField<
     FailInfo<Q> & { meta: RetryMeta },
-    RemoteOperationParams<Q>,
-    MapParamsSource
+    RemoteOperationParams<Q>
   >;
   otherwise?: Event<FailInfo<Q>>;
   supressIntermediateErrors?: boolean;
 };
 
-export function retry<
-  Q extends RemoteOperation<any, any, any, any>,
-  MapParamsSource = unknown
->(
+export function retry<Q extends RemoteOperation<any, any, any, any>>(
   operation: Q,
-  {
-    times,
-    delay: timeout,
-    filter,
-    mapParams,
-    ...params
-  }: RetryConfig<Q, MapParamsSource>
+  { times, delay: timeout, filter, mapParams, ...params }: RetryConfig<Q>
 ): void {
   const supressIntermediateErrors = params.supressIntermediateErrors ?? false;
 
