@@ -131,6 +131,9 @@ importers:
       vitest: 0.26.2_eetf2xjpdhuqcs2dx4ndfgw7iq
       vue: 3.2.37
 
+  packages/atomic-router:
+    specifiers: {}
+
   packages/core:
     specifiers: {}
 
