@@ -31,6 +31,8 @@ export interface RemoteOperation<
   $failed: Store<boolean>;
   /** Is fetching succeeded? */
   $succeeded: Store<boolean>;
+  /** Is fetching finished? */
+  $finished: Store<boolean>;
   /**
    * Is operation enabled?
    *
