@@ -43,7 +43,7 @@ export interface RemoteOperation<
   /** Event to trigger query */
   start: Event<Params>;
   /** Event that trigered after operation started */
-  started: Event<{ params: Params, meta: ExecutionMeta }>;
+  started: Event<{ params: Params; meta: ExecutionMeta }>;
   /** Set of events that represent end of query */
   finished: {
     /** Query was successfully ended, data will be passed as a payload */
