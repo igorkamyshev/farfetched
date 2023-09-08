@@ -19,8 +19,18 @@ export interface QueryMeta<Data, InitialData> {
   sid: string | null;
 }
 
+export type QueryExtraLowLevelAPI = {
+  refreshSkipDueToFreshness: Event<void>;
+};
+
 export interface Query<Params, Data, Error, InitialData = null>
-  extends RemoteOperation<Params, Data, Error, QueryMeta<Data, InitialData>> {
+  extends RemoteOperation<
+    Params,
+    Data,
+    Error,
+    QueryMeta<Data, InitialData>,
+    QueryExtraLowLevelAPI
+  > {
   /**
    * Start fetching data if it is absent or stale.
    */
