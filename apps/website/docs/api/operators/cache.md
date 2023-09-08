@@ -119,12 +119,12 @@ cache(query, {
   adapter: localStorageCache({
     serialize: {
       read: (data) => {
-        // Do your custom serialization here
+        // Do your custom deserialization here
 
         return parsedData;
       },
       write: (data) => {
-        // Do your custom deserialization here
+        // Do your custom serialization here
 
         return serializedData;
       },
