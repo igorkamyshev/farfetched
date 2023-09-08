@@ -6,7 +6,8 @@ Farfetched is under development now, before the first stable release we are goin
 
 ### v.0.10
 
-- Finalize DevTools interface
+- DevTools interface
+- Barrier API
 
 ## Future releases
 
