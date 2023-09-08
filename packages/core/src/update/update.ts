@@ -1,13 +1,23 @@
-import { combine, createEvent, merge, sample, split, Store } from 'effector';
+import {
+  combine,
+  createEvent,
+  merge,
+  sample,
+  split,
+  type Store,
+} from 'effector';
 
 import { isNotEmpty } from '../libs/lohyphen';
-import { DynamicallySourcedField, normalizeSourced } from '../libs/patronus';
-import { Mutation } from '../mutation/type';
-import { Query } from '../query/type';
 import {
-  RemoteOperationError,
-  RemoteOperationParams,
-  RemoteOperationResult,
+  type DynamicallySourcedField,
+  normalizeSourced,
+} from '../libs/patronus';
+import { type Mutation } from '../mutation/type';
+import { type Query } from '../query/type';
+import {
+  type RemoteOperationError,
+  type RemoteOperationParams,
+  type RemoteOperationResult,
 } from '../remote_operation/type';
 
 type QueryState<Q extends Query<any, any, any, any>> =
@@ -87,17 +97,17 @@ export function update<
   split({
     source: sample({
       clock: mutation.finished.success,
-      source: normalizeSourced({
-        field: rules.success,
-        clock: sample({
-          clock: mutation.finished.success,
-          source: $queryState,
-          fn: (query, { result, params }) => ({
-            query,
-            mutation: { result, params: params ?? null },
-          }),
+      source: {
+        partialRule: normalizeSourced({
+          field: rules.success,
         }),
-      }),
+        queryState: $queryState,
+      },
+      fn: ({ partialRule, queryState }, { result, params }) =>
+        partialRule({
+          query: queryState,
+          mutation: { result, params: params ?? null },
+        }),
     }),
     match: {
       fillData: (payload: any) => isNotEmpty(payload.result),
@@ -109,17 +119,17 @@ export function update<
     split({
       source: sample({
         clock: mutation.finished.failure,
-        source: normalizeSourced({
-          field: rules.failure,
-          clock: sample({
-            clock: mutation.finished.failure,
-            source: $queryState,
-            fn: (query, { error, params }) => ({
-              query,
-              mutation: { error, params: params ?? null },
-            }),
+        source: {
+          partialRule: normalizeSourced({
+            field: rules.failure,
           }),
-        }),
+          queryState: $queryState,
+        },
+        fn: ({ partialRule, queryState }, { error, params }) =>
+          partialRule({
+            query: queryState,
+            mutation: { error, params: params ?? null },
+          }),
       }),
       match: {
         fillData: (payload: any) => isNotEmpty(payload.result),

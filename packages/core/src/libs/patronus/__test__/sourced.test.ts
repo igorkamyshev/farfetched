@@ -1,68 +1,68 @@
-import { allSettled, createEvent, createStore, fork } from 'effector';
-import { describe, test, expect } from 'vitest';
+import {
+  allSettled,
+  combine,
+  createEvent,
+  createStore,
+  createWatch,
+  fork,
+  sample,
+} from 'effector';
+import { describe, test, expect, vi } from 'vitest';
 
 import { combineSourced, normalizeSourced, reduceTwoArgs } from '../sourced';
 
-describe('normalizeSourced (with clock)', () => {
+describe('normalizeSourced', () => {
   test('handle simple value', async () => {
-    const clock = createEvent();
+    const $normalized = normalizeSourced({ field: 'static string' });
 
-    const $normalized = normalizeSourced({ field: 'static string', clock });
+    const $one = combine($normalized, (normalized) => normalized('one'));
+    const $two = combine($normalized, (normalized) => normalized('two'));
 
     const scope = fork();
 
-    await allSettled(clock, { scope });
-
-    expect(scope.getState($normalized)).toBe('static string');
-
-    await allSettled(clock, { scope });
-
-    expect(scope.getState($normalized)).toBe('static string');
+    expect(scope.getState($one)).toBe('static string');
+    expect(scope.getState($two)).toBe('static string');
   });
 
   test('handle simple nullish value', async () => {
-    const clock = createEvent();
-
-    const $normalized = normalizeSourced({ field: false, clock });
+    const $normalized = normalizeSourced({ field: false });
+    const $one = combine($normalized, (normalized) => normalized('one'));
+    const $two = combine($normalized, (normalized) => normalized('two'));
 
     const scope = fork();
 
-    await allSettled(clock, { scope });
-
-    expect(scope.getState($normalized)).toBe(false);
+    expect(scope.getState($one)).toBe(false);
+    expect(scope.getState($two)).toBe(false);
   });
 
   test('handle null value', async () => {
-    const clock = createEvent();
-
-    const $normalized = normalizeSourced({ field: null, clock });
+    const $normalized = normalizeSourced({ field: null });
+    const $one = combine($normalized, (normalized) => normalized('one'));
+    const $two = combine($normalized, (normalized) => normalized('two'));
 
     const scope = fork();
 
-    await allSettled(clock, { scope });
-
-    expect(scope.getState($normalized)).toBe(null);
+    expect(scope.getState($one)).toBe(null);
+    expect(scope.getState($two)).toBe(null);
   });
 
   test('handle store value', async () => {
-    const clock = createEvent();
-
     const $field = createStore('first value');
 
-    const $normalized = normalizeSourced({ field: $field, clock });
+    const $normalized = normalizeSourced({ field: $field });
+
+    const $one = combine($normalized, (normalized) => normalized('one'));
+    const $two = combine($normalized, (normalized) => normalized('two'));
 
     const scope = fork();
 
-    await allSettled(clock, { scope });
-
-    expect(scope.getState($normalized)).toBe('first value');
+    expect(scope.getState($one)).toBe('first value');
+    expect(scope.getState($two)).toBe('first value');
 
     await allSettled($field, { scope, params: 'Second value' });
-    expect(scope.getState($normalized)).toBe('first value');
 
-    await allSettled(clock, { scope });
-
-    expect(scope.getState($normalized)).toBe('Second value');
+    expect(scope.getState($one)).toBe('Second value');
+    expect(scope.getState($two)).toBe('Second value');
   });
 
   test('handle callback with source', async () => {
@@ -72,23 +72,31 @@ describe('normalizeSourced (with clock)', () => {
 
     const $normalized = normalizeSourced({
       field: { source: $source, fn: (params, source) => `${params}_${source}` },
-      clock,
     });
+
+    const result = sample({
+      clock,
+      source: $normalized,
+      fn: (normalized, params) => normalized(params),
+    });
+
+    const resultWather = vi.fn();
 
     const scope = fork();
 
-    await allSettled(clock, { scope, params: 'first' });
+    createWatch({ unit: result, fn: resultWather, scope });
 
-    expect(scope.getState($normalized)).toBe('first_1');
+    await allSettled(clock, { scope, params: 'first' });
+    expect(resultWather).toBeCalledWith('first_1');
 
     await allSettled(clock, { scope, params: 'second' });
-    expect(scope.getState($normalized)).toBe('second_1');
+    expect(resultWather).toBeCalledWith('second_1');
 
     await allSettled($source, { scope, params: '2' });
-    expect(scope.getState($normalized)).toBe('second_1');
+    expect(resultWather).toBeCalledWith('second_1');
 
     await allSettled(clock, { scope, params: 'third' });
-    expect(scope.getState($normalized)).toBe('third_2');
+    expect(resultWather).toBeCalledWith('third_2');
   });
 
   test('handle callback', async () => {
@@ -96,123 +104,25 @@ describe('normalizeSourced (with clock)', () => {
 
     const $normalized = normalizeSourced({
       field: (params) => `call_${params}`,
-      clock,
     });
 
+    const result = sample({
+      clock,
+      source: $normalized,
+      fn: (normalized, params) => normalized(params),
+    });
+
+    const resultWather = vi.fn();
+
     const scope = fork();
+
+    createWatch({ unit: result, fn: resultWather, scope });
 
     await allSettled(clock, { scope, params: 'first' });
-    expect(scope.getState($normalized)).toBe('call_first');
+    expect(resultWather).toBeCalledWith('call_first');
 
     await allSettled(clock, { scope, params: 'second' });
-    expect(scope.getState($normalized)).toBe('call_second');
-  });
-});
-
-describe('normalizeSourced (with source)', () => {
-  test('handle simple value', async () => {
-    const $source = createStore<string>('fdsfd');
-
-    const $normalized = normalizeSourced({
-      field: 'static string',
-      source: $source,
-    });
-
-    const scope = fork();
-
-    expect(scope.getState($normalized)).toBe('static string');
-
-    await allSettled($source, { scope, params: 'tretre' });
-
-    expect(scope.getState($normalized)).toBe('static string');
-  });
-
-  test('handle simple nullish value', async () => {
-    const $source = createStore<string>('fdsfd');
-
-    const $normalized = normalizeSourced({
-      field: false,
-      source: $source,
-    });
-
-    const scope = fork();
-
-    expect(scope.getState($normalized)).toBe(false);
-
-    await allSettled($source, { scope, params: 'tretre' });
-
-    expect(scope.getState($normalized)).toBe(false);
-  });
-
-  test('handle null value', async () => {
-    const source = createStore(null);
-
-    const $normalized = normalizeSourced({ field: null, source });
-
-    const scope = fork();
-
-    await allSettled(source, { scope, params: 12 });
-
-    expect(scope.getState($normalized)).toBe(null);
-  });
-
-  test('handle store value', async () => {
-    const $source = createStore('');
-
-    const $field = createStore('first value');
-
-    const $normalized = normalizeSourced({ field: $field, source: $source });
-
-    const scope = fork();
-
-    expect(scope.getState($normalized)).toBe('first value');
-
-    await allSettled($source, { scope, params: 'fdsfgsdgds' });
-
-    await allSettled($field, { scope, params: 'Second value' });
-  });
-
-  test('handle callback with source', async () => {
-    const $source = createStore('first');
-
-    const $externalSource = createStore('1');
-
-    const $normalized = normalizeSourced({
-      field: {
-        source: $externalSource,
-        fn: (params, source) => `${params}_${source}`,
-      },
-      source: $source,
-    });
-
-    const scope = fork();
-
-    expect(scope.getState($normalized)).toBe('first_1');
-
-    await allSettled($source, { scope, params: 'second' });
-    expect(scope.getState($normalized)).toBe('second_1');
-
-    await allSettled($externalSource, { scope, params: '2' });
-    expect(scope.getState($normalized)).toBe('second_2');
-
-    await allSettled($source, { scope, params: 'third' });
-    expect(scope.getState($normalized)).toBe('third_2');
-  });
-
-  test('handle callback', async () => {
-    const $source = createStore('first');
-
-    const $normalized = normalizeSourced({
-      field: (params) => `call_${params}`,
-      source: $source,
-    });
-
-    const scope = fork();
-
-    expect(scope.getState($normalized)).toBe('call_first');
-
-    await allSettled($source, { scope, params: 'second' });
-    expect(scope.getState($normalized)).toBe('call_second');
+    expect(resultWather).toBeCalledWith('call_second');
   });
 });
 
@@ -227,14 +137,23 @@ describe('reduceTwoArgs', () => {
       })
     );
 
+    const result = sample({
+      clock,
+      source: $normalized,
+      fn: (normalized, params) => normalized(params),
+    });
+
+    const resultWather = vi.fn();
+
     const scope = fork();
 
-    expect(scope.getState($normalized)).toBeNull();
+    createWatch({ unit: result, fn: resultWather, scope });
+
     await allSettled(clock, { scope, params: ['FIRST', 'params'] });
-    expect(scope.getState($normalized)).toBe('FIRSTparams');
+    expect(resultWather).toBeCalledWith('FIRSTparams');
 
     await allSettled(clock, { scope, params: ['SECOND', 'other'] });
-    expect(scope.getState($normalized)).toBe('SECONDother');
+    expect(resultWather).toBeCalledWith('SECONDother');
   });
 
   test('handle callback with source', async () => {
@@ -252,14 +171,24 @@ describe('reduceTwoArgs', () => {
       })
     );
 
+    const result = sample({
+      clock,
+      source: $normalized,
+      fn: (normalized, params) => normalized(params),
+    });
+
+    const resultWather = vi.fn();
+
     const scope = fork();
 
+    createWatch({ unit: result, fn: resultWather, scope });
+
     await allSettled(clock, { scope, params: ['FIRST', 'params'] });
-    expect(scope.getState($normalized)).toBe('FIRSTparamssource');
+    expect(resultWather).toBeCalledWith('FIRSTparamssource');
 
     await allSettled($source, { scope, params: 'new source' });
     await allSettled(clock, { scope, params: ['SECOND', 'other'] });
-    expect(scope.getState($normalized)).toBe('SECONDothernew source');
+    expect(resultWather).toBeCalledWith('SECONDothernew source');
   });
 });
 
@@ -270,13 +199,12 @@ describe('combienSourced', () => {
       name: 'John',
     });
 
-    const clock = createEvent();
-    const $result = normalizeSourced({ field: result, clock });
+    const $result = normalizeSourced({ field: result });
+    const $value = combine($result, (result) => result('DO NOT MATTER'));
 
     const scope = fork();
 
-    await allSettled(clock, { scope });
-    expect(scope.getState($result)).toEqual({ count: 1, name: 'John' });
+    expect(scope.getState($value)).toEqual({ count: 1, name: 'John' });
   });
 
   test('supports stores', async () => {
@@ -285,81 +213,113 @@ describe('combienSourced', () => {
       name: createStore('John'),
     });
 
-    const clock = createEvent();
-    const $result = normalizeSourced({ field: result, clock });
+    const $result = normalizeSourced({ field: result });
+    const $value = combine($result, (result) => result('DO NOT MATTER'));
 
     const scope = fork();
 
-    await allSettled(clock, { scope });
-    expect(scope.getState($result)).toEqual({ count: 1, name: 'John' });
+    expect(scope.getState($value)).toEqual({ count: 1, name: 'John' });
   });
 
   test('supports functions by arg', async () => {
-    const result = combineSourced({
-      count: (val: string) => Number(val),
-      name: createStore('John'),
+    const clock = createEvent<string>();
+
+    const $result = normalizeSourced({
+      field: combineSourced({
+        count: (val: string) => Number(val),
+        name: createStore('John'),
+      }),
     });
 
-    const clock = createEvent<string>();
-    const $result = normalizeSourced({ field: result, clock });
+    const result = sample({
+      clock,
+      source: $result,
+      fn: (normalized, params) => normalized(params),
+    });
+
+    const resultWather = vi.fn();
 
     const scope = fork();
 
+    createWatch({ unit: result, fn: resultWather, scope });
+
     await allSettled(clock, { scope, params: '20' });
-    expect(scope.getState($result)).toEqual({ count: 20, name: 'John' });
+    expect(resultWather).toBeCalledWith({ count: 20, name: 'John' });
 
     await allSettled(clock, { scope, params: '30' });
-    expect(scope.getState($result)).toEqual({ count: 30, name: 'John' });
+    expect(resultWather).toBeCalledWith({ count: 30, name: 'John' });
   });
 
   test('supports function with source by arg', async () => {
     const $source = createStore(1);
 
-    const result = combineSourced({
-      count: {
-        source: $source,
-        fn: (val: string, source: number) => Number(val) + source,
-      },
-      name: createStore('John'),
-    });
-
     const clock = createEvent<string>();
-    const $result = normalizeSourced({ field: result, clock });
 
-    const scope = fork();
-
-    await allSettled(clock, { scope, params: '20' });
-    expect(scope.getState($result)).toEqual({ count: 21, name: 'John' });
-
-    await allSettled($source, { scope, params: 2 });
-    await allSettled(clock, { scope, params: '30' });
-    expect(scope.getState($result)).toEqual({ count: 32, name: 'John' });
-  });
-
-  test('supports optional mapper', async () => {
-    const $source = createStore(1);
-
-    const result = combineSourced(
-      {
+    const $result = normalizeSourced({
+      field: combineSourced({
         count: {
           source: $source,
           fn: (val: string, source: number) => Number(val) + source,
         },
         name: createStore('John'),
-      },
-      ({ count, name }) => ({ newCount: count, newName: name })
-    );
+      }),
+    });
 
-    const clock = createEvent<string>();
-    const $result = normalizeSourced({ field: result, clock });
+    const result = sample({
+      clock,
+      source: $result,
+      fn: (normalized, params) => normalized(params),
+    });
+
+    const resultWather = vi.fn();
 
     const scope = fork();
 
+    createWatch({ unit: result, fn: resultWather, scope });
+
     await allSettled(clock, { scope, params: '20' });
-    expect(scope.getState($result)).toEqual({ newCount: 21, newName: 'John' });
+    expect(resultWather).toBeCalledWith({ count: 21, name: 'John' });
 
     await allSettled($source, { scope, params: 2 });
     await allSettled(clock, { scope, params: '30' });
-    expect(scope.getState($result)).toEqual({ newCount: 32, newName: 'John' });
+    expect(resultWather).toBeCalledWith({ count: 32, name: 'John' });
+  });
+
+  test('supports optional mapper', async () => {
+    const $source = createStore(1);
+
+    const clock = createEvent<string>();
+
+    const $result = normalizeSourced({
+      field: combineSourced(
+        {
+          count: {
+            source: $source,
+            fn: (val: string, source: number) => Number(val) + source,
+          },
+          name: createStore('John'),
+        },
+        ({ count, name }) => ({ newCount: count, newName: name })
+      ),
+    });
+
+    const result = sample({
+      clock,
+      source: $result,
+      fn: (normalized, params) => normalized(params),
+    });
+
+    const resultWather = vi.fn();
+
+    const scope = fork();
+
+    createWatch({ unit: result, fn: resultWather, scope });
+
+    await allSettled(clock, { scope, params: '20' });
+    expect(resultWather).toBeCalledWith({ newCount: 21, newName: 'John' });
+
+    await allSettled($source, { scope, params: 2 });
+    await allSettled(clock, { scope, params: '30' });
+    expect(resultWather).toBeCalledWith({ newCount: 32, newName: 'John' });
   });
 });

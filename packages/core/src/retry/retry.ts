@@ -102,11 +102,11 @@ export function retry<
       source: {
         maxAttempts: $maxAttempts,
         attempt: $attempt,
+        partialFilter: normalizeSourced({
+          field: filter ?? true,
+        }),
       },
-      filter: normalizeSourced({
-        field: (filter ?? true) as any,
-        clock: failed,
-      }),
+      filter: ({ partialFilter }, clock) => partialFilter(clock),
       fn: ({ attempt, maxAttempts }, { params, error, meta }) => ({
         params,
         error,
@@ -120,15 +120,22 @@ export function retry<
     clock: delay({
       clock: sample({
         clock: planNextAttempt,
-        source: normalizeSourced({
-          field: (mapParams ?? (({ params }: any) => params)) as any,
-          clock: planNextAttempt,
-        }),
+        source: {
+          partialMapper: normalizeSourced({
+            field: (mapParams ?? (({ params }: any) => params)) as any,
+          }),
+        },
+        fn: ({ partialMapper }, clock) => partialMapper(clock),
       }),
-      timeout: normalizeSourced({
-        field: timeout,
-        source: $meta,
-      }).map(parseTime),
+      timeout: combine(
+        {
+          partialTimeout: normalizeSourced({
+            field: timeout,
+          }),
+          meta: $meta,
+        },
+        ({ partialTimeout, meta }) => parseTime(partialTimeout(meta))
+      ),
     }),
     fn: (params) => ({
       params,

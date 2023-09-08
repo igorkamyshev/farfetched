@@ -1,22 +1,22 @@
-import { attach, createEvent, Event, sample, type Json } from 'effector';
+import { attach, createEvent, sample, type Event, type Json } from 'effector';
 
-import { Contract } from '../contract/type';
+import { type Contract } from '../contract/type';
 import { createJsonApiRequest } from '../fetch/json';
-import { HttpMethod, JsonApiRequestError } from '../fetch/api';
+import { type HttpMethod, type JsonApiRequestError } from '../fetch/api';
 import {
   normalizeSourced,
   type SourcedField,
   type DynamicallySourcedField,
 } from '../libs/patronus';
 import { type ParamsDeclaration } from '../remote_operation/params';
-import { Query } from './type';
-import { FetchApiRecord } from '../fetch/lib';
+import { type Query } from './type';
+import { type FetchApiRecord } from '../fetch/lib';
 import {
   createHeadlessQuery,
-  SharedQueryFactoryConfig,
+  type SharedQueryFactoryConfig,
 } from './create_headless_query';
 import { unknownContract } from '../contract/unknown_contract';
-import { Validator } from '../validation/type';
+import { type Validator } from '../validation/type';
 
 // -- Shared
 
@@ -348,22 +348,29 @@ export function createJsonQuery(config: any) {
   headlessQuery.__.executeFx.use(
     attach({
       source: {
-        url: normalizeSourced({
+        partialUrl: normalizeSourced({
           field: config.request.url,
-          clock: internalStart,
         }),
-        body: normalizeSourced({
+        partialBody: normalizeSourced({
           field: config.request.body,
-          clock: internalStart,
         }),
-        headers: normalizeSourced({
+        partialHeaders: normalizeSourced({
           field: config.request.headers,
-          clock: internalStart,
         }),
-        query: normalizeSourced({
+        partialQuery: normalizeSourced({
           field: config.request.query,
-          clock: internalStart,
         }),
+      },
+      mapParams(
+        params: any,
+        { partialUrl, partialBody, partialHeaders, partialQuery }
+      ) {
+        return {
+          url: partialUrl(params),
+          body: partialBody(params),
+          headers: partialHeaders(params),
+          query: partialQuery(params),
+        };
       },
       effect: requestFx,
     })
