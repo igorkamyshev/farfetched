@@ -265,6 +265,7 @@ export function createHeadlessQuery<
     reset,
     refresh,
     start: operation.start,
+    started: readonly(operation.started),
     $data: readonly($data),
     $error: readonly($error),
     $status: readonly(operation.$status),

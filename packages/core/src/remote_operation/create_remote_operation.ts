@@ -115,6 +115,8 @@ export function createRemoteOperation<
    */
   const start = createEvent<Params>();
 
+  const started = createEvent<{ params: Params; meta: ExecutionMeta }>();
+
   sample({
     clock: start,
     fn: (params) => ({
@@ -224,6 +226,8 @@ export function createRemoteOperation<
     filter: $enabled,
     target: retrieveDataFx,
   });
+
+  sample({ clock: retrieveDataFx, target: started });
 
   sample({
     clock: retrieveDataFx.done,
@@ -385,6 +389,7 @@ export function createRemoteOperation<
   return {
     start,
     finished,
+    started,
     $status,
     $idle,
     $pending,
