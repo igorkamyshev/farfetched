@@ -19,11 +19,11 @@ export type DynamicallySourcedField<Data, Result> =
   | Callback<Data, Result>
   | PartialStore<Data, Result>;
 
-export type SourcedField<Data, Result> =
+export type SourcedField<Params, Result> =
   | Result
   | Store<Result>
-  | Callback<Data, Result>
-  | PartialStore<Data, Result>;
+  | Callback<Params, Result>
+  | PartialStore<Params, Result>;
 
 export function normalizeSourced<Data, Result>(config: {
   field: SourcedField<Data, Result>;

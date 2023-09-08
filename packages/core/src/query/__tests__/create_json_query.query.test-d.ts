@@ -1,10 +1,11 @@
 import { describe, test } from 'vitest';
-
-import { createJsonQuery } from '../create_json_query';
-import { Contract } from '../../contract/type';
 import { createStore } from 'effector';
+
+import { type Contract } from '../../contract/type';
+import { createJsonQuery } from '../create_json_query';
 import { declareParams } from '../../remote_operation/params';
 import { unknownContract } from '../../contract/unknown_contract';
+import { sourced } from '../../libs/patronus';
 
 describe('createJsonQuery query', () => {
   const response = {
@@ -32,7 +33,10 @@ describe('createJsonQuery query', () => {
       request: {
         url,
         method: 'GET',
-        query: { source: createStore(1), fn: () => 'foo[]=1&foo[]=2&foo[]=3' },
+        query: sourced({
+          source: createStore(1),
+          fn: () => 'foo[]=1&foo[]=2&foo[]=3',
+        }),
       },
       response,
     });

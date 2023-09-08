@@ -28,7 +28,7 @@ type ConcurrencyConfig = {
 type RequestConfig<Params> = {
   url: SourcedField<Params, string>;
   credentials?: RequestCredentials;
-  query?: SourcedField<Params, FetchApiRecord> | SourcedField<Params, string>;
+  query?: SourcedField<Params, FetchApiRecord | string> | SourcedField<Params, string>;
   headers?: SourcedField<Params, FetchApiRecord>;
 } & (
   | {
