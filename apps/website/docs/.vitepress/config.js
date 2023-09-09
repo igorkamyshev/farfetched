@@ -184,7 +184,7 @@ export default withMermaid(
                     link: '/tutorial/migrate/effector/specific_factories',
                   },
                   {
-                    text: '5. Apply declarative approach',
+                    text: '5. Use Trigger API',
                     link: '/tutorial/migrate/effector/trigger_api',
                   },
                   {
