@@ -132,6 +132,10 @@ export default withMermaid(
                 text: 'Trigger API',
                 link: '/tutorial/trigger_api',
               },
+              {
+                text: 'Barrier API',
+                link: '/tutorial/barrier_api',
+              },
             ],
           },
           {
@@ -312,6 +316,7 @@ export default withMermaid(
           {
             text: 'Case studies',
             items: [
+              { text: 'Auth token', link: '/recipes/auth_token' },
               { text: 'Feature flags service', link: '/recipes/feature_flags' },
               { text: 'Server side caching', link: '/recipes/server_cache' },
             ],
