@@ -42,7 +42,7 @@ describe('Query#aborted', () => {
     expect(scope.getState(query.$status)).toBe('initial'); // previous status
   });
 
-  test('should be fired of operation is aborted after initial', async () => {
+  test('should be fired of operation is aborted after done', async () => {
     const abortedListener = vi.fn();
     const failureListener = vi.fn();
 
