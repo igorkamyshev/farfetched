@@ -1,17 +1,13 @@
-import { createWatch, Event, Scope } from 'effector';
+import { createWatch, type Event, type Scope } from 'effector';
 import { vi } from 'vitest';
 
 interface RemoteOperationLike {
+  started: Event<any>;
   finished: {
     success: Event<any>;
     failure: Event<any>;
     skip: Event<any>;
     finally: Event<any>;
-  };
-  __: {
-    lowLevelAPI: {
-      startWithMeta: Event<any>;
-    };
   };
 }
 
@@ -24,7 +20,7 @@ function watchRemoteOperation(op: RemoteOperationLike, scope: Scope) {
   const onFinally = vi.fn();
 
   const startUnwatch = createWatch({
-    unit: op.__.lowLevelAPI.startWithMeta,
+    unit: op.started,
     fn: ({ params }) => onStart(params),
     scope,
   });
