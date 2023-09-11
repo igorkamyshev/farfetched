@@ -37,8 +37,7 @@ describe('Query#aborted', () => {
     await allSettled(scope);
 
     expect(abortedListener).toBeCalledTimes(1);
-    // TODO: enable it in 0.10
-    // expect(failureListener).not.toBeCalledTimes(1);
-    // expect(scope.getState(query.$status)).toBe('idle');
+    expect(failureListener).not.toBeCalledTimes(1);
+    expect(scope.getState(query.$status)).toBe('idle');
   });
 });
