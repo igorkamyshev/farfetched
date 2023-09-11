@@ -106,4 +106,36 @@ describe('fetch/api.request.query', () => {
       `${url}/?static=one&shared=static&dynamic=two&shared=dynamic`
     );
   });
+
+  test('ignore null and undefined query', async () => {
+    const callApiFx = createApiRequest({
+      request: {
+        mapBody,
+        url,
+        method,
+        credentials,
+        query: {
+          null: null,
+          undefined: undefined,
+          bool: false,
+          number: 0,
+          string: '',
+        },
+      },
+      response,
+    });
+
+    const fetchMock = vi.fn().mockResolvedValue(new Response('test'));
+
+    const scope = fork({ handlers: [[fetchFx, fetchMock]] });
+
+    await allSettled(callApiFx, {
+      scope,
+      params: {},
+    });
+
+    expect(fetchMock.mock.calls[0][0].url).toEqual(
+      `${url}/?bool=false&number=0&string=`
+    );
+  });
 });
