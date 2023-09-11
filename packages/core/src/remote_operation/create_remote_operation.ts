@@ -104,15 +104,6 @@ export function createRemoteOperation<
     notifyAboutDataInvalidationFx,
   } = createDataSourceHandlers<Params>(dataSources);
 
-  /*
-   * Start event, it's used as it or to pipe it in head-full factory
-   *
-   * sample({
-   *  clock: externalStart,
-   *  target: headlessQuery.start,
-   *  greedy: true
-   * })
-   */
   const start = createEvent<Params>();
 
   const started = createEvent<{ params: Params; meta: ExecutionMeta }>();

@@ -1,4 +1,4 @@
-import { attach, createEvent, sample, type Event, type Json } from 'effector';
+import { attach, type Event, type Json } from 'effector';
 
 import { type Contract } from '../contract/type';
 import { createJsonApiRequest } from '../fetch/json';
@@ -316,9 +316,6 @@ export function createJsonQuery(config: any) {
     abort: { clock: config.concurrency?.abort },
   });
 
-  // Connections
-  const internalStart = createEvent<any>();
-
   const headlessQuery = createHeadlessQuery<
     any,
     any,
@@ -375,12 +372,6 @@ export function createJsonQuery(config: any) {
       effect: requestFx,
     })
   );
-
-  sample({
-    clock: [headlessQuery.start, headlessQuery.__.executeFx],
-    target: internalStart,
-    greedy: true,
-  });
 
   return {
     ...headlessQuery,

@@ -1,6 +1,6 @@
 # Your own GraphQL Query
 
-We are going to release `@farfetched/graphql` in the v0.4 release, until that we suggest you to use `@farfetched/core` and create your own GraphQL [_Query_](/api/primitives/query) factory. In this recipe, we will guide it through this process step-by-step.
+We are going to release `@farfetched/graphql` in the future, until that we suggest you to use `@farfetched/core` and create your own GraphQL [_Query_](/api/primitives/query) factory. In this recipe, we will guide it through this process step-by-step.
 
 ## Step 0: choose basement
 

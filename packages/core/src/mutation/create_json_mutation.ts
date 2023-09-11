@@ -1,4 +1,4 @@
-import { attach, createEvent, sample, type Json, type Event } from 'effector';
+import { attach, type Json, type Event } from 'effector';
 
 import { type Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
@@ -214,8 +214,6 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
     name: config.name,
   });
 
-  const internalStart = createEvent<any>();
-
   headlessMutation.__.executeFx.use(
     attach({
       source: {
@@ -246,12 +244,6 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
       effect: requestFx,
     })
   );
-
-  sample({
-    clock: [headlessMutation.start, headlessMutation.__.executeFx],
-    target: internalStart,
-    greedy: true,
-  });
 
   return {
     ...headlessMutation,
