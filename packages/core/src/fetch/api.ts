@@ -150,7 +150,6 @@ interface ApiConfig<B, R extends CreationRequestConfig<B>, P>
 }
 
 export type ApiRequestError =
-  | AbortError
   | TimeoutError
   | PreparationError
   | NetworkError
@@ -178,7 +177,7 @@ export function createApiRequest<
         haveToBeAborted: boolean;
       },
     ApiRequestResult,
-    ApiRequestError
+    ApiRequestError | AbortError
   >(
     async ({
       url,
@@ -317,7 +316,7 @@ export function createApiRequest<
   const boundAbortableApiRequestFx = abortable<
     ApiRequestParams,
     ApiRequestResult,
-    ApiRequestError
+    ApiRequestError | AbortError
   >({
     abort: { signal: abortSignal },
     effect(params, abortContext) {

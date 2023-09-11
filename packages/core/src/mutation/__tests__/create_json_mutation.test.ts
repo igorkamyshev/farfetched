@@ -1,5 +1,5 @@
 import { watchRemoteOperation } from '@farfetched/test-utils';
-import { allSettled, createEvent, fork } from 'effector';
+import { allSettled, createEvent, createWatch, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
@@ -171,12 +171,15 @@ describe('createJsonMutation', () => {
     });
 
     const { listeners } = watchRemoteOperation(mutation, scope);
+    const onAbort = vi.fn();
+    createWatch({ unit: mutation.aborted, fn: onAbort, scope });
 
     allSettled(mutation.start, { scope });
     await allSettled(abort, { scope });
 
-    expect(listeners.onFailure).toBeCalledTimes(1);
-    expect(listeners.onFailure).toHaveBeenCalledWith(
+    expect(listeners.onFailure).not.toBeCalled();
+    expect(onAbort).toBeCalledTimes(1);
+    expect(onAbort).toHaveBeenCalledWith(
       expect.objectContaining({ error: abortError() })
     );
   });

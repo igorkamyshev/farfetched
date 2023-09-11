@@ -1,5 +1,5 @@
 import { watchRemoteOperation } from '@farfetched/test-utils';
-import { allSettled, createEvent, fork } from 'effector';
+import { allSettled, createEvent, createWatch, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
@@ -36,6 +36,8 @@ describe('createJsonQuery concurrency.strategy', () => {
     });
 
     const watcher = watchRemoteOperation(query, scope);
+    const onAborted = vi.fn();
+    createWatch({ unit: query.aborted, fn: onAborted, scope });
 
     // Do not wait
     allSettled(query.start, { scope });
@@ -43,9 +45,10 @@ describe('createJsonQuery concurrency.strategy', () => {
     await allSettled(query.start, { scope });
 
     expect(requestMock).toHaveBeenCalledTimes(2);
-    expect(watcher.listeners.onFinally).toBeCalledTimes(2);
-
-    expect(watcher.listeners.onFailure).toBeCalledWith(
+    expect(watcher.listeners.onFinally).toBeCalledTimes(1);
+    expect(watcher.listeners.onFailure).not.toBeCalled();
+    expect(onAborted).toBeCalledTimes(1);
+    expect(onAborted).toBeCalledWith(
       expect.objectContaining({
         params: undefined,
         error: abortError(),
@@ -126,6 +129,8 @@ describe('createJsonQuery concurrency.strategy', () => {
     });
 
     const watcher = watchRemoteOperation(query, scope);
+    const onAborted = vi.fn();
+    createWatch({ unit: query.aborted, fn: onAborted, scope });
 
     // Do not wait
     allSettled(query.start, { scope });
@@ -133,9 +138,9 @@ describe('createJsonQuery concurrency.strategy', () => {
     await allSettled(query.start, { scope });
 
     expect(requestMock).toHaveBeenCalledTimes(1);
-    expect(watcher.listeners.onFinally).toBeCalledTimes(2);
-
-    expect(watcher.listeners.onFailure).toBeCalledWith(
+    expect(watcher.listeners.onFinally).toBeCalledTimes(1);
+    expect(onAborted).toHaveBeenCalledTimes(1);
+    expect(onAborted).toBeCalledWith(
       expect.objectContaining({
         params: undefined,
         error: abortError(),
@@ -171,12 +176,15 @@ describe('createJsonQuery concurrency.strategy', () => {
     });
 
     const { listeners } = watchRemoteOperation(query, scope);
+    const onAborted = vi.fn();
+    createWatch({ unit: query.aborted, fn: onAborted, scope });
 
     allSettled(query.start, { scope });
     await allSettled(abort, { scope });
 
-    expect(listeners.onFailure).toBeCalledTimes(1);
-    expect(listeners.onFailure).toHaveBeenCalledWith(
+    expect(listeners.onFailure).toBeCalledTimes(0);
+    expect(onAborted).toBeCalledTimes(1);
+    expect(onAborted).toHaveBeenCalledWith(
       expect.objectContaining({ error: abortError() })
     );
   });

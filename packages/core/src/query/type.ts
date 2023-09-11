@@ -51,7 +51,6 @@ export interface Query<Params, Data, Error, InitialData = null>
    * Is data stale?
    */
   $stale: Store<boolean>;
-  aborted: Event<{ params: Params; meta: ExecutionMeta }>;
   /** Event to reset the whole state of the query */
   reset: Event<void>;
   '@@unitShape': () => {

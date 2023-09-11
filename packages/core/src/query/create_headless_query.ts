@@ -24,7 +24,6 @@ import { type Query, type QueryMeta, QuerySymbol } from './type';
 import { type ExecutionMeta } from '../remote_operation/type';
 import { isEqual } from '../libs/lohyphen';
 import { readonly } from '../libs/patronus';
-import { isAbortError } from '../errors/guards';
 
 export interface SharedQueryFactoryConfig<Data, Initial = Data> {
   name?: string;
@@ -200,16 +199,6 @@ export function createHeadlessQuery<
     ],
   });
 
-  // -- Aborted --
-
-  const aborted = createEvent<{ params: Params; meta: ExecutionMeta }>();
-
-  sample({
-    clock: operation.finished.failure,
-    filter: isAbortError,
-    target: aborted,
-  });
-
   // -- Protocols --
 
   const unitShape = {
@@ -276,7 +265,7 @@ export function createHeadlessQuery<
     $finished: readonly(operation.$finished),
     $enabled: readonly(operation.$enabled),
     $stale,
-    aborted: readonly(aborted),
+    aborted: readonly(operation.aborted),
     finished: {
       success: readonly(operation.finished.success),
       failure: readonly(operation.finished.failure),
