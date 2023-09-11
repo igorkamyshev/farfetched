@@ -17,7 +17,7 @@ Config fields:
   - `(params, { attempt }) => mapped`
   - `{ source: Store, fn: (params, { attempt }, source) => mapped }`
 - `otherwise?`: [_Event_](https://effector.dev/docs/api/effector/event) or [_Effect_](https://effector.dev/docs/api/effector/effect), that will be called after the last attempt if the [_Query_](/api/primitives/query) is still failed
-- `supressIntermediateErrors?`: <Badge type="tip" text="since v0.9.0" /> _boolean_ whether to suppress intermediate errors or not, defaults to `false`. If `true`, then the [_Query_](/api/primitives/query) will not be marked as failed until the last attempt is failed.
+- `supressIntermediateErrors?`: <Badge type="tip" text="since v0.9.0" /> _boolean_ whether to suppress intermediate errors or not, defaults to `true`. If `false`, then the [_Query_](/api/primitives/query) will be marked as failed after the first fail.
 
 ## Build-in delays
 

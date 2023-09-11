@@ -1,5 +1,11 @@
 import { watchRemoteOperation } from '@farfetched/test-utils';
-import { allSettled, createEvent, createStore, fork } from 'effector';
+import {
+  type UnitValue,
+  allSettled,
+  createEvent,
+  createStore,
+  fork,
+} from 'effector';
 import { describe, test, vi, expect } from 'vitest';
 
 import { createQuery } from '../../query/create_query';
@@ -65,7 +71,10 @@ describe('retry with query', () => {
       handler,
     });
 
-    retry(query, { times: 3, delay: ({ attempt }) => attempt * 100 });
+    retry(query, {
+      times: 3,
+      delay: ({ attempt }) => attempt * 100,
+    });
 
     const scope = fork();
 
@@ -131,7 +140,7 @@ describe('retry with query', () => {
             "meta": {
               "attempt": 1,
               "maxAttempts": 3,
-              "stale": false,
+              "stale": true,
               "stopErrorPropagation": false,
             },
             "params": "Initial",
@@ -143,7 +152,7 @@ describe('retry with query', () => {
             "meta": {
               "attempt": 2,
               "maxAttempts": 3,
-              "stale": false,
+              "stale": true,
               "stopErrorPropagation": false,
             },
             "params": "Initial 1",
@@ -155,7 +164,7 @@ describe('retry with query', () => {
             "meta": {
               "attempt": 3,
               "maxAttempts": 3,
-              "stale": false,
+              "stale": true,
               "stopErrorPropagation": false,
             },
             "params": "Initial 1 2",
@@ -265,11 +274,15 @@ describe('retry with query', () => {
       handler,
     });
 
-    const otherwise = createEvent<{ params: any; error: unknown }>();
+    const otherwise = createEvent<UnitValue<typeof query.finished.failure>>();
     const otherwiseListener = vi.fn();
     otherwise.watch(otherwiseListener);
 
-    retry(query, { times: 2, delay: 0, otherwise });
+    retry(query, {
+      times: 2,
+      delay: 0,
+      otherwise,
+    });
 
     const scope = fork();
 
@@ -290,11 +303,15 @@ describe('retry with query', () => {
       handler,
     });
 
-    const otherwise = createEvent<{ params: any; error: unknown }>();
+    const otherwise = createEvent<UnitValue<typeof query.finished.failure>>();
     const otherwiseListener = vi.fn();
     otherwise.watch(otherwiseListener);
 
-    retry(query, { times: 1, delay: 0, otherwise });
+    retry(query, {
+      times: 1,
+      delay: 0,
+      otherwise,
+    });
 
     const scope = fork();
 
@@ -327,12 +344,12 @@ describe('retry with query', () => {
     expect(handler).toBeCalledTimes(4);
   });
 
-  test('throw error in case of retry', async () => {
+  test('throw error in case of retry with supressIntermediateErrors: false', async () => {
     const query = createQuery({
       handler: vi.fn().mockRejectedValue(new Error('Sorry')),
     });
 
-    retry(query, { times: 1, delay: 0 });
+    retry(query, { times: 1, delay: 0, supressIntermediateErrors: false });
 
     const scope = fork();
 
@@ -345,7 +362,7 @@ describe('retry with query', () => {
     expect(listeners.onFailure).toBeCalledTimes(2);
   });
 
-  test('throw error in case of retry with supressIntermediateErrors', async () => {
+  test('throw error in case of retry', async () => {
     const query = createQuery({
       handler: vi.fn().mockImplementation(({ attempt }) => {
         throw new Error(`Sorry, attempt ${attempt}`);
@@ -358,7 +375,6 @@ describe('retry with query', () => {
         return { attempt: meta.attempt };
       },
       delay: 0,
-      supressIntermediateErrors: true,
     });
 
     const scope = fork();
