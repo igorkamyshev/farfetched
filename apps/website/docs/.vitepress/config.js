@@ -180,20 +180,30 @@ export default withMermaid(
                   },
                 ],
               },
+              {
+                text: 'Barrier',
+                items: [
+                  {
+                    text: 'createBarrier',
+                    link: '/api/factories/create_barrier',
+                  },
+                ],
+              },
             ],
           },
           {
             text: 'Operators',
             items: [
-              { text: 'connectQuery', link: '/api/operators/connect_query' },
-              { text: 'update', link: '/api/operators/update' },
+              { text: 'keepFresh', link: '/api/operators/keep_fresh' },
               { text: 'retry', link: '/api/operators/retry' },
               { text: 'cache', link: '/api/operators/cache' },
-              { text: 'keepFresh', link: '/api/operators/keep_fresh' },
+              { text: 'applyBarrier', link: '/api/operators/apply_barrier' },
+              { text: 'update', link: '/api/operators/update' },
               {
                 text: 'attachOperation',
                 link: '/api/operators/attach_operation',
               },
+              { text: 'connectQuery', link: '/api/operators/connect_query' },
             ],
           },
           {
@@ -202,6 +212,7 @@ export default withMermaid(
             items: [
               { text: 'Query', link: '/api/primitives/query' },
               { text: 'Mutation', link: '/api/primitives/mutation' },
+              { text: 'Barrier', link: '/api/primitives/barrier' },
               { text: 'Contract', link: '/api/primitives/contract' },
               { text: 'Validator', link: '/api/primitives/validator' },
             ],
