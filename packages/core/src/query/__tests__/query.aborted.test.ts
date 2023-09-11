@@ -38,6 +38,6 @@ describe('Query#aborted', () => {
 
     expect(abortedListener).toBeCalledTimes(1);
     expect(failureListener).not.toBeCalledTimes(1);
-    expect(scope.getState(query.$status)).toBe('idle');
+    expect(scope.getState(query.$status)).toBe('initial');
   });
 });
