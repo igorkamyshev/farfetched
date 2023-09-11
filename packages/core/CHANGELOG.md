@@ -1,5 +1,24 @@
 # @farfetched/core
 
+## 0.9.0
+
+### Minor Changes
+
+- 961f32f: Allow passing array of codes to `isHttpErrorCode`
+- a5f4f38: Add _Event_ `.started` to _Query_ and _Mutation_
+- e632dca: Support custom serialization in `localStorageCache` and `sessionStorageCache`
+- 7e909d2: Add _Event_ `aborted` to _Query_
+- faa19ec: Mark read-only _Events_ and _Stores_ with `readonly`
+- ca20587: Add _Store_ `.$finished` to _Remote Operation_
+- 7448b5c: Delete `externalCache`
+- 1ec644e: Add option `supressIntermediateErrors` to `retry` operator
+- f759034: Add info about _Query_ status and corresponding data to `.finished.finally` _Event_
+
+### Patch Changes
+
+- 3ecc6ea: Rework internal structure of sourced fields to fix race-condition in `attachOperation`
+- 43917a7: Add `ExecutionMeta` to `otherwise` _Event_ in `retry` operator
+
 ## 0.8.15
 
 ### Patch Changes
