@@ -1,14 +1,15 @@
 import {
+  type Store,
+  type Event,
   createStore,
   sample,
   createEvent,
-  Store,
   attach,
   split,
 } from 'effector';
 
-import { Contract } from '../contract/type';
-import { InvalidDataError } from '../errors/type';
+import { type Contract } from '../contract/type';
+import { type InvalidDataError } from '../errors/type';
 import { createRemoteOperation } from '../remote_operation/create_remote_operation';
 import {
   postpone,
@@ -16,13 +17,14 @@ import {
   type Serialize,
   type StaticOrReactive,
   type DynamicallySourcedField,
-  SourcedField,
+  type SourcedField,
 } from '../libs/patronus';
-import { Validator } from '../validation/type';
-import { Query, QueryMeta, QuerySymbol } from './type';
-import { Event } from 'effector';
-import { isEqual } from '../libs/lohyphen';
+import { type Validator } from '../validation/type';
+import { type Query, type QueryMeta, QuerySymbol } from './type';
 import { type ExecutionMeta } from '../remote_operation/type';
+import { isEqual } from '../libs/lohyphen';
+import { readonly } from '../libs/patronus';
+import { isAbortError } from '../errors/guards';
 
 export interface SharedQueryFactoryConfig<Data, Initial = Data> {
   name?: string;
@@ -88,7 +90,11 @@ export function createHeadlessQuery<
     kind: QuerySymbol,
     serialize: serializationForSideStore(serialize),
     enabled,
-    meta: { serialize, initialData },
+    meta: {
+      serialize,
+      initialData,
+      sid: querySid(createStore(null, { sid: 'dummy' })),
+    },
     contract,
     validate,
     mapData,
@@ -138,6 +144,16 @@ export function createHeadlessQuery<
     target: $stale,
   });
 
+  sample({
+    clock: operation.__.lowLevelAPI.pushData,
+    target: [$data, $error.reinit!],
+  });
+
+  sample({
+    clock: operation.__.lowLevelAPI.pushError,
+    target: [$error, $data.reinit!],
+  });
+
   // -- Trigger API
 
   const postponedRefresh: Event<Params> = postpone({
@@ -182,6 +198,16 @@ export function createHeadlessQuery<
       $stale.reinit!,
       operation.$status.reinit!,
     ],
+  });
+
+  // -- Aborted --
+
+  const aborted = createEvent<{ params: Params; meta: ExecutionMeta }>();
+
+  sample({
+    clock: operation.finished.failure,
+    filter: isAbortError,
+    target: aborted,
   });
 
   // -- Protocols --
@@ -236,12 +262,27 @@ export function createHeadlessQuery<
   // -- Public API --
 
   return {
-    $data,
-    $error,
-    $stale,
     reset,
     refresh,
-    ...operation,
+    start: operation.start,
+    started: readonly(operation.started),
+    $data: readonly($data),
+    $error: readonly($error),
+    $status: readonly(operation.$status),
+    $idle: readonly(operation.$idle),
+    $pending: readonly(operation.$pending),
+    $succeeded: readonly(operation.$succeeded),
+    $failed: readonly(operation.$failed),
+    $finished: readonly(operation.$finished),
+    $enabled: readonly(operation.$enabled),
+    $stale,
+    aborted: readonly(aborted),
+    finished: {
+      success: readonly(operation.finished.success),
+      failure: readonly(operation.finished.failure),
+      finally: readonly(operation.finished.finally),
+      skip: readonly(operation.finished.skip),
+    },
     __: {
       ...operation.__,
       lowLevelAPI: { ...operation.__.lowLevelAPI, refreshSkipDueToFreshness },
@@ -249,4 +290,14 @@ export function createHeadlessQuery<
     },
     '@@unitShape': unitShapeProtocol,
   };
+}
+
+function querySid($data: Store<any>): string | null {
+  const sid = $data.sid;
+
+  if (!sid?.includes('|')) {
+    return null;
+  }
+
+  return sid;
 }

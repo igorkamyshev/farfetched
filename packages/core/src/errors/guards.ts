@@ -1,9 +1,9 @@
 import {
   ABORT,
-  AbortError,
+  type AbortError,
   HTTP,
-  HttpError,
-  InvalidDataError,
+  type HttpError,
+  type InvalidDataError,
   INVALID_DATA,
   NETWORK,
   NetworkError,
@@ -41,7 +41,7 @@ export function isHttpError(args: WithError): args is WithError<HttpError> {
   return args.error?.errorType === HTTP;
 }
 
-export function isHttpErrorCode<Code extends number>(code: Code) {
+export function isHttpErrorCode<Code extends number>(code: Code | Code[]) {
   return function isExactHttpError(
     args: WithError
   ): args is WithError<HttpError<Code>> {
@@ -49,7 +49,9 @@ export function isHttpErrorCode<Code extends number>(code: Code) {
       return false;
     }
 
-    return args.error.status === code;
+    const codes = Array.isArray(code) ? code : [code];
+
+    return codes.includes(args.error.status as any);
   };
 }
 

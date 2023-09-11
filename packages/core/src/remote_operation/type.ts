@@ -31,6 +31,8 @@ export interface RemoteOperation<
   $failed: Store<boolean>;
   /** Is fetching succeeded? */
   $succeeded: Store<boolean>;
+  /** Is fetching finished? */
+  $finished: Store<boolean>;
   /**
    * Is operation enabled?
    *
@@ -40,6 +42,8 @@ export interface RemoteOperation<
   $enabled: Store<boolean>;
   /** Event to trigger query */
   start: Event<Params>;
+  /** Event that trigered after operation started */
+  started: Event<{ params: Params; meta: ExecutionMeta }>;
   /** Set of events that represent end of query */
   finished: {
     /** Query was successfully ended, data will be passed as a payload */
@@ -49,7 +53,13 @@ export interface RemoteOperation<
     /** Query execution was skipped due to `enabled` field in config */
     skip: Event<{ params: Params; meta: ExecutionMeta }>;
     /** Query was ended, it merges `success`, `error` and `skip` */
-    finally: Event<{ params: Params; meta: ExecutionMeta }>;
+    finally: Event<
+      { params: Params; meta: ExecutionMeta } & (
+        | { status: 'done'; result: Data }
+        | { status: 'fail'; error: Error }
+        | { status: 'skip' }
+      )
+    >;
   };
   /**
    * DO NOT USE THIS FIELD IN PRODUCTION
@@ -97,6 +107,8 @@ export interface RemoteOperation<
       sourced: SourcedField<Params, unknown, unknown>[];
       paramsAreMeaningless: boolean;
       revalidate: Event<{ params: Params; refresh: boolean }>;
+      pushData: Event<Data>;
+      pushError: Event<Error>;
       startWithMeta: Event<{ params: Params; meta: ExecutionMeta }>;
     } & ExtraLowLevelAPI;
     experimentalAPI?: {

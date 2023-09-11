@@ -91,29 +91,36 @@ export function keepFresh<Params>(
 
     const $previousSources = createStore<any[]>([], { serialize: 'ignore' });
 
+    const $partialSources = combine(
+      query.__.lowLevelAPI.sourced.map((sourced) =>
+        normalizeSourced({ field: sourced })
+      )
+    );
+
     // @ts-expect-error I have no idea
     sample({
       clock: finalyParams,
-      source: combine(
-        query.__.lowLevelAPI.sourced.map((sourced) =>
-          normalizeSourced({ field: sourced, clock: finalyParams })
-        )
-      ),
+      source: $partialSources,
+      fn: (partialSources, clock) =>
+        partialSources.map((partialSource) => partialSource(clock)),
       filter: query.$enabled,
       target: $previousSources,
     });
 
-    const sourcesUpdated = sample({
+    const $nextSources = createStore(null, { serialize: 'ignore' });
+
+    sample({
+      // @ts-expect-error I have no idea
       clock: query.__.lowLevelAPI.sourced.map(extractSource).filter(is.store),
-      source: query.__.$latestParams,
+      source: {
+        latestParams: query.__.$latestParams,
+        partialSources: $partialSources,
+      },
       filter: not(query.$idle),
-      fn: (params): Params => params!,
+      fn: ({ latestParams, partialSources }) =>
+        partialSources.map((partialSource) => partialSource(latestParams)),
+      target: $nextSources,
     });
-    const $nextSources = combine(
-      query.__.lowLevelAPI.sourced.map((sourced) =>
-        normalizeSourced({ field: sourced, clock: sourcesUpdated })
-      )
-    );
 
     triggers.push(
       sample({

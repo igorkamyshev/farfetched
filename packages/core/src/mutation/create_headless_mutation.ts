@@ -1,10 +1,15 @@
+import { attach, type Store } from 'effector';
+
 import { createRemoteOperation } from '../remote_operation/create_remote_operation';
-import { DynamicallySourcedField, StaticOrReactive } from '../libs/patronus';
-import { Mutation, MutationSymbol } from './type';
-import { Contract } from '../contract/type';
-import { InvalidDataError } from '../errors/type';
-import { Validator } from '../validation/type';
-import { attach, Store } from 'effector';
+import {
+  readonly,
+  type DynamicallySourcedField,
+  type StaticOrReactive,
+} from '../libs/patronus';
+import { type Mutation, MutationSymbol } from './type';
+import { type Contract } from '../contract/type';
+import { type InvalidDataError } from '../errors/type';
+import { type Validator } from '../validation/type';
 import { type ExecutionMeta } from '../remote_operation/type';
 
 export interface SharedMutationFactoryConfig {
@@ -101,7 +106,21 @@ export function createHeadlessMutation<
   // -- Public API --
 
   return {
-    ...operation,
+    start: operation.start,
+    started: readonly(operation.started),
+    $status: readonly(operation.$status),
+    $idle: readonly(operation.$idle),
+    $pending: readonly(operation.$pending),
+    $succeeded: readonly(operation.$succeeded),
+    $failed: readonly(operation.$failed),
+    $finished: readonly(operation.$finished),
+    $enabled: readonly(operation.$enabled),
+    finished: {
+      success: readonly(operation.finished.success),
+      failure: readonly(operation.finished.failure),
+      finally: readonly(operation.finished.finally),
+      skip: readonly(operation.finished.skip),
+    },
     __: { ...operation.__, experimentalAPI: { attach: attachProtocol } },
     '@@unitShape': unitShapeProtocol,
   };

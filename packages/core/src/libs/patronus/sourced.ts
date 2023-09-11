@@ -1,13 +1,12 @@
 import {
+  is,
   attach,
   combine,
   createEffect,
   createStore,
-  Effect,
-  Event,
-  is,
-  sample,
-  Store,
+  type Effect,
+  type Event,
+  type Store,
 } from 'effector';
 
 // -- Main case --
@@ -31,73 +30,55 @@ type SourcedField<Data, Result, Source> =
 
 function normalizeSourced<Data, Result, Source>(config: {
   field: SourcedField<Data, Result, Source>;
-  clock: Event<Data>;
-}): Store<Result>;
+}): Store<(params: Data) => Result>;
 
 function normalizeSourced<Data, Result, Source>(config: {
   field: SourcedField<Data, Result, Source>;
-  source: Store<Data>;
-}): Store<Result>;
+}): Store<(params: Data) => Result>;
 
 function normalizeSourced<Data, Result, Source>({
   field,
-  clock,
-  source,
 }: {
   field: any;
-  clock?: Event<Data>;
-  source?: Store<Data>;
-}): Store<Result | null> {
-  let $target = createStore<any>(null, { serialize: 'ignore' });
+}): Store<(params: Data) => Result | null> {
+  let $target: Store<(params: Data) => Result | null>;
 
-  if (clock) {
-    if (field === undefined) {
-      // do nothing
-    } else if (is.store(field)) {
-      const $storeField = field as Store<Result>;
+  if (field === undefined) {
+    // do nothing
+    $target = createStore((_: Data) => null as any, { serialize: 'ignore' });
+  } else if (is.store(field)) {
+    const $storeField = field as Store<Result>;
 
-      sample({ clock, source: $storeField, target: $target });
-    } else if (field?.source && field?.fn) {
-      const callbackField = field as CallbackWithSource<Data, Result, Source>;
+    $target = combine(
+      $storeField,
+      (fieldValue) =>
+        (_: Data): Result | null =>
+          fieldValue ?? null
+    );
+  } else if (field?.source && field?.fn) {
+    const callbackField = field as CallbackWithSource<Data, Result, Source>;
 
-      sample({
-        clock,
-        source: callbackField.source,
-        fn: (source, params) => callbackField.fn(params, source),
-        target: $target,
-      });
-    } else if (typeof field === 'function') {
-      const callbackField = field as Callback<Data, Result>;
+    $target = combine(
+      callbackField.source,
+      (source) =>
+        (params: Data): Result | null =>
+          callbackField.fn(params, source) ?? null
+    );
+  } else if (typeof field === 'function') {
+    const callbackField = field as Callback<Data, Result>;
 
-      sample({ clock, fn: (data) => callbackField(data), target: $target });
-    } else {
-      const valueField = field as Result;
+    $target = createStore(
+      (params: Data): Result | null => callbackField(params) ?? null,
+      {
+        serialize: 'ignore',
+      }
+    );
+  } else {
+    const valueField = field as Result;
 
-      sample({ clock, fn: () => valueField, target: $target });
-    }
-  }
-
-  if (source) {
-    const $source = source as Store<Data>;
-    if (field === undefined) {
-      // do nothing
-    } else if (is.store(field)) {
-      const $storeField = field as Store<Result>;
-
-      $target = $storeField;
-    } else if (field?.source && field?.fn) {
-      const callbackField = field as CallbackWithSource<Data, Result, Source>;
-
-      $target = combine($source, callbackField.source, callbackField.fn);
-    } else if (typeof field === 'function') {
-      const callbackField = field as Callback<Data, Result>;
-
-      $target = $source.map(callbackField);
-    } else {
-      const valueField = field as Result;
-
-      $target = createStore(valueField, { serialize: 'ignore' });
-    }
+    $target = createStore((_: Data): Result | null => valueField ?? null, {
+      serialize: 'ignore',
+    });
   }
 
   return $target;
@@ -248,10 +229,20 @@ function extractSource<S>(sourced: SourcedField<any, any, S>): Store<S> | null {
 
 // -- Combine sourced
 
-// TODO: type it https://github.com/igorkamyshev/farfetched/issues/281
-function combineSourced(config: any, mapper?: (v: any) => any) {
-  const megaStore: any = {};
-  const megaFns: any = {};
+// TODO: improve typings of it https://github.com/igorkamyshev/farfetched/issues/281
+function combineSourced<
+  R extends Record<string, SourcedField<any, any, any>>,
+  S
+>(
+  config: R,
+  mapper?: (v: {
+    [Key in keyof R]: R[Key] extends SourcedField<any, infer D, any>
+      ? D
+      : never;
+  }) => S
+): CallbackWithSource<unknown, S, unknown> {
+  const megaStore: Record<string, unknown> = {};
+  const megaFns: Record<string, (...params: unknown[]) => unknown> = {};
 
   for (const [key, value] of Object.entries(config) as any) {
     if (is.store(value)) {
@@ -267,7 +258,7 @@ function combineSourced(config: any, mapper?: (v: any) => any) {
     }
   }
 
-  const $megaSource = combine(megaStore);
+  const $megaSource = combine(megaStore) as Store<unknown>;
 
   return {
     source: $megaSource,
@@ -288,7 +279,7 @@ function combineSourced(config: any, mapper?: (v: any) => any) {
         return result;
       }
     },
-  } as any;
+  };
 }
 
 // -- Exports --

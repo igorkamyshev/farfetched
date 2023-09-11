@@ -1,22 +1,22 @@
-import { attach, createEvent, Event, sample, type Json } from 'effector';
+import { attach, createEvent, sample, type Json, type Event } from 'effector';
 
-import { Contract } from '../contract/type';
+import { type Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
-import { HttpMethod, JsonApiRequestError } from '../fetch/api';
+import { type HttpMethod, type JsonApiRequestError } from '../fetch/api';
 import { createJsonApiRequest } from '../fetch/json';
-import { FetchApiRecord } from '../fetch/lib';
-import { ParamsDeclaration } from '../remote_operation/params';
+import { type FetchApiRecord } from '../fetch/lib';
+import { type ParamsDeclaration } from '../remote_operation/params';
 import {
-  DynamicallySourcedField,
+  type DynamicallySourcedField,
+  type SourcedField,
   normalizeSourced,
-  SourcedField,
 } from '../libs/patronus';
-import { Validator } from '../validation/type';
+import { type Validator } from '../validation/type';
 import {
   createHeadlessMutation,
-  SharedMutationFactoryConfig,
+  type SharedMutationFactoryConfig,
 } from './create_headless_mutation';
-import { Mutation } from './type';
+import { type Mutation } from './type';
 
 // -- Shared --
 
@@ -219,22 +219,29 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
   headlessMutation.__.executeFx.use(
     attach({
       source: {
-        url: normalizeSourced({
+        partialUrl: normalizeSourced({
           field: config.request.url,
-          clock: internalStart,
         }),
-        body: normalizeSourced({
+        partialBody: normalizeSourced({
           field: config.request.body,
-          clock: internalStart,
         }),
-        headers: normalizeSourced({
+        partialHeaders: normalizeSourced({
           field: config.request.headers,
-          clock: internalStart,
         }),
-        query: normalizeSourced({
+        partialQuery: normalizeSourced({
           field: config.request.query,
-          clock: internalStart,
         }),
+      },
+      mapParams(
+        params: any,
+        { partialUrl, partialBody, partialHeaders, partialQuery }
+      ) {
+        return {
+          url: partialUrl(params),
+          body: partialBody(params),
+          headers: partialHeaders(params),
+          query: partialQuery(params),
+        };
       },
       effect: requestFx,
     })
