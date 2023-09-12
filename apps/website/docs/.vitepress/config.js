@@ -268,27 +268,6 @@ export default withMermaid(
               { text: 'Server side rendering', link: '/recipes/ssr' },
               { text: 'Testing', link: '/recipes/testing' },
               {
-                text: 'Customization',
-                items: [
-                  {
-                    text: 'How not to use Fetch API',
-                    link: '/recipes/no_fetch',
-                  },
-                  {
-                    text: 'Custom Query creation',
-                    link: '/recipes/custom_query',
-                  },
-                  {
-                    text: 'Custom Mutation creation',
-                    link: '/recipes/custom_mutation',
-                  },
-                  {
-                    text: 'Your own GraphQL Query',
-                    link: '/recipes/graphql_query',
-                  },
-                ],
-              },
-              {
                 text: 'Vite',
                 link: '/recipes/vite',
               },
@@ -315,6 +294,27 @@ export default withMermaid(
                 link: '/recipes/data_flow',
               },
               { text: 'Automated cache', link: '/recipes/cache' },
+            ],
+          },
+          {
+            text: 'Customization',
+            items: [
+              {
+                text: 'How not to use Fetch API',
+                link: '/recipes/no_fetch',
+              },
+              {
+                text: 'Custom Query creation',
+                link: '/recipes/custom_query',
+              },
+              {
+                text: 'Custom Mutation creation',
+                link: '/recipes/custom_mutation',
+              },
+              {
+                text: 'Your own GraphQL Query',
+                link: '/recipes/graphql_query',
+              },
             ],
           },
           {
