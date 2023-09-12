@@ -1,0 +1,35 @@
+[View code on GitHub](https://github.com/igorkamyshev/farfetched/packages/core/src/libs/lohyphen/is_equal.ts)
+
+The code provided is a TypeScript implementation of a function called `isEqual` that checks if two values are equal. The function takes in two parameters, `a` and `b`, and returns a boolean value indicating whether they are equal or not.
+
+The function first checks if `a` and `b` are strictly equal using the `===` operator. If they are, it immediately returns `true`. This handles cases where `a` and `b` are the same object or primitive value.
+
+Next, the function checks if both `a` and `b` are NaN (Not a Number) using the `!==` operator. If they are both NaN, it returns `true`. This is because NaN is the only value in JavaScript that is not equal to itself.
+
+After that, the function determines the type of `a` and `b` using the `getType` helper function. The `getType` function checks if `a` is an array, a pure object (an object created using the object literal syntax), or a general object. It returns a string indicating the type.
+
+If the types of `a` and `b` are not the same, the function returns `false`.
+
+If the types are both pure objects, the function compares the keys of `a` and `b`. If the lengths of the key arrays are not equal, it returns `false`. Then, it iterates over the keys of `a` and checks if each key exists in `b`. If a key is missing in `b`, it returns `false`. It also checks if the values of the corresponding keys in `a` and `b` are equal by recursively calling `isEqual` on them. If any of the values are not equal, it returns `false`. If all keys and values are equal, it returns `true`.
+
+If the types are arrays, the function checks if the lengths of `a` and `b` are equal. If they are not, it returns `false`. Then, it iterates over the elements of `a` and `b` and recursively calls `isEqual` on each pair of elements. If any pair of elements is not equal, it returns `false`. If all elements are equal, it returns `true`.
+
+If the types are general objects, the function checks if the `valueOf` and `toString` methods of `a` and `b` are not the same as the default methods from `Object.prototype`. If they are not the same, it compares the return values of these methods. If the return values are equal, it returns `true`.
+
+If none of the above conditions are met, the function returns `false`.
+
+The `isArrayLike` function is a helper function that checks if a value is an array or an array-like object. It first checks if the value is an array using the `Array.isArray` method. If it is, it returns `true`. Otherwise, it checks if the value has a `length` property that is a non-negative number and if it has elements at indices 0 and `length - 1`. If these conditions are met, it returns `true`. Otherwise, it returns `false`.
+
+Overall, this code provides a comprehensive and recursive approach to checking the equality of two values, handling various types and edge cases. It can be used in the larger project to compare objects, arrays, and other values for equality, which can be useful for tasks such as data validation, state management, and testing.
+## Questions: 
+ **Question 1:** What is the purpose of the `isEqual` function?
+
+**Answer:** The `isEqual` function is used to determine if two values are equal. It checks for equality by comparing the values and types of the two inputs.
+
+**Question 2:** What is the purpose of the `getType` function?
+
+**Answer:** The `getType` function is used to determine the type of a given value. It returns a string representing the type of the input value.
+
+**Question 3:** What is the purpose of the `isArrayLike` function?
+
+**Answer:** The `isArrayLike` function is used to determine if a given value is an array or an array-like object. It checks if the value has a length property and if the indices from 0 to length-1 are present in the object.

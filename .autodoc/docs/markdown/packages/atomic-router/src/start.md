@@ -1,0 +1,28 @@
+[View code on GitHub](https://github.com/igorkamyshev/farfetched/packages/atomic-router/src/start.ts)
+
+The code provided is a function called `startChain` that is part of the `farfetched` project. This function is responsible for initializing a chain of events and returning an object that contains three events: `beforeOpen`, `openOn`, and `cancelOn`. 
+
+The `startChain` function takes a `query` parameter, which is of type `Query`. The `Query` type is imported from the `@farfetched/core` module. The `Query` type has four type parameters: `RouteParams`, `Data`, `Error`, and `Context`. The `startChain` function is overloaded with three different signatures, each with different type constraints on the `query` parameter. The first signature takes a `Query` with no specific type constraints, the second signature takes a `Query` with a `RouteParams` type constraint, and the third signature takes a `Query` with no specific type constraints.
+
+Inside the `startChain` function, three events are created using the `createEvent` function from the `effector` module. The `beforeOpen` event takes a `RouteParamsAndQuery` object as its payload, the `openOn` event takes any value as its payload, and the `cancelOn` event also takes any value as its payload.
+
+The `sample` function from the `effector` module is then used to define the behavior of these events. The `sample` function takes an object with three properties: `clock`, `fn`, and `target`. The `clock` property specifies the event that triggers the sampling, the `fn` property specifies a function that transforms the payload of the triggering event, and the `target` property specifies the event that will receive the transformed payload.
+
+In the provided code, the `beforeOpen` event is sampled with the `query.start` event as the target. This means that when the `beforeOpen` event is triggered, the payload of the `beforeOpen` event (which is a `RouteParamsAndQuery` object) will be passed to the `query.start` event.
+
+The `query.finished.success` event is sampled with the `openOn` event as the target. This means that when the `query.finished.success` event is triggered, the payload of the `query.finished.success` event will be passed to the `openOn` event.
+
+The `query.finished.failure` and `query.finished.skip` events are sampled together and the resulting payload is passed to the `cancelOn` event.
+
+Finally, the function returns an object that contains the three events: `beforeOpen`, `openOn`, and `cancelOn`.
+
+This `startChain` function can be used in the larger project to define and manage a chain of events that are triggered based on the completion of a `query`. The `beforeOpen` event can be used to perform some actions before the `query` is started, the `openOn` event can be used to perform some actions when the `query` is successfully completed, and the `cancelOn` event can be used to perform some actions when the `query` fails or is skipped.
+## Questions: 
+ 1. What is the purpose of the `startChain` function and how is it used?
+- The `startChain` function is used to initiate a chain of events based on a given query. It takes in a query object and returns an object with three events: `beforeOpen`, `openOn`, and `cancelOn`.
+
+2. What is the purpose of the `beforeOpen`, `openOn`, and `cancelOn` events?
+- The `beforeOpen` event is triggered before the chain is opened, the `openOn` event is triggered when the query is successfully finished, and the `cancelOn` event is triggered when the query fails or is skipped.
+
+3. What is the purpose of the `sample` function and how is it used in this code?
+- The `sample` function is used to sample values from different events and perform a computation on them. In this code, it is used to sample values from the `beforeOpen` event and the `query.finished.success`, `query.finished.failure`, and `query.finished.skip` events, and then assign the sampled values to the `target` events.

@@ -22,6 +22,7 @@
     "@babel/core": "^7.18.6",
     "@babel/preset-typescript": "~7.18.6",
     "@changesets/cli": "^2.24.1",
+    "@context-labs/autodoc": "^0.0.9",
     "@nrwl/cli": "15.6.3",
     "@nrwl/devkit": "15.6.3",
     "@nrwl/eslint-plugin-nx": "15.6.3",

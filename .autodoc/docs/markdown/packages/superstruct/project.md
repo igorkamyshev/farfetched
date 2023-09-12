@@ -1,0 +1,34 @@
+[View code on GitHub](https://github.com/igorkamyshev/farfetched/packages/superstruct/project.json)
+
+The code provided is a configuration file for the "superstruct" project within the larger "farfetched" project. This configuration file is used by the build tool to define various targets and their corresponding actions.
+
+The "superstruct" project is a library, as indicated by the "projectType" field. It is likely a JavaScript library that provides functionality for data validation and structuring.
+
+The configuration file defines several targets, each with its own executor and options. These targets include:
+
+1. "pack": This target runs a command using the "nx:run-commands" executor. The command executed is "node tools/scripts/typepack.mjs --package superstruct". It depends on the "build" target, meaning that the "build" target will be executed before the "pack" target.
+
+2. "build": This target uses the "@nrwl/rollup:rollup" executor to build the project. It specifies the project's package.json, entry file, tsconfig.json, and output path. It also specifies the output format as both "esm" (ECMAScript Modules) and "cjs" (CommonJS). Additionally, it enables the generation of an exports field in the package.json. The "babel" compiler is used. The output of this target is the built project located in the "dist/packages/superstruct" directory.
+
+3. "publish": This target runs a command using the "nx:run-commands" executor. The command executed is "node tools/scripts/publish.mjs superstruct". It depends on the "pack" target, meaning that the "pack" target will be executed before the "publish" target.
+
+4. "lint": This target uses the "@nrwl/linter:eslint" executor to run ESLint on the project. It specifies the lint file patterns as "packages/superstruct/**/*.ts". The output of this target is the linting results.
+
+5. "test": This target uses the "@nrwl/vite:test" executor to run tests on the project. It specifies the Vite configuration file as "vite.config.ts".
+
+6. "typetest": This target is similar to the "test" target, but it runs in typecheck mode. It also specifies the Vite configuration file as "vite.config.ts".
+
+7. "size": This target uses a custom executor located at "./tools/executors/size-limit:size-limit" to check the size of the built project. It specifies a size limit of "0.6 kB" and the output path as "dist/packages/superstruct". It depends on the "build" target, meaning that the "build" target will be executed before the "size" target.
+
+The configuration file also includes an "implicitDependencies" field, which specifies that the "superstruct" project does not have any implicit dependencies on the "test-utils" project.
+
+Overall, this configuration file defines the build, test, lint, and size targets for the "superstruct" project within the "farfetched" project. It allows for building, testing, linting, and checking the size of the "superstruct" library.
+## Questions: 
+ 1. **What is the purpose of the `pack` target?**
+The `pack` target is responsible for running the `typepack.mjs` script with the `superstruct` package as an argument.
+
+2. **What is the purpose of the `publish` target?**
+The `publish` target is responsible for running the `publish.mjs` script with the `superstruct` package as an argument.
+
+3. **What is the purpose of the `size` target?**
+The `size` target is responsible for running the `size-limit` executor with a limit of "0.6 kB" and the output path set to "dist/packages/superstruct".

@@ -1,0 +1,35 @@
+[View code on GitHub](https://github.com/igorkamyshev/farfetched/packages/core/src/libs/date-nfs/time.ts)
+
+The code provided is a utility function for parsing and converting time values into milliseconds. It defines several types and constants to represent different units of time (milliseconds, seconds, minutes, and hours) and their corresponding abbreviations. 
+
+The `Time` type is an exhaustive union type that represents various combinations of time units. It includes options for time values without milliseconds, time values with milliseconds, and time values that only consist of milliseconds. The type also allows for numeric values to be passed directly as milliseconds.
+
+The `parseTime` function takes a `Time` value as input and returns the equivalent time value in milliseconds. If the input is already a number, it is returned as is. Otherwise, the function splits the input string by spaces and iterates over each part. It then checks the ending of each part to determine the corresponding time unit and converts the numeric portion of the part to milliseconds. The converted value is added to the `result` variable.
+
+The `hasEnding` function is a helper function that checks if a given string value has an ending that matches any of the allowed endings provided as an array. It uses the `extractNonNumeric` function to remove any numeric characters from the value before performing the comparison.
+
+The `extractNonNumeric` function removes any numeric characters (0-9 and '.') from a given string value using a regular expression.
+
+The `parseNumber` function parses a string value into a number. If the value contains a decimal point, it is parsed as a float using `parseFloat`, otherwise it is parsed as an integer using `parseInt`.
+
+Overall, this code provides a flexible and robust way to parse and convert time values into milliseconds. It can be used in various scenarios where time values need to be manipulated or compared, such as scheduling tasks, measuring durations, or setting timeouts. Here are a few examples of how the code can be used:
+
+```typescript
+const time1: Time = '1 hour 30 minutes'; // '1 hour 30 minutes' is equivalent to 5400000 milliseconds
+const milliseconds1 = parseTime(time1); // 5400000
+
+const time2: Time = '2.5 seconds'; // '2.5 seconds' is equivalent to 2500 milliseconds
+const milliseconds2 = parseTime(time2); // 2500
+
+const time3: Time = 5000; // 5000 milliseconds
+const milliseconds3 = parseTime(time3); // 5000
+```
+## Questions: 
+ 1. What is the purpose of the `Time` type and how is it used?
+- The `Time` type is used to represent different time durations, including hours, minutes, seconds, and milliseconds. It can be used to store and manipulate time values in the code.
+
+2. How does the `parseTime` function work?
+- The `parseTime` function takes a `Time` value as input and returns the equivalent time duration in milliseconds. It splits the input value into parts, checks the type of each part, and calculates the corresponding duration in milliseconds based on the part's unit.
+
+3. What is the purpose of the `hasEnding`, `extractNonNumeric`, and `parseNumber` helper functions?
+- The `hasEnding` function checks if a given string value has an allowed ending (unit) by comparing it with an array of allowed endings. The `extractNonNumeric` function removes numeric characters from a string value and returns the remaining non-numeric characters. The `parseNumber` function converts a string value to a number by either parsing it as a float or an integer. These helper functions are used in the `parseTime` function to determine the unit and value of each time part.

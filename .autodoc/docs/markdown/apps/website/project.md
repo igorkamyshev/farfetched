@@ -1,0 +1,34 @@
+[View code on GitHub](https://github.com/igorkamyshev/farfetched/apps/website/project.json)
+
+The code provided is a configuration file for a project called "farfetched". This file is located in the "farfetched" directory. The purpose of this code is to define the build and serve targets for the "website" application within the farfetched project.
+
+The configuration file is written in JSON format and contains a top-level object with several properties. 
+
+The "name" property specifies the name of the project, which is "website" in this case. 
+
+The "$schema" property specifies the path to a JSON schema file that defines the structure and validation rules for this configuration file. 
+
+The "sourceRoot" property specifies the root directory for the source code of the "website" application. 
+
+The "projectType" property specifies that this is an application project. 
+
+The "targets" property is an object that defines the different targets for this project. In this case, there are three targets: "build", "serve", and "prepare_changelog". 
+
+The "build" target is responsible for building the application. It uses the "nx:run-commands" executor and specifies the command to be executed, which is "vitepress build apps/website/docs". This command likely triggers the build process for the "website" application using the Vitepress build tool. 
+
+The "serve" target is responsible for serving the application. It also uses the "nx:run-commands" executor and specifies the command to be executed, which is "vitepress dev apps/website/docs". This command likely starts a development server for the "website" application using the Vitepress tool. 
+
+Both the "build" and "serve" targets have a "dependsOn" property, which specifies that they depend on the "prepare_changelog" target. This means that the "prepare_changelog" target will be executed before the "build" and "serve" targets. 
+
+The "prepare_changelog" target is responsible for preparing the changelog for the project. It uses the "nx:run-commands" executor and specifies the command to be executed, which is "node tools/scripts/changelog/cli.mjs". This command likely runs a script that generates the changelog for the project. 
+
+Overall, this configuration file defines the build and serve targets for the "website" application in the farfetched project, as well as a target for preparing the changelog. It provides the necessary commands and dependencies to build, serve, and prepare the application.
+## Questions: 
+ 1. **What is the purpose of this code?**
+The code is defining the configuration for the "website" project in the "farfetched" project. It specifies the source root, project type, and targets for building and serving the website.
+
+2. **What is the role of the "nx:run-commands" executor?**
+The "nx:run-commands" executor is responsible for running specified commands. In this code, it is used to execute commands for building and serving the website, as well as preparing the changelog.
+
+3. **What is the significance of the "dependsOn" property?**
+The "dependsOn" property specifies the dependencies for a target. In this code, both the "build" and "serve" targets depend on the "prepare_changelog" target, meaning that the "prepare_changelog" target will be executed before the "build" and "serve" targets.

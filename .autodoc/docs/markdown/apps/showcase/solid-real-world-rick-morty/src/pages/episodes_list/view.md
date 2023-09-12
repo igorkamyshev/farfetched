@@ -1,0 +1,28 @@
+[View code on GitHub](https://github.com/igorkamyshev/farfetched/apps/showcase/solid-real-world-rick-morty/src/pages/episodes_list/view.tsx)
+
+The code provided is a module that exports a React component called `EpisodesListPage`. This component is responsible for rendering a list of episodes and providing pagination functionality.
+
+The component imports several dependencies, including functions and components from various libraries. These dependencies are used to create a query resource, handle routing, manage state, and render components.
+
+The `EpisodesListPage` component starts by defining a state variable `currentPage` using the `useUnit` hook from the `effector-solid` library. This state variable is initialized with the value of `$currentPage`, which is likely a shared state managed by the `model` module.
+
+Next, the component calls the `createQueryResource` function from the `@farfetched/solid` library to create a query resource. This query resource is likely responsible for fetching the list of episodes from an external data source.
+
+The component then renders a heading element `<h1>` with the text "Episodes". It also wraps the rest of the content in a `<Suspense>` component, which displays a fallback message "Loading..." while the data is being fetched.
+
+Inside the `<Suspense>` component, the component uses the `<Show>` component from the `solid-js` library to conditionally render the content based on the result of the `data` query resource. If the data is available, it renders an ordered list `<ol>`.
+
+Within the `<ol>`, the component uses the `<For>` component from the `solid-js` library to iterate over the `results` array obtained from the `data` query resource. For each episode in the `results` array, it renders a list item `<li>` with a link to the episode's details page. The link is created using the `Link` component from the `atomic-router-solid` library and the `episodeRoute` route.
+
+After rendering the list of episodes, the component renders a `Pagination` component. This component receives the `currentPage` state variable, the `info` object from the `data` query resource, and the `episodeListRoute` route as props. The `Pagination` component is likely responsible for rendering pagination controls and handling navigation to different pages of the episode list.
+
+Overall, the `EpisodesListPage` component is a high-level component that fetches a list of episodes, renders them in a list, and provides pagination functionality. It can be used as a page component in a larger project to display and navigate through a collection of episodes.
+## Questions: 
+ 1. What is the purpose of the `createQueryResource` function from `@farfetched/solid` and how is it used in this code? 
+- The smart developer might want to know how the `createQueryResource` function works and what it does with the `episodesQuery` data.
+
+2. What is the purpose of the `Pagination` component and how is it used in this code? 
+- The smart developer might want to understand how the `Pagination` component is implemented and how it interacts with the `currentPage`, `info`, and `episodeListRoute` variables.
+
+3. What is the purpose of the `Suspense` and `Show` components from `solid-js` and how are they used in this code? 
+- The smart developer might want to know how the `Suspense` and `Show` components are used to handle asynchronous data loading and conditional rendering in this code.

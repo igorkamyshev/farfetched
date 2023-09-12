@@ -1,0 +1,32 @@
+[View code on GitHub](https://github.com/igorkamyshev/farfetched/packages/core/src/libs/patronus/abortable.ts)
+
+The code provided is a module that defines an `abortable` function, which is used to create an abortable effect in the larger project. 
+
+The `abortable` function takes in a configuration object with two properties: `name` (optional) and `abort`. The `name` property is a string that represents the name of the effect, and the `abort` property is an object that contains a `signal` property. The `signal` property is an `effector` unit that can be used to trigger the aborting of the effect.
+
+The `abortable` function returns an `effect` function that can be used to create an abortable effect. The `effect` function takes in two parameters: `p` (payload) and `ctx` (context). The `p` parameter represents the payload that will be passed to the effect, and the `ctx` parameter represents the context in which the effect will be executed.
+
+Inside the `abortable` function, several variables and functions are defined. 
+
+The `runCallFx` function is an `effector` effect that is responsible for running the current call. It takes in a `def` parameter, which represents the current call, and returns the result of the call.
+
+The `$calls` variable is an `effector` store that holds an array of current calls. The `callsApi` variable is an `effector` API that provides methods to add and remove calls from the `$calls` store.
+
+If the `abort` property is provided in the configuration object, the code sets up a listener on the `abort.signal` unit. Whenever the `abort.signal` unit emits a value, the code iterates over the current calls and aborts them by calling the `runAborters` function on each call's context and rejecting the call's promise with an `abortError`.
+
+The `handler` function is an async function that represents the actual implementation of the effect. It takes in the same parameters as the `effect` function and calls the `effect` function with those parameters.
+
+The `runnerFx` function is an `effector` effect that represents the runner for the effect. It takes in the payload `p` and creates a new `aborter` and `call` for the effect. It adds the `call` to the `$calls` store and binds the `callsApi.remove` method to the `boundApiRemove` variable. It then calls the `handler` function with the payload and an object containing an `onAbort` method. The `onAbort` method can be used to register a callback function that will be called when the effect is aborted. The result of the `handler` function is then resolved or rejected based on the success or failure of the effect, and the `call` is removed from the `$calls` store.
+
+Finally, the `runnerFx` function is returned as the result of the `abortable` function.
+
+Overall, this code provides a way to create abortable effects in the larger project. The `abortable` function takes in a configuration object and returns an `effect` function that can be used to create abortable effects. The effects can be triggered by calling the `runnerFx` function with the payload, and they can be aborted by emitting a value on the `abort.signal` unit.
+## Questions: 
+ 1. **What is the purpose of the `createAborter` function?**
+The `createAborter` function is used to create an object that allows registering and running abort functions. It is used in the `abortable` function to handle aborting of calls.
+
+2. **What is the purpose of the `createCall` function?**
+The `createCall` function is used to create a deferred object with additional context properties. It is used in the `abortable` function to create a call object for each effect call.
+
+3. **What is the purpose of the `runnerFx` effect?**
+The `runnerFx` effect is responsible for executing the provided `effect` function with the given parameters. It handles the creation of aborters, calls, and manages the lifecycle of the calls.

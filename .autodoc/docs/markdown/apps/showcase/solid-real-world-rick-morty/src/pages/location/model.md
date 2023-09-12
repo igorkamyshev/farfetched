@@ -1,0 +1,28 @@
+[View code on GitHub](https://github.com/igorkamyshev/farfetched/apps/showcase/solid-real-world-rick-morty/src/pages/location/model.ts)
+
+The code provided is a module that is part of the larger farfetched project. This module is responsible for handling queries related to the current location and its residents.
+
+The code begins by importing necessary functions and modules from the farfetched project and other external dependencies. These include `attachOperation` and `connectQuery` from the `@farfetched/core` module, and `sample` from the `effector` module. It also imports query functions and routes from the `character` and `location` entities, as well as utility functions from the `shared` module.
+
+The module defines two main queries: `currentLocationQuery` and `residentsQuery`. 
+
+The `currentLocationQuery` is created by attaching the `locationQuery` operation using the `attachOperation` function. This query is responsible for retrieving information about the current location. 
+
+The `residentsQuery` is created by attaching the `characterListQuery` operation using the `attachOperation` function. This query is responsible for retrieving a list of residents for a given location. The `mapParams` option is provided to the `attachOperation` function, which maps the URLs of the residents to their corresponding IDs using the `urlToId` utility function.
+
+The `sample` function is then used to create a sample event that triggers the `currentLocationQuery` when the `locationRoute.opened` event occurs. The `fn` option is provided to the `sample` function, which extracts the `locationId` parameter from the event and returns it as an object with the key `id`. The `target` option is used to specify that the `currentLocationQuery.start` event should be triggered with the extracted `id` as the parameter.
+
+Finally, the `connectQuery` function is used to connect the `currentLocationQuery` to the `residentsQuery`. The `source` option is set to the `currentLocationQuery`, and the `fn` option is provided to extract the `residents` property from the `location` result and return it as an object with the key `params`. The `target` option is set to the `residentsQuery`, indicating that the `residentsQuery` should be triggered with the extracted `params` as the parameter.
+
+The module exports the `currentLocationQuery` and `residentsQuery` for use in other parts of the farfetched project.
+
+In summary, this module handles queries related to the current location and its residents in the farfetched project. It provides functions to retrieve information about the current location and its residents, and connects these queries together to ensure that the residents are fetched when the current location is opened.
+## Questions: 
+ 1. What is the purpose of the `attachOperation` function and how is it used in this code?
+- The `attachOperation` function is used to attach a query or operation to a specific source. In this code, it is used to attach the `locationQuery` and `characterListQuery` to `currentLocationQuery` and `residentsQuery` respectively.
+
+2. What is the purpose of the `sample` function and how is it used in this code?
+- The `sample` function is used to create a sample of a source signal at a specific moment in time. In this code, it is used to sample the `locationRoute.opened` signal and pass the `locationId` parameter to `currentLocationQuery.start`.
+
+3. What is the purpose of the `connectQuery` function and how is it used in this code?
+- The `connectQuery` function is used to connect a source query to a target query, allowing for data transformation or manipulation. In this code, it is used to connect `currentLocationQuery` to `residentsQuery` and pass the `location.residents` as parameters.

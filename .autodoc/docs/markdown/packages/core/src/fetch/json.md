@@ -1,0 +1,26 @@
+[View code on GitHub](https://github.com/igorkamyshev/farfetched/packages/core/src/fetch/json.ts)
+
+The code provided is a module that exports a function called `createJsonApiRequest`. This function is used to create a JSON API request for the larger project.
+
+The `createJsonApiRequest` function takes a configuration object as its parameter. This configuration object defines the details of the API request, such as the request method, headers, and body. The function then creates an API request using the `createApiRequest` function from the `api` module.
+
+One important feature of the `createJsonApiRequest` function is that it adds a default `Content-Type` header of `application/json` to every request. This ensures that the request body is serialized as JSON.
+
+The `createApiRequest` function is called with a modified configuration object. The `headers` property of the configuration object is replaced with a combined value of the original headers and the default `Content-Type` header. The `mapBody` property is also added to the configuration object, which is a function that serializes the request body to a JSON string.
+
+The `createApiRequest` function returns a function called `jsonApiCallFx`, which represents the API request. This function can be called to make the actual API request.
+
+The `jsonApiCallFx` function handles the response from the API request. It checks if the response is empty by calling the `isEmptyResponse` function. If the response is empty, it returns `null`. Otherwise, it parses the response body as JSON and returns it.
+
+The `jsonApiCallFx` function also handles any errors that occur during the API request. If the error is not an HTTP error, it is returned as is. If the error is an HTTP error, it attempts to parse the error response body as JSON. If successful, it creates a new HTTP error object with the parsed error response and returns it. If parsing the error response fails, it returns the original HTTP error object.
+
+Overall, this code provides a convenient way to create JSON API requests with default headers and body serialization. It also handles response parsing and error handling for the API requests.
+## Questions: 
+ 1. **What is the purpose of the `createJsonApiRequest` function?**
+The `createJsonApiRequest` function is used to create an API request with JSON data and default headers.
+
+2. **What does the `JsonApiConfig` interface represent?**
+The `JsonApiConfig` interface represents the configuration for a JSON API request, including the request and response options.
+
+3. **What is the purpose of the `isEmptyResponse` function?**
+The `isEmptyResponse` function is used to check if a response from the API is empty, based on the response body and headers.

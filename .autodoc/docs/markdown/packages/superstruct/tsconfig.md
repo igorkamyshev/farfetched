@@ -1,0 +1,34 @@
+[View code on GitHub](https://github.com/igorkamyshev/farfetched/packages/superstruct/tsconfig.json)
+
+The code provided is a TypeScript configuration file (`tsconfig.json`) for the `farfetched` project. This file is used to specify the compiler options and file inclusion/exclusion rules for the TypeScript compiler.
+
+The `"extends"` property is used to extend the configuration from another file (`tsconfig.base.json`) located in the parent directory (`../..`). This allows for reusing common configuration settings across multiple projects.
+
+The `"compilerOptions"` property is an object that specifies various options for the TypeScript compiler. Some notable options in this configuration include:
+
+- `"forceConsistentCasingInFileNames"`: When set to `true`, this option enforces consistent casing in file names. For example, it would flag an error if a file is referenced with a different casing than its actual name.
+
+- `"strict"`: When set to `true`, this option enables strict type checking in TypeScript. It helps catch potential errors and enforce better coding practices.
+
+- `"noImplicitOverride"`: When set to `true`, this option prevents implicit overriding of methods in derived classes. It requires explicit use of the `override` keyword when overriding methods.
+
+- `"noPropertyAccessFromIndexSignature"`: When set to `true`, this option disallows accessing properties using index signatures. It helps catch potential errors where properties are accessed using incorrect keys.
+
+- `"noImplicitReturns"`: When set to `true`, this option enforces that all code paths in functions have a return statement. It helps catch potential errors where a function may not return a value in all cases.
+
+- `"noFallthroughCasesInSwitch"`: When set to `true`, this option flags an error when there is a fallthrough case in a switch statement. It helps prevent accidental execution of multiple cases in a switch statement.
+
+- `"declaration"`: When set to `true`, this option generates corresponding `.d.ts` declaration files alongside the compiled JavaScript files. These declaration files provide type information for external consumers of the compiled code.
+
+The `"files"` property is an empty array, indicating that no specific files are included or excluded from the compilation process. Instead, the `"include"` property is used to specify a glob pattern (`**/*.ts`) to include all TypeScript files in the project.
+
+Overall, this configuration file ensures that the TypeScript compiler enforces strict type checking, catches potential errors, and generates declaration files for external consumption. It provides a consistent and standardized way to compile TypeScript code in the `farfetched` project.
+## Questions: 
+ 1. **What is the purpose of the `extends` property in the `tsconfig.json` file?**
+The `extends` property is used to inherit compiler options from a base configuration file, in this case, `tsconfig.base.json`.
+
+2. **What does the `declaration` property in the `compilerOptions` section do?**
+The `declaration` property, when set to `true`, enables the generation of corresponding `.d.ts` declaration files for TypeScript files in the project. These declaration files are used for type checking and providing type information to external consumers of the project.
+
+3. **What is the significance of the `include` property in the `tsconfig.json` file?**
+The `include` property specifies the files or patterns of files that should be included in the TypeScript compilation process. In this case, it includes all `.ts` files in the project and its subdirectories.

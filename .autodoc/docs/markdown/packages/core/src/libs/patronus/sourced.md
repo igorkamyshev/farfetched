@@ -1,0 +1,26 @@
+[View code on GitHub](https://github.com/igorkamyshev/farfetched/packages/core/src/libs/patronus/sourced.ts)
+
+The code provided is a collection of utility functions and types that are used to handle dynamically sourced data in the larger farfetched project. The code includes functions for normalizing sourced fields, creating sourced readers, reducing two arguments, normalizing static or reactive values, extracting sources, and combining sourced fields.
+
+The `normalizeSourced` function takes a `field` parameter, which can be of type `Result`, `Store<Result>`, `Callback<Data, Result>`, or `CallbackWithSource<Data, Result, Source>`. It returns a store that represents a normalized version of the sourced field. The function checks the type of the `field` parameter and creates the appropriate store based on the type. If the `field` is a store, it combines the store with a function that returns the field value. If the `field` is a callback with a source, it combines the source store with a function that calls the callback with the parameters and the source. If the `field` is a callback without a source, it creates a store that calls the callback with the parameters. If the `field` is a plain value, it creates a store that returns the value.
+
+The `createSourcedReader` function is similar to `normalizeSourced`, but it is specifically used for creating an effect that reads data from a sourced field. It takes a `field` parameter and returns an effect that reads the data from the field. The function checks the type of the `field` parameter and creates the appropriate effect based on the type. If the `field` is a store, it attaches the effect to the store. If the `field` is a callback with a source, it attaches the effect to the source store. If the `field` is a callback without a source, it creates an effect that calls the callback. If the `field` is a plain value, it creates an effect that returns the value.
+
+The `reduceTwoArgs` function is used to reduce two arguments into a single result. It takes a `field` parameter, which can be of type `CallbackTwoArgs<FirstData, SecondData, Result>` or `CallbackTwoArgsWithSource<FirstData, SecondData, Result, Source>`, and a `clock` parameter, which is an event that triggers the reduction. The function checks the type of the `field` parameter and creates the appropriate field based on the type. If the `field` is a callback without a source, it creates a field that calls the callback with the two arguments. If the `field` is a callback with a source, it creates a field that calls the callback with the two arguments and the source.
+
+The `normalizeStaticOrReactive` function is used to normalize static or reactive values. It takes a `v` parameter, which can be of type `T` or `Store<Exclude<T, undefined>>`, and returns a store that represents the normalized value. If the `v` parameter is a store, it returns the store. If the `v` parameter is undefined, it returns a store that contains null. If the `v` parameter is a plain value, it returns a store that contains the value.
+
+The `extractSource` function is used to extract the source store from a sourced field. It takes a `sourced` parameter, which can be of type `Store<S>`, `CallbackWithSource<any, any, S>`, or any other type, and returns the source store or null if the sourced field does not have a source.
+
+The `combineSourced` function is used to combine multiple sourced fields into a single sourced field. It takes a `config` parameter, which is an object that maps field names to sourced fields, and an optional `mapper` parameter, which is a function that maps the combined sourced fields to a single result. The function combines the sourced fields into a single source store and creates a function that calls the sourced fields with the data and source. If a mapper function is provided, it applies the mapper function to the combined sourced fields.
+
+These utility functions and types provide a way to handle dynamically sourced data in the farfetched project. They allow for the normalization of sourced fields, the creation of sourced readers, the reduction of two arguments, the normalization of static or reactive values, the extraction of sources, and the combination of sourced fields. These functions and types can be used throughout the project to handle and manipulate dynamically sourced data.
+## Questions: 
+ 1. **What is the purpose of the `normalizeSourced` function?**
+The `normalizeSourced` function takes a `field` parameter and returns a store that represents a normalized version of the `field`. It handles different types of `field` inputs and converts them into a consistent format.
+
+2. **What is the purpose of the `createSourcedReader` function?**
+The `createSourcedReader` function creates an effect that reads data from a `field`. It handles different types of `field` inputs and creates the appropriate effect based on the input.
+
+3. **What is the purpose of the `combineSourced` function?**
+The `combineSourced` function combines multiple sourced fields into a single callback with a source. It takes a configuration object and a mapper function, and returns a callback function that combines the values of the sourced fields and applies the mapper function if provided.

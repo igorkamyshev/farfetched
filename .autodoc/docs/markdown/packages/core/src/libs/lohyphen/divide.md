@@ -1,0 +1,37 @@
+[View code on GitHub](https://github.com/igorkamyshev/farfetched/packages/core/src/libs/lohyphen/divide.ts)
+
+The code provided is a function called `divide` that takes in two parameters: `items` and `predicate`. The purpose of this function is to divide an array of items into two separate arrays based on a given predicate function.
+
+The `items` parameter is an array of elements of type `T` or `P`. The `predicate` parameter is a function that takes in an item of type `T` or `P` and returns a boolean value indicating whether the item should be included in the first array or the second array.
+
+The function initializes two empty arrays, `left` and `right`, which will be used to store the items that satisfy the predicate and the items that do not satisfy the predicate, respectively.
+
+The function then iterates over each item in the `items` array using a `for...of` loop. For each item, it checks if the item satisfies the predicate by calling the `predicate` function with the item as an argument. If the predicate returns `true`, the item is added to the `left` array using the `push` method. If the predicate returns `false`, the item is added to the `right` array after being casted as `any`.
+
+Finally, the function returns an array containing the `left` and `right` arrays, which represent the items that satisfy the predicate and the items that do not satisfy the predicate, respectively.
+
+This function can be used in the larger project to filter and separate items based on a given condition. For example, if we have an array of numbers and we want to divide them into even and odd numbers, we can use this function as follows:
+
+```typescript
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+function isEven(num: number): boolean {
+  return num % 2 === 0;
+}
+
+const [evenNumbers, oddNumbers] = divide(numbers, isEven);
+
+console.log(evenNumbers); // [2, 4, 6, 8, 10]
+console.log(oddNumbers); // [1, 3, 5, 7, 9]
+```
+
+In this example, the `divide` function is used to separate the `numbers` array into two arrays: `evenNumbers` and `oddNumbers`. The `isEven` function is used as the predicate to determine whether a number is even or odd. The resulting arrays are then logged to the console.
+## Questions: 
+ 1. **What does the `item is T` syntax mean in the `predicate` parameter?**
+The `item is T` syntax is a type predicate that checks if the `item` parameter is of type `T`. It returns a boolean value indicating whether the item is of type `T`.
+
+2. **What is the purpose of the `left` and `right` arrays?**
+The `left` array is used to store items that satisfy the `predicate` condition, while the `right` array is used to store items that do not satisfy the `predicate` condition.
+
+3. **Why is `right.push(item as any)` used instead of directly pushing `item` to the `right` array?**
+The `right.push(item as any)` is used to push the `item` to the `right` array without type checking. This is because the `right` array is defined as `Array<P extends T ? never : P>`, which means it only accepts items that are not of type `T`.

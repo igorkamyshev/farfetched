@@ -1,0 +1,39 @@
+[View code on GitHub](https://github.com/igorkamyshev/farfetched/packages/atomic-router/src/defer.ts)
+
+The code provided is a TypeScript module that exports a function called `createDefer` and a type called `Defer`. The purpose of this code is to create a controlled promise, which allows for more fine-grained control over the resolution and rejection of a promise.
+
+The `Defer` type is a generic type that takes two type parameters: `Resolve` and `Reject`. It represents an object with three properties: `resolve`, `reject`, and `promise`. The `resolve` property is a function that takes a value of type `Resolve` and resolves the promise. The `reject` property is a function that takes an optional value of type `Reject` and rejects the promise. The `promise` property is a Promise object that represents the asynchronous operation.
+
+The `createDefer` function creates and returns an instance of the `Defer` type. It initializes the `resolve` and `reject` properties with empty functions, and sets the `promise` property to `null`. It then creates a new Promise object and assigns it to the `promise` property. Inside the Promise constructor, it overrides the `resolve` and `reject` properties with the actual resolve and reject functions of the Promise. This allows the user of the `Defer` object to control when the promise is resolved or rejected.
+
+Additionally, the `createDefer` function attaches an empty catch handler to the `promise` property. This is done to prevent unhandled promise rejections from causing errors or warnings in the console.
+
+The `createDefer` function can be used in the larger project to create controlled promises. By using the `Defer` type and the `createDefer` function, developers can have more control over the resolution and rejection of promises, which can be useful in scenarios where precise control over asynchronous operations is required.
+
+Example usage:
+
+```typescript
+const defer = createDefer<number, string>();
+
+// Resolve the promise with a value of 42
+defer.resolve(42);
+
+// Reject the promise with an error message
+defer.reject("Error occurred");
+
+// Access the promise
+defer.promise.then((value) => {
+  console.log("Resolved:", value);
+}).catch((error) => {
+  console.log("Rejected:", error);
+});
+```
+## Questions: 
+ 1. What is the purpose of the `Defer` type and how is it used in this code?
+- The `Defer` type is used to define an object that represents a controlled promise. It has properties `resolve`, `reject`, and `promise` that can be used to control the state and outcome of the promise.
+
+2. Why are the `resolve` and `reject` functions initially empty and then reassigned later?
+- The `resolve` and `reject` functions are initially empty because they will be reassigned with the actual resolve and reject functions when the promise is created. This allows the promise to be controlled externally.
+
+3. Why is the `promise` property set to `null` initially and then assigned a value later?
+- The `promise` property is set to `null` initially because it will be assigned the actual promise object when the promise is created. This ensures that the promise is accessible within the `createDefer` function and can be returned to the caller.

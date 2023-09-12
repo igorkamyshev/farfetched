@@ -1,0 +1,5 @@
+[View code on GitHub](https://github.com/igorkamyshev/farfetched/.autodoc/docs/json/packages/core/src/libs)
+
+Unfortunately, there is no information provided about the files and subfolders in the `.autodoc/docs/json/packages/core/src/libs` directory. Therefore, it's impossible to provide a detailed explanation of what the code in this directory does and how it fits into the larger project. 
+
+Please provide the necessary information about the files and subfolders in the directory. This should include the names of the files and subfolders, as well as a brief description of their contents or purpose within the project. With this information, I can provide a detailed and accurate explanation of the code in this directory.

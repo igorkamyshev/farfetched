@@ -1,0 +1,32 @@
+[View code on GitHub](https://github.com/igorkamyshev/farfetched/packages/core/src/cache/cache.ts)
+
+The code provided is a module that implements caching functionality for a larger project called "farfetched". The purpose of this code is to provide a caching mechanism for queries made in the project.
+
+The `cache` function is the main entry point of this module. It takes a `query` parameter, which represents a query object, and an optional `rawParams` parameter, which is an object containing cache-related parameters. The function sets up various effects and data sources to handle caching operations for the given query.
+
+Inside the `cache` function, the `adapter`, `staleAfter`, and `purge` parameters are extracted from the `rawParams` object using destructuring assignment. If `adapter` is not provided, it defaults to an in-memory cache adapter.
+
+The `id` variable is assigned the unique identifier of the query using the `queryUniqId` function.
+
+The `sourcedReaders` variable is assigned an array of sourced readers created from the low-level API of the query. These sourced readers are responsible for fetching data from the query's sources.
+
+The `readAllSourcedFx` effect is created to asynchronously execute all the sourced readers and return their results as an array.
+
+The `unsetFx`, `setFx`, and `getFx` effects are created to handle the unset, set, and get operations on the cache adapter, respectively. These effects use the `readAllSourcedFx` effect to fetch the necessary data for cache key generation and interact with the cache adapter accordingly.
+
+The `cacheDatSource` object is created to define the data source for the cache. It contains three properties: `name`, `get`, and `set`. These properties define the name of the data source, the effect to get data from the cache, and the effect to set data in the cache, respectively.
+
+Finally, the `cacheDatSource` object is added to the `dataSources` array of the query's low-level API. This ensures that the cache data source is used when executing the query.
+
+Additionally, if a `purge` event is provided, a `sample` function is used to trigger the `purge` effect on the cache adapter instance when the `purge` event occurs.
+
+Overall, this code provides a caching mechanism for queries in the "farfetched" project. It allows for efficient retrieval and storage of query results, improving performance by reducing the need for repeated expensive computations or network requests.
+## Questions: 
+ 1. What is the purpose of the `cache` function?
+- The `cache` function is used to add caching functionality to a query. It sets up cache adapters, effects for reading, setting, and unsetting cache values, and attaches them to the query's data sources.
+
+2. What does the `staleAfter` parameter do?
+- The `staleAfter` parameter specifies a time duration after which a cached value is considered stale. If the `staleAfter` value is provided, the function checks if the cached value's timestamp plus the `staleAfter` duration is less than or equal to the current time to determine if the value is stale.
+
+3. How are cache operations (get, set, unset) attached to the cache adapter instance?
+- The cache operations (get, set, unset) are attached to the cache adapter instance using the `attach` function. The `attach` function takes the cache adapter instance as the source and maps the required parameters and effects for each cache operation.

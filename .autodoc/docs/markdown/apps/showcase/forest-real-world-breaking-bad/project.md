@@ -1,0 +1,49 @@
+[View code on GitHub](https://github.com/igorkamyshev/farfetched/apps/showcase/forest-real-world-breaking-bad/project.json)
+
+The code provided is a configuration file for a project called "farfetched". This configuration file is specific to a sub-project within farfetched called "showcase-forest-real-world-breaking-bad". The purpose of this code is to define the build, serve, lint, and preview targets for this sub-project.
+
+The "build" target is responsible for building the project using the "@nrwl/vite:build" executor. It specifies the output path where the built files will be stored.
+
+The "serve" target is responsible for running a development server using the "@nrwl/vite:dev-server" executor. It depends on the "build" target to ensure that the project is built before serving it.
+
+The "lint" target is responsible for running linting checks on the project using the "@nrwl/linter:eslint" executor. It specifies the file patterns to be checked for linting errors.
+
+The "preview" target is responsible for running a preview server using the "@nrwl/vite:preview-server" executor. It has two configurations: "development" and "production". Each configuration specifies the build target to be used for the preview server.
+
+Overall, this configuration file provides the necessary instructions for building, serving, linting, and previewing the "showcase-forest-real-world-breaking-bad" sub-project within the larger farfetched project. It ensures that the project is built correctly, linting errors are checked, and preview servers are available for both development and production environments.
+
+Example usage:
+
+To build the "showcase-forest-real-world-breaking-bad" sub-project, the following command can be used:
+```
+nx build showcase-forest-real-world-breaking-bad
+```
+
+To serve the sub-project using a development server, the following command can be used:
+```
+nx serve showcase-forest-real-world-breaking-bad
+```
+
+To run linting checks on the sub-project, the following command can be used:
+```
+nx lint showcase-forest-real-world-breaking-bad
+```
+
+To run a preview server for the sub-project in development mode, the following command can be used:
+```
+nx preview showcase-forest-real-world-breaking-bad --configuration=development
+```
+
+To run a preview server for the sub-project in production mode, the following command can be used:
+```
+nx preview showcase-forest-real-world-breaking-bad --configuration=production
+```
+## Questions: 
+ 1. **What is the purpose of this code?**
+   This code is defining the configuration and targets for building, serving, linting, and previewing a project called "showcase-forest-real-world-breaking-bad" using the "@nrwl/vite" and "@nrwl/linter" executors.
+
+2. **What is the output path for the build target?**
+   The output path for the build target is "dist/apps/showcase/forest-real-world-breaking-bad".
+
+3. **What are the lint file patterns for the lint target?**
+   The lint file patterns for the lint target are "apps/showcase/forest-real-world-breaking-bad/**/*.{ts,js}".
