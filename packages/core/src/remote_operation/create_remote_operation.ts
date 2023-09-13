@@ -87,7 +87,7 @@ export function createRemoteOperation<
     name: `${name}.executeFx`,
   });
 
-  const executeCalled = getCallObjectEvent(executeFx)
+  const executeCalled = getCallObjectEvent(executeFx);
 
   const remoteDataSoruce: DataSource<Params> = {
     name: 'remote_source',
