@@ -286,4 +286,51 @@ describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
 
     expect(callObjectEmitted).not.toBeCalled();
   });
+
+  test('Cannot abort calls after operation is finished', async () => {
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+    operation.__.executeFx.use(() => Promise.resolve({}));
+
+    const scope = fork();
+
+    createWatch({
+      unit: operation.__.lowLevelAPI.executeCalled,
+      scope,
+      fn: ({ abort }) => {
+        setTimeout(() => {
+          abort()
+        }, 10)
+      },
+    });
+
+    const operationFinished = vi.fn();
+
+    createWatch({
+      unit: operation.finished.finally,
+      scope,
+      fn: (f) =>
+        operationFinished({
+          params: f.params,
+          status: f.status,
+          error: (f as { error: unknown }).error,
+        }),
+    });
+
+    await allSettled(operation.start, { scope, params: 42 });
+    await new Promise((resolve) => setTimeout(resolve, 20));
+
+    expect(operationFinished).toBeCalledTimes(1);
+    expect(operationFinished.mock.calls.map(([arg]) => arg))
+      .toMatchInlineSnapshot(`
+      [
+        {
+          "error": undefined,
+          "params": 42,
+          "status": "done",
+        },
+      ]
+    `);
+  })
 });
