@@ -23,7 +23,7 @@ describe('timeout(query, time)', () => {
 
     await allSettled(query.refresh, { scope, params: undefined });
 
-    expect(handler).toBeCalledTimes(0);
+    expect(handler).toBeCalledTimes(1);
     expect(isTimeoutError({ error: scope.getState(query.$error) })).toBe(true);
   });
 
@@ -44,7 +44,7 @@ describe('timeout(query, time)', () => {
 
     await allSettled(query.refresh, { scope, params: undefined });
 
-    expect(handler).toBeCalledTimes(0);
+    expect(handler).toBeCalledTimes(1);
     expect(isTimeoutError({ error: scope.getState(query.$error) })).toBe(true);
   });
 });
