@@ -221,7 +221,7 @@ describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
 
     expect(operationFailed).toBeCalledTimes(1);
     expect(isTimeoutError(operationFailed.mock.calls[0][0])).toBe(true);
-  })
+  });
 
   test('Call object abort does not affect other pending calls', async () => {
     const operation = createRemoteOperation({
