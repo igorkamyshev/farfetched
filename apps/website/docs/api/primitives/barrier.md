@@ -1,1 +1,17 @@
 # Barrier <Badge type="tip" text="since v0.10.0" />
+
+Object that could be used to postpone the execution of the [_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutataion). Barrier can be created with the [`createBarrier`](/api/factories/create_barrier) function.
+
+For user-land code, it is a read-only object that have the following properties:
+
+## `$active`
+
+[_Store_](https://effector.dev/docs/api/effector/store) with the current status of the _Barrier_. It must not be changed directly. Can be `true` or `false`. If it is `true` then the _Barrier_ is active and the execution of the [_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutataion) will be postponed in case of [applying the _Barrier_ to it](/api/operators/apply_barrier).
+
+## `activate`
+
+[_Event_](https://effector.dev/docs/api/effector/event) that will be triggered when the _Barrier_ is activated.
+
+## `deactivate`
+
+[_Event_](https://effector.dev/docs/api/effector/event) that will be triggered when the _Barrier_ is deactivated.
