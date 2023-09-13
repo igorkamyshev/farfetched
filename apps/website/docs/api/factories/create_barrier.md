@@ -65,6 +65,6 @@ Configuration fields:
 Any of the following form can be used in `perform` field:
 
 1. [_Query_](/api/primitives/query) that does not accept any parameters
-2. [_Mutation_](/api/primitives/mutataion) that does not accept any parameters
+2. [_Mutation_](/api/primitives/mutation) that does not accept any parameters
 3. [_Effect_](https://effector.dev/docs/api/effector/effect) that does not accept any parameters
 4. Object `{ start, end }` where `start` and `end` are [_Events_](https://effector.dev/docs/api/effector/event) that do not accept any parameters. `start` [_Event_](https://effector.dev/docs/api/effector/event) will be called when the [_Barrier_](/api/primitives/barrier) is activated, `end` [_Event_](https://effector.dev/docs/api/effector/event) is expected to be called when the performer is finished.
