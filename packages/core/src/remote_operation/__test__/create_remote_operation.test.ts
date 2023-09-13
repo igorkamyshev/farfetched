@@ -374,8 +374,8 @@ describe('RemoteOperation.__.lowLevelAPI.callObjectCreated', async () => {
       expect.objectContaining({
         promise: expect.any(Promise),
       })
-    )
-  })
+    );
+  });
 
   test('promise is NOT exposed on call object for SYNC handlers', async () => {
     const operation = createRemoteOperation({
@@ -401,6 +401,6 @@ describe('RemoteOperation.__.lowLevelAPI.callObjectCreated', async () => {
       expect.not.objectContaining({
         promise: expect.anything(),
       })
-    )
-  })
+    );
+  });
 });

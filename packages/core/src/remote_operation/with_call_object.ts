@@ -26,7 +26,7 @@ export type CallObject = {
   /**
    * Promise of async handler calls,
    * it is resolved or rejected when handler is finished
-   * 
+   *
    * For sync handlers it is not presented
    */
   promise?: Promise<unknown>;
