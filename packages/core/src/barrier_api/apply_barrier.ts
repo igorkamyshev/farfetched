@@ -47,7 +47,7 @@ export function applyBarrier<
   const blockerSourceFx = attach({
     source: { mutex: barrier.__.$mutex, active: barrier.$active },
     async effect({ mutex }) {
-      await mutex.waitForUnlock();
+      await mutex?.waitForUnlock();
 
       return null;
     },

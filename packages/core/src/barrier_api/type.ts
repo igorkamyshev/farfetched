@@ -10,6 +10,6 @@ export type Barrier = {
     touch: Event<void>;
     operationFailed: Event<{ params: unknown; error: unknown }>;
     operationDone: Event<{ params: unknown; result: unknown }>;
-    $mutex: Store<Mutex>;
+    $mutex: Store<Mutex | null>;
   };
 };

@@ -62,17 +62,27 @@ export function createBarrier({
   deactivateOn?: Event<any>;
   perform?: Array<Performer>;
 }): Barrier {
-  const $mutex = createStore(new Mutex(), { serialize: 'ignore' });
+  const $mutex = createStore<Mutex | null>(null, { serialize: 'ignore' });
 
   const activated = createEvent();
   const deactivated = createEvent();
+
+  const touch = createEvent();
+
+  sample({
+    clock: touch,
+    source: $mutex,
+    filter: (mutex) => mutex === null,
+    fn: () => new Mutex(),
+    target: $mutex,
+  });
 
   sample({
     clock: activated,
     target: attach({
       source: $mutex,
       async effect(mutex) {
-        await mutex.acquire();
+        await mutex?.acquire();
       },
     }),
   });
@@ -82,12 +92,10 @@ export function createBarrier({
     target: attach({
       source: $mutex,
       async effect(mutex) {
-        mutex.release();
+        mutex?.release();
       },
     }),
   });
-
-  const touch = createEvent();
 
   const operationFailed = createEvent<{
     params: unknown;
