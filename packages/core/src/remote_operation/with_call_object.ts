@@ -94,9 +94,25 @@ function createPatchedHandler(
 }
 
 function createCallObject(def: Defer<unknown, unknown>) {
+  let callStatus: 'pending' | 'finished' = 'pending';
+
+  function finish() {
+    callStatus = 'finished';
+  }
+
+  def.promise.then(finish, finish);
+
   const callObj: CallObject = {
     id: getCallId(),
     abort: (error: unknown = abortError()) => {
+      if (callStatus === 'finished') {
+        /**
+         * It is not possible to abort already finished call,
+         * so nothing happens
+         */
+        return;
+      }
+
       def.reject(error);
     },
   };
