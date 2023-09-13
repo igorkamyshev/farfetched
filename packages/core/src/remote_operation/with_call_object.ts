@@ -23,6 +23,13 @@ export type CallObject = {
    * For sync calls it is always `finished`
    */
   status: 'pending' | 'finished';
+  /**
+   * Promise of async handler calls,
+   * it is resolved or rejected when handler is finished
+   * 
+   * For sync handlers it is not presented
+   */
+  promise?: Promise<unknown>;
 };
 
 /**
@@ -129,6 +136,7 @@ function createCallObject(def?: Defer<unknown, unknown>) {
         def.reject(error);
       }
     },
+    promise: def?.promise,
   };
 
   return callObj;
