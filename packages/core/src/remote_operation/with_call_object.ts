@@ -16,7 +16,7 @@ export type CallObject = {
    *
    * @param error - Error to reject promise with, defaults to `OperationAborted` error
    */
-  abort: () => void;
+  abort: (customError?: unknown) => void;
   /**
    * Status of the call
    *

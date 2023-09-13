@@ -5,7 +5,8 @@ import { describe, test, expect, vi } from 'vitest';
 import { unknownContract } from '../../contract/unknown_contract';
 import { createDefer } from '../../libs/lohyphen';
 import { createRemoteOperation } from '../create_remote_operation';
-import { isAbortError } from '../../errors/guards';
+import { isAbortError, isTimeoutError } from '../../errors/guards';
+import { timeoutError } from '../../errors/create_error';
 
 const defaultConfig = {
   name: 'test',
@@ -194,6 +195,33 @@ describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
     expect(operationFailed).toBeCalledTimes(1);
     expect(isAbortError(operationFailed.mock.calls[0][0])).toBe(true);
   });
+
+  test('Call object may abort operation early and will throw custom error if provided', async () => {
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+    operation.__.executeFx.use(() => Promise.resolve({}));
+
+    const scope = fork();
+    createWatch({
+      unit: operation.__.lowLevelAPI.executeCalled,
+      scope,
+      fn: ({ abort }) => abort(timeoutError({ timeout: 0 })),
+    });
+
+    const operationFailed = vi.fn();
+
+    createWatch({
+      unit: operation.finished.failure,
+      scope,
+      fn: operationFailed,
+    });
+
+    await allSettled(operation.start, { scope, params: 42 });
+
+    expect(operationFailed).toBeCalledTimes(1);
+    expect(isTimeoutError(operationFailed.mock.calls[0][0])).toBe(true);
+  })
 
   test('Call object abort does not affect other pending calls', async () => {
     const operation = createRemoteOperation({
