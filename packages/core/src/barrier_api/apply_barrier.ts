@@ -1,9 +1,9 @@
-import { DynamicallySourcedField } from '../libs/patronus';
+import { type DynamicallySourcedField } from '../libs/patronus';
 import {
-  RemoteOperation,
-  RemoteOperationParams,
+  type RemoteOperation,
+  type RemoteOperationParams,
 } from '../remote_operation/type';
-import { Barrier } from './type';
+import { type Barrier } from './type';
 
 export function applyBarrier<
   O extends RemoteOperation<void, any, any, any, any>

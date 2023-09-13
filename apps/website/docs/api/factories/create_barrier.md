@@ -21,8 +21,8 @@ const authBarrier = createBarrier({
 
 Configuration fields:
 
-- `active`: [_Sourced_](/api/primitives/sourced) boolean.
-- `perform`: optional array of [_Performers_](#performer), that will be started in case some operation that uses this [_Barrier_](/api/primitives/barrier) is started and [_Barrier_](/api/primitives/barrier) is `$active`.
+- `active`: [_Store_](https://effector.dev/docs/api/effector/store) with boolean that indicates whether [_Barrier_](/api/primitives/barrier) is active or not.
+- `perform?`: optional array of [_Performers_](#performer), that will be started in case some operation that uses this [_Barrier_](/api/primitives/barrier) is started and [_Barrier_](/api/primitives/barrier) is `$active`.
 
 ### `createBarrier({ activateOn, perform })`
 

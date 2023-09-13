@@ -1,10 +1,10 @@
 import { describe, expectTypeOf, test } from 'vitest';
-
-import { Query } from '../../query/type';
-import { Mutation } from '../../mutation/type';
-import { Barrier } from '../type';
-import { applyBarrier } from '../apply_barrier';
 import { createStore } from 'effector';
+
+import { type Query } from '../../query/type';
+import { type Mutation } from '../../mutation/type';
+import { type Barrier } from '../type';
+import { applyBarrier } from '../apply_barrier';
 
 describe('applyBarrier', () => {
   const barrier: Barrier = {} as any;
