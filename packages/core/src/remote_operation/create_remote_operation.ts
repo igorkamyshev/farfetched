@@ -29,6 +29,7 @@ import { validValidator } from '../validation/valid_validator';
 import { type RemoteOperation } from './type';
 import { get } from '../libs/lohyphen';
 import { isAbortError } from '../errors/guards';
+import { getCallObjectEvent } from './with_call_object';
 
 export function createRemoteOperation<
   Params,
@@ -85,6 +86,8 @@ export function createRemoteOperation<
     sid: `ff.${name}.executeFx`,
     name: `${name}.executeFx`,
   });
+
+  const executeCalled = getCallObjectEvent(executeFx)
 
   const remoteDataSoruce: DataSource<Params> = {
     name: 'remote_source',
@@ -441,6 +444,7 @@ export function createRemoteOperation<
         pushError,
         pushData,
         startWithMeta,
+        executeCalled,
       },
     },
   };

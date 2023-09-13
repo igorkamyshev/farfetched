@@ -1,20 +1,21 @@
 import { watchRemoteOperation } from '@farfetched/test-utils';
-import { allSettled, createStore, fork } from 'effector';
+import { allSettled, createStore, createWatch, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
 import { unknownContract } from '../../contract/unknown_contract';
 import { createDefer } from '../../libs/lohyphen';
 import { createRemoteOperation } from '../create_remote_operation';
+import { isAbortError } from '../../errors/guards';
+
+const defaultConfig = {
+  name: 'test',
+  mapData: (v: any) => v,
+  meta: null,
+  kind: 'test',
+  contract: unknownContract,
+};
 
 describe('createRemoteOperation, disable in-flight', () => {
-  const defaultConfig = {
-    name: 'test',
-    mapData: (v: any) => v,
-    meta: null,
-    kind: 'test',
-    contract: unknownContract,
-  };
-
   test('emit skip with success in handler', async () => {
     const defer = createDefer();
 
@@ -139,5 +140,123 @@ describe('createRemoteOperation, disable in-flight', () => {
     expect(scope.getState(operation.$failed)).toBeTruthy();
     expect(scope.getState(operation.$succeeded)).toBeFalsy();
     expect(scope.getState(operation.$finished)).toBeTruthy();
+  });
+});
+
+describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
+  test('Call object is emitted', async () => {
+    const callObjectEmitted = vi.fn();
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+    operation.__.executeFx.use(() => Promise.resolve({}));
+    const scope = fork();
+    createWatch({
+      unit: operation.__.lowLevelAPI.executeCalled,
+      scope,
+      fn: callObjectEmitted,
+    });
+
+    await allSettled(operation.start, { scope, params: 42 });
+
+    expect(callObjectEmitted).toBeCalledTimes(1);
+    expect(callObjectEmitted).toBeCalledWith(
+      expect.objectContaining({
+        id: expect.any(String),
+        abort: expect.any(Function),
+      })
+    );
+  });
+
+  test('Call object may abort operation early and will throw abortError by default', async () => {
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+    operation.__.executeFx.use(() => Promise.resolve({}));
+
+    const scope = fork();
+    createWatch({
+      unit: operation.__.lowLevelAPI.executeCalled,
+      scope,
+      fn: ({ abort }) => abort(),
+    });
+
+    const operationFailed = vi.fn();
+
+    createWatch({
+      unit: operation.finished.failure,
+      scope,
+      fn: operationFailed,
+    });
+
+    await allSettled(operation.start, { scope, params: 42 });
+
+    expect(operationFailed).toBeCalledTimes(1);
+    expect(isAbortError(operationFailed.mock.calls[0][0])).toBe(true);
+  });
+
+  test('Call object abort does not affect other pending calls', async () => {
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+    operation.__.executeFx.use(() => Promise.resolve({}));
+
+    const scope = fork();
+    let count = 0;
+    createWatch({
+      unit: operation.__.lowLevelAPI.executeCalled,
+      scope,
+      fn: ({ abort }) => {
+        count++;
+        if (count === 2) {
+          abort();
+        }
+      },
+    });
+
+    const operationFinished = vi.fn();
+
+    createWatch({
+      unit: operation.finished.finally,
+      scope,
+      fn: (f) =>
+        operationFinished({
+          params: f.params,
+          status: f.status,
+          error: (f as { error: unknown }).error,
+        }),
+    });
+
+    allSettled(operation.start, { scope, params: 42 });
+    allSettled(operation.start, { scope, params: 43 }); // will be aborted
+    allSettled(operation.start, { scope, params: 44 });
+
+    await allSettled(scope);
+
+    expect(operationFinished).toBeCalledTimes(3);
+    expect(
+      operationFinished.mock.calls.map(([arg]) => arg)
+    ).toMatchInlineSnapshot(`
+      [
+        {
+          "error": {
+            "errorType": "ABORT",
+            "explanation": "Request was cancelled due to concurrency policy",
+          },
+          "params": 43,
+          "status": "fail",
+        },
+        {
+          "error": undefined,
+          "params": 42,
+          "status": "done",
+        },
+        {
+          "error": undefined,
+          "params": 44,
+          "status": "done",
+        },
+      ]
+    `);
   });
 });
