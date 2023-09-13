@@ -59,7 +59,7 @@ export function getCallObjectEvent<E extends Effect<unknown, unknown, unknown>>(
    * Insertion of the patched handler step must happen right before execution of the handler itself,
    * after everything else is resolved
    */
-  runner.seq.splice(runner.seq.length - 1, 0, callObjStep);
+  runner.seq.splice(1, 0, callObjStep);
 
   return called;
 }
