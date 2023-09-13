@@ -259,12 +259,12 @@ describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
     `);
   });
 
-  test('Call objects are not emitted for sync handlers', async () => {
+  test('Call objects are always in "finished" status for sync handlers', async () => {
     /**
      * Sync handler cannot be aborted early, since for the "rest of the world"
      * its execution is instant
      *
-     * Call objects do not make sense in that case
+     * Call objects in that case are always "finished"
      */
 
     const callObjectEmitted = vi.fn();
@@ -284,7 +284,9 @@ describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
 
     await allSettled(operation.start, { scope, params: 42 });
 
-    expect(callObjectEmitted).not.toBeCalled();
+    expect(callObjectEmitted).toBeCalledWith({
+      stauts: "finished",
+    })
   });
 
   test('Cannot abort calls after operation is finished', async () => {
