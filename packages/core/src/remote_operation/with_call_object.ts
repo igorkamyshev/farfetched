@@ -63,29 +63,31 @@ function createPatchedHandler(
   calledEvent: Event<CallObject>
 ) {
   function ffMagicHandler(...p: unknown[]): unknown {
-    const def = createDefer();
-    const callObj = createCallObject(def);
-    calledEvent(callObj);
-
     /**
      * Normal flow of the handler,
      * its result is reflected to the outside world
      */
-    try {
-      const result = h(...p);
-      if (result instanceof Promise) {
-        result.then(def.resolve, def.reject);
-      } else {
-        def.resolve(result);
-      }
-    } catch (e) {
-      def.reject(e);
-    }
+    const result = h(...p);
+    if (result instanceof Promise) {
+      /**
+       * Async handlers are patched to emit call object,
+       * which provides low level control over the call
+       */
 
-    /**
-     * Deferred promise may be resolved or rejected early via CallObject APIs
-     */
-    return def.promise;
+      const def = createDefer();
+      const callObj = createCallObject(def);
+      calledEvent(callObj);
+      result.then(def.resolve, def.reject);
+
+      return def.promise;
+    } else {
+      /**
+       * It is not possible to control sync handlers at all,
+       * so call object is not emitted to preserve consistent behavior
+       */
+
+      return result;
+    }
   }
 
   return ffMagicHandler;

@@ -234,9 +234,8 @@ describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
     await allSettled(scope);
 
     expect(operationFinished).toBeCalledTimes(3);
-    expect(
-      operationFinished.mock.calls.map(([arg]) => arg)
-    ).toMatchInlineSnapshot(`
+    expect(operationFinished.mock.calls.map(([arg]) => arg))
+      .toMatchInlineSnapshot(`
       [
         {
           "error": {
@@ -258,5 +257,33 @@ describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
         },
       ]
     `);
+  });
+
+  test('Call objects are not emitted for sync handlers', async () => {
+    /**
+     * Sync handler cannot be aborted early, since for the "rest of the world"
+     * its execution is instant
+     *
+     * Call objects do not make sense in that case
+     */
+
+    const callObjectEmitted = vi.fn();
+
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+    operation.__.executeFx.use(() => ({}));
+
+    const scope = fork();
+
+    createWatch({
+      unit: operation.__.lowLevelAPI.executeCalled,
+      scope,
+      fn: callObjectEmitted,
+    });
+
+    await allSettled(operation.start, { scope, params: 42 });
+
+    expect(callObjectEmitted).not.toBeCalled();
   });
 });
