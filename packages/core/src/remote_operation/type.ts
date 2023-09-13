@@ -112,7 +112,7 @@ export interface RemoteOperation<
       pushData: Event<Data>;
       pushError: Event<Error>;
       startWithMeta: Event<{ params: Params; meta: ExecutionMeta }>;
-      executeCalled: Event<CallObject>;
+      callObjectCreated: Event<CallObject>;
     } & ExtraLowLevelAPI;
     experimentalAPI?: {
       attach: <Source, NewParams>(config: {

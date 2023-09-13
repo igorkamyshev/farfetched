@@ -144,7 +144,7 @@ describe('createRemoteOperation, disable in-flight', () => {
   });
 });
 
-describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
+describe('RemoteOperation.__.lowLevelAPI.callObjectCreated', async () => {
   test('Call object is emitted', async () => {
     const callObjectEmitted = vi.fn();
     const operation = createRemoteOperation({
@@ -153,7 +153,7 @@ describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
     operation.__.executeFx.use(() => Promise.resolve({}));
     const scope = fork();
     createWatch({
-      unit: operation.__.lowLevelAPI.executeCalled,
+      unit: operation.__.lowLevelAPI.callObjectCreated,
       scope,
       fn: callObjectEmitted,
     });
@@ -177,7 +177,7 @@ describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
 
     const scope = fork();
     createWatch({
-      unit: operation.__.lowLevelAPI.executeCalled,
+      unit: operation.__.lowLevelAPI.callObjectCreated,
       scope,
       fn: ({ abort }) => abort(),
     });
@@ -204,7 +204,7 @@ describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
 
     const scope = fork();
     createWatch({
-      unit: operation.__.lowLevelAPI.executeCalled,
+      unit: operation.__.lowLevelAPI.callObjectCreated,
       scope,
       fn: ({ abort }) => abort(timeoutError({ timeout: 0 })),
     });
@@ -232,7 +232,7 @@ describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
     const scope = fork();
     let count = 0;
     createWatch({
-      unit: operation.__.lowLevelAPI.executeCalled,
+      unit: operation.__.lowLevelAPI.callObjectCreated,
       scope,
       fn: ({ abort }) => {
         count++;
@@ -305,7 +305,7 @@ describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
     const scope = fork();
 
     createWatch({
-      unit: operation.__.lowLevelAPI.executeCalled,
+      unit: operation.__.lowLevelAPI.callObjectCreated,
       scope,
       fn: callObjectEmitted,
     });
@@ -330,7 +330,7 @@ describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
     const scope = fork();
 
     createWatch({
-      unit: operation.__.lowLevelAPI.executeCalled,
+      unit: operation.__.lowLevelAPI.callObjectCreated,
       scope,
       fn: ({ abort }) => {
         setTimeout(() => {
