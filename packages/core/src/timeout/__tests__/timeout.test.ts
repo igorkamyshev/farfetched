@@ -111,9 +111,7 @@ describe('timeout(query, time)', () => {
 
     expect(handler).toBeCalledTimes(3);
     expect(queryTimeouted).toBeCalledTimes(1);
-    expect(isTimeoutError({ error: queryTimeouted.mock.calls[0][0] })).toBe(
-      true
-    );
+    expect(isTimeoutError(queryTimeouted.mock.calls[0][0])).toBe(true);
     expect(isTimeoutError({ error: scope.getState(query.$error) })).toBe(true);
   });
 });
