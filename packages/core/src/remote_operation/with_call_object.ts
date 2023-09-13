@@ -17,6 +17,12 @@ export type CallObject = {
    * @param error - Error to reject promise with, defaults to `OperationAborted` error
    */
   abort: () => void;
+  /**
+   * Status of the call
+   *
+   * For sync calls it is always `finished`
+   */
+  status: 'pending' | 'finished';
 };
 
 /**
@@ -82,9 +88,11 @@ function createPatchedHandler(
       return def.promise;
     } else {
       /**
-       * It is not possible to control sync handlers at all,
-       * so call object is not emitted to preserve consistent behavior
+       * It is not possible to control sync handlers at all, because their execution is instant
+       * So call object is emitted as "finished" right away
        */
+      const callObj = createCallObject();
+      calledEvent(callObj);
 
       return result;
     }
@@ -93,17 +101,21 @@ function createPatchedHandler(
   return ffMagicHandler;
 }
 
-function createCallObject(def: Defer<unknown, unknown>) {
-  let callStatus: 'pending' | 'finished' = 'pending';
+function createCallObject(def?: Defer<unknown, unknown>) {
+  let callStatus: CallObject['status'] = def ? 'pending' : 'finished';
 
   function finish() {
     callStatus = 'finished';
+    callObj.status = callStatus;
   }
 
-  def.promise.then(finish, finish);
+  if (def) {
+    def.promise.then(finish, finish);
+  }
 
   const callObj: CallObject = {
     id: getCallId(),
+    status: callStatus,
     abort: (error: unknown = abortError()) => {
       if (callStatus === 'finished') {
         /**
@@ -113,7 +125,9 @@ function createCallObject(def: Defer<unknown, unknown>) {
         return;
       }
 
-      def.reject(error);
+      if (def) {
+        def.reject(error);
+      }
     },
   };
 
