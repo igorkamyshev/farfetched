@@ -1,4 +1,5 @@
 import {
+  attach,
   createEvent,
   createStore,
   is,
@@ -14,7 +15,7 @@ import { type Barrier } from './type';
 import { combineEvents, readonly } from '../libs/patronus';
 import { isQuery } from '../query/type';
 import { isMutation } from '../mutation/type';
-import { get } from '../libs/lohyphen';
+import { get, Mutex } from '../libs/lohyphen';
 
 type Performer =
   | RemoteOperation<void, any, any, any>
@@ -61,9 +62,31 @@ export function createBarrier({
   deactivateOn?: Event<any>;
   perform?: Array<Performer>;
 }): Barrier {
-  const activated = createEvent();
+  const $mutex = createStore(new Mutex(), { serialize: 'ignore' });
 
+  const activated = createEvent();
   const deactivated = createEvent();
+
+  sample({
+    clock: activated,
+    target: attach({
+      source: $mutex,
+      async effect(mutex) {
+        await mutex.acquire();
+      },
+    }),
+  });
+
+  sample({
+    clock: deactivated,
+    target: attach({
+      source: $mutex,
+      async effect(mutex) {
+        mutex.release();
+      },
+    }),
+  });
+
   const touch = createEvent();
 
   const operationFailed = createEvent<{
@@ -140,6 +163,7 @@ export function createBarrier({
   }
 
   split({
+    clock: [$active, touch],
     source: $active,
     match: { activated: Boolean },
     cases: { activated, __: deactivated },
@@ -155,7 +179,7 @@ export function createBarrier({
     $active: readonly($active),
     activated: readonly(activated),
     deactivated: readonly(deactivated),
-    __: { touch, operationFailed, operationDone },
+    __: { touch, operationFailed, operationDone, $mutex },
   };
 }
 

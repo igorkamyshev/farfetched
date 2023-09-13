@@ -1,3 +1,5 @@
+import { attach, sample, type Effect } from 'effector';
+
 import { type DynamicallySourcedField } from '../libs/patronus';
 import {
   type RemoteOperation,
@@ -25,18 +27,38 @@ export function applyBarrier<
 ): void;
 
 export function applyBarrier<
-  O extends RemoteOperation<any, any, any, any, any>,
+  O extends RemoteOperation<any, any, any, any>,
   ResumeParamsSource = void
 >(
   operation: O,
-  config: {
+  {
+    barrier,
+  }: {
     barrier: Barrier;
-    resumtParams?: DynamicallySourcedField<
+    resumeParams?: DynamicallySourcedField<
       { params: RemoteOperationParams<O> },
       RemoteOperationParams<O>,
       ResumeParamsSource
     >;
   }
 ): void {
-  throw new Error('not implemented');
+  sample({ clock: operation.started, target: barrier.__.touch });
+
+  const blockerSourceFx = attach({
+    source: { mutex: barrier.__.$mutex, active: barrier.$active },
+    async effect({ mutex }) {
+      await mutex.waitForUnlock();
+
+      return null;
+    },
+  }) as any as Effect<
+    { params: any },
+    { result: unknown; stale: boolean } | null,
+    unknown
+  >;
+
+  operation.__.lowLevelAPI.dataSources.unshift({
+    name: 'barrier_blocker',
+    get: blockerSourceFx,
+  });
 }

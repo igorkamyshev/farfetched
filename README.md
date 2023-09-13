@@ -73,3 +73,4 @@ Some of external libraries were inlined to Farfetched due to bundle size and cus
 - https://github.com/emn178/js-sha1/blob/master/tests/test.js
 - http://www.movable-type.co.uk/scripts/sha1.html
 - https://github.com/smelukov/nano-equal
+- https://github.com/DirtyHairy/async-mutex
