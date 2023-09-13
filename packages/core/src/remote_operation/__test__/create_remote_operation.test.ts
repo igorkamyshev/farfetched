@@ -185,7 +185,7 @@ describe('RemoteOperation.__.lowLevelAPI.callObjectCreated', async () => {
     const operationFailed = vi.fn();
 
     createWatch({
-      unit: operation.finished.failure,
+      unit: operation.aborted,
       scope,
       fn: operationFailed,
     });
@@ -193,7 +193,6 @@ describe('RemoteOperation.__.lowLevelAPI.callObjectCreated', async () => {
     await allSettled(operation.start, { scope, params: 42 });
 
     expect(operationFailed).toBeCalledTimes(1);
-    expect(isAbortError(operationFailed.mock.calls[0][0])).toBe(true);
   });
 
   test('Call object may abort operation early and will throw custom error if provided', async () => {
@@ -243,16 +242,18 @@ describe('RemoteOperation.__.lowLevelAPI.callObjectCreated', async () => {
     });
 
     const operationFinished = vi.fn();
+    const operationAborted = vi.fn();
 
     createWatch({
       unit: operation.finished.finally,
       scope,
-      fn: (f) =>
-        operationFinished({
-          params: f.params,
-          status: f.status,
-          error: (f as { error: unknown }).error,
-        }),
+      fn: (f) => operationFinished(f.params),
+    });
+
+    createWatch({
+      unit: operation.aborted,
+      scope,
+      fn: (f) => operationAborted(f.params),
     });
 
     allSettled(operation.start, { scope, params: 42 });
@@ -261,30 +262,11 @@ describe('RemoteOperation.__.lowLevelAPI.callObjectCreated', async () => {
 
     await allSettled(scope);
 
-    expect(operationFinished).toBeCalledTimes(3);
-    expect(operationFinished.mock.calls.map(([arg]) => arg))
-      .toMatchInlineSnapshot(`
-      [
-        {
-          "error": {
-            "errorType": "ABORT",
-            "explanation": "Request was cancelled due to concurrency policy",
-          },
-          "params": 43,
-          "status": "fail",
-        },
-        {
-          "error": undefined,
-          "params": 42,
-          "status": "done",
-        },
-        {
-          "error": undefined,
-          "params": 44,
-          "status": "done",
-        },
-      ]
-    `);
+    expect(operationFinished).toBeCalledTimes(2);
+    expect(operationFinished.mock.calls.map(([arg]) => arg)).toEqual([42, 44]);
+
+    expect(operationAborted).toBeCalledTimes(1);
+    expect(operationAborted.mock.calls.map(([arg]) => arg)).toEqual([43]);
   });
 
   test('Call objects are always in "finished" status for sync handlers', async () => {
