@@ -71,3 +71,24 @@ const postLoadedRoute = chainRoute({
   ...startChain(postQuery),
 });
 ```
+
+### `barrierChain` <Badge type="tip" text="since v0.10.0" />
+
+After opening a route with `barrierChain`, [_Barrier_](/api/primitives/barrier) `.$active` status will be checked. Route will be opened only after [_Barrier_](/api/primitives/barrier) deactivation. If [_Barrier_](/api/primitives/barrier) is not active, route will be opened immediately.
+
+```ts
+import { createBarrier } from '@farfetched/core';
+import { barrierChain } from '@farfetched/atomic-router';
+import { chainRoute, createRoute } from 'atmoic-router';
+
+const anyRoute = createRoute();
+
+const authBarrier = createBarrier({
+  /* ... */
+});
+
+const authOnlyRoute = chainRoute({
+  route: anyRoute,
+  ...barrierChain(authBarrier),
+});
+```
