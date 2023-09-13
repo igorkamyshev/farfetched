@@ -20,3 +20,4 @@ export { time } from './time';
 export { and } from './and';
 export { readonly } from './readonly';
 export { syncBatch } from './sync_batch';
+export { combineEvents } from './combine_events';
