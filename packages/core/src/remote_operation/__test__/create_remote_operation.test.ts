@@ -284,9 +284,13 @@ describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
 
     await allSettled(operation.start, { scope, params: 42 });
 
-    expect(callObjectEmitted).toBeCalledWith({
-      stauts: "finished",
-    })
+    expect(callObjectEmitted).toBeCalledWith(
+      expect.objectContaining({
+        id: expect.any(String),
+        abort: expect.any(Function),
+        status: 'finished',
+      })
+    );
   });
 
   test('Cannot abort calls after operation is finished', async () => {
@@ -302,8 +306,8 @@ describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
       scope,
       fn: ({ abort }) => {
         setTimeout(() => {
-          abort()
-        }, 10)
+          abort();
+        }, 10);
       },
     });
 
@@ -334,5 +338,5 @@ describe('RemoteOperation.__.lowLevelAPI.executeCalled', async () => {
         },
       ]
     `);
-  })
+  });
 });
