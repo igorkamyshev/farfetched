@@ -2,4 +2,4 @@
 '@farfetched/core': minor
 ---
 
-Added timeout(query) operator
+Add `timeout` operator
