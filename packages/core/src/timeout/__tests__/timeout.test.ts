@@ -25,6 +25,9 @@ describe('timeout(query, time)', () => {
 
     expect(handler).toBeCalledTimes(1);
     expect(isTimeoutError({ error: scope.getState(query.$error) })).toBe(true);
+    expect((scope.getState(query.$error) as { timeout: number }).timeout).toBe(
+      100
+    );
   });
 
   test('timeout(query, human-readable)', async () => {
@@ -46,6 +49,9 @@ describe('timeout(query, time)', () => {
 
     expect(handler).toBeCalledTimes(1);
     expect(isTimeoutError({ error: scope.getState(query.$error) })).toBe(true);
+    expect((scope.getState(query.$error) as { timeout: number }).timeout).toBe(
+      100
+    );
   });
 
   test('timeout does not leave hanging promise if call is finished before timeout', async () => {
@@ -107,5 +113,8 @@ describe('timeout(query, time)', () => {
     expect(queryTimeouted).toBeCalledTimes(1);
     expect(isTimeoutError(queryTimeouted.mock.calls[0][0])).toBe(true);
     expect(isTimeoutError({ error: scope.getState(query.$error) })).toBe(true);
+    expect((scope.getState(query.$error) as { timeout: number }).timeout).toBe(
+      150
+    );
   });
 });
