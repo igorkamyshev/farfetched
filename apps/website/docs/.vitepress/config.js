@@ -364,7 +364,7 @@ export default withMermaid(
           {
             text: 'Releases',
             items: [
-              { text: 'v0.10', link: '/releases/0-10' },
+              { text: 'v0.10 Namtok Than Sadet', link: '/releases/0-10' },
               { text: 'v0.9', link: '/releases/0-9' },
               { text: 'v0.8 Saphan Hin', link: '/releases/0-8' },
               { text: 'v0.7 Nam Phu Chet Si', link: '/releases/0-7' },
