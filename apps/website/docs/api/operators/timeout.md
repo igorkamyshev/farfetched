@@ -1,7 +1,7 @@
 # `timeout`
 
 Applies a maximum timeout to any operation.
-If provided [_Query_](/api/primitives/query) or a [_Mutation_](/api/primitives/mutation) is not finished in specified [_Time_](api/primitives/time), it will be aborted and resolved with Timeout Error.
+If provided [_Query_](/api/primitives/query) or a [_Mutation_](/api/primitives/mutation) is not finished in specified [_Time_](/api/primitives/time), it will be aborted and resolved with Timeout Error.
 
 ## Formulae
 
