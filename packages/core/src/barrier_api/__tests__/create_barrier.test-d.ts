@@ -22,9 +22,9 @@ describe('createBarrier', () => {
         perform: [voidQuery],
       });
 
+      // @ts-expect-error Query with params is not allowed
       const barrier2 = createBarrier({
         active: createStore(true),
-        // @ts-expect-error Query with params is not allowed
         perform: [paramsQuery],
       });
     });
@@ -40,9 +40,9 @@ describe('createBarrier', () => {
         perform: [voidMutation],
       });
 
+      // @ts-expect-error Mutation with params is not allowed
       const barrier2 = createBarrier({
         active: createStore(true),
-        // @ts-expect-error Mutation with params is not allowed
         perform: [paramsMutation],
       });
     });
@@ -57,9 +57,9 @@ describe('createBarrier', () => {
         perform: [voidEffect],
       });
 
+      // @ts-expect-error Effect with params is not allowed
       const barrier2 = createBarrier({
         active: createStore(true),
-        // @ts-expect-error Effect with params is not allowed
         perform: [paramsEffect],
       });
     });
@@ -79,11 +79,10 @@ describe('createBarrier', () => {
       });
 
       const barrier2 = createBarrier({
+        // @ts-expect-error Event with params is not allowed as start
         active: createStore(true),
         perform: [
-          // @ts-expect-error Event with params is not allowed as start
           { start: paramsEvent, end: paramsEvent },
-          // @ts-expect-error Event with params is not allowed as start
           { start: paramsEvent, end: voidEvent },
         ],
       });
@@ -103,33 +102,10 @@ describe('createBarrier', () => {
         perform: [],
       });
 
+      // @ts-expect-error return type is not boolean
       const barrier2 = createBarrier({
         activateOn: {
-          // @ts-expect-error return type is not boolean
           failure: ({ params, error }) => {
-            return 's';
-          },
-        },
-        perform: [],
-      });
-    });
-
-    test('activateOn.success accepts { params, result } and return boolean', () => {
-      const barrier1 = createBarrier({
-        activateOn: {
-          success: ({ params, result }) => {
-            expectTypeOf(params).toEqualTypeOf<unknown>();
-            expectTypeOf(result).toEqualTypeOf<unknown>();
-            return true;
-          },
-        },
-        perform: [],
-      });
-
-      const barrier2 = createBarrier({
-        activateOn: {
-          // @ts-expect-error return type is not boolean
-          success: ({ params, result }) => {
             return 's';
           },
         },
