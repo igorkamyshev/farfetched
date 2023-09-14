@@ -71,7 +71,18 @@ This section describes the [_Event_](https://effector.dev/docs/api/effector/even
 - `result` <Badge type="tip" text="since v0.9.0" /> if the `status` is `"done"` with the result of the _Mutation_
 - `error` <Badge type="tip" text="since v0.9.0" /> if the `status` is `"fail"` with the error of the _Mutation_
 
-## `started` <Badge type="tip" text="since v0.9.0" />
+### `aborted` <Badge type="tip" text="since v0.10.0" />
+
+[_Event_](https://effector.dev/docs/api/effector/event) that will be triggered when the _Mutation_ is aborted. Payload will contain the object with the following fields:
+
+- `params` with the parameters that were used to start the _Query_
+- `meta` with the execution metadata
+
+::: info
+Aborted _Mutation_ are **not** treated as failed since **v0.10**. This means that `.finished.failure` will not be triggered in case of abortion.
+:::
+
+### `started` <Badge type="tip" text="since v0.9.0" />
 
 [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered when the _Mutation_ is started. Payload will contain the object with the following fields:
 

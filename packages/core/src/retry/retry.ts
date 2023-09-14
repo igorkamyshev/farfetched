@@ -70,7 +70,7 @@ export function retry<
     ...params
   }: RetryConfig<Q, DelaySource, FilterSource, MapParamsSource>
 ): void {
-  const supressIntermediateErrors = params.supressIntermediateErrors ?? false;
+  const supressIntermediateErrors = params.supressIntermediateErrors ?? true;
 
   const $maxAttempts = normalizeStaticOrReactive(times);
   const $attempt = createStore(1, {

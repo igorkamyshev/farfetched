@@ -1,6 +1,6 @@
 export type FetchApiRecord = Record<
   string,
-  string | string[] | number | boolean
+  string | string[] | number | boolean | null | undefined
 >;
 
 export function mergeRecords(
@@ -13,10 +13,14 @@ export function mergeRecords(
       continue;
     }
     for (const [key, value] of Object.entries(item || {})) {
+      const newCleanValue = clearValue(value);
+      if (newCleanValue === null) {
+        continue;
+      }
       if (final[key]) {
-        final[key] = [final[key], clearValue(value)].flat();
+        final[key] = [final[key], newCleanValue].flat();
       } else {
-        final[key] = clearValue(value);
+        final[key] = newCleanValue;
       }
     }
   }
@@ -55,7 +59,7 @@ export function formatHeaders(headersRecord: FetchApiRecord): Headers {
       for (const v of cleanValue) {
         headers.append(key, v);
       }
-    } else {
+    } else if (cleanValue !== null) {
       headers.append(key, cleanValue);
     }
   }
@@ -91,7 +95,7 @@ function recordToUrlSearchParams(record: FetchApiRecord): URLSearchParams {
       for (const v of cleanValue) {
         params.append(key, v);
       }
-    } else {
+    } else if (cleanValue !== null) {
       params.append(key, cleanValue);
     }
   }
@@ -100,11 +104,11 @@ function recordToUrlSearchParams(record: FetchApiRecord): URLSearchParams {
 }
 
 function clearValue(
-  value: string | string[] | number | boolean
-): string | string[] {
+  value: string | string[] | number | boolean | null | undefined
+): string | string[] | null {
   if (typeof value === 'number' || typeof value === 'boolean') {
     return value.toString();
   }
 
-  return value;
+  return value ?? null;
 }

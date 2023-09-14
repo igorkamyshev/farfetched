@@ -147,19 +147,15 @@ retry(characterQuery, {
 
 ## Intermediate errors
 
-By default, `retry` does not supress errors, so if the operation failed, it will fail as well. But sometimes, we want to suppress errors and check for status only after all retries are failed. To do this, we can use the `supressIntermediateErrors` option of the `retry` operator.
+By default, `retry` suppress errors, so if the operation failed, it will not be marked as fail until all retries are failed. But sometimes, we want to throw every error. To do this, we can use the `supressIntermediateErrors` option of the `retry` operator.
 
 ```ts
 retry(characterQuery, {
   times: 5,
   delay: 500,
-  supressIntermediateErrors: true,
+  supressIntermediateErrors: false,
 });
 ```
-
-::: tip
-In the next release v0.10 `supressIntermediateErrors` will be true `true` by default. To restore the previous behavior, you will have to set it to `false` explicitly. If you want to be ready for this change, you can set it to `false` already.
-:::
 
 ## API reference
 

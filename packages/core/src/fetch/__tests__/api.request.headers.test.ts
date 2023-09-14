@@ -120,4 +120,40 @@ describe('fetch/api.request.headers', () => {
       })
     );
   });
+
+  test('ignore null and undefined headers', async () => {
+    const callApiFx = createApiRequest({
+      request: {
+        mapBody,
+        url,
+        method,
+        credentials,
+        headers: {
+          null: null,
+          undefined: undefined,
+          bool: false,
+          number: 0,
+          string: '',
+        },
+      },
+      response,
+    });
+
+    const fetchMock = vi.fn().mockResolvedValue(new Response('test'));
+
+    const scope = fork({ handlers: [[fetchFx, fetchMock]] });
+
+    await allSettled(callApiFx, {
+      scope,
+      params: {},
+    });
+
+    expect(fetchMock.mock.calls[0][0].headers).toEqual(
+      new Headers({
+        bool: 'false',
+        number: '0',
+        string: '',
+      })
+    );
+  });
 });

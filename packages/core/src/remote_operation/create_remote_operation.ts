@@ -1,4 +1,5 @@
 import {
+  type Event,
   createEffect,
   createEvent,
   createStore,
@@ -27,6 +28,8 @@ import { unwrapValidationResult } from '../validation/unwrap_validation_result';
 import { validValidator } from '../validation/valid_validator';
 import { type RemoteOperation } from './type';
 import { get } from '../libs/lohyphen';
+import { isAbortError } from '../errors/guards';
+import { getCallObjectEvent } from './with_call_object';
 
 export function createRemoteOperation<
   Params,
@@ -83,6 +86,8 @@ export function createRemoteOperation<
     sid: `ff.${name}.executeFx`,
     name: `${name}.executeFx`,
   });
+
+  const callObjectCreated = getCallObjectEvent(executeFx);
 
   const remoteDataSoruce: DataSource<Params> = {
     name: 'remote_source',
@@ -141,12 +146,43 @@ export function createRemoteOperation<
       )
     >(),
   };
+  const failedNoFilters = createEvent<{
+    params: Params;
+    error: Error | InvalidDataError;
+    meta: ExecutionMeta;
+  }>();
+  const aborted = createEvent<{
+    params: Params;
+    meta: ExecutionMeta;
+  }>();
+
+  split({
+    source: failedNoFilters,
+    match: {
+      aborted: ({ error }) => isAbortError({ error }),
+    },
+    cases: {
+      aborted,
+      __: finished.failure,
+    },
+  });
 
   // -- Main stores --
   const $status = createStore<FetchingStatus>('initial', {
     sid: `ff.${name}.$status`,
     name: `${name}.$status`,
     serialize,
+  });
+
+  const $statusHistory = createStore<FetchingStatus[]>([], {
+    serialize: 'ignore',
+  });
+
+  sample({
+    clock: $status.updates,
+    source: $statusHistory,
+    fn: (history, nextStatus) => [...history, nextStatus],
+    target: $statusHistory,
   });
 
   const $enabled = normalizeStaticOrReactive(enabled ?? true).map(Boolean);
@@ -168,6 +204,11 @@ export function createRemoteOperation<
       retrieveDataFx.map(() => 'pending' as const),
       finished.success.map(() => 'done' as const),
       finished.failure.map(() => 'fail' as const),
+      sample({
+        clock: aborted,
+        source: $statusHistory,
+        fn: (history) => history[history.length - 2] ?? 'initial',
+      }),
     ],
     target: $status,
   });
@@ -240,7 +281,7 @@ export function createRemoteOperation<
       params: params.params,
       meta: { stopErrorPropagation: error.stopErrorPropagation, stale: false },
     }),
-    target: finished.failure,
+    target: failedNoFilters,
   });
 
   const { validDataRecieved, __: invalidDataRecieved } = split(
@@ -312,7 +353,7 @@ export function createRemoteOperation<
       params: params.params,
       meta: params.meta,
     }),
-    target: finished.failure,
+    target: failedNoFilters,
   });
 
   sample({
@@ -326,7 +367,7 @@ export function createRemoteOperation<
       }),
       meta,
     }),
-    target: finished.failure,
+    target: failedNoFilters,
   });
 
   // Emit skip for disabling in-flight operation
@@ -381,6 +422,7 @@ export function createRemoteOperation<
     start,
     finished,
     started,
+    aborted,
     $status,
     $idle,
     $pending,
@@ -402,6 +444,7 @@ export function createRemoteOperation<
         pushError,
         pushData,
         startWithMeta,
+        callObjectCreated,
       },
     },
   };

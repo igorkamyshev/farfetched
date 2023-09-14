@@ -188,6 +188,7 @@ export default withMermaid(
               { text: 'connectQuery', link: '/api/operators/connect_query' },
               { text: 'update', link: '/api/operators/update' },
               { text: 'retry', link: '/api/operators/retry' },
+              { text: 'timeout', link: '/api/operators/timeout' },
               { text: 'cache', link: '/api/operators/cache' },
               { text: 'keepFresh', link: '/api/operators/keep_fresh' },
               {
@@ -364,6 +365,7 @@ export default withMermaid(
           {
             text: 'Releases',
             items: [
+              { text: 'v0.10 Namtok Than Sadet', link: '/releases/0-10' },
               { text: 'v0.9', link: '/releases/0-9' },
               { text: 'v0.8 Saphan Hin', link: '/releases/0-8' },
               { text: 'v0.7 Nam Phu Chet Si', link: '/releases/0-7' },
