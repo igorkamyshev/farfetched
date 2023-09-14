@@ -349,4 +349,58 @@ describe('RemoteOperation.__.lowLevelAPI.callObjectCreated', async () => {
       ]
     `);
   });
+
+  test('promise is exposed on call object for async handlers', async () => {
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+    operation.__.executeFx.use(() => Promise.resolve({}));
+
+    const scope = fork();
+
+    const callObjectEmitted = vi.fn();
+
+    createWatch({
+      unit: operation.__.lowLevelAPI.callObjectCreated,
+      scope,
+      fn: (callObj) => {
+        callObjectEmitted(callObj);
+      },
+    });
+
+    await allSettled(operation.start, { scope, params: 42 });
+
+    expect(callObjectEmitted).toBeCalledWith(
+      expect.objectContaining({
+        promise: expect.any(Promise),
+      })
+    );
+  });
+
+  test('promise is NOT exposed on call object for SYNC handlers', async () => {
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+    operation.__.executeFx.use(() => ({}));
+
+    const scope = fork();
+
+    const callObjectEmitted = vi.fn();
+
+    createWatch({
+      unit: operation.__.lowLevelAPI.callObjectCreated,
+      scope,
+      fn: (callObj) => {
+        callObjectEmitted(callObj);
+      },
+    });
+
+    await allSettled(operation.start, { scope, params: 42 });
+
+    expect(callObjectEmitted).toBeCalledWith(
+      expect.not.objectContaining({
+        promise: expect.anything(),
+      })
+    );
+  });
 });

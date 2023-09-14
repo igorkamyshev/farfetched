@@ -188,6 +188,7 @@ export default withMermaid(
               { text: 'connectQuery', link: '/api/operators/connect_query' },
               { text: 'update', link: '/api/operators/update' },
               { text: 'retry', link: '/api/operators/retry' },
+              { text: 'timeout', link: '/api/operators/timeout' },
               { text: 'cache', link: '/api/operators/cache' },
               { text: 'keepFresh', link: '/api/operators/keep_fresh' },
               {

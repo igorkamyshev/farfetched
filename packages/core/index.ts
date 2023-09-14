@@ -19,6 +19,9 @@ export { createJsonMutation } from './src/mutation/create_json_mutation';
 export { retry } from './src/retry/retry';
 export { exponentialDelay, linearDelay } from './src/retry/delay';
 
+// Timeout public API
+export { timeout } from './src/timeout/timeout';
+
 // Update public API
 export { update } from './src/update/update';
 
