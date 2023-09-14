@@ -1,5 +1,14 @@
 # @farfetched/core
 
+## 0.10.0
+
+### Minor Changes
+
+- f118011: Finalize separation of `.aborted` _Event_ in _Remote Operation_
+- f118011: Add `timeout` operator
+- f118011: Change default value of `supressIntermediateErrors` in `retry` operator
+- f118011: Allow to pass `null` and `undefined` to `FetchApiRecord`, it will be ignored
+
 ## 0.9.0
 
 ### Minor Changes

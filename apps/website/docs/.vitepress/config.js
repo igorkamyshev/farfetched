@@ -200,6 +200,7 @@ export default withMermaid(
             items: [
               { text: 'keepFresh', link: '/api/operators/keep_fresh' },
               { text: 'retry', link: '/api/operators/retry' },
+              { text: 'timeout', link: '/api/operators/timeout' },
               { text: 'cache', link: '/api/operators/cache' },
               { text: 'applyBarrier', link: '/api/operators/apply_barrier' },
               { text: 'update', link: '/api/operators/update' },
@@ -283,27 +284,6 @@ export default withMermaid(
               { text: 'Server side rendering', link: '/recipes/ssr' },
               { text: 'Testing', link: '/recipes/testing' },
               {
-                text: 'Customization',
-                items: [
-                  {
-                    text: 'How not to use Fetch API',
-                    link: '/recipes/no_fetch',
-                  },
-                  {
-                    text: 'Custom Query creation',
-                    link: '/recipes/custom_query',
-                  },
-                  {
-                    text: 'Custom Mutation creation',
-                    link: '/recipes/custom_mutation',
-                  },
-                  {
-                    text: 'Your own GraphQL Query',
-                    link: '/recipes/graphql_query',
-                  },
-                ],
-              },
-              {
                 text: 'Vite',
                 link: '/recipes/vite',
               },
@@ -331,6 +311,27 @@ export default withMermaid(
                 link: '/recipes/data_flow',
               },
               { text: 'Automated cache', link: '/recipes/cache' },
+            ],
+          },
+          {
+            text: 'Customization',
+            items: [
+              {
+                text: 'How not to use Fetch API',
+                link: '/recipes/no_fetch',
+              },
+              {
+                text: 'Custom Query creation',
+                link: '/recipes/custom_query',
+              },
+              {
+                text: 'Custom Mutation creation',
+                link: '/recipes/custom_mutation',
+              },
+              {
+                text: 'Your own GraphQL Query',
+                link: '/recipes/graphql_query',
+              },
             ],
           },
           {
@@ -380,7 +381,8 @@ export default withMermaid(
           {
             text: 'Releases',
             items: [
-              { text: 'v0.10', link: '/releases/0-10' },
+              { text: 'v0.11', link: '/releases/0-11' },
+              { text: 'v0.10 Namtok Than Sadet', link: '/releases/0-10' },
               { text: 'v0.9', link: '/releases/0-9' },
               { text: 'v0.8 Saphan Hin', link: '/releases/0-8' },
               { text: 'v0.7 Nam Phu Chet Si', link: '/releases/0-7' },
