@@ -93,4 +93,45 @@ describe('applyBarrier', () => {
       expect.objectContaining({ result: 'OK' })
     );
   });
+
+  test.concurrent('two queries start barrier performer only once', async () => {
+    const performerDefer = createDefer();
+    const performer = vi.fn(() => performerDefer.promise);
+
+    const authBarrier = createBarrier({
+      activateOn: { failure: isHttpErrorCode(401) },
+      perform: [createEffect(performer)],
+    });
+
+    const query1 = createQuery({
+      handler: vi
+        .fn()
+        .mockRejectedValueOnce(
+          httpError({ status: 401, statusText: 'Nooo', response: null })
+        )
+        .mockResolvedValueOnce('OK'),
+    });
+
+    const query2 = createQuery({
+      handler: vi
+        .fn()
+        .mockRejectedValueOnce(
+          httpError({ status: 401, statusText: 'Nooo', response: null })
+        )
+        .mockResolvedValueOnce('OK'),
+    });
+
+    applyBarrier(query1, { barrier: authBarrier });
+    applyBarrier(query2, { barrier: authBarrier });
+
+    const scope = fork();
+
+    allSettled(query1.refresh, { scope });
+    allSettled(query2.refresh, { scope });
+
+    performerDefer.resolve(null);
+    await allSettled(scope);
+
+    expect(performer).toBeCalledTimes(1);
+  });
 });

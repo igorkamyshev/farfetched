@@ -6,7 +6,7 @@ import { timeoutError } from '../../errors/create_error';
 import { createDefer } from '../../libs/lohyphen';
 import { createBarrier } from '../create_barrier';
 
-describe('createBarrier, activateOn onle overload', () => {
+describe('createBarrier, activateOn only overload', () => {
   test.concurrent(
     'activates after activateOn.failure and deactivaes after all perform resolves',
     async () => {
