@@ -11,4 +11,4 @@ Operation could be a [_Query_](/api/primitives/query) or a [_Mutation_](/api/pri
 
 Config fields:
 
-- `after`: __a [Store](https://effector.dev/docs/api/effector/store) with or just plain [Time](/api/primitives/time)_ with an amount of milliseconds of maximum execution time for a provided operation.
+- `after`: _a [Store](https://effector.dev/docs/api/effector/store) with or just plain [Time](/api/primitives/time)_ with an amount of milliseconds of maximum execution time for a provided operation.
