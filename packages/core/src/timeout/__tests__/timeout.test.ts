@@ -1,11 +1,5 @@
 import { describe, test, vi, expect } from 'vitest';
-import {
-  allSettled,
-  createEvent,
-  createStore,
-  createWatch,
-  fork,
-} from 'effector';
+import { allSettled, createWatch, fork } from 'effector';
 
 import { createQuery } from '../../query/create_query';
 import { timeout } from '../timeout';
