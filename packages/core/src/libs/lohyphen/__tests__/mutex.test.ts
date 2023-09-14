@@ -45,22 +45,25 @@ describe('mutex', () => {
     expect(v).toBe(3);
   });
 
-  test('waitForUnlock does not block while the mutex has not been acquired', async () => {
-    const mutex = new Mutex();
+  test.concurrent(
+    'waitForUnlock does not block while the mutex has not been acquired',
+    async () => {
+      const mutex = new Mutex();
 
-    let taskCalls = 0;
-    const awaitUnlockWrapper = async () => {
-      await mutex.waitForUnlock();
-      taskCalls++;
-    };
+      let taskCalls = 0;
+      const awaitUnlockWrapper = async () => {
+        await mutex.waitForUnlock();
+        taskCalls++;
+      };
 
-    awaitUnlockWrapper();
-    awaitUnlockWrapper();
+      awaitUnlockWrapper();
+      awaitUnlockWrapper();
 
-    await setTimeout(1);
+      await setTimeout(1);
 
-    expect(taskCalls).toBe(2);
-  });
+      expect(taskCalls).toBe(2);
+    }
+  );
 
   test('waitForUnlock blocks when the mutex has been acquired', async () => {
     const mutex = new Mutex();
@@ -112,5 +115,31 @@ describe('mutex', () => {
     mutex.release();
     await setTimeout(1);
     expect(flag).toBe(true);
+  });
+
+  test('waitForUnlock reblocks after acquiring', async () => {
+    const mutex = new Mutex();
+
+    let taskCalls = 0;
+    const awaitUnlockWrapper = async () => {
+      await mutex.waitForUnlock();
+      taskCalls++;
+    };
+
+    awaitUnlockWrapper();
+
+    await setTimeout(1);
+    expect(taskCalls).toBe(1);
+
+    mutex.acquire();
+
+    awaitUnlockWrapper();
+    await setTimeout(1);
+    expect(taskCalls).toBe(1);
+
+    mutex.release();
+    await setTimeout(1);
+
+    expect(taskCalls).toBe(2);
   });
 });
