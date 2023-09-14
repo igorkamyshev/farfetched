@@ -3,41 +3,31 @@
  */
 
 export class Mutex {
-  private _acquired = false;
+  private _resolve: (() => void) | null = null;
+  private _promise = Promise.resolve();
 
   get isLocked(): boolean {
-    return this._acquired;
-  }
-
-  private get isUnlocked(): boolean {
-    return !this.isLocked;
+    return !!this._resolve;
   }
 
   acquire() {
-    this._acquired = true;
+    if (this.isLocked) {
+      return;
+    }
 
-    this._dispatch();
-  }
-
-  waitForUnlock(): Promise<void> {
-    return new Promise((resolve) => {
-      this._waiters.push(resolve);
-
-      this._dispatch();
+    this._promise = new Promise<void>((res) => {
+      this._resolve = res;
     });
   }
 
-  release(): void {
-    this._acquired = false;
-    this._dispatch();
+  waitForUnlock(): Promise<void> {
+    return this._promise;
   }
 
-  private _dispatch(): void {
-    if (this.isUnlocked) {
-      this._waiters.forEach((waiter) => waiter());
-      this._waiters = [];
+  release(): void {
+    if (this._resolve) {
+      this._resolve();
+      this._resolve = null;
     }
   }
-
-  private _waiters: Array<() => void> = [];
 }

@@ -77,6 +77,7 @@ describe('timeout(query, time)', () => {
     expect(scope.getState(query.$error)).toBe(null);
   });
 
+  // TODO: this is a flapping test. Fix it.
   test('multiple calls of timeout-ed queries does not affect each other', async () => {
     let count = 0;
     const handler = vi.fn(
