@@ -134,4 +134,8 @@ describe('applyBarrier', () => {
 
     expect(performer).toBeCalledTimes(1);
   });
+
+  test.todo(
+    'resumeParams changes params for query execution after barrier deactivation'
+  );
 });
