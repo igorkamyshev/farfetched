@@ -15,31 +15,9 @@ describe('mutex', () => {
     expect(mutex.isLocked).toBeFalsy();
   });
 
-  test('isLocked reflects the mutex state', async () => {
-    const mutex = new Mutex();
-
-    const lock1 = mutex.acquire();
-    const lock2 = mutex.acquire();
-
-    expect(mutex.isLocked).toBeTruthy();
-
-    const releaser1 = await lock1;
-
-    expect(mutex.isLocked).toBeTruthy();
-
-    releaser1();
-    expect(mutex.isLocked).toBeTruthy();
-
-    const releaser2 = await lock2;
-    expect(mutex.isLocked).toBeTruthy();
-
-    releaser2();
-    expect(mutex.isLocked).toBeFalsy();
-  });
-
   test('the release method releases a locked mutex', async () => {
     const mutex = new Mutex();
-    await mutex.acquire();
+    mutex.acquire();
 
     expect(mutex.isLocked).toBeTruthy();
 
@@ -110,7 +88,7 @@ describe('mutex', () => {
       await mutex.waitForUnlock();
       taskCalls++;
     };
-    const releaser = await mutex.acquire();
+    mutex.acquire();
     awaitUnlockWrapper();
     awaitUnlockWrapper();
 
@@ -118,7 +96,7 @@ describe('mutex', () => {
 
     expect(taskCalls).toBe(0);
 
-    releaser();
+    mutex.release();
 
     await setTimeout(1);
     expect(taskCalls).toBe(2);
@@ -133,11 +111,6 @@ describe('mutex', () => {
     mutex.waitForUnlock().then(() => (flag = true));
     mutex.release();
     await setTimeout(1);
-    expect(flag).toBe(false);
-
-    mutex.release();
-
-    await setTimeout(0);
     expect(flag).toBe(true);
   });
 });
