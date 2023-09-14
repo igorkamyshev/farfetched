@@ -105,42 +105,4 @@ describe('createBarrier, activateOn onle overload', () => {
       expect(scope.getState(barrier.$active)).toBe(false);
     }
   );
-
-  test.concurrent(
-    'activates after activateOn.success and deactivaes after perform resolves',
-    async () => {
-      const performDeferOne = createDefer();
-
-      const onSuccess = vi.fn(() => true);
-
-      const onPerformOne = vi.fn(() => performDeferOne.promise);
-
-      const barrier = createBarrier({
-        activateOn: { success: onSuccess },
-        perform: [createEffect(onPerformOne)],
-      });
-
-      const scope = fork();
-
-      expect(scope.getState(barrier.$active)).toBe(false);
-
-      // Do not await
-      allSettled(barrier.__.operationDone, {
-        scope,
-        params: { params: { id: 1 }, result: 1 },
-      });
-      expect(scope.getState(barrier.$active)).toBe(true);
-      expect(onSuccess).toBeCalledTimes(1);
-      expect(onSuccess).toBeCalledWith({
-        params: { id: 1 },
-        result: 1,
-      });
-
-      expect(onPerformOne).toBeCalled();
-
-      performDeferOne.resolve(null);
-      await allSettled(scope);
-      expect(scope.getState(barrier.$active)).toBe(false);
-    }
-  );
 });

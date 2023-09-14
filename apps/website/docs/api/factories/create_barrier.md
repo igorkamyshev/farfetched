@@ -41,7 +41,6 @@ const authBarrier = createBarrier({
 Configuration fields:
 
 - `activateOn.failure`: callback that will be called in case of failure of some operation that uses this [_Barrier_](/api/primitives/barrier). If it returns `true`, [_Barrier_](/api/primitives/barrier) will be activated.
-- `activateOn.success`: callback that will be called in case of success of some operation that uses this [_Barrier_](/api/primitives/barrier). If it returns `true`, [_Barrier_](/api/primitives/barrier) will be activated.
 - `perform`: array of [_Performers_](#performer), that will be started in case some operation that uses this [_Barrier_](/api/primitives/barrier) is started and [_Barrier_](/api/primitives/barrier) is `$active`.
 
 ### `createBarrier({ activateOn, deactivateOn })`

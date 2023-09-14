@@ -1,4 +1,4 @@
-import { allSettled, createStore, fork } from 'effector';
+import { allSettled, createEffect, createStore, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
@@ -7,6 +7,9 @@ import { watchRemoteOperation } from '@farfetched/test-utils';
 import { createQuery } from '../../query/create_query';
 import { applyBarrier } from '../apply_barrier';
 import { createBarrier } from '../create_barrier';
+import { isHttpErrorCode } from '../../errors/guards';
+import { httpError } from '../../errors/create_error';
+import { createDefer } from '../../libs/lohyphen';
 
 describe('applyBarrier', () => {
   test.concurrent('deactivated barrier does not affect operation', async () => {
@@ -50,5 +53,44 @@ describe('applyBarrier', () => {
 
     await allSettled($barrierActive, { scope, params: false });
     expect(listeners.onSuccess).toBeCalled();
+  });
+
+  test.concurrent('barrier activates on query fail', async () => {
+    const defer = createDefer();
+
+    const renewTokenFx = createEffect(() => defer.promise);
+
+    const authBarrier = createBarrier({
+      activateOn: { failure: isHttpErrorCode(401) },
+      perform: [renewTokenFx],
+    });
+
+    const query = createQuery({
+      handler: vi
+        .fn()
+        .mockRejectedValueOnce(
+          httpError({ status: 401, statusText: 'Nooo', response: null })
+        )
+        .mockResolvedValueOnce('OK'),
+    });
+
+    applyBarrier(query, { barrier: authBarrier });
+
+    const scope = fork();
+
+    const { listeners } = watchRemoteOperation(query, scope);
+
+    allSettled(query.refresh, { scope });
+    await setTimeout(1);
+    expect(scope.getState(authBarrier.$active)).toBeTruthy();
+
+    defer.resolve(null);
+    await allSettled(scope);
+    expect(scope.getState(authBarrier.$active)).toBeFalsy();
+    expect(listeners.onFailure).toBeCalledTimes(1);
+    expect(listeners.onSuccess).toBeCalledTimes(1);
+    expect(listeners.onSuccess).toBeCalledWith(
+      expect.objectContaining({ result: 'OK' })
+    );
   });
 });

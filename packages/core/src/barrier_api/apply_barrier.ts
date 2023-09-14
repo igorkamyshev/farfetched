@@ -44,6 +44,22 @@ export function applyBarrier<
 ): void {
   sample({ clock: operation.started, target: barrier.__.touch });
 
+  sample({
+    clock: operation.finished.failure,
+    target: barrier.__.operationFailed,
+  });
+
+  sample({
+    clock: barrier.activated,
+    filter: operation.$failed,
+    source: operation.__.$latestParams,
+    fn: (params) => ({
+      params,
+      meta: { stopErrorPropagation: false, stale: false },
+    }),
+    target: operation.__.lowLevelAPI.startWithMeta,
+  });
+
   const blockerSourceFx = attach({
     source: { mutex: barrier.__.$mutex, active: barrier.$active },
     async effect({ mutex }) {

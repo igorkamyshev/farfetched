@@ -39,13 +39,6 @@ export function createBarrier(config: {
   perform: Array<Performer>;
 }): Barrier;
 
-export function createBarrier(config: {
-  activateOn: {
-    success: (options: { params: unknown; result: unknown }) => boolean;
-  };
-  perform: Array<Performer>;
-}): Barrier;
-
 export function createBarrier({
   active,
   perform,
@@ -56,8 +49,7 @@ export function createBarrier({
   activateOn?:
     | Event<any>
     | {
-        success?: (options: { params: unknown; result: unknown }) => boolean;
-        failure?: (options: { params: unknown; error: unknown }) => boolean;
+        failure: (options: { params: unknown; error: unknown }) => boolean;
       };
   deactivateOn?: Event<any>;
   perform?: Array<Performer>;
@@ -142,25 +134,6 @@ export function createBarrier({
         clock: combineEvents({
           events: performers.map(get('end')),
           reset: operationFailed,
-        }),
-        fn: () => false,
-        target: $active,
-      });
-    }
-
-    if ('success' in activateOn && activateOn.success) {
-      const callback = activateOn.success;
-      sample({
-        clock: operationDone,
-        filter: ({ result, params }) => callback({ result, params }),
-        fn: () => true,
-        target: [$active, touch],
-      });
-
-      sample({
-        clock: combineEvents({
-          events: performers.map(get('end')),
-          reset: operationDone,
         }),
         fn: () => false,
         target: $active,
