@@ -12,7 +12,7 @@ import {
 
 import { type RemoteOperation } from '../remote_operation/type';
 import { type Barrier } from './type';
-import { combineEvents, readonly } from '../libs/patronus';
+import { combineEvents, not, readonly } from '../libs/patronus';
 import { isQuery } from '../query/type';
 import { isMutation } from '../mutation/type';
 import { get, Mutex } from '../libs/lohyphen';
@@ -21,6 +21,12 @@ type Performer =
   | RemoteOperation<void, any, any, any>
   | Effect<void, any, any>
   | { start: Event<void>; end: Event<any> };
+
+type NormalizedPerformer = {
+  start: Event<void> | Effect<void, any, any>;
+  end: Event<void>;
+  $pending: Store<boolean>;
+};
 
 export function createBarrier(config: {
   active: Store<boolean>;
@@ -153,7 +159,7 @@ export function createBarrier({
   sample({
     clock: touch,
     filter: $active,
-    target: performers.map(get('start')),
+    target: startOnlyNotPending(performers),
   });
 
   return {
@@ -164,9 +170,22 @@ export function createBarrier({
   };
 }
 
-function normalizePerformers(
-  performers: Performer[]
-): Array<{ start: Event<void> | Effect<void, any, any>; end: Event<void> }> {
+function startOnlyNotPending(performers: NormalizedPerformer[]): Event<void> {
+  const clock = createEvent();
+
+  for (const { start, $pending } of performers) {
+    // @ts-expect-error 😇😇😇
+    sample({
+      clock,
+      filter: not($pending),
+      target: start,
+    });
+  }
+
+  return clock;
+}
+
+function normalizePerformers(performers: Performer[]): NormalizedPerformer[] {
   return performers.map((performer) => {
     if (perforerIsRemoteOperation(performer)) {
       return {
@@ -176,14 +195,19 @@ function normalizePerformers(
             clock: [performer.finished.success, performer.finished.skip],
           })
         ),
+        $pending: performer.$pending,
       };
     } else if (performerIsEffect(performer)) {
       return {
         start: performer,
         end: toVoid(performer.done),
+        $pending: performer.pending,
       };
     } else {
-      return performer;
+      const $pending = createStore(false, { serialize: 'ignore' })
+        .on(performer.start, () => true)
+        .on(performer.end, () => false);
+      return { ...performer, $pending };
     }
   });
 }
