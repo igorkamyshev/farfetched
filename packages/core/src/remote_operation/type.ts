@@ -1,6 +1,7 @@
 import { Effect, Event, EventPayload, Store } from 'effector';
 
 import { SourcedField, type FetchingStatus } from '../libs/patronus';
+import { CallObject } from './with_call_object';
 
 interface DefaultMeta {
   name: string;
@@ -111,6 +112,7 @@ export interface RemoteOperation<
       pushData: Event<Data>;
       pushError: Event<Error>;
       startWithMeta: Event<{ params: Params; meta: ExecutionMeta }>;
+      callObjectCreated: Event<CallObject>;
     } & ExtraLowLevelAPI;
     experimentalAPI?: {
       attach: <Source, NewParams>(config: {

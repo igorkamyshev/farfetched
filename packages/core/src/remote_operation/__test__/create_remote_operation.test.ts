@@ -1,20 +1,22 @@
 import { watchRemoteOperation } from '@farfetched/test-utils';
-import { allSettled, createStore, fork } from 'effector';
+import { allSettled, createStore, createWatch, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
 import { unknownContract } from '../../contract/unknown_contract';
 import { createDefer } from '../../libs/lohyphen';
 import { createRemoteOperation } from '../create_remote_operation';
+import { isAbortError, isTimeoutError } from '../../errors/guards';
+import { timeoutError } from '../../errors/create_error';
+
+const defaultConfig = {
+  name: 'test',
+  mapData: (v: any) => v,
+  meta: null,
+  kind: 'test',
+  contract: unknownContract,
+};
 
 describe('createRemoteOperation, disable in-flight', () => {
-  const defaultConfig = {
-    name: 'test',
-    mapData: (v: any) => v,
-    meta: null,
-    kind: 'test',
-    contract: unknownContract,
-  };
-
   test('emit skip with success in handler', async () => {
     const defer = createDefer();
 
@@ -139,5 +141,212 @@ describe('createRemoteOperation, disable in-flight', () => {
     expect(scope.getState(operation.$failed)).toBeTruthy();
     expect(scope.getState(operation.$succeeded)).toBeFalsy();
     expect(scope.getState(operation.$finished)).toBeTruthy();
+  });
+});
+
+describe('RemoteOperation.__.lowLevelAPI.callObjectCreated', async () => {
+  test('Call object is emitted', async () => {
+    const callObjectEmitted = vi.fn();
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+    operation.__.executeFx.use(() => Promise.resolve({}));
+    const scope = fork();
+    createWatch({
+      unit: operation.__.lowLevelAPI.callObjectCreated,
+      scope,
+      fn: callObjectEmitted,
+    });
+
+    await allSettled(operation.start, { scope, params: 42 });
+
+    expect(callObjectEmitted).toBeCalledTimes(1);
+    expect(callObjectEmitted).toBeCalledWith(
+      expect.objectContaining({
+        id: expect.any(String),
+        abort: expect.any(Function),
+      })
+    );
+  });
+
+  test('Call object may abort operation early and will throw abortError by default', async () => {
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+    operation.__.executeFx.use(() => Promise.resolve({}));
+
+    const scope = fork();
+    createWatch({
+      unit: operation.__.lowLevelAPI.callObjectCreated,
+      scope,
+      fn: ({ abort }) => abort(),
+    });
+
+    const operationFailed = vi.fn();
+
+    createWatch({
+      unit: operation.aborted,
+      scope,
+      fn: operationFailed,
+    });
+
+    await allSettled(operation.start, { scope, params: 42 });
+
+    expect(operationFailed).toBeCalledTimes(1);
+  });
+
+  test('Call object may abort operation early and will throw custom error if provided', async () => {
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+    operation.__.executeFx.use(() => Promise.resolve({}));
+
+    const scope = fork();
+    createWatch({
+      unit: operation.__.lowLevelAPI.callObjectCreated,
+      scope,
+      fn: ({ abort }) => abort(timeoutError({ timeout: 0 })),
+    });
+
+    const operationFailed = vi.fn();
+
+    createWatch({
+      unit: operation.finished.failure,
+      scope,
+      fn: operationFailed,
+    });
+
+    await allSettled(operation.start, { scope, params: 42 });
+
+    expect(operationFailed).toBeCalledTimes(1);
+    expect(isTimeoutError(operationFailed.mock.calls[0][0])).toBe(true);
+  });
+
+  test('Call object abort does not affect other pending calls', async () => {
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+    operation.__.executeFx.use(() => Promise.resolve({}));
+
+    const scope = fork();
+    let count = 0;
+    createWatch({
+      unit: operation.__.lowLevelAPI.callObjectCreated,
+      scope,
+      fn: ({ abort }) => {
+        count++;
+        if (count === 2) {
+          abort();
+        }
+      },
+    });
+
+    const operationFinished = vi.fn();
+    const operationAborted = vi.fn();
+
+    createWatch({
+      unit: operation.finished.finally,
+      scope,
+      fn: (f) => operationFinished(f.params),
+    });
+
+    createWatch({
+      unit: operation.aborted,
+      scope,
+      fn: (f) => operationAborted(f.params),
+    });
+
+    allSettled(operation.start, { scope, params: 42 });
+    allSettled(operation.start, { scope, params: 43 }); // will be aborted
+    allSettled(operation.start, { scope, params: 44 });
+
+    await allSettled(scope);
+
+    expect(operationFinished).toBeCalledTimes(2);
+    expect(operationFinished.mock.calls.map(([arg]) => arg)).toEqual([42, 44]);
+
+    expect(operationAborted).toBeCalledTimes(1);
+    expect(operationAborted.mock.calls.map(([arg]) => arg)).toEqual([43]);
+  });
+
+  test('Call objects are always in "finished" status for sync handlers', async () => {
+    /**
+     * Sync handler cannot be aborted early, since for the "rest of the world"
+     * its execution is instant
+     *
+     * Call objects in that case are always "finished"
+     */
+
+    const callObjectEmitted = vi.fn();
+
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+    operation.__.executeFx.use(() => ({}));
+
+    const scope = fork();
+
+    createWatch({
+      unit: operation.__.lowLevelAPI.callObjectCreated,
+      scope,
+      fn: callObjectEmitted,
+    });
+
+    await allSettled(operation.start, { scope, params: 42 });
+
+    expect(callObjectEmitted).toBeCalledWith(
+      expect.objectContaining({
+        id: expect.any(String),
+        abort: expect.any(Function),
+        status: 'finished',
+      })
+    );
+  });
+
+  test('Cannot abort calls after operation is finished', async () => {
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+    operation.__.executeFx.use(() => Promise.resolve({}));
+
+    const scope = fork();
+
+    createWatch({
+      unit: operation.__.lowLevelAPI.callObjectCreated,
+      scope,
+      fn: ({ abort }) => {
+        setTimeout(() => {
+          abort();
+        }, 10);
+      },
+    });
+
+    const operationFinished = vi.fn();
+
+    createWatch({
+      unit: operation.finished.finally,
+      scope,
+      fn: (f) =>
+        operationFinished({
+          params: f.params,
+          status: f.status,
+          error: (f as { error: unknown }).error,
+        }),
+    });
+
+    await allSettled(operation.start, { scope, params: 42 });
+    await new Promise((resolve) => setTimeout(resolve, 20));
+
+    expect(operationFinished).toBeCalledTimes(1);
+    expect(operationFinished.mock.calls.map(([arg]) => arg))
+      .toMatchInlineSnapshot(`
+      [
+        {
+          "error": undefined,
+          "params": 42,
+          "status": "done",
+        },
+      ]
+    `);
   });
 });
