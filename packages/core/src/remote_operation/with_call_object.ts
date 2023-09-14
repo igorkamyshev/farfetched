@@ -65,6 +65,8 @@ export function getCallObjectEvent<E extends Effect<unknown, unknown, unknown>>(
    *
    * Insertion of the patched handler step must happen right before execution of the handler itself,
    * after everything else is resolved
+   * 
+   * @see https://github.com/effector/effector/blob/a0f997b3d355c5a9b682e3747f00a1ffe7de8646/src/effector/__tests__/effect/index.test.ts#L432
    */
   runner.seq.splice(1, 0, callObjStep);
 
