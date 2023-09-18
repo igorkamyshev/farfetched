@@ -10,6 +10,5 @@
     "noFallthroughCasesInSwitch": true,
     "declaration": true
   },
-  "files": [],
   "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
 }

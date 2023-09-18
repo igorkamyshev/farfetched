@@ -13,6 +13,5 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   },
-  "files": [],
   "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "src"]
 }

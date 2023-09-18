@@ -12,6 +12,5 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js"
   },
-  "files": [],
   "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
 }

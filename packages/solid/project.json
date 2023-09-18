@@ -12,7 +12,6 @@
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "build"
         }
       ]
@@ -37,28 +36,27 @@
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "pack"
         }
       ]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/solid/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
-      "executor": "@nrwl/vite:test",
+      "executor": "@nx/vite:test",
       "options": {
-        "config": "vite.config.ts"
+        "config": "packages/solid/vite.config.ts"
       }
     },
     "typetest": {
-      "executor": "@nrwl/vite:test",
+      "executor": "@nx/vite:test",
       "options": {
-        "config": "vite.config.ts",
+        "config": "packages/solid/vite.config.ts",
         "mode": "typecheck"
       }
     },
@@ -70,7 +68,6 @@
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "build"
         }
       ]

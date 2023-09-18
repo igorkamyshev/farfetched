@@ -30,7 +30,7 @@
   },
   "generators": {
     "generators": {
-      "@nrwl/js:library": {
+      "@nx/js:library": {
         "publishable": true,
         "includeBabelRc": true
       }

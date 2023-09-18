@@ -1,10 +1,14 @@
-import {
+import { spawnSync } from 'node:child_process';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+
+const {
   readCachedProjectGraph,
   logger,
   readJsonFile,
   writeJsonFile,
-} from '@nrwl/devkit';
-import { spawnSync } from 'child_process';
+} = require('@nx/devkit');
 
 const [, , name] = process.argv;
 const graph = readCachedProjectGraph();
