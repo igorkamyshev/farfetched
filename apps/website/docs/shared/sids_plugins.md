@@ -19,7 +19,7 @@ Read more about `effector/babel-plugin` configuration in the [Effector's documen
 ::: code-group
 
 ```sh [pnpm]
-pnpm install --dev @effector/swc-plugin @swc/core
+pnpm add --save-dev @effector/swc-plugin @swc/core
 ```
 
 ```sh [yarn]
