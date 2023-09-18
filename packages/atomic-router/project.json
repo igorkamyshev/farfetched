@@ -55,7 +55,7 @@
     "typetest": {
       "executor": "@nx/vite:test",
       "options": {
-        "config": "packages/atomic-router/.config.ts",
+        "config": "packages/atomic-router/vite.config.ts",
         "mode": "typecheck"
       }
     },
