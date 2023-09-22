@@ -17,6 +17,7 @@ import {
 } from './create_headless_query';
 import { unknownContract } from '../contract/unknown_contract';
 import { type Validator } from '../validation/type';
+import { type ExtraDependencies, normalizeExtraDependencies } from "./extra-dependencies";
 
 // -- Shared
 
@@ -110,6 +111,7 @@ export function createJsonQuery<
       >;
       validate?: Validator<TransformedData, Params, ValidationSource>;
     };
+    extraDependencies?: ExtraDependencies;
   }
 ): Query<Params, TransformedData, JsonApiRequestError>;
 
@@ -142,6 +144,7 @@ export function createJsonQuery<
       >;
       validate?: Validator<TransformedData, Params, ValidationSource>;
     };
+    extraDependencies?: ExtraDependencies;
   }
 ): Query<Params, TransformedData, JsonApiRequestError, TransformedData>;
 
@@ -167,6 +170,7 @@ export function createJsonQuery<
       contract: Contract<unknown, Data>;
       validate?: Validator<Data, Params, ValidationSource>;
     };
+    extraDependencies?: ExtraDependencies;
   }
 ): Query<Params, Data, JsonApiRequestError>;
 
@@ -192,6 +196,7 @@ export function createJsonQuery<
       contract: Contract<unknown, Data>;
       validate?: Validator<Data, Params, ValidationSource>;
     };
+    extraDependencies?: ExtraDependencies;
   }
 ): Query<Params, Data, JsonApiRequestError, Data>;
 
@@ -222,6 +227,7 @@ export function createJsonQuery<
       >;
       validate?: Validator<TransformedData, void, ValidationSource>;
     };
+    extraDependencies?: ExtraDependencies;
   }
 ): Query<void, TransformedData, JsonApiRequestError>;
 
@@ -252,6 +258,7 @@ export function createJsonQuery<
       >;
       validate?: Validator<TransformedData, void, ValidationSource>;
     };
+    extraDependencies?: ExtraDependencies;
   }
 ): Query<void, TransformedData, JsonApiRequestError, TransformedData>;
 
@@ -275,6 +282,7 @@ export function createJsonQuery<
       contract: Contract<unknown, Data>;
       validate?: Validator<Data, void, ValidationSource>;
     };
+    extraDependencies?: ExtraDependencies;
   }
 ): Query<void, Data, JsonApiRequestError>;
 
@@ -298,6 +306,7 @@ export function createJsonQuery<
       contract: Contract<unknown, Data>;
       validate?: Validator<Data, void, ValidationSource>;
     };
+    extraDependencies?: ExtraDependencies;
   }
 ): Query<void, Data, JsonApiRequestError, Data>;
 
@@ -338,6 +347,7 @@ export function createJsonQuery(config: any) {
       config.request.body,
       config.request.headers,
       config.request.query,
+      ...normalizeExtraDependencies(config.extraDependencies)
     ],
     paramsAreMeaningless: true,
   });

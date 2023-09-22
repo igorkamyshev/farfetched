@@ -11,11 +11,13 @@ import { type DynamicallySourcedField } from '../libs/patronus';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
 import { resolveExecuteEffect } from '../remote_operation/resolve_execute_effect';
+import { normalizeExtraDependencies, type ExtraDependencies } from "./extra-dependencies";
 
 // Overload: Only handler
 export function createQuery<Params, Response>(
   config: {
     handler: (p: Params) => Promise<Response>;
+    extraDependencies?: ExtraDependencies;
   } & SharedQueryFactoryConfig<Response>
 ): Query<Params, Response, unknown>;
 
@@ -23,6 +25,7 @@ export function createQuery<Params, Response>(
   config: {
     initialData: Response;
     handler: (p: Params) => Promise<Response>;
+    extraDependencies?: ExtraDependencies;
   } & SharedQueryFactoryConfig<Response>
 ): Query<Params, Response, unknown, Response>;
 
@@ -43,6 +46,7 @@ export function createQuery<
       MapDataSource
     >;
     validate?: Validator<MappedData, Params, ValidationSource>;
+    extraDependencies?: ExtraDependencies;
   } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error>;
 
@@ -50,6 +54,7 @@ export function createQuery<
 export function createQuery<Params, Response, Error>(
   config: {
     effect: Effect<Params, Response, Error>;
+    extraDependencies?: ExtraDependencies;
   } & SharedQueryFactoryConfig<Response>
 ): Query<Params, Response, Error>;
 
@@ -57,6 +62,7 @@ export function createQuery<Params, Response, Error>(
   config: {
     initialData: Response;
     effect: Effect<Params, Response, Error>;
+    extraDependencies?: ExtraDependencies;
   } & SharedQueryFactoryConfig<Response>
 ): Query<Params, Response, Error, Response>;
 
@@ -72,6 +78,7 @@ export function createQuery<
     effect: Effect<Params, Response, Error>;
     contract: Contract<Response, ContractData>;
     validate?: Validator<ContractData, Params, ValidationSource>;
+    extraDependencies?: ExtraDependencies;
   } & SharedQueryFactoryConfig<ContractData>
 ): Query<Params, ContractData, Error | InvalidDataError>;
 
@@ -87,6 +94,7 @@ export function createQuery<
     effect: Effect<Params, Response, Error>;
     contract: Contract<Response, ContractData>;
     validate?: Validator<ContractData, Params, ValidationSource>;
+    extraDependencies?: ExtraDependencies;
   } & SharedQueryFactoryConfig<ContractData>
 ): Query<Params, ContractData, Error | InvalidDataError, ContractData>;
 
@@ -107,6 +115,7 @@ export function createQuery<
       MapDataSource
     >;
     validate?: Validator<MappedData, Params, ValidationSource>;
+    extraDependencies?: ExtraDependencies;
   } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error, MappedData>;
 
@@ -129,6 +138,7 @@ export function createQuery<
       MapDataSource
     >;
     validate?: Validator<ContractData, Params, ValidationSource>;
+    extraDependencies?: ExtraDependencies;
   } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error | InvalidDataError>;
 
@@ -151,6 +161,7 @@ export function createQuery<
       MapDataSource
     >;
     validate?: Validator<ContractData, Params, ValidationSource>;
+    extraDependencies?: ExtraDependencies;
   } & SharedQueryFactoryConfig<MappedData>
 ): Query<Params, MappedData, Error | InvalidDataError, MappedData>;
 
@@ -185,6 +196,7 @@ export function createQuery<
     validate: config.validate,
     name: config.name,
     serialize: config.serialize,
+    sourced: normalizeExtraDependencies(config.extraDependencies)
   });
 
   query.__.executeFx.use(resolveExecuteEffect(config));
