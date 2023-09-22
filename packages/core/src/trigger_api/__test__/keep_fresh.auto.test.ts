@@ -278,4 +278,35 @@ describe('keepFresh, automatically', () => {
 
     expect(listener).toBeCalledTimes(2);
   });
+
+  test('should respect extraDependencies of query', async () => {
+    const $extraDependency = createStore(42);
+
+    const query = createJsonQuery({
+      request: {
+        method: 'GET',
+        url: 'https://api.salo.com',
+      },
+      response: { contract: unknownContract },
+
+      extraDependencies: $extraDependency
+    });
+
+    keepFresh(query, { automatically: true });
+
+    const scope = fork({
+      handlers: [[query.__.executeFx, vi.fn(async () => 42)]],
+    });
+
+    const listener = vi.fn();
+
+    createWatch({ unit: query.refresh, fn: listener, scope });
+
+    await allSettled(query.refresh, { scope });
+    expect(listener).toBeCalledTimes(1);
+
+    await allSettled($extraDependency, { scope, params: 24 });
+
+    expect(listener).toBeCalledTimes(2);
+  });
 });
