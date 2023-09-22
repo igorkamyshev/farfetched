@@ -135,7 +135,35 @@ describe('applyBarrier', () => {
     expect(performer).toBeCalledTimes(1);
   });
 
-  test.todo(
-    'resumeParams changes params for query execution after barrier deactivation'
+  test.concurrent(
+    'resumeParams changes params for query execution after barrier deactivation',
+    async () => {
+      const $barrierActive = createStore(true);
+
+      const barrier = createBarrier({ active: $barrierActive });
+
+      const handler = vi.fn(async (params: string) => null);
+      const query = createQuery({
+        handler,
+      });
+
+      applyBarrier(query, { barrier, resumeParams: () => 'newParams' });
+
+      const scope = fork();
+
+      const { listeners } = watchRemoteOperation(query, scope);
+
+      allSettled(query.refresh, { scope, params: 'oldParams' });
+      expect(listeners.onStart).toBeCalledWith('oldParams');
+
+      await setTimeout(1);
+      expect(listeners.onSuccess).not.toBeCalled();
+
+      await allSettled($barrierActive, { scope, params: false });
+      expect(handler).toBeCalledWith('newParams');
+      expect(listeners.onSuccess).toBeCalledWith(
+        expect.objectContaining({ params: 'newParams' })
+      );
+    }
   );
 });
