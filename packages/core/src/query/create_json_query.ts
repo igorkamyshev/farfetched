@@ -17,7 +17,10 @@ import {
 } from './create_headless_query';
 import { unknownContract } from '../contract/unknown_contract';
 import { type Validator } from '../validation/type';
-import { type ExtraDependencies, normalizeExtraDependencies } from "./extra-dependencies";
+import {
+  type ExtraDependencies,
+  normalizeExtraDependencies,
+} from './extra-dependencies';
 
 // -- Shared
 

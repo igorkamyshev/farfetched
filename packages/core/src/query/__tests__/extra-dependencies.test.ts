@@ -1,7 +1,7 @@
-import { createStore } from "effector";
+import { createStore } from 'effector';
 import { describe, test, expect } from 'vitest';
 
-import { normalizeExtraDependencies } from "../extra-dependencies";
+import { normalizeExtraDependencies } from '../extra-dependencies';
 
 describe('normalizeExtraDependencies', () => {
   test('should return empty undefined if no extraDependencies', async () => {
@@ -20,11 +20,11 @@ describe('normalizeExtraDependencies', () => {
     expect(result).toEqual([$dependency]);
   });
 
-   test('should return array if extraDependencies is array with stores', async () => {
+  test('should return array if extraDependencies is array with stores', async () => {
     const $dependency1 = createStore(42);
     const $dependency2 = createStore(24);
     const result = normalizeExtraDependencies([$dependency1, $dependency2]);
 
     expect(result).toEqual([$dependency1, $dependency2]);
-   });
-})
+  });
+});

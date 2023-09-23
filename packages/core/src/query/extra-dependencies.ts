@@ -1,4 +1,4 @@
-import { Store } from "effector";
+import { Store } from 'effector';
 
 /**
  * It should be possible to use any store as a source for a field.
@@ -9,11 +9,13 @@ import { Store } from "effector";
 export type SerializableAnyStore = Store<any>;
 export type ExtraDependencies = SerializableAnyStore | SerializableAnyStore[];
 
-export function normalizeExtraDependencies(extraDependencies?: ExtraDependencies): SerializableAnyStore[] | undefined {
-  if(!extraDependencies) return undefined;
+export function normalizeExtraDependencies(
+  extraDependencies?: ExtraDependencies
+): SerializableAnyStore[] | undefined {
+  if (!extraDependencies) return undefined;
 
-  if(Array.isArray(extraDependencies)) {
-    return extraDependencies.filter(Boolean)
+  if (Array.isArray(extraDependencies)) {
+    return extraDependencies.filter(Boolean);
   }
 
   return (extraDependencies ? [extraDependencies] : []).filter(Boolean);

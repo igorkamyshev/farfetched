@@ -289,7 +289,7 @@ describe('keepFresh, automatically', () => {
       },
       response: { contract: unknownContract },
 
-      extraDependencies: $extraDependency
+      extraDependencies: $extraDependency,
     });
 
     keepFresh(query, { automatically: true });

@@ -1,4 +1,10 @@
-import { allSettled, createEffect, createEvent, createStore, fork } from 'effector';
+import {
+  allSettled,
+  createEffect,
+  createEvent,
+  createStore,
+  fork,
+} from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, vi, expect, test } from 'vitest';
 
@@ -413,10 +419,10 @@ describe('cache', () => {
       fn: () =>
         createQuery({
           handler: (params: any) => Promise.resolve(MOCK_VALUE_ONE),
-          extraDependencies: [$extraDependency]
+          extraDependencies: [$extraDependency],
         }),
 
-      sid: '1'
+      sid: '1',
     });
 
     const adapter = inMemoryCache();
@@ -429,9 +435,9 @@ describe('cache', () => {
           vi
             .fn()
             .mockImplementationOnce(() => MOCK_VALUE_ONE)
-            .mockImplementationOnce(() => MOCK_VALUE_TWO)
-        ]
-      ]
+            .mockImplementationOnce(() => MOCK_VALUE_TWO),
+        ],
+      ],
     });
 
     // Do not await
@@ -440,7 +446,10 @@ describe('cache', () => {
     await setTimeout(1);
     await allSettled(scope);
 
-    await allSettled($extraDependency, { scope, params: EXTRA_DEPENDENCY_VALUE_TWO })
+    await allSettled($extraDependency, {
+      scope,
+      params: EXTRA_DEPENDENCY_VALUE_TWO,
+    });
 
     // Do not await
     // But wait for next tick becuase of async adapter's nature
@@ -452,7 +461,7 @@ describe('cache', () => {
       stableStringify({
         params: null, // Using `null` and not `undefined` bcs of stableStringify default behavior
         sources: [EXTRA_DEPENDENCY_VALUE_ONE],
-        sid: query.__.meta.sid // queryUniqId(query)
+        sid: query.__.meta.sid, // queryUniqId(query)
       })!
     );
 
@@ -460,7 +469,7 @@ describe('cache', () => {
       stableStringify({
         params: null, // Using `null` and not `undefined` bcs of stableStringify default behavior
         sources: [EXTRA_DEPENDENCY_VALUE_TWO],
-        sid: query.__.meta.sid // queryUniqId(query)
+        sid: query.__.meta.sid, // queryUniqId(query)
       })!
     );
 
@@ -493,10 +502,10 @@ describe('cache', () => {
           response: {
             contract: unknownContract,
           },
-          extraDependencies: [$extraDependency]
+          extraDependencies: [$extraDependency],
         }),
 
-      sid: '1'
+      sid: '1',
     });
 
     const adapter = inMemoryCache();
@@ -509,9 +518,9 @@ describe('cache', () => {
           vi
             .fn()
             .mockImplementationOnce(() => MOCK_VALUE_ONE)
-            .mockImplementationOnce(() => MOCK_VALUE_TWO)
-        ]
-      ]
+            .mockImplementationOnce(() => MOCK_VALUE_TWO),
+        ],
+      ],
     });
 
     // Do not await
@@ -520,7 +529,10 @@ describe('cache', () => {
     await setTimeout(1);
     await allSettled(scope);
 
-    await allSettled($extraDependency, { scope, params: EXTRA_DEPENDENCY_VALUE_TWO })
+    await allSettled($extraDependency, {
+      scope,
+      params: EXTRA_DEPENDENCY_VALUE_TWO,
+    });
 
     // Do not await
     // But wait for next tick becuase of async adapter's nature
@@ -532,7 +544,7 @@ describe('cache', () => {
       stableStringify({
         params: null, // Using `null` and not `undefined` bcs of stableStringify default behavior
         sources: [REQUEST_URL, EXTRA_DEPENDENCY_VALUE_ONE],
-        sid: query.__.meta.sid // queryUniqId(query)
+        sid: query.__.meta.sid, // queryUniqId(query)
       })!
     );
 
@@ -540,7 +552,7 @@ describe('cache', () => {
       stableStringify({
         params: null, // Using `null` and not `undefined` bcs of stableStringify default behavior
         sources: [REQUEST_URL, EXTRA_DEPENDENCY_VALUE_TWO],
-        sid: query.__.meta.sid // queryUniqId(query)
+        sid: query.__.meta.sid, // queryUniqId(query)
       })!
     );
 

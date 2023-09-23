@@ -11,7 +11,10 @@ import { type DynamicallySourcedField } from '../libs/patronus';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
 import { resolveExecuteEffect } from '../remote_operation/resolve_execute_effect';
-import { normalizeExtraDependencies, type ExtraDependencies } from "./extra-dependencies";
+import {
+  normalizeExtraDependencies,
+  type ExtraDependencies,
+} from './extra-dependencies';
 
 // Overload: Only handler
 export function createQuery<Params, Response>(
@@ -196,7 +199,7 @@ export function createQuery<
     validate: config.validate,
     name: config.name,
     serialize: config.serialize,
-    sourced: normalizeExtraDependencies(config.extraDependencies)
+    sourced: normalizeExtraDependencies(config.extraDependencies),
   });
 
   query.__.executeFx.use(resolveExecuteEffect(config));
