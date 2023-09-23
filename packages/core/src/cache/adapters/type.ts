@@ -18,7 +18,6 @@ export interface CacheAdapterOptions {
     expired?: Event<{ key: string }>;
     evicted?: Event<{ key: string }>;
   };
-  debug?: boolean;
 }
 
 export interface CacheAdapter extends CacheAdapterInstance {

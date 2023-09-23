@@ -6,26 +6,16 @@ export function createKey({
   sid,
   params = null,
   sources,
-  debug,
 }: {
   sid: string;
   params: unknown;
   sources: unknown[];
-
-  debug?:boolean;
 }): string | null {
   try {
     const stableString = stableStringify({ params, sources, sid })!;
 
-    if(debug){
-      console.log('[createKey] stableString', { result:stableString, params:{ params, sources, sid } });
-    }
-
     return sha1(stableString);
   } catch (e: unknown) {
-    if(debug) {
-      console.error('[createKey]',e);
-    }
     return null;
   }
 }

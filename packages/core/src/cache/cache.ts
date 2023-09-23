@@ -11,22 +11,19 @@ interface CacheParameters {
   adapter?: CacheAdapter;
   staleAfter?: Time;
   purge?: Event<void>;
-
-  debug?: boolean;
 }
 
 interface CacheParametersDefaulted {
   adapter: CacheAdapter;
   staleAfter?: Time;
   purge?: Event<void>;
-  debug?: boolean;
 }
 
 export function cache<Q extends Query<any, any, any, any>>(
   query: Q,
   rawParams?: CacheParameters
 ): void {
-  const { adapter, staleAfter, purge,debug }: CacheParametersDefaulted = {
+  const { adapter, staleAfter, purge }: CacheParametersDefaulted = {
     adapter: rawParams?.adapter ?? inMemoryCache(),
     ...rawParams,
   };
@@ -46,35 +43,12 @@ export function cache<Q extends Query<any, any, any, any>>(
     void,
     any
   >(async ({ instance, params }) => {
-    if(debug){
-      console.log('[cache] (unsetFx) start', { params });
-    }
-
     const sources = await readAllSourcedFx(params);
-
-    if(debug){
-      console.log('[cache] (unsetFx) readAllSourcedFx.doneData', sources);
-    }
-
     const key = createKey({
       sid: id,
       params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
       sources,
-
-      debug,
     });
-
-    if(debug) {
-      console.log('[cache] (unsetFx) createKey', {
-        result: key,
-        params: {
-          sid: id,
-          params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
-          sources,
-          paramsAreMeaningless: query.__.lowLevelAPI.paramsAreMeaningless
-        }
-      });
-    }
 
     if (!key) {
       return;
@@ -92,33 +66,13 @@ export function cache<Q extends Query<any, any, any, any>>(
     void,
     any
   >(async ({ instance, params, result }) => {
-    if(debug){
-      console.log('[cache] (setFx) start', { params });
-    }
-
     const sources = await readAllSourcedFx(params);
-
-    if(debug){
-      console.log('[cache] (setFx) readAllSourcedFx.doneData', sources);
-    }
 
     const key = createKey({
       sid: id,
       params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
       sources,
     });
-
-    if(debug) {
-      console.log('[cache] (setFx) createKey', {
-        result: key,
-        params: {
-          sid: id,
-          params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
-          sources,
-          paramsAreMeaningless: query.__.lowLevelAPI.paramsAreMeaningless
-        }
-      });
-    }
 
     if (!key) {
       return;
@@ -132,14 +86,7 @@ export function cache<Q extends Query<any, any, any, any>>(
     { result: unknown; stale: boolean } | null,
     any
   >(async ({ params, instance }) => {
-    if(debug) {
-      console.log('[cache] (getFx) start', { params });
-    }
     const sources = await readAllSourcedFx(params);
-
-    if(debug){
-      console.log('[cache] (getFx) readAllSourcedFx.doneData', sources);
-    }
 
     const key = createKey({
       sid: id,
@@ -147,32 +94,11 @@ export function cache<Q extends Query<any, any, any, any>>(
       sources,
     });
 
-    if(debug) {
-      console.log('[cache] (getFx) createKey', {
-        result: key,
-        params: {
-          sid: id,
-          params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
-          sources,
-          paramsAreMeaningless: query.__.lowLevelAPI.paramsAreMeaningless
-        }
-      });
-    }
-
     if (!key) {
       return null;
     }
 
     const result = await instance.get({ key });
-
-    if(debug) {
-      console.log('[cache] (getFx) instance.get', {
-        result,
-        params: {
-          key
-        }
-      });
-    }
 
     if (!result) {
       return null;
@@ -181,18 +107,6 @@ export function cache<Q extends Query<any, any, any, any>>(
     const stale = staleAfter
       ? result.cachedAt + parseTime(staleAfter!) <= Date.now()
       : true;
-
-    if(debug) {
-      console.log('[cache] (getFx) staleAfter', {
-        result,
-        params: {
-          staleAfter,
-          cachedAt: result.cachedAt,
-          stale: stale,
-          now: Date.now()
-        }
-      });
-    }
 
     return { result: result.value, stale };
   });
