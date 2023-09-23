@@ -347,8 +347,9 @@ export function createJsonQuery(config: any) {
       config.request.body,
       config.request.headers,
       config.request.query,
-      ...normalizeExtraDependencies(config.extraDependencies)
-    ],
+    ]
+      .concat(normalizeExtraDependencies(config.extraDependencies))
+      .filter(Boolean),
     paramsAreMeaningless: true,
   });
 

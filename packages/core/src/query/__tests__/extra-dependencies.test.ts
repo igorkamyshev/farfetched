@@ -4,9 +4,9 @@ import { describe, test, expect } from 'vitest';
 import { normalizeExtraDependencies } from "../extra-dependencies";
 
 describe('normalizeExtraDependencies', () => {
-  test('should return empty array if no extraDependencies', async () => {
+  test('should return empty undefined if no extraDependencies', async () => {
     const result = normalizeExtraDependencies();
-    expect(result).toEqual([]);
+    expect(result).toEqual(undefined);
   });
 
   test('should return empty array if extraDependencies is empty array', async () => {

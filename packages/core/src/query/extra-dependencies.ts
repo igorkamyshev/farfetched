@@ -9,10 +9,12 @@ import { Store } from "effector";
 export type SerializableAnyStore = Store<any>;
 export type ExtraDependencies = SerializableAnyStore | SerializableAnyStore[];
 
-export function normalizeExtraDependencies(extraDependencies?: ExtraDependencies): SerializableAnyStore[] {
+export function normalizeExtraDependencies(extraDependencies?: ExtraDependencies): SerializableAnyStore[] | undefined {
+  if(!extraDependencies) return undefined;
+
   if(Array.isArray(extraDependencies)) {
-    return extraDependencies
+    return extraDependencies.filter(Boolean)
   }
 
-  return extraDependencies ? [extraDependencies] : []
+  return (extraDependencies ? [extraDependencies] : []).filter(Boolean);
 }
