@@ -442,7 +442,7 @@ describe('cache', () => {
 
     await allSettled(scope);
 
-    await allSettled($extraDependency, { scope, params: 24 })
+    await allSettled($extraDependency, { scope, params: EXTRA_DEPENDENCY_VALUE_TWO })
 
     // Do not await
     allSettled(query.start, { scope });
@@ -523,7 +523,7 @@ describe('cache', () => {
 
     await allSettled(scope);
 
-    await allSettled($extraDependency, { scope, params: 24 })
+    await allSettled($extraDependency, { scope, params: EXTRA_DEPENDENCY_VALUE_TWO })
 
     // Do not await
     allSettled(query.start, { scope });
