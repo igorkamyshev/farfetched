@@ -401,13 +401,18 @@ describe('cache', () => {
   });
 
   test('use createQuery#extraDependencies in cache-key', async () => {
-    const $extraDependency = createStore(42);
-    const MOCK_VALUE = 10;
+    const EXTRA_DEPENDENCY_VALUE_ONE = 42;
+    const EXTRA_DEPENDENCY_VALUE_TWO = 24;
+
+    const $extraDependency = createStore(EXTRA_DEPENDENCY_VALUE_ONE);
+
+    const MOCK_VALUE_ONE = 10;
+    const MOCK_VALUE_TWO = 20;
 
     const query = withFactory({
       fn: () =>
         createQuery({
-          handler: (params: any) => Promise.resolve(MOCK_VALUE),
+          handler: (params: any) => Promise.resolve(MOCK_VALUE_ONE),
           extraDependencies: [$extraDependency]
         }),
 
@@ -417,31 +422,67 @@ describe('cache', () => {
     const adapter = inMemoryCache();
     cache(query, { adapter });
 
-    const scope = fork();
+    const scope = fork({
+      handlers: [
+        [
+          query.__.executeFx,
+          vi
+            .fn()
+            .mockImplementationOnce(() => MOCK_VALUE_ONE)
+            .mockImplementationOnce(() => MOCK_VALUE_TWO)
+        ]
+      ]
+    });
+
 
     // Do not await
     allSettled(query.start, { scope });
     // But wait for next tick becuase of async adapter's nature
     await setTimeout(1);
 
-    const key = sha1(
+    await allSettled(scope);
+
+    await allSettled($extraDependency, { scope, params: 24 })
+
+    // Do not await
+    allSettled(query.start, { scope });
+    // But wait for next tick becuase of async adapter's nature
+    await setTimeout(1);
+    await allSettled(scope);
+
+    const key1 = sha1(
       stableStringify({
         params: null, // Using `null` and not `undefined` bcs of stableStringify default behavior
-        sources: [scope.getState($extraDependency)],
+        sources: [EXTRA_DEPENDENCY_VALUE_ONE],
         sid: query.__.meta.sid // queryUniqId(query)
       })!
     );
 
-    await allSettled(scope);
+    const key2 = sha1(
+      stableStringify({
+        params: null, // Using `null` and not `undefined` bcs of stableStringify default behavior
+        sources: [EXTRA_DEPENDENCY_VALUE_TWO],
+        sid: query.__.meta.sid // queryUniqId(query)
+      })!
+    );
 
-    const cachedResult = await adapter.get({ key: key });
-    expect(cachedResult?.value).toEqual(MOCK_VALUE);
+    const cachedResult1 = await adapter.get({ key: key1 });
+    const cachedResult2 = await adapter.get({ key: key2 });
+
+    expect(cachedResult1?.value).toEqual(MOCK_VALUE_ONE);
+    expect(cachedResult2?.value).toEqual(MOCK_VALUE_TWO);
   });
 
   test('use createJsonQuery#extraDependencies in cache-key', async () => {
-    const URL = 'https://api.salo.com/';
-    const $extraDependency = createStore(42);
-    const MOCK_VALUE = 10;
+    const REQUEST_URL = 'https://api.salo.com/';
+
+    const EXTRA_DEPENDENCY_VALUE_ONE = 42;
+    const EXTRA_DEPENDENCY_VALUE_TWO = 24;
+
+    const $extraDependency = createStore(EXTRA_DEPENDENCY_VALUE_ONE);
+
+    const MOCK_VALUE_ONE = 10;
+    const MOCK_VALUE_TWO = 20;
 
     const query = withFactory({
       fn: () =>
@@ -449,7 +490,7 @@ describe('cache', () => {
           params: declareParams<void>(),
           request: {
             method: 'GET',
-            url: URL,
+            url: REQUEST_URL,
           },
           response: {
             contract: unknownContract,
@@ -465,7 +506,13 @@ describe('cache', () => {
 
     const scope = fork({
       handlers: [
-        [query.__.executeFx, vi.fn(() => MOCK_VALUE)]
+        [
+          query.__.executeFx,
+          vi
+            .fn()
+            .mockImplementationOnce(() => MOCK_VALUE_ONE)
+            .mockImplementationOnce(() => MOCK_VALUE_TWO)
+        ]
       ]
     });
 
@@ -474,17 +521,36 @@ describe('cache', () => {
     // But wait for next tick becuase of async adapter's nature
     await setTimeout(1);
 
-    const key = sha1(
+    await allSettled(scope);
+
+    await allSettled($extraDependency, { scope, params: 24 })
+
+    // Do not await
+    allSettled(query.start, { scope });
+    // But wait for next tick becuase of async adapter's nature
+    await setTimeout(1);
+    await allSettled(scope);
+
+    const key1 = sha1(
       stableStringify({
         params: null, // Using `null` and not `undefined` bcs of stableStringify default behavior
-        sources: [URL, scope.getState($extraDependency)],
+        sources: [REQUEST_URL, EXTRA_DEPENDENCY_VALUE_ONE],
         sid: query.__.meta.sid // queryUniqId(query)
       })!
     );
 
-    await allSettled(scope);
+    const key2 = sha1(
+      stableStringify({
+        params: null, // Using `null` and not `undefined` bcs of stableStringify default behavior
+        sources: [REQUEST_URL, EXTRA_DEPENDENCY_VALUE_TWO],
+        sid: query.__.meta.sid // queryUniqId(query)
+      })!
+    );
 
-    const cachedResult = await adapter.get({ key: key });
-    expect(cachedResult?.value).toEqual(MOCK_VALUE);
+    const cachedResult1 = await adapter.get({ key: key1 });
+    const cachedResult2 = await adapter.get({ key: key2 });
+
+    expect(cachedResult1?.value).toEqual(MOCK_VALUE_ONE);
+    expect(cachedResult2?.value).toEqual(MOCK_VALUE_TWO);
   });
 });
