@@ -424,15 +424,6 @@ describe('cache', () => {
     // But wait for next tick becuase of async adapter's nature
     await setTimeout(1);
 
-    /**
-     * Only combination of parameters for cacheKey what is working
-     * Its real pain to debug it (spend 2 hours adding here and there debug-mode logs)
-     *
-     * Probably, it would be better to have human-readable cache-key (and some UI to debug it)
-     * Or to have some debug mode
-     * Or, at least, have some utility to pass whole query and params to get cache-key like:
-     * `cacheKey(query, params)`
-     */
     const key = sha1(
       stableStringify({
         params: null, // Using `null` and not `undefined` bcs of stableStringify default behavior
@@ -483,10 +474,6 @@ describe('cache', () => {
     // But wait for next tick becuase of async adapter's nature
     await setTimeout(1);
 
-    /**
-     * Only combination of parameters for cacheKey what is working
-     *
-     */
     const key = sha1(
       stableStringify({
         params: null, // Using `null` and not `undefined` bcs of stableStringify default behavior
