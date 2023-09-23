@@ -1,4 +1,4 @@
-import { allSettled, createEffect, createEvent, fork } from 'effector';
+import { allSettled, createEffect, createEvent, createStore, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, vi, expect, test } from 'vitest';
 
@@ -13,6 +13,7 @@ import { createJsonQuery } from '../../query/create_json_query';
 import { declareParams } from '../../remote_operation/params';
 import { unknownContract } from '../../contract/unknown_contract';
 import { fetchFx } from '../../fetch/fetch';
+import { stableStringify } from '../lib/stable_stringify';
 
 describe('cache', () => {
   test('use value from cache on second call, revalidate', async () => {
@@ -397,5 +398,106 @@ describe('cache', () => {
     // After refetch, it's new value
     expect(scope.getState(query.$data)).toEqual({ step: 2 });
     expect(scope.getState(query.$stale)).toBeFalsy();
+  });
+
+  test('use createQuery#extraDependencies in cache-key', async () => {
+    const $extraDependency = createStore(42);
+    const MOCK_VALUE = 10;
+
+    const query = withFactory({
+      fn: () =>
+        createQuery({
+          handler: (params: any) => Promise.resolve(MOCK_VALUE),
+          extraDependencies: [$extraDependency]
+        }),
+
+      sid: '1'
+    });
+
+    const adapter = inMemoryCache();
+    cache(query, { adapter });
+
+    const scope = fork();
+
+    // Do not await
+    allSettled(query.start, { scope });
+    // But wait for next tick becuase of async adapter's nature
+    await setTimeout(1);
+
+    /**
+     * Only combination of parameters for cacheKey what is working
+     * Its real pain to debug it (spend 2 hours adding here and there debug-mode logs)
+     *
+     * Probably, it would be better to have human-readable cache-key (and some UI to debug it)
+     * Or to have some debug mode
+     * Or, at least, have some utility to pass whole query and params to get cache-key like:
+     * `cacheKey(query, params)`
+     */
+    const key = sha1(
+      stableStringify({
+        params: null, // Using `null` and not `undefined` bcs of stableStringify default behavior
+        sources: [scope.getState($extraDependency)],
+        sid: query.__.meta.sid // queryUniqId(query)
+      })!
+    );
+
+    await allSettled(scope);
+
+    const cachedResult = await adapter.get({ key: key });
+    expect(cachedResult?.value).toEqual(MOCK_VALUE);
+  });
+
+  test('use createJsonQuery#extraDependencies in cache-key', async () => {
+    const URL = 'https://api.salo.com/';
+    const $extraDependency = createStore(42);
+    const MOCK_VALUE = 10;
+
+    const query = withFactory({
+      fn: () =>
+        createJsonQuery({
+          params: declareParams<void>(),
+          request: {
+            method: 'GET',
+            url: URL,
+          },
+          response: {
+            contract: unknownContract,
+          },
+          extraDependencies: [$extraDependency]
+        }),
+
+      sid: '1'
+    });
+
+    const adapter = inMemoryCache();
+    cache(query, { adapter });
+
+    const scope = fork({
+      handlers: [
+        [query.__.executeFx, vi.fn(() => MOCK_VALUE)]
+      ]
+    });
+
+    // Do not await
+    allSettled(query.start, { scope });
+    // But wait for next tick becuase of async adapter's nature
+    await setTimeout(1);
+
+    /**
+     * Only combination of parameters for cacheKey what is working
+     *
+     */
+    const key = sha1(
+      stableStringify({
+        params: null, // Using `null` and not `undefined` bcs of stableStringify default behavior
+        sources: [URL, scope.getState($extraDependency)],
+        sid: query.__.meta.sid // queryUniqId(query)
+      })!
+    );
+
+    await allSettled(scope);
+
+    const cachedResult = await adapter.get({ key: key });
+    expect(cachedResult?.value).toEqual(MOCK_VALUE);
   });
 });
