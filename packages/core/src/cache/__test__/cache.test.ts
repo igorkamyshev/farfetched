@@ -434,19 +434,17 @@ describe('cache', () => {
       ]
     });
 
-
     // Do not await
-    allSettled(query.start, { scope });
     // But wait for next tick becuase of async adapter's nature
+    allSettled(query.start, { scope });
     await setTimeout(1);
-
     await allSettled(scope);
 
     await allSettled($extraDependency, { scope, params: EXTRA_DEPENDENCY_VALUE_TWO })
 
     // Do not await
-    allSettled(query.start, { scope });
     // But wait for next tick becuase of async adapter's nature
+    allSettled(query.start, { scope });
     await setTimeout(1);
     await allSettled(scope);
 
@@ -517,17 +515,16 @@ describe('cache', () => {
     });
 
     // Do not await
-    allSettled(query.start, { scope });
     // But wait for next tick becuase of async adapter's nature
+    allSettled(query.start, { scope });
     await setTimeout(1);
-
     await allSettled(scope);
 
     await allSettled($extraDependency, { scope, params: EXTRA_DEPENDENCY_VALUE_TWO })
 
     // Do not await
-    allSettled(query.start, { scope });
     // But wait for next tick becuase of async adapter's nature
+    allSettled(query.start, { scope });
     await setTimeout(1);
     await allSettled(scope);
 
