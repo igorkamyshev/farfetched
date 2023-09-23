@@ -76,6 +76,10 @@ export function inMemoryCache(config?: CacheAdapterOptions): CacheAdapter {
     get: createEffect(({ key }: { key: string }): Entry | null => {
       const saved = storage[key] ?? null;
 
+      if(config?.debug){
+        console.log('[inMemoryAdapter.get] saved',saved, storage, key)
+      }
+
       if (!saved) {
         return null;
       }
