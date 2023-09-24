@@ -99,8 +99,9 @@ const Character = () => {
   );
 };
 
-Read more in [Solid-specific](/tutorial/solid/) tutorial.
 ```
+
+Read more in [Solid-specific](/tutorial/solid/) tutorial.
 
 :::
 
