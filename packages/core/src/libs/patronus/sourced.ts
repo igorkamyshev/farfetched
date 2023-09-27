@@ -229,7 +229,6 @@ function extractSource<S>(sourced: SourcedField<any, any, S>): Store<S> | null {
 
 // -- Combine sourced
 
-// TODO: improve typings of it https://github.com/igorkamyshev/farfetched/issues/281
 function combineSourced<
   R extends Record<string, SourcedField<any, any, any>>,
   S
