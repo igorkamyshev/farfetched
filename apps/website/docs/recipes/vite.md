@@ -13,7 +13,7 @@ Farfetched does not require any special configuration for Vite for basic usage. 
 ::: code-group
 
 ```sh [pnpm]
-pnpm install --dev vite-plugin-babel
+pnpm add --save-dev vite-plugin-babel
 ```
 
 ```sh [yarn]
@@ -81,7 +81,7 @@ export default defineConfig({
 ::: code-group
 
 ```sh [pnpm]
-pnpm install --dev unplugin-swc @effector/swc-plugin @swc/core
+pnpm add --save-dev unplugin-swc @effector/swc-plugin @swc/core
 ```
 
 ```sh [yarn]
