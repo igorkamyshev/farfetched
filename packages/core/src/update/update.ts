@@ -13,7 +13,7 @@ import {
   normalizeSourced,
 } from '../libs/patronus';
 import { type Mutation } from '../mutation/type';
-import { QueryInitialData, type Query } from '../query/type';
+import { type QueryInitialData, type Query } from '../query/type';
 import {
   type RemoteOperationError,
   type RemoteOperationParams,
