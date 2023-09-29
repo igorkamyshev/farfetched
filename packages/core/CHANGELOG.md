@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.10.1
+
+### Patch Changes
+
+- e8a1385: Support _Query_ with initial data in `update` operator types
+
 ## 0.10.0
 
 ### Minor Changes
