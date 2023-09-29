@@ -13,7 +13,7 @@ import {
   normalizeSourced,
 } from '../libs/patronus';
 import { type Mutation } from '../mutation/type';
-import { type Query } from '../query/type';
+import { QueryInitialData, type Query } from '../query/type';
 import {
   type RemoteOperationError,
   type RemoteOperationParams,
@@ -29,7 +29,9 @@ type QueryState<Q extends Query<any, any, any, any>> =
       error: RemoteOperationError<Q>;
       params: RemoteOperationParams<Q>;
     }
-  | null;
+  | QueryInitialData<Q> extends null
+  ? null
+  : { result: QueryInitialData<Q> };
 
 type Refetch<Q extends Query<any, any, any, any>> =
   | boolean
@@ -185,17 +187,26 @@ function queryState<Q extends Query<any, any, any, any>>(
 ): Store<QueryState<Q>> {
   return combine(
     {
+      idle: query.$idle,
       result: query.$data,
       params: query.__.$latestParams,
       error: query.$error,
       failed: query.$failed,
     },
-    ({ result, params, error, failed }): QueryState<Q> => {
-      if (!result && !error) {
+    ({ idle, result, params, error, failed }): any => {
+      if (result == null && error == null) {
         return null;
       }
 
-      return failed ? { error, params: params! } : { result, params: params! };
+      if (idle) {
+        return { result };
+      }
+
+      if (failed) {
+        return { error };
+      }
+
+      return { result, params };
     }
   );
 }

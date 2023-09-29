@@ -1,5 +1,5 @@
 import { watchRemoteOperation } from '@farfetched/test-utils';
-import { allSettled, fork } from 'effector';
+import { allSettled, createEffect, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
@@ -418,6 +418,37 @@ describe('update', () => {
       expect.objectContaining({
         mutation: { error: 'mutation failure', params: 2 },
       })
+    );
+  });
+
+  test('use initial data type in case of not started query, issue #370', async () => {
+    const queryFx = createEffect(() => [1, 2]);
+    const mutationFx = createEffect((x: number) => x);
+
+    const query = createQuery({
+      effect: queryFx,
+      initialData: [1],
+    });
+
+    const mutation = createMutation({
+      effect: mutationFx,
+    });
+
+    const successHandler = vi.fn(() => ({ result: [] }));
+
+    update(query, {
+      on: mutation,
+      by: {
+        success: successHandler,
+      },
+    });
+
+    const scope = fork();
+
+    await allSettled(mutation.start, { scope, params: 10 });
+
+    expect(successHandler).toBeCalledWith(
+      expect.objectContaining({ query: { result: [1] } })
     );
   });
 });
