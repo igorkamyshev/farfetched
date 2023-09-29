@@ -1,5 +1,5 @@
 import { watchRemoteOperation } from '@farfetched/test-utils';
-import { allSettled, createEffect, fork } from 'effector';
+import { allSettled, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
