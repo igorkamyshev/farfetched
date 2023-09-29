@@ -23,13 +23,10 @@ import {
   TimeoutError,
 } from '../errors/type';
 import {
-  timeoutError,
   preparationError,
   invalidDataError,
   abortError,
 } from '../errors/create_error';
-import { anySignal } from './any_signal';
-import { TimeoutController } from './timeout_abort_controller';
 import {
   formatUrl,
   mergeRecords,
@@ -134,10 +131,6 @@ export interface ApiConfigShared {
      * All requests will be aborted on this event call
      */
     clock?: Event<any>;
-    /**
-     * Abort request after this number of milliseconds if it is not succeeded yet
-     */
-    timeout?: StaticOrReactive<number>;
   };
 }
 
@@ -172,7 +165,7 @@ export function createApiRequest<
 
   const apiRequestFx = createEffect<
     DynamicRequestConfig<B> &
-      AbortContext & { timeoutController: TimeoutController | null } & {
+      AbortContext & {
         method: HttpMethod;
         haveToBeAborted: boolean;
       },
@@ -187,7 +180,6 @@ export function createApiRequest<
       credentials,
       body,
       onAbort,
-      timeoutController,
       haveToBeAborted,
     }) => {
       const abortController = new AbortController();
@@ -206,14 +198,10 @@ export function createApiRequest<
         headers: formatHeaders(headers),
         credentials,
         body: mappedBody,
-        signal: anySignal(abortController.signal, timeoutController?.signal),
+        signal: abortController.signal,
       });
 
       const response = await requestFx(request).catch((cause) => {
-        if (timeoutController?.signal.aborted) {
-          throw timeoutError({ timeout: timeoutController.timeout });
-        }
-
         if (config.response.transformError) {
           throw config.response.transformError(cause);
         }
@@ -260,7 +248,6 @@ export function createApiRequest<
       headers: normalizeStaticOrReactive(config.request.headers),
       credentials: normalizeStaticOrReactive(config.request.credentials),
       body: normalizeStaticOrReactive(config.request.body),
-      timeout: normalizeStaticOrReactive(config.abort?.timeout),
       haveToBeAborted: $haveToBeAborted,
     },
     mapParams(dynamicConfig: ApiRequestParams & AbortContext, staticConfig) {
@@ -290,12 +277,6 @@ export function createApiRequest<
       const { method, haveToBeAborted } = staticConfig;
       const { onAbort } = dynamicConfig;
 
-      // This abort controller uses for timeout, it cancell only one request
-      // so we have to create it dynamically
-      const timeoutController = staticConfig.timeout
-        ? new TimeoutController(staticConfig.timeout)
-        : null;
-
       return {
         url,
         method: method!, // TODO: fix type inference here
@@ -304,7 +285,6 @@ export function createApiRequest<
         credentials,
         body,
         onAbort,
-        timeoutController,
         haveToBeAborted,
       };
     },
