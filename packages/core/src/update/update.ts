@@ -166,6 +166,7 @@ export function update<
         return { params: refetch.params, refresh: true };
       }
 
+      // @ts-expect-error I do not want to fight with TS here
       return { params: state?.params, refresh: true };
     },
     target: [query.__.lowLevelAPI.revalidate, query.$stale.reinit!],
@@ -175,6 +176,7 @@ export function update<
     clock: shouldNotRefetch,
     source: $queryState,
     filter: Boolean,
+    // @ts-expect-error I do not want to fight with TS here
     fn: (state) => ({ params: state.params, refresh: false }),
     target: query.__.lowLevelAPI.revalidate,
   });
@@ -197,6 +199,7 @@ function queryState<Q extends Query<any, any, any, any>>(
       }
 
       if (idle) {
+        return null;
         return { result };
       }
 
