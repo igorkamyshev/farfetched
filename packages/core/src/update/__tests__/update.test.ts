@@ -422,19 +422,19 @@ describe('update', () => {
   });
 
   test('use initial data type in case of not started query, issue #370', async () => {
-    const queryFx = createEffect(() => [1, 2]);
-    const mutationFx = createEffect((x: number) => x);
+    const queryHandler = vi.fn(async (p: string) => [1, Number(p)]);
+    const mutationHandler = vi.fn(async (x: number) => x);
 
     const query = createQuery({
-      effect: queryFx,
+      handler: queryHandler,
       initialData: [1],
     });
 
     const mutation = createMutation({
-      effect: mutationFx,
+      handler: mutationHandler,
     });
 
-    const successHandler = vi.fn(() => ({ result: [] }));
+    const successHandler = vi.fn(() => ({ result: [], refetch: true }));
 
     update(query, {
       on: mutation,
@@ -447,6 +447,7 @@ describe('update', () => {
 
     await allSettled(mutation.start, { scope, params: 10 });
 
+    expect(queryHandler).not.toBeCalled();
     expect(successHandler).toBeCalledWith(
       expect.objectContaining({ query: { result: [1] } })
     );

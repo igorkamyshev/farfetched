@@ -161,6 +161,9 @@ export function update<
   sample({
     clock: shouldRefetch,
     source: $queryState,
+    filter: (state, refetch) =>
+      (typeof refetch === 'object' && 'params' in refetch) ||
+      (state && 'params' in state),
     fn: (state, refetch) => {
       if (typeof refetch === 'object' && 'params' in refetch) {
         return { params: refetch.params, refresh: true };
@@ -175,9 +178,11 @@ export function update<
   sample({
     clock: shouldNotRefetch,
     source: $queryState,
-    filter: Boolean,
-    // @ts-expect-error I do not want to fight with TS here
-    fn: (state) => ({ params: state.params, refresh: false }),
+    filter: (state) => state && 'params' in state,
+    fn: (state: any): { params: any; refresh: false } => ({
+      params: state.params,
+      refresh: false,
+    }),
     target: query.__.lowLevelAPI.revalidate,
   });
 }
@@ -199,7 +204,6 @@ function queryState<Q extends Query<any, any, any, any>>(
       }
 
       if (idle) {
-        return null;
         return { result };
       }
 
