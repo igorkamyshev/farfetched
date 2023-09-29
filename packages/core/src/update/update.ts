@@ -13,7 +13,7 @@ import {
   normalizeSourced,
 } from '../libs/patronus';
 import { type Mutation } from '../mutation/type';
-import { type Query } from '../query/type';
+import { type QueryInitialData, type Query } from '../query/type';
 import {
   type RemoteOperationError,
   type RemoteOperationParams,
@@ -29,7 +29,7 @@ type QueryState<Q extends Query<any, any, any, any>> =
       error: RemoteOperationError<Q>;
       params: RemoteOperationParams<Q>;
     }
-  | null;
+  | (QueryInitialData<Q> extends null ? null : { result: QueryInitialData<Q> });
 
 type Refetch<Q extends Query<any, any, any, any>> =
   | boolean
@@ -161,11 +161,15 @@ export function update<
   sample({
     clock: shouldRefetch,
     source: $queryState,
+    filter: (state, refetch) =>
+      (typeof refetch === 'object' && 'params' in refetch) ||
+      (state && 'params' in state),
     fn: (state, refetch) => {
       if (typeof refetch === 'object' && 'params' in refetch) {
         return { params: refetch.params, refresh: true };
       }
 
+      // @ts-expect-error I do not want to fight with TS here
       return { params: state?.params, refresh: true };
     },
     target: [query.__.lowLevelAPI.revalidate, query.$stale.reinit!],
@@ -174,8 +178,11 @@ export function update<
   sample({
     clock: shouldNotRefetch,
     source: $queryState,
-    filter: Boolean,
-    fn: (state) => ({ params: state.params, refresh: false }),
+    filter: (state) => state && 'params' in state,
+    fn: (state: any): { params: any; refresh: false } => ({
+      params: state.params,
+      refresh: false,
+    }),
     target: query.__.lowLevelAPI.revalidate,
   });
 }
@@ -185,17 +192,26 @@ function queryState<Q extends Query<any, any, any, any>>(
 ): Store<QueryState<Q>> {
   return combine(
     {
+      idle: query.$idle,
       result: query.$data,
       params: query.__.$latestParams,
       error: query.$error,
       failed: query.$failed,
     },
-    ({ result, params, error, failed }): QueryState<Q> => {
-      if (!result && !error) {
+    ({ idle, result, params, error, failed }): any => {
+      if (result == null && error == null) {
         return null;
       }
 
-      return failed ? { error, params: params! } : { result, params: params! };
+      if (idle) {
+        return { result };
+      }
+
+      if (failed) {
+        return { error, params };
+      }
+
+      return { result, params };
     }
   );
 }
