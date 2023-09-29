@@ -201,7 +201,7 @@ function queryState<Q extends Query<any, any, any, any>>(
       }
 
       if (failed) {
-        return { error };
+        return { error, params };
       }
 
       return { result, params };
