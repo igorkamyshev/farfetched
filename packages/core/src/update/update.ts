@@ -29,9 +29,7 @@ type QueryState<Q extends Query<any, any, any, any>> =
       error: RemoteOperationError<Q>;
       params: RemoteOperationParams<Q>;
     }
-  | QueryInitialData<Q> extends null
-  ? null
-  : { result: QueryInitialData<Q> };
+  | (QueryInitialData<Q> extends null ? null : { result: QueryInitialData<Q> });
 
 type Refetch<Q extends Query<any, any, any, any>> =
   | boolean
