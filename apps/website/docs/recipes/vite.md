@@ -74,7 +74,11 @@ export default defineConfig({
 
 ## SWC
 
-> [SWC](https://swc.rs) is a blazing fast alternative to Babel.
+[SWC](https://swc.rs) is a blazing fast alternative to Babel.
+
+::: warning
+Note that [plugins for SWC are experimental](https://github.com/swc-project/swc/discussions/3540) and may not work as expected. We recommend to stick with Babel for now.
+:::
 
 1. Install required dependencies:
 
@@ -113,6 +117,23 @@ export default defineConfig({
   ],
 });
 ```
+
+::: tip
+If you are using [`@vitejs/plugin-react-swc`](https://github.com/vitejs/vite-plugin-react-swc) in your project, you do not need to add `unplugin-swc` to your config, because it is already included in `@vitejs/plugin-react-swc`. So, just modify your config to enable `@effector/swc-plugin`.
+
+```ts
+// vite.config.js
+import { defineConfig } from 'vite';
+import react from "@vitejs/plugin-react-swc";
+
+export default defineConfig({
+  plugins: [
+    react({ plugins: [["@effector/swc-plugin", {}]] });
+  ],
+});
+```
+
+:::
 
 ## Disable HMR
 
