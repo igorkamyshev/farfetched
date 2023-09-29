@@ -1,7 +1,7 @@
 # Vite
 
 :::info
-Farfetched does not require any special configuration for Vite for basic usage. However, if you want to use advanced features like [`cache`](/api/operators/cache) or [SSR](/recipes/ssr), you need to configure Vite. Detailed explanation of the reasons is available in [deep-dive article](/recipes/sids).
+Farfetched does not require any special configuration for Vite for basic usage. However, if you want to use advanced features like [`cache`](/api/operators/cache) or [server-side rendering](/recipes/ssr), you need to configure Vite. Detailed explanation of the reasons is available in [deep-dive article](/recipes/sids).
 :::
 
 [Vite](https://vitejs.dev/) uses ESBuild under the hood, which does not allow to use its internal AST in the plugins. To apply custom transformations to the code one must use either [Babel](https://github.com/owlsdepartment/vite-plugin-babel) or [SWC](https://github.com/egoist/unplugin-swc), which are allowing custom AST-transformations.
