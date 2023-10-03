@@ -196,12 +196,12 @@ describe('connectQuery', () => {
     type Query2Data = { bar: string };
 
     const query1 = createQuery({
-      effect: createEffect((): Query1Data => ({ foo: 'foo' }))
+      effect: createEffect((): Query1Data => ({ foo: 'foo' })),
     });
 
     const query2 = createQuery({
       initialData: { bar: '42' } as Query2Data,
-      effect: createEffect((): Query2Data => ({ bar: 'bar' }))
+      effect: createEffect((): Query2Data => ({ bar: 'bar' })),
     });
 
     connectQuery({
