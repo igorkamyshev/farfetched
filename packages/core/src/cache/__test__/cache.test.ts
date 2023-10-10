@@ -1,4 +1,10 @@
-import { allSettled, createEffect, createEvent, fork } from 'effector';
+import {
+  allSettled,
+  createEffect,
+  createEvent,
+  createStore,
+  fork,
+} from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, vi, expect, test } from 'vitest';
 
@@ -397,5 +403,147 @@ describe('cache', () => {
     // After refetch, it's new value
     expect(scope.getState(query.$data)).toEqual({ step: 2 });
     expect(scope.getState(query.$stale)).toBeFalsy();
+  });
+
+  test('do not cache data if disabled', async () => {
+    const $enabled = createStore(true);
+
+    let index = 1;
+    const handler = vi.fn(async (p: void) =>
+      setTimeout(1000).then(() => index++)
+    );
+    const query = withFactory({
+      fn: () =>
+        createQuery({
+          handler,
+        }),
+      sid: '1',
+    });
+
+    cache(query, {
+      /**
+       * It doesn't make sense to use cache without staleAfter,
+       * bcs it will be always stale,
+       * so:
+       * - (using query.start) it will be always refetched from remote source
+       * - (using query.refresh) it will allways be skipped due to freshness(provided from remote source)
+       *
+       */
+      staleAfter: '1h',
+
+      enabled: $enabled,
+    });
+
+    const scope = fork();
+
+    // Load from remote data-source
+    {
+      allSettled(query.start, { scope });
+      // But wait for next tick becuase of async adapter's nature
+      await setTimeout(1);
+      await allSettled(scope);
+
+      expect(scope.getState(query.$data)).toEqual(1);
+    }
+
+    // query.start should read from cache
+    {
+      allSettled(query.start, { scope });
+      // But wait for next tick becuase of async adapter's nature
+      await setTimeout(1);
+      await allSettled(scope);
+
+      expect(scope.getState(query.$data)).toEqual(1);
+    }
+
+    {
+      await allSettled($enabled, { scope, params: false });
+    }
+
+    {
+      // query.start should make remote data-source call again
+
+      allSettled(query.start, { scope });
+      // But wait for next tick becuase of async adapter's nature
+      await setTimeout(1);
+      await allSettled(scope);
+
+      expect(scope.getState(query.$data)).toEqual(2);
+    }
+
+    {
+      await allSettled($enabled, { scope, params: true });
+    }
+
+    // should read from cache instead of remote source
+    {
+      allSettled(query.start, { scope });
+      // But wait for next tick becuase of async adapter's nature
+      await setTimeout(1);
+      await allSettled(scope);
+
+      expect(scope.getState(query.$data)).toEqual(2);
+    }
+
+    expect(handler).toBeCalledTimes(2);
+  });
+
+  test("disabling cache shouldn't interfere with purging", async () => {
+    const $enabled = createStore(true);
+    const purge = createEvent();
+
+    let index = 1;
+    const handler = vi.fn(async (p: void) =>
+      setTimeout(1000).then(() => index++)
+    );
+    const query = withFactory({
+      fn: () =>
+        createQuery({
+          handler,
+        }),
+      sid: '1',
+    });
+
+    cache(query, {
+      /**
+       * It doesn't make sense to use cache without staleAfter,
+       * bcs it will be always stale,
+       * so:
+       * - (using query.start) it will be always refetched from remote source
+       * - (using query.refresh) it will allways be skipped due to freshness(provided from remote source)
+       *
+       */
+      staleAfter: '1h',
+      enabled: $enabled,
+      purge: purge,
+    });
+
+    const scope = fork();
+
+    // Load from remote data-source
+    {
+      allSettled(query.start, { scope });
+      // But wait for next tick becuase of async adapter's nature
+      await setTimeout(1);
+      await allSettled(scope);
+
+      expect(scope.getState(query.$data)).toEqual(1);
+    }
+
+    await allSettled($enabled, { scope, params: false });
+
+    await allSettled(purge, { scope });
+
+    // should read from remote source instead of cache
+    {
+      allSettled(query.start, { scope });
+      // But wait for next tick becuase of async adapter's nature
+      await setTimeout(1);
+      await allSettled(scope);
+
+      expect(scope.getState(query.$data)).toEqual(2);
+    }
+
+    expect(handler).toBeCalledTimes(2);
   });
 });

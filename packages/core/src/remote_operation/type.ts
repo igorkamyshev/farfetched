@@ -147,4 +147,5 @@ export type DataSource<Params> = {
   >;
   set?: Effect<{ params: Params; result: unknown }, void, unknown>;
   unset?: Effect<{ params: Params }, void, unknown>;
+  $enabled: Store<boolean>;
 };

@@ -161,6 +161,19 @@ cache(characterQuery, { staleAfter: '10min' });
 
 👆 if data is not older than 10 minutes, it will be considered as fresh and will not be fetched from the server.
 
+## Conditional caching
+It is possible to control enabling `cache` with a _boolean_ or [_Store_](https://effector.dev/docs/api/effector/store).
+
+```ts
+import { cache } from '@farfetched/core';
+
+cache(characterQuery, { 
+  staleAfter: '10min', 
+  enabled: $useCacheFeatureFlag
+});
+```
+👆 if data is not older than 10 minutes, but `cache` is **not enabled**, data will be refetched from the server.
+
 ## Deep-dive
 
 If you want to learn more about internal implementation of [`cache`](/api/operators/cache) operator, consider reading the [deep-dive article about it](/recipes/cache).

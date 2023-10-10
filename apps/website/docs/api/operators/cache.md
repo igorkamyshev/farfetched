@@ -19,6 +19,7 @@ Config fields:
 - `adapter?`: _CacheAdapter_
 - `staleAfter?`: [_Time_](/api/primitives/time) after which the data is considered stale and will be re-fetched immediately
 - `purge?`: [_Event_](https://effector.dev/docs/api/effector/event) after calling which all records will be deleted from the cache
+- `enabled?`: _boolean_ or [_Store_](https://effector.dev/docs/api/effector/store). If `false`, [_query_](/api/primitives/query) will work like `cache` hasn't been attached to it.
 
 ## Adapters
 

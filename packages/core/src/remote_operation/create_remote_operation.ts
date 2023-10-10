@@ -89,8 +89,9 @@ export function createRemoteOperation<
 
   const callObjectCreated = getCallObjectEvent(executeFx);
 
-  const remoteDataSoruce: DataSource<Params> = {
+  const remoteDataSource: DataSource<Params> = {
     name: 'remote_source',
+    $enabled: createStore(true),
     get: createEffect<
       { params: Params },
       { result: unknown; stale: boolean } | null,
@@ -101,7 +102,7 @@ export function createRemoteOperation<
     }),
   };
 
-  const dataSources = [remoteDataSoruce];
+  const dataSources = [remoteDataSource];
 
   const {
     retrieveDataFx,
@@ -461,7 +462,16 @@ function createDataSourceHandlers<Params>(dataSources: DataSource<Params>[]) {
     { stopErrorPropagation: boolean; error: unknown }
   >({
     handler: async ({ params, skipStale }) => {
-      for (const dataSource of dataSources) {
+      const enabledDataSources = dataSources.filter((ds) =>
+        /**
+         * It is safe to use getState here, because:
+         * 1. We inside of effect
+         * 2. We read all values before async/await
+         */
+        ds.$enabled.getState()
+      );
+
+      for (const dataSource of enabledDataSources) {
         try {
           const fromSource = await dataSource.get({ params });
 
