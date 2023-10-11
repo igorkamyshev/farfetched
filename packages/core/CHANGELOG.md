@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.10.2
+
+### Patch Changes
+
+- 8590dfb: Allow passing to connectQuery query with initialData
+
 ## 0.10.1
 
 ### Patch Changes
