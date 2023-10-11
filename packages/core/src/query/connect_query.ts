@@ -12,11 +12,11 @@ type NonExtendable = {
   [K in string]: never;
 };
 
-export function connectQuery<Sources, Target extends Query<any, any, any>>(
+export function connectQuery<Sources, Target extends Query<any, any, any, any>>(
   args: {
     source: Sources;
     target: Target | [...Target[]];
-  } & (Target extends Query<infer P, any, any>
+  } & (Target extends Query<infer P, any, any, any>
     ? P extends void
       ? { fn?: undefined }
       : Sources extends Query<any, any, any>
