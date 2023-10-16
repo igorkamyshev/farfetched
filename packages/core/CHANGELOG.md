@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.10.3
+
+### Patch Changes
+
+- 54d3bf1: Do not stop refreshing if source contains weird object
+
 ## 0.10.2
 
 ### Patch Changes
