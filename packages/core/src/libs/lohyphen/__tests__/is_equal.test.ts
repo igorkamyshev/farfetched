@@ -1,9 +1,8 @@
-// Source: https://github.com/smelukov/nano-equal
-
 import { describe, test, expect } from 'vitest';
 
 import { isEqual } from '../is_equal';
 
+// Source: https://github.com/smelukov/nano-equal
 describe('Functional', () => {
   const objA = {
     nan: NaN,
@@ -79,5 +78,22 @@ describe('Functional', () => {
     expect(isEqual(recA, recB)).toBeFalsy();
     expect(isEqual(recA2, recB2)).toBeTruthy();
     expect(isEqual(recA3, recB3)).toBeFalsy();
+  });
+});
+
+describe('isEqual', () => {
+  test('do not throw on weird objects, issue #385', () => {
+    function createWeirdObject() {
+      const a = {};
+      // @ts-expect-error 🤷‍♂️
+      a.__proto__ = null;
+      return a;
+    }
+
+    const weirdObject1 = createWeirdObject();
+    const weirdObject2 = createWeirdObject();
+
+    expect(() => isEqual(weirdObject1, weirdObject2)).not.toThrow();
+    expect(isEqual(weirdObject1, weirdObject2)).toBe(false);
   });
 });

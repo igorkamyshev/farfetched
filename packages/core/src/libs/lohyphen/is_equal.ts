@@ -1,91 +1,95 @@
 // Source: https://github.com/smelukov/nano-equal
 
 export function isEqual(a: any, b: any): boolean {
-  if (a === b) {
-    return true;
-  }
-
-  // is nan
-  if (a !== a && b !== b) {
-    // eslint-disable-line no-self-compare
-    return true;
-  }
-
-  const typeA = getType(a);
-  const typeB = getType(b);
-
-  if (typeA !== typeB) {
-    return false;
-  }
-
-  if (typeA === 'pure-object') {
+  try {
     if (a === b) {
       return true;
     }
 
-    const keysA = Object.keys(a);
-    const keysBLength = Object.keys(b).length;
+    // is nan
+    if (a !== a && b !== b) {
+      // eslint-disable-line no-self-compare
+      return true;
+    }
 
-    if (keysA.length !== keysBLength) {
+    const typeA = getType(a);
+    const typeB = getType(b);
+
+    if (typeA !== typeB) {
       return false;
     }
 
-    for (let i = 0, l = keysA.length; i < l; i++) {
-      const key = keysA[i];
+    if (typeA === 'pure-object') {
+      if (a === b) {
+        return true;
+      }
 
-      // eslint-disable-next-line no-prototype-builtins
-      if (!b.hasOwnProperty(keysA[i])) {
+      const keysA = Object.keys(a);
+      const keysBLength = Object.keys(b).length;
+
+      if (keysA.length !== keysBLength) {
         return false;
       }
 
-      const valA = a[key];
-      const valB = b[key];
+      for (let i = 0, l = keysA.length; i < l; i++) {
+        const key = keysA[i];
 
-      // handle recursion
-      if (valA === a || valB === b || valA === b || valB === a) {
-        return valA === valB;
-      }
-
-      if (!isEqual(valA, valB)) {
-        return false;
-      }
-    }
-
-    return true;
-  } else if (typeA === 'array') {
-    if (a.length === b.length) {
-      for (let j = 0; j < a.length; j++) {
-        const elA = a[j];
-        const elB = b[j];
-
-        // handle recursion
-        if (elA === a || elB === b || elA === b || elB === a) {
-          return elA === elB;
+        // eslint-disable-next-line no-prototype-builtins
+        if (!b.hasOwnProperty(keysA[i])) {
+          return false;
         }
 
-        if (!isEqual(elA, elB)) {
+        const valA = a[key];
+        const valB = b[key];
+
+        // handle recursion
+        if (valA === a || valB === b || valA === b || valB === a) {
+          return valA === valB;
+        }
+
+        if (!isEqual(valA, valB)) {
           return false;
         }
       }
-    } else {
-      return false;
-    }
 
-    return true;
-  } else if (typeA === 'object') {
-    if (
-      a.valueOf !== Object.prototype.valueOf() &&
-      b.valueOf !== Object.prototype.valueOf()
-    ) {
-      return a.valueOf() === b.valueOf();
-    }
+      return true;
+    } else if (typeA === 'array') {
+      if (a.length === b.length) {
+        for (let j = 0; j < a.length; j++) {
+          const elA = a[j];
+          const elB = b[j];
 
-    if (
-      a.toString !== Object.prototype.toString() &&
-      b.toString !== Object.prototype.toString()
-    ) {
-      return a.toString() === b.toString();
+          // handle recursion
+          if (elA === a || elB === b || elA === b || elB === a) {
+            return elA === elB;
+          }
+
+          if (!isEqual(elA, elB)) {
+            return false;
+          }
+        }
+      } else {
+        return false;
+      }
+
+      return true;
+    } else if (typeA === 'object') {
+      if (
+        a.valueOf !== Object.prototype.valueOf() &&
+        b.valueOf !== Object.prototype.valueOf()
+      ) {
+        return a.valueOf() === b.valueOf();
+      }
+
+      if (
+        a.toString !== Object.prototype.toString() &&
+        b.toString !== Object.prototype.toString()
+      ) {
+        return a.toString() === b.toString();
+      }
     }
+  } catch (e) {
+    // We got extremely weird objects, let us skip it and consider them not equal
   }
 
   return false;
