@@ -16,7 +16,7 @@ Built-in factories are easier to use, and they are more declarative, which makes
 
 ## JSON API
 
-A lot of modern APIs works with JSON. It accepts JSON as input and returns JSON as output. It's a very convenient format, because it's easy to read and write. Not only that, but it's also very flexible, because it allows you to send only the data you need. So, Farfetch has a built-in factory for JSON API — `createJsonQuery`.
+A lot of modern APIs work with JSON. It accepts JSON as input and returns JSON as output. It's a very convenient format, because it's easy to read and write. Not only that, but it's also very flexible, because it allows you to send only the data you need. So, Farfetch has a built-in factory for JSON API — `createJsonQuery`.
 
 Let's start with an example, and then we'll explain what's going on.
 
