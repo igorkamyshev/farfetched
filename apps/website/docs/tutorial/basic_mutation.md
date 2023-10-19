@@ -36,7 +36,7 @@ const myFirstMutation = createMutation({
 });
 ```
 
-So `handler` have to be asynchronous function that accepts some parameters and performs some work. It can return some data or does not return it. Since Farfetched is created for handling remote data, the most common use case of handler is function that calls some API.
+So `handler` has to be asynchronous function that accepts some parameters and performs some work. It can return some data or does not return it. Since Farfetched is created for handling remote data, the most common use case of handler is function that calls some API.
 
 ::: info
 
