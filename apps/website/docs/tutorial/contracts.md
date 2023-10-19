@@ -34,7 +34,7 @@ Of course, you can create your own [_Contract_](/api/primitives/contract) by han
 import { type Contract } from '@farfetched/core';
 
 const numberContract: Contract<
-  unknown, // it take some unknown data
+  unknown, // it takes some unknown data
   number // and returns number if it is valid
 > = {
   // it is valid if data is a number
