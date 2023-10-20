@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.10.4
+
+### Patch Changes
+
+- 0f30158: Add missed export of `JsonApiRequestError`
+
 ## 0.10.3
 
 ### Patch Changes
