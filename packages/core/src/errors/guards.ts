@@ -29,7 +29,7 @@ export function isTimeoutError(
 
 /**
  * Has to be private, do not export it.
- * 
+ *
  * Since Farfetcehd 0.10 aborted RemoteOperation is not considered as an error,
  * so isAbortError is not needed anymore in userland.
  */
