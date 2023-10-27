@@ -89,7 +89,6 @@ export {
 } from './src/errors/create_error';
 export {
   isTimeoutError,
-  isAbortError,
   isPreparationError,
   isHttpError,
   isNetworkError,

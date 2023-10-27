@@ -30,19 +30,6 @@ const timedOut = sample({
 });
 ```
 
-## `isAbortError`
-
-`AbortError` is thrown when the query is aborted.
-
-```ts
-import { isAbortError } from '@farfetched/core';
-
-const aborted = sample({
-  clock: query.finished.failure,
-  filter: isAbortError,
-});
-```
-
 ## `isPreparationError`
 
 Preparation error is thrown when the response cannot be prepared for some reason. For example, when the response is not a JSON string, but supposed to be.
