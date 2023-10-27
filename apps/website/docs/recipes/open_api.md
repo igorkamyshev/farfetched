@@ -11,7 +11,7 @@ In this recipe, we will use the [OpenAPI Generator](https://github.com/openapi/o
 ::: code-group
 
 ```sh [pnpm]
-pnpm install --dev openapi@^1.0.0 openapi-preset-effector typed-contracts
+pnpm add --save-dev openapi@^1.0.0 openapi-preset-effector typed-contracts
 ```
 
 ```sh [yarn]
