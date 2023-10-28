@@ -82,18 +82,34 @@ describe('Functional', () => {
 });
 
 describe('isEqual', () => {
-  test('do not throw on weird objects, issue #385', () => {
-    function createWeirdObject() {
-      const a = {};
-      // @ts-expect-error 🤷‍♂️
-      a.__proto__ = null;
-      return a;
-    }
+  describe('null-proto objects, issue #385', () => {
+    test('empty objects', () => {
+      const weirdObject1 = Object.create(null);
+      const weirdObject2 = Object.create(null);
 
-    const weirdObject1 = createWeirdObject();
-    const weirdObject2 = createWeirdObject();
+      expect(() => isEqual(weirdObject1, weirdObject2)).not.toThrow();
+      expect(isEqual(weirdObject1, weirdObject2)).toBe(true);
+    });
 
-    expect(() => isEqual(weirdObject1, weirdObject2)).not.toThrow();
-    expect(isEqual(weirdObject1, weirdObject2)).toBe(false);
+    test('different objects', () => {
+      const weirdObject1 = Object.create(null);
+      weirdObject1.a = 1;
+
+      const weirdObject2 = Object.create(null);
+
+      expect(() => isEqual(weirdObject1, weirdObject2)).not.toThrow();
+      expect(isEqual(weirdObject1, weirdObject2)).toBe(false);
+    });
+
+    test('same objects', () => {
+      const weirdObject1 = Object.create(null);
+      weirdObject1.a = 1;
+
+      const weirdObject2 = Object.create(null);
+      weirdObject2.a = 1;
+
+      expect(() => isEqual(weirdObject1, weirdObject2)).not.toThrow();
+      expect(isEqual(weirdObject1, weirdObject2)).toBe(true);
+    });
   });
 });

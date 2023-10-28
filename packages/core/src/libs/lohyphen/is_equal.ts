@@ -34,8 +34,7 @@ export function isEqual(a: any, b: any): boolean {
       for (let i = 0, l = keysA.length; i < l; i++) {
         const key = keysA[i];
 
-        // eslint-disable-next-line no-prototype-builtins
-        if (!b.hasOwnProperty(keysA[i])) {
+        if (!Object.prototype.hasOwnProperty.call(b, keysA[i])) {
           return false;
         }
 
@@ -75,6 +74,8 @@ export function isEqual(a: any, b: any): boolean {
       return true;
     } else if (typeA === 'object') {
       if (
+        a.valueOf &&
+        b.valueOf &&
         a.valueOf !== Object.prototype.valueOf() &&
         b.valueOf !== Object.prototype.valueOf()
       ) {
@@ -82,6 +83,8 @@ export function isEqual(a: any, b: any): boolean {
       }
 
       if (
+        a.toString &&
+        a.toString &&
         a.toString !== Object.prototype.toString() &&
         b.toString !== Object.prototype.toString()
       ) {
@@ -121,7 +124,7 @@ function getType(a: any): string {
       return 'null';
     } else if (isArrayLike(a)) {
       return 'array';
-    } else if (a.constructor === Object) {
+    } else if (a.constructor === Object || Object.getPrototypeOf(a) === null) {
       return 'pure-object';
     }
 
