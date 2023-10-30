@@ -1,6 +1,6 @@
 {
   "name": "@farfetched/superstruct",
-  "version": "0.10.4",
+  "version": "0.10.5",
   "type": "commonjs",
   "peerDependencies": {
     "superstruct": "^1.0.3"

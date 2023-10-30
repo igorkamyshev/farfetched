@@ -1,6 +1,6 @@
 {
   "name": "@farfetched/typed-contracts",
-  "version": "0.10.4",
+  "version": "0.10.5",
   "type": "commonjs",
   "peerDependencies": {
     "typed-contracts": "^3.0.0"
