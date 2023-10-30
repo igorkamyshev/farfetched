@@ -114,19 +114,29 @@ describe('isEqual', () => {
   });
 
   describe('Custom objects', () => {
-    class MyValueObject {
-      constructor(private value: number) {}
-      valueOf() {
-        return this.value;
+    test('custom object with custom valueOf', () => {
+      class MyValueObject {
+        constructor(private value: number) {}
+        valueOf() {
+          return this.value;
+        }
       }
-    }
 
-    test('same', () => {
       expect(isEqual(new MyValueObject(1), new MyValueObject(1))).toBe(true);
+      expect(isEqual(new MyValueObject(1), new MyValueObject(2))).toBe(false);
     });
 
-    test('different', () => {
+    test('custom object with no custom valueOf', () => {
+      class MyValueObject {
+        constructor(public value: number) {}
+      }
+
       expect(isEqual(new MyValueObject(1), new MyValueObject(2))).toBe(false);
+      /*
+       * Consider same obejects as different,
+       * because we have no idea how to compare them without custom valueOf
+       */
+      expect(isEqual(new MyValueObject(1), new MyValueObject(1))).toBe(false);
     });
   });
 

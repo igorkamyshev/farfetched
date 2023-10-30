@@ -71,22 +71,8 @@ export function isEqual(a: any, b: any): boolean {
 
       return true;
     } else if (typeA === 'object') {
-      if (
-        a.valueOf &&
-        b.valueOf &&
-        a.valueOf !== Object.prototype.valueOf() &&
-        b.valueOf !== Object.prototype.valueOf()
-      ) {
+      if (a.valueOf && b.valueOf) {
         return a.valueOf() === b.valueOf();
-      }
-
-      if (
-        a.toString &&
-        a.toString &&
-        a.toString !== Object.prototype.toString() &&
-        b.toString !== Object.prototype.toString()
-      ) {
-        return a.toString() === b.toString();
       }
     }
   } catch (e) {
