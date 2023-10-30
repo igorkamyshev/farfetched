@@ -112,4 +112,21 @@ describe('isEqual', () => {
       expect(isEqual(weirdObject1, weirdObject2)).toBe(true);
     });
   });
+
+  describe('Custom objects', () => {
+    class MyValueObject {
+      constructor(private value: number) {}
+      valueOf() {
+        return this.value;
+      }
+    }
+
+    test('same', () => {
+      expect(isEqual(new MyValueObject(1), new MyValueObject(1))).toBe(true);
+    });
+
+    test('different', () => {
+      expect(isEqual(new MyValueObject(1), new MyValueObject(2))).toBe(false);
+    });
+  });
 });
