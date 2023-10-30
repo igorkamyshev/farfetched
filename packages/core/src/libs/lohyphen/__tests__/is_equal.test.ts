@@ -129,4 +129,8 @@ describe('isEqual', () => {
       expect(isEqual(new MyValueObject(1), new MyValueObject(2))).toBe(false);
     });
   });
+
+  test('NaN', () => {
+    expect(isEqual(NaN, NaN)).toBe(true);
+  });
 });

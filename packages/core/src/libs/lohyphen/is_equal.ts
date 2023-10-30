@@ -6,9 +6,7 @@ export function isEqual(a: any, b: any): boolean {
       return true;
     }
 
-    // is nan
-    if (a !== a && b !== b) {
-      // eslint-disable-line no-self-compare
+    if (Number.isNaN(a) && Number.isNaN(b)) {
       return true;
     }
 
