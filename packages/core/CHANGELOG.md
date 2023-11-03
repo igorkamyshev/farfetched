@@ -1,5 +1,12 @@
 # @farfetched/core
 
+## 0.10.5
+
+### Patch Changes
+
+- 4a86b3e: Fix undefined case in isEqual with custom classes with no valueOf
+- ac5e2d8: Support null-prototype objects as first-class citizens in `keepFresh` operator. Aftershock for release 0.10.3.
+
 ## 0.10.4
 
 ### Patch Changes
