@@ -5,6 +5,7 @@ import {
   sample,
   is,
   createStore,
+  Store,
 } from 'effector';
 
 import { type Query } from '../query/type';
@@ -43,8 +44,34 @@ export function keepFresh<Params>(
 export function keepFresh<Params>(
   query: Query<Params, any, any, any>,
   config: {
+    triggers: Array<Event<any> | TriggerProtocol>;
+    enabled: Store<boolean>;
+  }
+): void;
+
+export function keepFresh<Params>(
+  query: Query<Params, any, any, any>,
+  config: {
+    automatically: true;
+    enabled: Store<boolean>;
+  }
+): void;
+
+export function keepFresh<Params>(
+  query: Query<Params, any, any, any>,
+  config: {
+    automatically: true;
+    triggers: Array<Event<any> | TriggerProtocol>;
+    enabled: Store<boolean>;
+  }
+): void;
+
+export function keepFresh<Params>(
+  query: Query<Params, any, any, any>,
+  config: {
     automatically?: true;
     triggers?: Array<Event<any> | TriggerProtocol>;
+    enabled?: Store<boolean>;
   }
 ): void {
   const triggers: Array<Event<any>> = [];
@@ -55,6 +82,16 @@ export function keepFresh<Params>(
   );
 
   triggers.push(...triggerEvents);
+
+  const enabledParamStores = [query.$enabled];
+  if (config.enabled !== undefined) {
+    enabledParamStores.push(config.enabled);
+  }
+
+  const $enabled = combine(
+    enabledParamStores,
+    (stores) => !stores.some((enabled) => !enabled)
+  );
 
   if (protocolCompatibleObjects.length > 0) {
     const triggersByProtocol = protocolCompatibleObjects.map((trigger) =>
@@ -71,15 +108,15 @@ export function keepFresh<Params>(
     sample({
       clock: [
         query.finished.success,
-        sample({ clock: query.$enabled.updates, filter: query.$enabled }),
+        sample({ clock: $enabled.updates, filter: $enabled }),
       ],
       filter: not($alreadySetup),
       target: [...triggersByProtocol.map(get('setup')), setup],
     });
 
     sample({
-      clock: query.$enabled.updates,
-      filter: and($alreadySetup, not(query.$enabled)),
+      clock: $enabled.updates,
+      filter: and($alreadySetup, not($enabled)),
       target: [...triggersByProtocol.map(get('teardown')), teardown],
     });
 
@@ -103,7 +140,7 @@ export function keepFresh<Params>(
       source: $partialSources,
       fn: (partialSources, clock) =>
         partialSources.map((partialSource) => partialSource(clock)),
-      filter: query.$enabled,
+      filter: $enabled,
       target: $previousSources,
     });
 
@@ -124,17 +161,14 @@ export function keepFresh<Params>(
 
     triggers.push(
       sample({
-        clock: [
-          $nextSources.updates,
-          query.$enabled.updates.filter({ fn: Boolean }),
-        ],
+        clock: [$nextSources.updates, $enabled.updates.filter({ fn: Boolean })],
         source: [$nextSources, $previousSources] as const,
         filter: ([next, prev]) => !isEqual(next, prev),
       })
     );
   }
 
-  const forceFresh = sample({ clock: triggers, filter: query.$enabled });
+  const forceFresh = sample({ clock: triggers, filter: $enabled });
 
   sample({
     clock: forceFresh,
