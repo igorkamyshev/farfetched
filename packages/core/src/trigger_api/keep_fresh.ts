@@ -49,10 +49,10 @@ export function keepFresh<Params>(
 ): void {
   const triggers: Array<Event<any>> = [];
 
-  const [triggerEvents, protocolCompatibleObjects] = divide(
-    config.triggers ?? [],
-    is.event
-  );
+  const [triggerEvents, protocolCompatibleObjects] = divide<
+    Event<any>,
+    TriggerProtocol
+  >(config.triggers ?? [], is.event);
 
   triggers.push(...triggerEvents);
 

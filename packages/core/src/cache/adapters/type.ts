@@ -13,10 +13,10 @@ export interface CacheAdapterOptions {
   maxEntries?: number;
   maxAge?: Time;
   observability?: {
-    hit?: Event<{ key: string }>;
-    miss?: Event<{ key: string }>;
-    expired?: Event<{ key: string }>;
-    evicted?: Event<{ key: string }>;
+    hit?: EventCallable<{ key: string }>;
+    miss?: EventCallable<{ key: string }>;
+    expired?: EventCallable<{ key: string }>;
+    evicted?: EventCallable<{ key: string }>;
   };
 }
 
