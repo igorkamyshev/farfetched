@@ -217,7 +217,7 @@ function normalizeStaticOrReactive<T>(
 
 function extractSource<S>(sourced: SourcedField<any, any, S>): Store<S> | null {
   if (is.store(sourced)) {
-    return sourced;
+    return sourced as Store<S>;
   }
 
   if (sourced?.source) {
