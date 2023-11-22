@@ -29,6 +29,7 @@ writeJsonFile('package.json', {
   ...originalPackageJson,
   publishConfig: { access: 'public' },
   license: 'MIT',
+  repository: 'https://github.com/igorkamyshev/farfetched',
 });
 
 const { version } = originalPackageJson;
