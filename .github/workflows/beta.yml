@@ -1,0 +1,25 @@
+name: Beta
+
+on:
+  push:
+    branches:
+      - '*'
+      - '!master'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+        shell: sh
+      - run: |
+          echo "@farfetched:registry=https://npm.pkg.github.com" > ~/.npmrc
+        shell: sh
+      - run: pnpm beta
+      - run: pnpm nx run-many --output-style=static --target=publish --all

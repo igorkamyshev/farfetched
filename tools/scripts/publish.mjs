@@ -6,6 +6,8 @@ import {
 } from '@nrwl/devkit';
 import { spawnSync } from 'child_process';
 
+import { invariant } from './shared/invariant.mjs';
+
 const [, , name] = process.argv;
 const graph = readCachedProjectGraph();
 
@@ -69,11 +71,4 @@ function getLastJsonObjectFromString(str) {
     }
   }
   return null;
-}
-
-function invariant(condition, message) {
-  if (!condition) {
-    logger.error(message);
-    process.exit(1);
-  }
 }
