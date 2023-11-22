@@ -23,3 +23,5 @@ jobs:
         shell: sh
       - run: pnpm beta
       - run: pnpm nx run-many --output-style=static --target=publish --all
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
