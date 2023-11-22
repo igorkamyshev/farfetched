@@ -88,13 +88,17 @@ export function abortable<P = void, D = void, F = Error>(config: {
   });
 
   if (abort?.signal) {
-    const abortTrigger = sample({ clock: abort.signal });
-
-    $calls.watch(abortTrigger, (calls) => {
+    const cancelAllFx = createEffect((calls: CurrentCall[]) => {
       calls.forEach((c) => {
         c.context?.runAborters?.();
         c.reject(abortError());
       });
+    });
+
+    sample({
+      clock: abort.signal,
+      source: $calls,
+      target: cancelAllFx,
     });
   }
 
