@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.10.6
+
+### Patch Changes
+
+- a3b87b6: Add missed header Accept in `createJsonQuery`/`createJsonMutation`
+
 ## 0.10.5
 
 ### Patch Changes
