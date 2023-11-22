@@ -1,7 +1,7 @@
-import { type Store, type Event, type EventCallable } from 'effector';
+import type { Store, Event, EventCallable, StoreWritable } from 'effector';
 
-import { type RemoteOperation } from '../remote_operation/type';
-import { type Serialize } from '../libs/patronus';
+import type { RemoteOperation } from '../remote_operation/type';
+import type { Serialize } from '../libs/patronus';
 
 export const QuerySymbol = Symbol('Query');
 
@@ -47,7 +47,7 @@ export interface Query<Params, Data, Error, InitialData = null>
   /**
    * Is data stale?
    */
-  $stale: Store<boolean>;
+  $stale: StoreWritable<boolean>;
   /** Event to reset the whole state of the query */
   reset: EventCallable<void>;
   '@@unitShape': () => {

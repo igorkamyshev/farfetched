@@ -145,12 +145,12 @@ export function createHeadlessQuery<
 
   sample({
     clock: operation.__.lowLevelAPI.pushData,
-    target: [$data, $error.reinit!],
+    target: [$data, $error.reinit],
   });
 
   sample({
     clock: operation.__.lowLevelAPI.pushError,
-    target: [$error, $data.reinit!],
+    target: [$error, $data.reinit],
   });
 
   // -- Trigger API
@@ -192,9 +192,9 @@ export function createHeadlessQuery<
   sample({
     clock: reset,
     target: [
-      $data.reinit!,
-      $error.reinit!,
-      $stale.reinit!,
+      $data.reinit,
+      $error.reinit,
+      $stale.reinit,
       operation.$status.reinit!,
     ],
   });
