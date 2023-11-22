@@ -1,7 +1,13 @@
-import { type Effect, Event, EventCallable, EventPayload, Store } from 'effector';
+import type {
+  Effect,
+  Event,
+  EventCallable,
+  EventPayload,
+  Store,
+} from 'effector';
 
-import { SourcedField, type FetchingStatus } from '../libs/patronus';
-import { CallObject } from './with_call_object';
+import type { SourcedField, FetchingStatus } from '../libs/patronus';
+import type { CallObject } from './with_call_object';
 
 interface DefaultMeta {
   name: string;
