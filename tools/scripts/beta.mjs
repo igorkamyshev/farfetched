@@ -20,6 +20,10 @@ spawnSync('pnpm', ['changeset', 'version'], {
   stdio: 'inherit',
 });
 
+spawnSync('pnpm', ['changeset', 'pre', 'exit'], {
+  stdio: 'inherit',
+});
+
 const graph = await createProjectGraphAsync();
 
 for (const [_name, project] of Object.entries(graph.nodes)) {
@@ -27,7 +31,12 @@ for (const [_name, project] of Object.entries(graph.nodes)) {
     continue;
   }
 
-  const packageJsonPath = join(project.data.sourceRoot, 'package.json');
+  const packageJsonPath = join(
+    process.cwd(),
+    project.data.sourceRoot,
+    '..',
+    'package.json'
+  );
 
   const originalPackageJson = readJsonFile(packageJsonPath);
 
@@ -36,10 +45,6 @@ for (const [_name, project] of Object.entries(graph.nodes)) {
     name: adjustPackageName(originalPackageJson.name),
   });
 }
-
-spawnSync('pnpm', ['changeset', 'pre', 'exit'], {
-  stdio: 'inherit',
-});
 
 function adjustPackageName(name) {
   return name.replace('@farfetched/', '@igorkamyshev/farfetched-');
