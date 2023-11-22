@@ -1,5 +1,5 @@
 import {
-  readCachedProjectGraph,
+  createProjectGraphAsync,
   writeJsonFile,
   readJsonFile,
 } from '@nrwl/devkit';
@@ -20,7 +20,9 @@ spawnSync('pnpm', ['changeset', 'version'], {
   stdio: 'inherit',
 });
 
-for (const [_name, project] of Object.entries(readCachedProjectGraph().nodes)) {
+const graph = await createProjectGraphAsync();
+
+for (const [_name, project] of Object.entries(graph.nodes)) {
   if (project.type !== 'lib') {
     continue;
   }
