@@ -1,4 +1,4 @@
-import { createStore, Store, attach, Effect } from 'effector';
+import { createStore, Store, attach, Effect, createEffect } from 'effector';
 import { describe, test, expectTypeOf } from 'vitest';
 
 import { createQuery } from '../create_query';
@@ -188,6 +188,25 @@ describe('connectQuery', () => {
       // @ts-expect-error fn does not exist for void query in target
       fn: () => ({ params: 1 }),
       target: someTargetQuery,
+    });
+  });
+
+  test('can use query with initialData', () => {
+    type Query1Data = { foo: string };
+    type Query2Data = { bar: string };
+
+    const query1 = createQuery({
+      effect: createEffect((): Query1Data => ({ foo: 'foo' })),
+    });
+
+    const query2 = createQuery({
+      initialData: { bar: '42' } as Query2Data,
+      effect: createEffect((): Query2Data => ({ bar: 'bar' })),
+    });
+
+    connectQuery({
+      source: query1,
+      target: query2,
     });
   });
 });

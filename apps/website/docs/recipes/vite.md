@@ -1,7 +1,7 @@
 # Vite
 
 :::info
-Farfetched does not require any special configuration for Vite for basic usage. However, if you want to use advanced features like [`cache`](/api/operators/cache) or [SSR](/recipes/ssr), you need to configure Vite. Detailed explanation of the reasons is available in [deep-dive article](/recipes/sids).
+Farfetched does not require any special configuration for Vite for basic usage. However, if you want to use advanced features like [`cache`](/api/operators/cache) or [server-side rendering](/recipes/ssr), you need to configure Vite. Detailed explanation of the reasons is available in [deep-dive article](/recipes/sids).
 :::
 
 [Vite](https://vitejs.dev/) uses ESBuild under the hood, which does not allow to use its internal AST in the plugins. To apply custom transformations to the code one must use either [Babel](https://github.com/owlsdepartment/vite-plugin-babel) or [SWC](https://github.com/egoist/unplugin-swc), which are allowing custom AST-transformations.
@@ -74,7 +74,11 @@ export default defineConfig({
 
 ## SWC
 
-> [SWC](https://swc.rs) is a blazing fast alternative to Babel.
+[SWC](https://swc.rs) is a blazing fast alternative to Babel.
+
+::: warning
+Note that [plugins for SWC are experimental](https://github.com/swc-project/swc/discussions/3540) and may not work as expected. We recommend to stick with Babel for now.
+:::
 
 1. Install required dependencies:
 
@@ -113,6 +117,23 @@ export default defineConfig({
   ],
 });
 ```
+
+::: tip
+If you are using [`@vitejs/plugin-react-swc`](https://github.com/vitejs/vite-plugin-react-swc) in your project, you do not need to add `unplugin-swc` to your config, because it is already included in `@vitejs/plugin-react-swc`. So, just modify your config to enable `@effector/swc-plugin`.
+
+```ts
+// vite.config.js
+import { defineConfig } from 'vite';
+import react from "@vitejs/plugin-react-swc";
+
+export default defineConfig({
+  plugins: [
+    react({ plugins: [["@effector/swc-plugin", {}]] });
+  ],
+});
+```
+
+:::
 
 ## Disable HMR
 
