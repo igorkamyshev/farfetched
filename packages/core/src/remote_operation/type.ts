@@ -114,11 +114,12 @@ export interface RemoteOperation<
       >;
       sourced: SourcedField<Params, unknown, unknown>[];
       paramsAreMeaningless: boolean;
-      revalidate: Event<{ params: Params; refresh: boolean }>;
-      pushData: Event<Data>;
-      pushError: Event<Error>;
-      startWithMeta: Event<{ params: Params; meta: ExecutionMeta }>;
+      revalidate: EventCallable<{ params: Params; refresh: boolean }>;
+      pushData: EventCallable<Data>;
+      pushError: EventCallable<Error>;
+      startWithMeta: EventCallable<{ params: Params; meta: ExecutionMeta }>;
       callObjectCreated: Event<CallObject>;
+      resetStatus: EventCallable<void>;
     } & ExtraLowLevelAPI;
     experimentalAPI?: {
       attach: <Source, NewParams>(config: {

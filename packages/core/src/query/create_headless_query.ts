@@ -195,7 +195,7 @@ export function createHeadlessQuery<
       $data.reinit,
       $error.reinit,
       $stale.reinit,
-      operation.$status.reinit!,
+      operation.__.lowLevelAPI.resetStatus,
     ],
   });
 

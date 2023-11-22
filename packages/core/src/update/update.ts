@@ -172,7 +172,7 @@ export function update<
       // @ts-expect-error I do not want to fight with TS here
       return { params: state?.params, refresh: true };
     },
-    target: [query.__.lowLevelAPI.revalidate, query.$stale.reinit!],
+    target: [query.__.lowLevelAPI.revalidate, query.$stale.reinit],
   });
 
   sample({

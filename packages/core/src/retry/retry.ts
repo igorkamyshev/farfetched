@@ -7,10 +7,10 @@ import {
   split,
   attach,
   scopeBind,
-  type Event,
   type EffectError,
   type EffectParams,
   type EffectResult,
+  type EventCallable,
 } from 'effector';
 
 import {
@@ -51,7 +51,7 @@ type RetryConfig<
     RemoteOperationParams<Q>,
     MapParamsSource
   >;
-  otherwise?: Event<FailInfo<Q>>;
+  otherwise?: EventCallable<FailInfo<Q>>;
   supressIntermediateErrors?: boolean;
 };
 

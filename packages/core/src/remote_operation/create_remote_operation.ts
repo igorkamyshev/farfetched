@@ -174,6 +174,9 @@ export function createRemoteOperation<
     serialize,
   });
 
+  const resetStatus = createEvent();
+  sample({ clock: resetStatus, target: $status.reinit });
+
   const $statusHistory = createStore<FetchingStatus[]>([], {
     serialize: 'ignore',
   });
@@ -445,6 +448,7 @@ export function createRemoteOperation<
         pushData,
         startWithMeta,
         callObjectCreated,
+        resetStatus,
       },
     },
   };
