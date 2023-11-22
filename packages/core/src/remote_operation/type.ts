@@ -1,4 +1,4 @@
-import { Effect, Event, EventPayload, Store } from 'effector';
+import { type Effect, Event, EventCallable, EventPayload, Store } from 'effector';
 
 import { SourcedField, type FetchingStatus } from '../libs/patronus';
 import { CallObject } from './with_call_object';
@@ -42,7 +42,7 @@ export interface RemoteOperation<
    */
   $enabled: Store<boolean>;
   /** Event to trigger query */
-  start: Event<Params>;
+  start: EventCallable<Params>;
   /** Event that trigered after operation started */
   started: Event<{ params: Params; meta: ExecutionMeta }>;
   aborted: Event<{ params: Params; meta: ExecutionMeta }>;

@@ -1,9 +1,6 @@
-import { type Store, type Event } from 'effector';
+import { type Store, type Event, type EventCallable } from 'effector';
 
-import {
-  type ExecutionMeta,
-  type RemoteOperation,
-} from '../remote_operation/type';
+import { type RemoteOperation } from '../remote_operation/type';
 import { type Serialize } from '../libs/patronus';
 
 export const QuerySymbol = Symbol('Query');
@@ -34,7 +31,7 @@ export interface Query<Params, Data, Error, InitialData = null>
   /**
    * Start fetching data if it is absent or stale.
    */
-  refresh: Event<Params>;
+  refresh: EventCallable<Params>;
   /**
    * The reactive value of the latest received data.
    *
@@ -52,13 +49,13 @@ export interface Query<Params, Data, Error, InitialData = null>
    */
   $stale: Store<boolean>;
   /** Event to reset the whole state of the query */
-  reset: Event<void>;
+  reset: EventCallable<void>;
   '@@unitShape': () => {
     data: Store<Data | InitialData>;
     error: Store<Error | null>;
     stale: Store<boolean>;
     pending: Store<boolean>;
-    start: Event<Params>;
+    start: EventCallable<Params>;
   };
 }
 
