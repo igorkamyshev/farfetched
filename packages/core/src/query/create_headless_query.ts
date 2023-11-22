@@ -109,16 +109,19 @@ export function createHeadlessQuery<
     sid: `ff.${operation.__.meta.name}.$data`,
     name: `${operation.__.meta.name}.$data`,
     serialize,
+    skipVoid: false,
   });
   const $error = createStore<Error | InvalidDataError | null>(null, {
     sid: `ff.${operation.__.meta.name}.$error`,
     name: `${operation.__.meta.name}.$error`,
     serialize: serializationForSideStore(serialize),
+    skipVoid: false,
   });
   const $stale = createStore<boolean>(true, {
     sid: `ff.${operation.__.meta.name}.$stale`,
     name: `${operation.__.meta.name}.$stale`,
     serialize: serializationForSideStore(serialize),
+    skipVoid: false,
   });
 
   sample({ clock: operation.finished.success, fn: () => null, target: $error });
@@ -167,7 +170,7 @@ export function createHeadlessQuery<
       clock: postponedRefresh,
       source: { stale: $stale, latestParams: operation.__.$latestParams },
       fn: ({ stale, latestParams }, params) => ({
-        haveToStart: stale || !isEqual(params ?? null, latestParams),
+        haveToStart: stale || !isEqual(params, latestParams),
         params,
       }),
     }),

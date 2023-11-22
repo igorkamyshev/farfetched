@@ -75,6 +75,8 @@ export function retry<
   const $maxAttempts = normalizeStaticOrReactive(times);
   const $attempt = createStore(1, {
     serialize: 'ignore',
+    name: 'ff.$attempt',
+    sid: 'ff.$attempt',
   });
 
   const $meta = combine({

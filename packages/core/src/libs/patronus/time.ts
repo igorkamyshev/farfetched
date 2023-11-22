@@ -14,7 +14,10 @@ export function time({
 }: {
   clock: Event<any> | Effect<any, any, any>;
 }): Store<number> {
-  const $time = createStore(Date.now());
+  const $time = createStore(Date.now(), {
+    name: 'ff.$time',
+    sid: 'ff.$time',
+  });
 
   sample({
     clock: clock as Event<any>,

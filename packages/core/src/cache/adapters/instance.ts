@@ -7,7 +7,8 @@ export function createCacheAdapter(
 ): CacheAdapter {
   const $instance = createStore(adapter, {
     serialize: 'ignore',
-    sid: 'ff.cache_instance',
+    name: 'ff.$cacheInstance',
+    sid: 'ff.$cacheInstance',
   });
 
   return { ...adapter, __: { $instance } };

@@ -77,7 +77,11 @@ export function abortable<P = void, D = void, F = Error>(config: {
 
     return result;
   });
-  const $calls = createStore<CurrentCall[]>([], { serialize: 'ignore' });
+  const $calls = createStore<CurrentCall[]>([], {
+    serialize: 'ignore',
+    name: 'ff.$calls',
+    sid: 'ff.$calls',
+  });
   const callsApi = createApi($calls, {
     add(calls, def: CurrentCall) {
       return [...calls, def];

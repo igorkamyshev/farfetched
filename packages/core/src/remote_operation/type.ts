@@ -101,7 +101,7 @@ export interface RemoteOperation<
      * Distinguish different kinds of operations
      */
     kind: unknown;
-    $latestParams: Store<Params | null>;
+    $latestParams: Store<Params | undefined>;
     /**
      * Low-level API, it can be changed anytime without any notice!
      */

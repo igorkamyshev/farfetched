@@ -161,7 +161,11 @@ export function createApiRequest<
 
   const prepareFx = createEffect(config.response.extract);
 
-  const $haveToBeAborted = createStore(false, { serialize: 'ignore' });
+  const $haveToBeAborted = createStore(false, {
+    serialize: 'ignore',
+    name: 'ff.$haveToBeAborted',
+    sid: 'ff.$haveToBeAborted',
+  });
 
   const apiRequestFx = createEffect<
     DynamicRequestConfig<B> &

@@ -170,7 +170,7 @@ export function createRemoteOperation<
   // -- Main stores --
   const $status = createStore<FetchingStatus>('initial', {
     sid: `ff.${name}.$status`,
-    name: `${name}.$status`,
+    name: `ff.${name}.$status`,
     serialize,
   });
 
@@ -179,6 +179,8 @@ export function createRemoteOperation<
 
   const $statusHistory = createStore<FetchingStatus[]>([], {
     serialize: 'ignore',
+    name: `ff.${name}.$statusHistory`,
+    sid: `ff.${name}.$statusHistory`,
   });
 
   sample({
@@ -190,8 +192,11 @@ export function createRemoteOperation<
 
   const $enabled = normalizeStaticOrReactive(enabled ?? true).map(Boolean);
 
-  const $latestParams = createStore<Params | null>(null, {
+  const $latestParams = createStore<Params | undefined>(undefined, {
     serialize: 'ignore',
+    name: `ff.${name}.$latestParams`,
+    sid: `ff.${name}.$latestParams`,
+    skipVoid: false,
   });
 
   // -- Derived stores --

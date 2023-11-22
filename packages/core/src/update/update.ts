@@ -103,10 +103,10 @@ export function update<
         }),
         queryState: $queryState,
       },
-      fn: ({ partialRule, queryState }, { result, params }) =>
+      fn: ({ partialRule, queryState }, mutation) =>
         partialRule({
           query: queryState,
-          mutation: { result, params: params ?? null },
+          mutation,
         }),
     }),
     match: {
@@ -125,10 +125,10 @@ export function update<
           }),
           queryState: $queryState,
         },
-        fn: ({ partialRule, queryState }, { error, params }) =>
+        fn: ({ partialRule, queryState }, mutation) =>
           partialRule({
             query: queryState,
-            mutation: { error, params: params ?? null },
+            mutation,
           }),
       }),
       match: {
