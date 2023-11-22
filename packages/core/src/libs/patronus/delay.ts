@@ -2,10 +2,11 @@ import {
   createEffect,
   createEvent,
   sample,
-  Unit,
-  Event,
-  Store,
-  EventAsReturnType,
+  type Unit,
+  type Event,
+  type Store,
+  type EventAsReturnType,
+  type EventCallable,
 } from 'effector';
 
 import { normalizeStaticOrReactive } from './sourced';
@@ -17,7 +18,7 @@ export function delay<T>({
 }: {
   clock: Unit<T>;
   timeout: Store<number> | number;
-  target?: Event<T>;
+  target?: EventCallable<T>;
 }): EventAsReturnType<T> {
   const timerFx = createEffect<{ payload: T; milliseconds: number }, T>(
     ({ payload, milliseconds }) =>
