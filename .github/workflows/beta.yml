@@ -14,11 +14,12 @@ jobs:
       - uses: pnpm/action-setup@v2
       - uses: actions/setup-node@v3
         with:
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@farfetched'
           node-version-file: '.nvmrc'
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
+        shell: sh
+      - run: |
+          echo "@farfetched:registry=https://npm.pkg.github.com" > ~/.npmrc
         shell: sh
       - name: Extract branch name
         shell: bash
