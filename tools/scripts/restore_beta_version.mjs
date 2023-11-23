@@ -51,23 +51,25 @@ for (const betaVersion of betaVersions.values()) {
   }
 }
 
-invariant(latestBetaVerison, 'Latest beta version is not found');
+if (latestBetaVerison) {
+  logger.info(`Latest beta version: ${latestBetaVerison}`);
 
-logger.info(`Latest beta version: ${latestBetaVerison}`);
+  for (const { root } of packages) {
+    const packageJsonPath = join(process.cwd(), root, 'package.json');
 
-for (const { root } of packages) {
-  const packageJsonPath = join(process.cwd(), root, 'package.json');
+    const originalPackageJson = readJsonFile(packageJsonPath);
 
-  const originalPackageJson = readJsonFile(packageJsonPath);
+    const nextPackageJson = {
+      ...originalPackageJson,
+      version: latestBetaVerison,
+    };
 
-  const nextPackageJson = {
-    ...originalPackageJson,
-    version: latestBetaVerison,
-  };
+    writeJsonFile(packageJsonPath, nextPackageJson);
 
-  writeJsonFile(packageJsonPath, nextPackageJson);
-
-  logger.info(
-    `Updated ${packageJsonPath} with version: ${nextPackageJson.version}`
-  );
+    logger.info(
+      `Updated ${packageJsonPath} with version: ${nextPackageJson.version}`
+    );
+  }
+} else {
+  logger.info(`No beta versions found`);
 }
