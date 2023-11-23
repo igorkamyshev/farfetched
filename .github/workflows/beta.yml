@@ -53,7 +53,9 @@ jobs:
           body: |
             # Farfetched Beta
 
-            Latest published version is ${{ steps.beta_info.outputs.betaVersion }}
+            Latest beta version is ${{ steps.beta_info.outputs.betaVersion }}
+
+            [More information about beta versions](https://beta.farfetched.pages.dev/releases/beta.html)
 
             ---
 
@@ -69,7 +71,9 @@ jobs:
           body: |
             # Farfetched Beta
               
-            Latest published version is ${{ steps.beta_info.outputs.betaVersion }}
+            Latest beta version is ${{ steps.beta_info.outputs.betaVersion }}
+
+            [More information about beta versions](https://beta.farfetched.pages.dev/releases/beta.html)
 
             ---
 
