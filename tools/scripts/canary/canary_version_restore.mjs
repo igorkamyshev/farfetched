@@ -1,11 +1,15 @@
-import {
+import { execSync } from 'node:child_process';
+import { join } from 'node:path';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+
+const {
   createProjectGraphAsync,
   logger,
   readJsonFile,
   writeJsonFile,
-} from '@nx/devkit';
-import { execSync } from 'child_process';
-import { join } from 'path';
+} = require('@nx/devkit');
 
 const [, , branch] = process.argv;
 

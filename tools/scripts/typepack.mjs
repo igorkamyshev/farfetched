@@ -1,9 +1,13 @@
 import path from 'node:path';
 import { parseArgs } from 'node:util';
 import { rmdir } from 'node:fs/promises';
-import { readCachedProjectGraph } from '@nx/devkit';
 import dts from 'rollup-plugin-dts';
 import { rollup } from 'rollup';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+
+const { readCachedProjectGraph } = require('@nx/devkit');
 
 const args = parseArgs({ options: { package: { type: 'string' } } });
 

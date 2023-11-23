@@ -1,5 +1,9 @@
-import { logger, readJsonFile } from '@nx/devkit';
-import { join } from 'path';
+import { join } from 'node:path';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+
+const { logger, readJsonFile } = require('@nx/devkit');
 
 const [, , commentBody] = process.argv;
 
