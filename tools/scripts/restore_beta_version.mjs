@@ -33,16 +33,18 @@ const betaVersions = new Set(
     .filter((version) => version.includes(`-${branch}.`))
 );
 
+logger.info(`Found beta versions: ${JSON.stringify(betaVersions.values())}`);
+
 const latestBetaVerisonSuffix = -1;
 const latestBetaVerison = null;
 
 for (const betaVersion of betaVersions.values()) {
   const [_, suffix] = betaVersion.split(`-${branch}.`);
 
-  const subbfixNumber = Number(suffix);
+  const suffixNumber = Number(suffix);
 
-  if (subbfixNumber > latestBetaVerison) {
-    latestBetaVerisonSuffix = subbfixNumber;
+  if (suffixNumber > latestBetaVerison) {
+    latestBetaVerisonSuffix = suffixNumber;
     latestBetaVerison = betaVersion;
   }
 }
