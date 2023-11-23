@@ -19,9 +19,7 @@ const packages = Object.entries(graph.nodes)
   .filter(([_name, { type, data }]) => type === 'lib' && data.targets.publish)
   .map(([name, { data }]) => ({ name, root: data.root }));
 
-const betaNames = packages.map(
-  ({ name }) => `@igorkamyshev/farfetched-${name}`
-);
+const betaNames = packages.map(({ name }) => `@farfetched-canary/${name}`);
 
 const betaVersions = new Set(
   betaNames
