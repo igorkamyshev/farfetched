@@ -5,6 +5,7 @@ import {
   writeJsonFile,
 } from '@nrwl/devkit';
 import { execSync } from 'child_process';
+import { join } from 'path';
 
 import { invariant } from './shared/invariant.mjs';
 
@@ -55,12 +56,18 @@ invariant(latestBetaVerison, 'Latest beta version is not found');
 logger.info(`Latest beta version: ${latestBetaVerison}`);
 
 for (const { root } of packages) {
-  process.chdir(root);
+  const packageJsonPath = join(process.cwd(), root, 'package.json');
 
-  const originalPackageJson = readJsonFile(`package.json`);
+  const originalPackageJson = readJsonFile(packageJsonPath);
 
-  writeJsonFile('package.json', {
+  const nextPackageJson = {
     ...originalPackageJson,
     version: latestBetaVerison,
-  });
+  };
+
+  writeJsonFile(packageJsonPath, nextPackageJson);
+
+  logger.info(
+    `Updated ${packageJsonPath} with version: ${nextPackageJson.version}`
+  );
 }
