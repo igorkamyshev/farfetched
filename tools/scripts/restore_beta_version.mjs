@@ -5,11 +5,12 @@ import {
   writeJsonFile,
 } from '@nrwl/devkit';
 import { spawnSync, execSync } from 'child_process';
-import { renameForGitHub } from './rename.mjs';
 
 import { invariant } from './shared/invariant.mjs';
 
 const [, , branch] = process.argv;
+
+logger.info(`Beta name is ${branch}`);
 
 const graph = await createProjectGraphAsync();
 
@@ -33,7 +34,7 @@ const betaVersions = new Set(
     .filter((version) => version.includes(`-${branch}.`))
 );
 
-logger.info(`Found beta versions: ${JSON.stringify(betaVersions.values())}`);
+logger.info(`Found beta versions: ${JSON.stringify(Array.from(betaVersions))}`);
 
 const latestBetaVerisonSuffix = -1;
 const latestBetaVerison = null;
