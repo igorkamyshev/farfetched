@@ -36,19 +36,21 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: 'github-actions[bot]'
           body-includes: Farfetched Beta
-
+      - name: What happened with Changes
+        shell: bash
+        run: node ./tools/scripts/beta_info.mjs >> $GITHUB_OUTPUT
+        id: release_info
       - name: Create comment
         if: steps.fc.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            Farfetched Beta: This comment was written by a bot!
-
+            Farfetched Beta: Latest published version is ${{ steps.release_info.outputs.version }}
       - name: Update comment
         if: steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           body: |
-            Farfetched Beta: This comment has been updated!
+            Farfetched Beta: Latest published version is ${{ steps.release_info.outputs.version }}
