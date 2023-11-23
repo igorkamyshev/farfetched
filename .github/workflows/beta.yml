@@ -48,8 +48,13 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            Farfetched Beta: Latest published version is `${{ steps.beta_info.outputs.betaVersion }}`
-            Used changeset: `${{ steps.beta_info.outputs.usedChangesets }}`
+            # Farfetched Beta
+            
+            Latest published version is ${{ steps.beta_info.outputs.betaVersion }}
+
+            ---
+
+            Used changeset: ${{ steps.beta_info.outputs.usedChangesets }}
       - name: Update comment
         if: steps.find_comment.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
@@ -57,5 +62,10 @@ jobs:
           edit-mode: replace
           comment-id: ${{ steps.find_comment.outputs.comment-id }}
           body: |
-            Farfetched Beta: Latest published version is `${{ steps.beta_info.outputs.betaVersion }}`
-            Used changeset: `${{ steps.beta_info.outputs.usedChangesets }}`
+            # Farfetched Beta
+              
+            Latest published version is ${{ steps.beta_info.outputs.betaVersion }}
+
+            ---
+
+            Used changeset: ${{ steps.beta_info.outputs.usedChangesets }}
