@@ -16,6 +16,7 @@ import {
   syncBatch,
   normalizeSourced,
   extractSource,
+  every,
 } from '../libs/patronus';
 import { type TriggerProtocol } from './trigger_protocol';
 
@@ -23,6 +24,7 @@ export function keepFresh<Params>(
   query: Query<Params, any, any, any>,
   config: {
     automatically: true;
+    enabled?: Store<boolean>;
   }
 ): void;
 
@@ -30,6 +32,7 @@ export function keepFresh<Params>(
   query: Query<Params, any, any, any>,
   config: {
     triggers: Array<Event<any> | TriggerProtocol>;
+    enabled?: Store<boolean>;
   }
 ): void;
 
@@ -38,31 +41,7 @@ export function keepFresh<Params>(
   config: {
     automatically: true;
     triggers: Array<Event<any> | TriggerProtocol>;
-  }
-): void;
-
-export function keepFresh<Params>(
-  query: Query<Params, any, any, any>,
-  config: {
-    triggers: Array<Event<any> | TriggerProtocol>;
-    enabled: Store<boolean>;
-  }
-): void;
-
-export function keepFresh<Params>(
-  query: Query<Params, any, any, any>,
-  config: {
-    automatically: true;
-    enabled: Store<boolean>;
-  }
-): void;
-
-export function keepFresh<Params>(
-  query: Query<Params, any, any, any>,
-  config: {
-    automatically: true;
-    triggers: Array<Event<any> | TriggerProtocol>;
-    enabled: Store<boolean>;
+    enabled?: Store<boolean>;
   }
 ): void;
 
@@ -88,10 +67,10 @@ export function keepFresh<Params>(
     enabledParamStores.push(config.enabled);
   }
 
-  const $enabled = combine(
-    enabledParamStores,
-    (stores) => !stores.some((enabled) => !enabled)
-  );
+  const $enabled = every({
+    predicate: Boolean,
+    stores: enabledParamStores,
+  });
 
   if (protocolCompatibleObjects.length > 0) {
     const triggersByProtocol = protocolCompatibleObjects.map((trigger) =>

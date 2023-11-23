@@ -222,13 +222,25 @@ describe('keepFresh, triggers as TriggerProtocol', () => {
       fired: createEvent(),
     };
 
+    const scope = fork();
+
     const $enabled = createStore(true);
 
     const teardownListener = vi.fn();
-    trigger.teardown.watch(teardownListener);
+
+    createWatch({
+      unit: trigger.teardown,
+      fn: teardownListener,
+      scope,
+    });
 
     const setupListener = vi.fn();
-    trigger.setup.watch(setupListener);
+
+    createWatch({
+      unit: trigger.setup,
+      fn: setupListener,
+      scope,
+    });
 
     const query = createQuery({
       handler: vi.fn(),
@@ -242,8 +254,6 @@ describe('keepFresh, triggers as TriggerProtocol', () => {
         },
       ],
     });
-
-    const scope = fork();
 
     await allSettled(query.refresh, { scope });
 
