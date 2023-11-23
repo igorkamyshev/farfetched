@@ -12,9 +12,8 @@ import { invariant } from './shared/invariant.mjs';
 const graph = await createProjectGraphAsync();
 
 const packages = Object.entries(graph.nodes)
-  .filter(([_name, { type }]) => type === 'lib')
+  .filter(([_name, { type, data }]) => type === 'lib' && data.targets.publish)
   .map(([name, { data }]) => ({ name, root: data.root }));
-// .map(([name]) => `@igorkamyshev/farfetched-${name}`);
 
 const betaNames = packages.map(
   ({ name }) => `@igorkamyshev/farfetched-${name}`
