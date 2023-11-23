@@ -36,6 +36,7 @@ jobs:
       - run: node ./tools/scripts/beta_required.mjs """${{ steps.find_comment.outputs.comment-body }}""" >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
         id: beta_required
       - run: pnpm nx run-many --output-style=static --target=publish --all --configuration=beta
+        if: steps.beta_required.outputs.skipBeta == ''
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: What happened with Changes
@@ -49,7 +50,7 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             # Farfetched Beta
-            
+
             Latest published version is ${{ steps.beta_info.outputs.betaVersion }}
 
             ---

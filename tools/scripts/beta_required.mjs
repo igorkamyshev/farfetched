@@ -19,5 +19,23 @@ const usedChangesets = readJsonFile(
   join(process.cwd(), '.changeset', 'pre.json')
 ).changesets;
 
+previousChangesets.sort();
+usedChangesets.sort();
+
+const skipBeta = isArraysEquals(previousChangesets, usedChangesets)
+  ? 'skip'
+  : '';
+
 logger.log(`previousChangesets="${JSON.stringify(previousChangesets)}"`);
 logger.log(`usedChangesets="${JSON.stringify(usedChangesets)}"`);
+logger.log(`skipBeta=${skipBeta}`);
+
+// utils
+
+function isArraysEquals(a, b) {
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  return a.every((item, index) => item === b[index]);
+}
