@@ -44,10 +44,15 @@ for (const betaVersion of betaVersions.values()) {
 
   const suffixNumber = Number(suffix);
 
+  console.log('BEF', { suffixNumber, latestBetaVerisonSuffix, betaVersion });
+
   if (suffixNumber > latestBetaVerison) {
+    console.log('IN', { suffixNumber, latestBetaVerisonSuffix, betaVersion });
     latestBetaVerisonSuffix = suffixNumber;
     latestBetaVerison = betaVersion;
   }
 }
 
-console.log(latestBetaVerison);
+invariant(latestBetaVerison, 'Latest beta version is not found');
+
+logger.info(`Latest beta version: ${latestBetaVerison}`);
