@@ -32,14 +32,19 @@
     "publish": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/scripts/publish.mjs typed-contracts"
+        "command": "node tools/scripts/publish.mjs typed-contracts --rename={args.rename}"
       },
       "dependsOn": [
         {
           "projects": "self",
           "target": "pack"
         }
-      ]
+      ],
+      "configurations": {
+        "beta": {
+          "args": "--rename=github"
+        }
+      }
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

@@ -15,8 +15,7 @@
     "build": "nx run-many --target=build --all",
     "format": "nx format:write --all",
     "size": "nx run-many --target=size --all",
-    "changes": "changeset",
-    "beta": "node ./tools/scripts/beta.mjs"
+    "changes": "changeset"
   },
   "devDependencies": {
     "@algolia/client-search": "^4.14.2",

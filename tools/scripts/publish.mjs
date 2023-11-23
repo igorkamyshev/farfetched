@@ -5,11 +5,14 @@ import {
   writeJsonFile,
 } from '@nrwl/devkit';
 import { spawnSync } from 'child_process';
+import { renameForGitHub } from './rename.mjs';
 
 import { invariant } from './shared/invariant.mjs';
 
-const [, , name] = process.argv;
+const [, , name, renameOption] = process.argv;
 const graph = readCachedProjectGraph();
+
+const shouldRenameForGithub = renameOption === '--rename=github';
 
 const project = graph.nodes[name];
 invariant(
@@ -42,6 +45,10 @@ invariant(
   version && validVersion.test(version),
   `No version provided or version did not match Semantic Versioning, expected: #.#.#-tag.# or #.#.#, got ${version}.`
 );
+
+if (shouldRenameForGithub) {
+  await renameForGitHub();
+}
 
 const result = spawnSync('npm', ['publish', '--json', '--access', 'public']);
 

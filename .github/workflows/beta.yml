@@ -20,7 +20,13 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
         shell: sh
-      - run: pnpm beta
-      - run: pnpm nx run-many --output-style=static --target=publish --all
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+      - run: pnpm changeset pre enter ${{ steps.extract_branch.outputs.branch }}
+      - run: pnpm changeset version
+      - run: pnpm changeset pre exit
+      - run: pnpm nx run-many --output-style=static --target=publish --all --configuration=beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
