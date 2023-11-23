@@ -10,7 +10,6 @@
     "test:tools": "vitest run tools",
     "lint": "nx run-many --target=lint --all",
     "lint:format": "nx format:check --all",
-    "lint:workspace": "nx workspace-lint",
     "lint:changes": "changeset status",
     "build": "nx run-many --target=build --all",
     "format": "nx format:write --all",
