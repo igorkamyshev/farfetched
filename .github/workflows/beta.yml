@@ -38,19 +38,20 @@ jobs:
           body-includes: Farfetched Beta
       - name: What happened with Changes
         shell: bash
-        run: node ./tools/scripts/beta_info.mjs >> $GITHUB_OUTPUT
-        id: release_info
+        run: node ./tools/scripts/beta_info.mjs >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
+        id: beta_info
       - name: Create comment
         if: steps.fc.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            Farfetched Beta: Latest published version is ${{ steps.release_info.outputs.version }}
+            Farfetched Beta: Latest published version is `${{ steps.beta_info.outputs.version }}`
       - name: Update comment
         if: steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
         with:
+          edit-mode: replace
           comment-id: ${{ steps.fc.outputs.comment-id }}
           body: |
-            Farfetched Beta: Latest published version is ${{ steps.release_info.outputs.version }}
+            Farfetched Beta: Latest published version is `${{ steps.beta_info.outputs.version }}`
