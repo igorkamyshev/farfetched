@@ -39,7 +39,7 @@ Actually, that is all what you need to start, but consider installing one of the
 
 ## Additional tools
 
-For some advanced usage, like [writing tests](/recipes/testing) and [server-side rendering](/recipes/ssr), Farfetched requires a few code transformations. You can write it by hands, but it is a boring job that you can forward to a machine. Effector's ecosystem provides a few tools to help you with that.
+For some advanced usage, like [`cache`](/api/operators/cache) or [server-side rendering](/recipes/ssr), Farfetched requires a few code transformations. You can write it by hands, but it is a boring job that you can forward to a machine. Effector's ecosystem provides a few tools to help you with that.
 
 <!--@include: ../shared/sids_plugins.md-->
 

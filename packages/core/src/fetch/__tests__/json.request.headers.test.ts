@@ -27,6 +27,7 @@ describe('fetch/json.request.headers', () => {
 
     expect(fetchMock.mock.calls[0][0].headers).toEqual(
       new Headers({
+        Accept: 'application/json',
         'content-type': 'application/json',
       })
     );
@@ -46,6 +47,8 @@ describe('fetch/json.request.headers', () => {
       params: {},
     });
 
-    expect(fetchMock.mock.calls[0][0].headers).toEqual(new Headers({}));
+    expect(fetchMock.mock.calls[0][0].headers).toEqual(
+      new Headers({ Accept: 'application/json' })
+    );
   });
 });

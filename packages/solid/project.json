@@ -33,14 +33,19 @@
     "publish": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/scripts/publish.mjs solid"
+        "command": "node tools/scripts/publish.mjs solid --rename={args.rename}"
       },
       "dependsOn": [
         {
           "projects": "self",
           "target": "pack"
         }
-      ]
+      ],
+      "configurations": {
+        "canary": {
+          "args": "--rename=canary"
+        }
+      }
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

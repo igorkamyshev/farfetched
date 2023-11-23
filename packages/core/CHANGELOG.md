@@ -1,5 +1,42 @@
 # @farfetched/core
 
+## 0.10.6
+
+### Patch Changes
+
+- a3b87b6: Add missed header Accept in `createJsonQuery`/`createJsonMutation`
+
+## 0.10.5
+
+### Patch Changes
+
+- 4a86b3e: Fix undefined case in isEqual with custom classes with no valueOf
+- ac5e2d8: Support null-prototype objects as first-class citizens in `keepFresh` operator. Aftershock for release 0.10.3.
+
+## 0.10.4
+
+### Patch Changes
+
+- 0f30158: Add missed export of `JsonApiRequestError`
+
+## 0.10.3
+
+### Patch Changes
+
+- 54d3bf1: Do not stop refreshing if source contains weird object
+
+## 0.10.2
+
+### Patch Changes
+
+- 8590dfb: Allow passing to connectQuery query with initialData
+
+## 0.10.1
+
+### Patch Changes
+
+- e8a1385: Support _Query_ with initial data in `update` operator types
+
 ## 0.10.0
 
 ### Minor Changes

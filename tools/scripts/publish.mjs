@@ -6,8 +6,13 @@ import {
 } from '@nrwl/devkit';
 import { spawnSync } from 'child_process';
 
-const [, , name] = process.argv;
+import { renameForCanary } from './canary/canary_rename.mjs';
+import { invariant } from './shared/invariant.mjs';
+
+const [, , name, renameOption] = process.argv;
 const graph = readCachedProjectGraph();
+
+const shouldRenameForCanary = renameOption === '--rename=canary';
 
 const project = graph.nodes[name];
 invariant(
@@ -29,6 +34,7 @@ writeJsonFile('package.json', {
   ...originalPackageJson,
   publishConfig: { access: 'public' },
   license: 'MIT',
+  repository: 'https://github.com/igorkamyshev/farfetched',
 });
 
 const { version } = originalPackageJson;
@@ -39,6 +45,10 @@ invariant(
   version && validVersion.test(version),
   `No version provided or version did not match Semantic Versioning, expected: #.#.#-tag.# or #.#.#, got ${version}.`
 );
+
+if (shouldRenameForCanary) {
+  await renameForCanary();
+}
 
 const result = spawnSync('npm', ['publish', '--json', '--access', 'public']);
 
@@ -68,11 +78,4 @@ function getLastJsonObjectFromString(str) {
     }
   }
   return null;
-}
-
-function invariant(condition, message) {
-  if (!condition) {
-    logger.error(message);
-    process.exit(1);
-  }
 }

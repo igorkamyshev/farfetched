@@ -291,6 +291,10 @@ export default withMermaid(
                 text: 'Code generation with OpenAPI',
                 link: '/recipes/open_api',
               },
+              {
+                text: 'Base URL for all operations',
+                link: '/recipes/base_url',
+              },
             ],
           },
           {
@@ -370,6 +374,7 @@ export default withMermaid(
                 text: 'Render as you fetch',
                 link: '/statements/render_as_you_fetch',
               },
+              { text: 'No globals', link: '/statements/no_globals' },
               { text: 'Testing', link: '/statements/tests' },
               { text: 'Effector', link: '/statements/effector' },
               { text: 'TypeScript', link: '/statements/typescript' },
