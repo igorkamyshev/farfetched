@@ -6,6 +6,13 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      - name: Find Comment
+        uses: peter-evans/find-comment@v1
+        id: find_comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Farfetched Beta
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
       - uses: actions/setup-node@v3
@@ -26,32 +33,29 @@ jobs:
       - run: pnpm changeset pre enter ${{ steps.extract_branch.outputs.branch }}
       - run: pnpm changeset version
       - run: pnpm changeset pre exit
+      - run: node ./tools/scripts/beta_required.mjs ${{ steps.find_comment.outputs.comment-body }} >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
+        id: beta_required
       - run: pnpm nx run-many --output-style=static --target=publish --all --configuration=beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Find Comment
-        uses: peter-evans/find-comment@v1
-        id: fc
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: Farfetched Beta
       - name: What happened with Changes
         shell: bash
         run: node ./tools/scripts/beta_info.mjs >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
         id: beta_info
       - name: Create comment
-        if: steps.fc.outputs.comment-id == ''
+        if: steps.find_comment.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             Farfetched Beta: Latest published version is `${{ steps.beta_info.outputs.betaVersion }}`
+            Used changeset: `${{ steps.beta_info.outputs.usedChangesets }}`
       - name: Update comment
-        if: steps.fc.outputs.comment-id != ''
+        if: steps.find_comment.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
         with:
           edit-mode: replace
-          comment-id: ${{ steps.fc.outputs.comment-id }}
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
           body: |
             Farfetched Beta: Latest published version is `${{ steps.beta_info.outputs.betaVersion }}`
+            Used changeset: `${{ steps.beta_info.outputs.usedChangesets }}`
