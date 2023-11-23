@@ -7,8 +7,6 @@ import {
 import { execSync } from 'child_process';
 import { join } from 'path';
 
-import { invariant } from './shared/invariant.mjs';
-
 const [, , branch] = process.argv;
 
 logger.info(`Beta name is ${branch}`);

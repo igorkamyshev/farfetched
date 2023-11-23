@@ -28,7 +28,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # Parse latest published version of the beta and update local package.json for all packages
       - name: Restore beta version
-        run: node ./tools/scripts/restore_beta_version.mjs ${{ github.event.pull_request.number }}
+        run: node ./tools/scripts/beta/beta_version_restore.mjs ${{ github.event.pull_request.number }}
       # Update version in package.json for all packages with changeset and generate pre.json file
       - run: pnpm changeset pre enter ${{ github.event.pull_request.number }}
       - run: pnpm changeset version
@@ -37,13 +37,13 @@ jobs:
       # it uses pre.json file and information about previous beta from the comment
       - name: Check if new beta is required
         id: beta_required
-        run: node ./tools/scripts/beta_required.mjs """${{ steps.find_comment.outputs.comment-body }}""" >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
+        run: node ./tools/scripts/beta/beta_required.mjs """${{ steps.find_comment.outputs.comment-body }}""" >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
       - name: Publish beta
         if: steps.beta_required.outputs.skipBeta == ''
         run: pnpm nx run-many --output-style=static --target=publish --all --configuration=beta
       - name: Retrieve information about latest beta
         id: beta_info
-        run: node ./tools/scripts/beta_info.mjs >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
+        run: node ./tools/scripts/beta/beta_info.mjs >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
       # In case of absence of the comment we will create it with information about latest beta
       - name: Create comment
         if: steps.find_comment.outputs.comment-id == ''
