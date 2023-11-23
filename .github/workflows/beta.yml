@@ -24,7 +24,7 @@ jobs:
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
-      - run: node ./tools/scripts/restore_beta_versions.mjs
+      - run: node ./tools/scripts/restore_beta_version.mjs
       - run: pnpm changeset pre enter ${{ steps.extract_branch.outputs.branch }}
       - run: pnpm changeset version
       - run: pnpm changeset pre exit
