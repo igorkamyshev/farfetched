@@ -34,7 +34,9 @@ const canaryVersions = new Set(
     .filter((version) => version.includes(`-${branch}.`))
 );
 
-logger.info(`Found canary versions: ${JSON.stringify(Array.from(canaryVersions))}`);
+logger.info(
+  `Found canary versions: ${JSON.stringify(Array.from(canaryVersions))}`
+);
 
 let latestCanaryVerisonSuffix = -1;
 let latestCanaryVerison = null;

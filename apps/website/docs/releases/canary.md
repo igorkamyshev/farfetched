@@ -4,6 +4,10 @@ sidebar: false
 
 # Canary versions of Farfetched
 
+:::danger
+Canary versions are not intended for production use. They can contain bugs and breaking changes, some features can be removed or changed in the stable release.
+:::
+
 We release canary versions of Farfetched to allow you to try new features before they are released. Canary versions are published for every PR that contains changesets. You can find the latest canary version of the package for particular PR in the PR comments.
 
 ## How to use
