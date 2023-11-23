@@ -7,7 +7,7 @@ sidebar: false
 Farfetched is mostly been creating in Thailand, so all releases are named after beautiful places in Thailand.
 
 :::tip
-To use unreleased version of Farfetched, please refer to [beta](/releases/beta) page.
+To use unreleased version of Farfetched, please refer to [canary](/releases/canary) page.
 :::
 
 <script setup>

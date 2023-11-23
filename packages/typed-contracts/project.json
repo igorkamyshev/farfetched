@@ -41,7 +41,7 @@
         }
       ],
       "configurations": {
-        "beta": {
+        "canary": {
           "args": "--rename=canary"
         }
       }

@@ -22,13 +22,13 @@ const usedChangesets = readJsonFile(
 previousChangesets.sort();
 usedChangesets.sort();
 
-const skipBeta = isArraysEquals(previousChangesets, usedChangesets)
+const skipCanary = isArraysEquals(previousChangesets, usedChangesets)
   ? 'skip'
   : '';
 
 logger.log(`previousChangesets="${JSON.stringify(previousChangesets)}"`);
 logger.log(`usedChangesets="${JSON.stringify(usedChangesets)}"`);
-logger.log(`skipBeta=${skipBeta}`);
+logger.log(`skipCanary=${skipCanary}`);
 
 // utils
 

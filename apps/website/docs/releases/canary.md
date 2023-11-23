@@ -2,13 +2,13 @@
 sidebar: false
 ---
 
-# Beta versions of Farfetched
+# Canary versions of Farfetched
 
-We release beta versions of Farfetched to allow you to try new features before they are released. Beta versions are published for every PR that contains changesets. You can find the latest beta version of the package for particular PR in the PR comments.
+We release canary versions of Farfetched to allow you to try new features before they are released. Canary versions are published for every PR that contains changesets. You can find the latest canary version of the package for particular PR in the PR comments.
 
 ## How to use
 
-1. Replace current versions with the beta versions in `package.json`
+1. Replace current versions with the canary versions in `package.json`
 
 ```json
 {
@@ -35,22 +35,22 @@ yarn install
 npm install
 ```
 
-3. Enjoy new features!
+3. Test your application with the canary version of Farfetched
 
 :::
 
 ## Deep-dive
 
-In this section, you can find more details about beta versions publishing process.
+In this section, you can find more details about canary versions publishing process.
 
 ### Package names
 
-Beta versions of Farfetched are published to scope `@farfetched-canary` instead of `@farfetched`. To use them, you need to change the package name in `package.json` from `@farfetched/*` to `@farfetched-canary/*`.
+Canary versions of Farfetched are published to scope `@farfetched-canary` instead of `@farfetched`. To use them, you need to change the package name in `package.json` from `@farfetched/*` to `@farfetched-canary/*`.
 
 ::: details Full mapping
 
 <script setup>
-    import { data as mapping } from './beta_mapping.data'
+    import { data as mapping } from './canary_mapping.data'
 </script>
 
 <table>
@@ -72,7 +72,7 @@ Beta versions of Farfetched are published to scope `@farfetched-canary` instead 
 
 ### Package versions
 
-Package versions for beta versions of Farfetched are generated automatically by the following rules:
+Package versions for canary versions of Farfetched are generated automatically by the following rules:
 
 1. Generate next version of the package according to [semver](https://semver.org/) rules based on changesets in the branch.
 2. Add PR number to the end of the version.

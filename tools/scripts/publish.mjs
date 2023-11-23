@@ -6,7 +6,7 @@ import {
 } from '@nrwl/devkit';
 import { spawnSync } from 'child_process';
 
-import { renameForCanary } from './beta/beta_rename.mjs';
+import { renameForCanary } from './canary/canary_rename.mjs';
 import { invariant } from './shared/invariant.mjs';
 
 const [, , name, renameOption] = process.argv;

@@ -34,24 +34,24 @@ const betaVersions = new Set(
     .filter((version) => version.includes(`-${branch}.`))
 );
 
-logger.info(`Found beta versions: ${JSON.stringify(Array.from(betaVersions))}`);
+logger.info(`Found canary versions: ${JSON.stringify(Array.from(betaVersions))}`);
 
-let latestBetaVerisonSuffix = -1;
-let latestBetaVerison = null;
+let latestCanaryVerisonSuffix = -1;
+let latestCanaryVerison = null;
 
-for (const betaVersion of betaVersions.values()) {
-  const [_, suffix] = betaVersion.split(`-${branch}.`);
+for (const canaryVersion of canaryVersions.values()) {
+  const [_, suffix] = canaryVersion.split(`-${branch}.`);
 
   const suffixNumber = Number(suffix);
 
-  if (suffixNumber > latestBetaVerisonSuffix) {
-    latestBetaVerisonSuffix = suffixNumber;
-    latestBetaVerison = betaVersion;
+  if (suffixNumber > latestCanaryVerisonSuffix) {
+    latestCanaryVerisonSuffix = suffixNumber;
+    latestCanaryVerison = canaryVersion;
   }
 }
 
-if (latestBetaVerison) {
-  logger.info(`Latest beta version: ${latestBetaVerison}`);
+if (latestCanaryVerison) {
+  logger.info(`Latest canary version: ${latestCanaryVerison}`);
 
   for (const { root } of packages) {
     const packageJsonPath = join(process.cwd(), root, 'package.json');
@@ -60,7 +60,7 @@ if (latestBetaVerison) {
 
     const nextPackageJson = {
       ...originalPackageJson,
-      version: latestBetaVerison,
+      version: latestCanaryVerison,
     };
 
     writeJsonFile(packageJsonPath, nextPackageJson);
@@ -70,5 +70,5 @@ if (latestBetaVerison) {
     );
   }
 } else {
-  logger.info(`No beta versions found`);
+  logger.info(`No canary versions found`);
 }

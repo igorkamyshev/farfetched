@@ -10,11 +10,11 @@ const packages = Object.entries(graph.nodes)
 const { root } = packages.at(0);
 const packageJsonPath = join(process.cwd(), root, 'package.json');
 
-const betaVersion = readJsonFile(packageJsonPath).version;
+const canaryVersion = readJsonFile(packageJsonPath).version;
 
 const usedChangesets = readJsonFile(
   join(process.cwd(), '.changeset', 'pre.json')
 ).changesets;
 
-logger.log(`betaVersion="${betaVersion}"`);
+logger.log(`canaryVersion="${canaryVersion}"`);
 logger.log(`usedChangesets="${JSON.stringify(usedChangesets)}"`);
