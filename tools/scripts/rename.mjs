@@ -1,6 +1,6 @@
 import { writeJsonFile, readJsonFile } from '@nrwl/devkit';
 
-export async function renameForGitHub() {
+export async function renameForCanary() {
   const originalPackageJson = readJsonFile('package.json');
 
   writeJsonFile('package.json', {

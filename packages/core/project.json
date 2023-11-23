@@ -42,7 +42,7 @@
       ],
       "configurations": {
         "beta": {
-          "args": "--rename=github"
+          "args": "--rename=canary"
         }
       }
     },
