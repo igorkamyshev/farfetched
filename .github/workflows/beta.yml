@@ -57,7 +57,7 @@ jobs:
 
             Used changeset: ${{ steps.beta_info.outputs.usedChangesets }}
       - name: Update comment
-        if: steps.find_comment.outputs.comment-id != ''
+        if: steps.find_comment.outputs.comment-id != '' && steps.beta_required.outputs.skipBeta == ''
         uses: peter-evans/create-or-update-comment@v1
         with:
           edit-mode: replace
