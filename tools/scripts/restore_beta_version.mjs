@@ -36,8 +36,8 @@ const betaVersions = new Set(
 
 logger.info(`Found beta versions: ${JSON.stringify(Array.from(betaVersions))}`);
 
-const latestBetaVerisonSuffix = -1;
-const latestBetaVerison = null;
+let latestBetaVerisonSuffix = -1;
+let latestBetaVerison = null;
 
 for (const betaVersion of betaVersions.values()) {
   const [_, suffix] = betaVersion.split(`-${branch}.`);
