@@ -9,7 +9,7 @@ import { join } from 'path';
 
 const [, , branch] = process.argv;
 
-logger.info(`Beta name is ${branch}`);
+logger.info(`Canary name is ${branch}`);
 
 const graph = await createProjectGraphAsync();
 
@@ -17,14 +17,14 @@ const packages = Object.entries(graph.nodes)
   .filter(([_name, { type, data }]) => type === 'lib' && data.targets.publish)
   .map(([name, { data }]) => ({ name, root: data.root }));
 
-const betaNames = packages.map(({ name }) => `@farfetched-canary/${name}`);
+const canaryNames = packages.map(({ name }) => `@farfetched-canary/${name}`);
 
-const betaVersions = new Set(
-  betaNames
-    .flatMap((betaName) => {
+const canaryVersions = new Set(
+  canaryNames
+    .flatMap((canaryName) => {
       try {
         const versions = JSON.parse(
-          execSync(`npm view ${betaName} versions --json`).toString().trim()
+          execSync(`npm view ${canaryName} versions --json`).toString().trim()
         );
         return versions;
       } catch (e) {
@@ -34,7 +34,7 @@ const betaVersions = new Set(
     .filter((version) => version.includes(`-${branch}.`))
 );
 
-logger.info(`Found canary versions: ${JSON.stringify(Array.from(betaVersions))}`);
+logger.info(`Found canary versions: ${JSON.stringify(Array.from(canaryVersions))}`);
 
 let latestCanaryVerisonSuffix = -1;
 let latestCanaryVerison = null;
