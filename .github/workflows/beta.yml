@@ -20,18 +20,15 @@ jobs:
       - uses: pnpm/action-setup@v2
       - uses: actions/setup-node@v3
         with:
-          # Beta version is published to GitHub Package Registry
-          registry-url: 'https://npm.pkg.github.com'
-          # Under the scope of the user who owns the repo
-          scope: '@igorkamyshev'
           node-version-file: '.nvmrc'
           cache: 'pnpm'
+      - name: Authenticate with NPM
+        run: |
+          echo "//registry.npmjs.org/:_authToken="${{secrets.NPM_TOKEN}}"" > ~/.npmrc
       - run: pnpm install --frozen-lockfile
       # Parse latest published version of the beta and update local package.json for all packages
       - name: Restore beta version
         run: node ./tools/scripts/restore_beta_version.mjs ${{ github.event.pull_request.number }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Update version in package.json for all packages with changeset and generate pre.json file
       - run: pnpm changeset pre enter ${{ github.event.pull_request.number }}
       - run: pnpm changeset version
@@ -44,8 +41,6 @@ jobs:
       - name: Publish beta
         if: steps.beta_required.outputs.skipBeta == ''
         run: pnpm nx run-many --output-style=static --target=publish --all --configuration=beta
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Retrieve information about latest beta
         id: beta_info
         run: node ./tools/scripts/beta_info.mjs >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT

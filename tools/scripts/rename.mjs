@@ -16,7 +16,7 @@ export async function renameForGitHub() {
 // utils
 
 function adjustPackageName(name) {
-  return name.replaceAll('@farfetched/', '@igorkamyshev/farfetched-');
+  return name.replaceAll('@farfetched/', '@farfetched-canary/');
 }
 
 export function mapValues(val, fn) {
