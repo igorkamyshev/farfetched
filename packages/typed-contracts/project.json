@@ -26,7 +26,8 @@
         "tsConfig": "packages/typed-contracts/tsconfig.json",
         "format": ["esm", "cjs"],
         "generateExportsField": true,
-        "compiler": "babel"
+        "compiler": "babel",
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "publish": {
@@ -47,7 +48,7 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/typed-contracts/**/*.ts"]
