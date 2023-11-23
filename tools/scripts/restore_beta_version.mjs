@@ -9,6 +9,8 @@ import { renameForGitHub } from './rename.mjs';
 
 import { invariant } from './shared/invariant.mjs';
 
+const [, , branch] = process.argv;
+
 const graph = await createProjectGraphAsync();
 
 const packages = Object.entries(graph.nodes)
@@ -19,12 +21,30 @@ const betaNames = packages.map(
   ({ name }) => `@igorkamyshev/farfetched-${name}`
 );
 
-const betaVersions = betaNames.flatMap((betaName) => {
-  const versions = JSON.parse(
-    execSync(`npm view ${betaName} versions --json`).toString().trim()
-  );
+const betaVersions = new Set(
+  betaNames
+    .flatMap((betaName) => {
+      const versions = JSON.parse(
+        execSync(`npm view ${betaName} versions --json`).toString().trim()
+      );
 
-  return versions;
-});
+      return versions;
+    })
+    .filter((version) => version.includes(`-${branch}.`))
+);
 
-console.log(betaVersions);
+const latestBetaVerisonSuffix = -1;
+const latestBetaVerison = null;
+
+for (const betaVersion of betaVersions.values()) {
+  const [_, suffix] = betaVersion.split(`-${branch}.`);
+
+  const subbfixNumber = Number(suffix);
+
+  if (subbfixNumber > latestBetaVerison) {
+    latestBetaVerisonSuffix = subbfixNumber;
+    latestBetaVerison = betaVersion;
+  }
+}
+
+console.log(latestBetaVerison);
