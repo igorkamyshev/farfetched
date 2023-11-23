@@ -57,20 +57,20 @@
     "test": {
       "executor": "@nx/vite:test",
       "options": {
-        "config": "vite.config.ts"
+        "config": "packages/core/vite.config.ts"
       }
     },
     "test_watch": {
       "executor": "@nx/vite:test",
       "options": {
-        "config": "vite.config.ts",
+        "config": "packages/core/vite.config.ts",
         "watch": true
       }
     },
     "typetest": {
       "executor": "@nx/vite:test",
       "options": {
-        "config": "vite.config.ts",
+        "config": "packages/core/vite.config.ts",
         "mode": "typecheck"
       }
     },

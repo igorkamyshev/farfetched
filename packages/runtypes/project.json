@@ -57,13 +57,13 @@
     "test": {
       "executor": "@nx/vite:test",
       "options": {
-        "config": "vite.config.ts"
+        "config": "packages/runtypes/vite.config.ts"
       }
     },
     "typetest": {
       "executor": "@nx/vite:test",
       "options": {
-        "config": "vite.config.ts",
+        "config": "packages/runtypesvite.config.ts",
         "mode": "typecheck"
       }
     },
