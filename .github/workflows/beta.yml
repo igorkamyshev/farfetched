@@ -1,10 +1,6 @@
 name: Beta
 
-on:
-  push:
-    branches:
-      - '*'
-      - '!master'
+on: pull_request
 
 jobs:
   release:
@@ -33,3 +29,26 @@ jobs:
       - run: pnpm nx run-many --output-style=static --target=publish --all --configuration=beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Find Comment
+        uses: peter-evans/find-comment@v1
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Farfetched Beta
+
+      - name: Create comment
+        if: steps.fc.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Farfetched Beta: This comment was written by a bot!
+
+      - name: Update comment
+        if: steps.fc.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          body: |
+            Farfetched Beta: This comment has been updated!
