@@ -27,17 +27,13 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      # We will use branch name as a name for beta
-      - name: Extract branch name
-        id: extract_branch
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
       # Parse latest published version of the beta and update local package.json for all packages
       - name: Restore beta version
-        run: node ./tools/scripts/restore_beta_version.mjs ${{ steps.extract_branch.outputs.branch }}
+        run: node ./tools/scripts/restore_beta_version.mjs ${{ github.event.pull_request.number }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Update version in package.json for all packages with changeset and generate pre.json file
-      - run: pnpm changeset pre enter ${{ steps.extract_branch.outputs.branch }}
+      - run: pnpm changeset pre enter ${{ github.event.pull_request.number }}
       - run: pnpm changeset version
       - run: pnpm changeset pre exit
       # Check if we need to publish a new beta
