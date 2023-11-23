@@ -24,11 +24,14 @@ const betaNames = packages.map(({ name }) => `@farfetched-canary/${name}`);
 const betaVersions = new Set(
   betaNames
     .flatMap((betaName) => {
-      const versions = JSON.parse(
-        execSync(`npm view ${betaName} versions --json`).toString().trim()
-      );
-
-      return versions;
+      try {
+        const versions = JSON.parse(
+          execSync(`npm view ${betaName} versions --json`).toString().trim()
+        );
+        return versions;
+      } catch (e) {
+        return [];
+      }
     })
     .filter((version) => version.includes(`-${branch}.`))
 );
