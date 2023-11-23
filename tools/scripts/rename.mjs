@@ -8,7 +8,10 @@ export async function renameForGitHub() {
     name: adjustPackageName(originalPackageJson.name),
     peerDependencies: mapValues(
       originalPackageJson.peerDependencies ?? {},
-      (version, name) => `npm:${adjustPackageName(name)}@${version},`
+      (version, name) =>
+        name.includes('@farfetched')
+          ? `npm:${adjustPackageName(name)}@${version}`
+          : version
     ),
   });
 }
