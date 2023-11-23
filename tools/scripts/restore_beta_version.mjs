@@ -44,10 +44,7 @@ for (const betaVersion of betaVersions.values()) {
 
   const suffixNumber = Number(suffix);
 
-  console.log('BEF', { suffixNumber, latestBetaVerisonSuffix, betaVersion });
-
-  if (suffixNumber > latestBetaVerison) {
-    console.log('IN', { suffixNumber, latestBetaVerisonSuffix, betaVersion });
+  if (suffixNumber > latestBetaVerisonSuffix) {
     latestBetaVerisonSuffix = suffixNumber;
     latestBetaVerison = betaVersion;
   }
