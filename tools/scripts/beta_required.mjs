@@ -5,12 +5,13 @@ const [, , commentBody] = process.argv;
 
 const LINE_START = 'Used changeset: ';
 
-const previousChangesets = JSON.parse(
+const previousChangesets = split(
   commentBody
     .split('\n')
     .find((line) => line.includes(LINE_START))
-    ?.replace(LINE_START, '') ?? '[]'
-);
+    ?.replace(LINE_START, '') ?? '[]',
+  ','
+).map((changeset) => changeset.replaceAll('[', '').replaceAll(']', ''));
 
 const usedChangesets = readJsonFile(
   join(process.cwd(), '.changeset', 'pre.json')
