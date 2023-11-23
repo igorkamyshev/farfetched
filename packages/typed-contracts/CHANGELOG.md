@@ -1,5 +1,11 @@
 # @farfetched/typed-contracts
 
+## 0.10.7
+
+### Patch Changes
+
+- fe8ca0e: Just test change
+
 ## 0.10.6
 
 ## 0.10.5

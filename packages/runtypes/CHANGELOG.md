@@ -1,5 +1,12 @@
 # @farfetched/runtypes
 
+## 0.10.7
+
+### Patch Changes
+
+- fe8ca0e: Just test change
+- fe8ca0e: Expect next version
+
 ## 0.10.6
 
 ## 0.10.5

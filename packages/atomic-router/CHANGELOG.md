@@ -1,5 +1,15 @@
 # @farfetched/atomic-router
 
+## 0.10.7
+
+### Patch Changes
+
+- fe8ca0e: New beta
+- fe8ca0e: One more test
+- fe8ca0e: Use correct overrides for betas"
+- fe8ca0e: Just test change
+- fe8ca0e: Please publish beta
+
 ## 0.10.6
 
 ## 0.10.5
