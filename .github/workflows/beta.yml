@@ -6,7 +6,10 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Find Comment
+      # We store information about used changeset in the comment
+      # So we need to find it to check if we need to publish a new beta
+      # Also we will update this comment with new information in case of new beta
+      - name: Find comment about previous beta
         uses: peter-evans/find-comment@v1
         id: find_comment
         with:
@@ -17,32 +20,40 @@ jobs:
       - uses: pnpm/action-setup@v2
       - uses: actions/setup-node@v3
         with:
+          # Beta version is published to GitHub Package Registry
           registry-url: 'https://npm.pkg.github.com'
+          # Under the scope of the user who owns the repo
           scope: '@igorkamyshev'
           node-version-file: '.nvmrc'
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-        shell: sh
+      # We will use branch name as a name for beta
       - name: Extract branch name
-        shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
-      - run: node ./tools/scripts/restore_beta_version.mjs ${{ steps.extract_branch.outputs.branch }}
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+      # Parse latest published version of the beta and update local package.json for all packages
+      - name: Restore beta version
+        run: node ./tools/scripts/restore_beta_version.mjs ${{ steps.extract_branch.outputs.branch }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Update version in package.json for all packages with changeset and generate pre.json file
       - run: pnpm changeset pre enter ${{ steps.extract_branch.outputs.branch }}
       - run: pnpm changeset version
       - run: pnpm changeset pre exit
-      - run: node ./tools/scripts/beta_required.mjs """${{ steps.find_comment.outputs.comment-body }}""" >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
+      # Check if we need to publish a new beta
+      # it uses pre.json file and information about previous beta from the comment
+      - name: Check if new beta is required
         id: beta_required
-      - run: pnpm nx run-many --output-style=static --target=publish --all --configuration=beta
+        run: node ./tools/scripts/beta_required.mjs """${{ steps.find_comment.outputs.comment-body }}""" >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
+      - name: Publish beta
         if: steps.beta_required.outputs.skipBeta == ''
+        run: pnpm nx run-many --output-style=static --target=publish --all --configuration=beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: What happened with Changes
-        shell: bash
-        run: node ./tools/scripts/beta_info.mjs >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
+      - name: Retrieve information about latest beta
         id: beta_info
+        run: node ./tools/scripts/beta_info.mjs >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
+      # In case of absence of the comment we will create it with information about latest beta
       - name: Create comment
         if: steps.find_comment.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v1
@@ -56,6 +67,8 @@ jobs:
             ---
 
             Used changeset: ${{ steps.beta_info.outputs.usedChangesets }}
+      # Otherwise we will update it with information about latest beta,
+      # but only if we published a new beta
       - name: Update comment
         if: steps.find_comment.outputs.comment-id != '' && steps.beta_required.outputs.skipBeta == ''
         uses: peter-evans/create-or-update-comment@v1
