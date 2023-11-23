@@ -1,4 +1,4 @@
-import { writeJsonFile, readJsonFile } from '@nrwl/devkit';
+import { writeJsonFile, readJsonFile } from '@nx/devkit';
 
 export async function renameForCanary() {
   const originalPackageJson = readJsonFile('package.json');

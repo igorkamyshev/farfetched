@@ -45,7 +45,7 @@ After merging PR to master-branch, [Version-action](./.github/workflows/version.
 #### New package creation
 
 ```sh
-pnpm nx generate @nrwl/js:library --name=NAME --importPath @farfetched/NAME
+pnpm nx generate @nx/js:library --name=NAME --importPath @farfetched/NAME
 ```
 
 #### Graph

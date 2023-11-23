@@ -47,27 +47,27 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/core/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/vite:test",
+      "executor": "@nx/vite:test",
       "options": {
         "config": "vite.config.ts"
       }
     },
     "test_watch": {
-      "executor": "@nrwl/vite:test",
+      "executor": "@nx/vite:test",
       "options": {
         "config": "vite.config.ts",
         "watch": true
       }
     },
     "typetest": {
-      "executor": "@nrwl/vite:test",
+      "executor": "@nx/vite:test",
       "options": {
         "config": "vite.config.ts",
         "mode": "typecheck"

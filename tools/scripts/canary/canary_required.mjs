@@ -1,4 +1,4 @@
-import { logger, readJsonFile } from '@nrwl/devkit';
+import { logger, readJsonFile } from '@nx/devkit';
 import { join } from 'path';
 
 const [, , commentBody] = process.argv;

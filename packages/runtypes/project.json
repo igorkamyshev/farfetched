@@ -47,20 +47,20 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/runtypes/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/vite:test",
+      "executor": "@nx/vite:test",
       "options": {
         "config": "vite.config.ts"
       }
     },
     "typetest": {
-      "executor": "@nrwl/vite:test",
+      "executor": "@nx/vite:test",
       "options": {
         "config": "vite.config.ts",
         "mode": "typecheck"

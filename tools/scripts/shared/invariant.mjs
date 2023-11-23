@@ -1,4 +1,4 @@
-import { logger } from '@nrwl/devkit';
+import { logger } from '@nx/devkit';
 
 export function invariant(condition, message) {
   if (!condition) {

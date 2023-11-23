@@ -1,4 +1,4 @@
-import { createProjectGraphAsync, logger, readJsonFile } from '@nrwl/devkit';
+import { createProjectGraphAsync, logger, readJsonFile } from '@nx/devkit';
 import { join } from 'path';
 
 const graph = await createProjectGraphAsync();
