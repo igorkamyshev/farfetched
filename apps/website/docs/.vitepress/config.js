@@ -299,6 +299,10 @@ export default withMermaid(
                 text: 'Auth token for operations',
                 link: '/recipes/auth_token',
               },
+              {
+                text: 'Pause world until user action',
+                link: '/recipes/terms_of_use',
+              },
             ],
           },
           {
