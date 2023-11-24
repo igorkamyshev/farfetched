@@ -36,8 +36,65 @@ Farfetched provides a [_Barrier_](/api/primitives/barrier) abstraction that allo
 
 ### Barrier creation
 
+The creation of the barrier depends on the type of the token.
+
+If the client has access to the content of the token, we can create a barrier with explicit checking of the token expiration date.
+
+Let us assume that the token is a JWT token that contains the expiration date and could be decoded without any additional information. Such a token would be stored in a [_Store_](https://effector.dev/docs/api/effector/store) and can be accessed across the application.
+
+```ts{6}
+import { createBarrier } from '@farfetched/core';
+
+const $authToken = createStore(/* ... */);
+
+const authBarrier = createBarrier({
+  active: combine($authToken, (token) => isTokenInvalid(token)),
+});
+```
+
+If the client does not have access to the content of the token, we have to rely on the response from the server on particular request. In this case, we can create a barrier with explicit checking of the response status of every request which requires authentication.
+
+```ts{4-6}
+import { createBarrier, isHttpError } from '@farfetched/core';
+
+const authBarrier = createBarrier({
+  activateOn: {
+    failure: isHttpError(401),
+  },
+});
+```
+
+It is only difference between these two cases. However, in both cases, we need to refresh the token if it is invalid. Let us say that refreshing the token is a [_Mutation_](/api/primitives/mutation).
+
+```ts{7}
+import { createBarrier, createMutation } from '@farfetched/core';
+
+const renewTokenMutation = createMutation(/* ... */);
+
+const authBarrier = createBarrier({
+  /* ... */
+  perform: [renewTokenMutation],
+});
+```
+
+Now we have a [_Barrier_](/api/primitives/barrier) that will be activated if the token is invalid and will refresh the token if it is activated. It is time to apply this [_Barrier_](/api/primitives/barrier) to the requests that require authentication.
+
 ### Barrier application
 
-## What else?
+This part is very simple. We just need to [`applyBarrier`](/api/operators/apply_barrier) to every [_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutation) that requires authentication.
+
+```ts{5}
+import { createQuery, applyBarrier } from '@farfetched/core';
+
+const someQuery = createQuery(/* ... */);
+
+applyBarrier(someQuery, authBarrier);
+```
+
+That is it! Now every time `someQuery` is called, `authBarrier` will be checked. If the token is invalid, `authBarrier` will be activated, `someQuery` will be suspended, and `renewTokenMutation` will be called. After `renewTokenMutation` is finished, `someQuery` will be resumed.
 
 ## Conclusion
+
+Barrier API is very flexible and allows us to implement different tasks in a declarative way. In this case study, we have discussed how to implement the task of checking the token validity before data fetching.
+
+However, this is not the only task that can be implemented with the help of barriers. You can use them to implement anything that requires some actions to be performed before particular operation with suspension of this operation until the actions are finished.

@@ -295,6 +295,10 @@ export default withMermaid(
                 text: 'Base URL for all operations',
                 link: '/recipes/base_url',
               },
+              {
+                text: 'Auth token for operations',
+                link: '/recipes/auth_token',
+              },
             ],
           },
           {
