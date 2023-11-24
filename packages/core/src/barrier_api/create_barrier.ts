@@ -28,16 +28,31 @@ type NormalizedPerformer = {
   $pending: Store<boolean>;
 };
 
+/**
+ * Creates new Barrier
+ * @param config.active Store that holds the Barrier status
+ * @param config.perform Array of Performers that should be started when active Barrier is touched
+ */
 export function createBarrier(config: {
   active: Store<boolean>;
   perform?: Array<Performer>;
 }): Barrier;
 
+/**
+ * Creates new Barrier
+ * @param config.activateOn Event that will activate Barrier
+ * @param config.deactivateOn Event that will deactivate Barrier
+ */
 export function createBarrier(config: {
   activateOn: Event<any>;
   deactivateOn: Event<any>;
 }): Barrier;
 
+/**
+ * Creates new Barrier
+ * @param config.activateOn.failure A function that will be called every time when operation with applied Barrier fails. If it returns true, Barrier will be activated.
+ * @param config.perform Array of Performers that should be started when active Barrier is touched
+ */
 export function createBarrier(config: {
   activateOn: {
     failure: (options: { params: unknown; error: unknown }) => boolean;

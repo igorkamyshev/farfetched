@@ -3,6 +3,12 @@ import { attach, sample, type Effect } from 'effector';
 import { type RemoteOperation } from '../remote_operation/type';
 import { type Barrier } from './type';
 
+/**
+ * Applies the Barrier to the Query or Mutation. After operation start it checks the Barrier .$active status and postpones the execution if the Barrier is active. After the Barrier is deactivated, it resumes the execution of the operation.
+ *
+ * @param operation Query or Mutation to apply Barrier to
+ * @param config.barrier Barrier to apply
+ */
 export function applyBarrier<
   O extends RemoteOperation<any, any, any, any, any>
 >(operation: O, { barrier }: { barrier: Barrier }): void {
