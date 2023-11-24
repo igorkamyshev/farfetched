@@ -1,4 +1,4 @@
-# Barrier <Badge type="tip" text="since v0.10.0" />
+# Barrier <Badge type="tip" text="since v0.11.0" />
 
 Object that could be used to postpone the execution of the [_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutation). Barrier can be created with the [`createBarrier`](/api/factories/create_barrier) function.
 

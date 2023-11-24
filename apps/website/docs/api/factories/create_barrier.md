@@ -1,4 +1,4 @@
-# `createBarrier` <Badge type="tip" text="since v0.10.0" />
+# `createBarrier` <Badge type="tip" text="since v0.11.0" />
 
 Creates a [_Barrier_](/api/primitives/barrier) object.
 
