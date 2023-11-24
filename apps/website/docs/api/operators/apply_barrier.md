@@ -7,13 +7,10 @@ Applies the [_Barrier_](/api/primitives/barrier) to the [_Query_](/api/primitive
 ```ts
 import { applyBarrier } from '@farfetched/core';
 
-applyBarrier(operation, { barrier, resumeParams });
+applyBarrier(operation, { barrier });
 ```
 
 ### Arguments
 
 - `operation` - [_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutation) to apply the [_Barrier_](/api/primitives/barrier) to
 - `barrier` - [_Barrier_](/api/primitives/barrier) to apply
-- `resumeParams?` — optional rule to alter the [_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutation) parameters when the [_Barrier_](/api/primitives/barrier) is deactivated, available overloads:
-  - `(params) => nextParams`
-  - `{ source: Store, fn: (params, source) => nextParams }`
