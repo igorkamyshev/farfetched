@@ -1,5 +1,4 @@
 ---
-'@farfetched/atomic-router': minor
 '@farfetched/core': minor
 ---
 
