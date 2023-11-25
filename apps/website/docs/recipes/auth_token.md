@@ -91,7 +91,7 @@ const someQuery = createQuery(/* ... */);
 applyBarrier(someQuery, authBarrier);
 ```
 
-That is it! Now every time `someQuery` is called, `authBarrier` will be checked. If the token is invalid, `authBarrier` will be activated, `someQuery` will be suspended, and `renewTokenMutation` will be called. After `renewTokenMutation` is finished, `someQuery` will be resumed.
+That is it! Now every time `someQuery` is called, `authBarrier` will be checked. If the token is invalid, `authBarrier` will be activated, `someQuery` will be suspended, and `renewTokenMutation` will be called. After `renewTokenMutation` is finished, `someQuery` will be resumed in case of suspension or restarted with the latest parameters in case of failure.
 
 ## Conclusion
 
