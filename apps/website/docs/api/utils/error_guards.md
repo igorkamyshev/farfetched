@@ -98,3 +98,16 @@ const networkProblems = sample({
   filter: isNetworkError,
 });
 ```
+
+## `inConfigurationError` <Badge type="tip" text="since v0.11.0" />
+
+`ConfigurationError` is thrown when the query is misconfigured. E.g., when the URL is not URL.
+
+```ts
+import { inConfigurationError } from '@farfetched/core';
+
+const configurationProblems = sample({
+  clock: query.finished.failure,
+  filter: inConfigurationError,
+});
+```

@@ -3,14 +3,16 @@ import {
   type AbortError,
   HTTP,
   type HttpError,
-  type InvalidDataError,
   INVALID_DATA,
+  type InvalidDataError,
   NETWORK,
-  NetworkError,
+  type NetworkError,
   PREPARATION,
-  PreparationError,
+  type PreparationError,
   TIMEOUT,
-  TimeoutError,
+  type TimeoutError,
+  CONFIGURATION,
+  type ConfigurationError,
 } from './type';
 
 type WithError<T = any, P = Record<string, unknown>> = P & { error: T };
@@ -65,4 +67,10 @@ export function isNetworkError(
   args: WithError
 ): args is WithError<NetworkError> {
   return args.error?.errorType === NETWORK;
+}
+
+export function isConfigurationError(
+  args: WithError
+): args is WithError<ConfigurationError> {
+  return args.error?.errorType === CONFIGURATION;
 }

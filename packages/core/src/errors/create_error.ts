@@ -13,6 +13,8 @@ import {
   type PreparationError,
   TIMEOUT,
   type TimeoutError,
+  CONFIGURATION,
+  type ConfigurationError,
 } from './type';
 
 export function invalidDataError(config: {
@@ -72,5 +74,16 @@ export function networkError(config: {
     ...config,
     errorType: NETWORK,
     explanation: 'Request was failed due to network problems',
+  };
+}
+
+export function configurationError(config: {
+  reason: string;
+  validationErrors: string[];
+}): ConfigurationError {
+  return {
+    ...config,
+    errorType: CONFIGURATION,
+    explanation: 'Operation is misconfigured',
   };
 }

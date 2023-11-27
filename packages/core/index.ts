@@ -79,6 +79,7 @@ export {
   type PreparationError,
   type HttpError,
   type NetworkError,
+  type ConfigurationError,
 } from './src/errors/type';
 export {
   invalidDataError,
@@ -87,6 +88,7 @@ export {
   preparationError,
   httpError,
   networkError,
+  configurationError,
 } from './src/errors/create_error';
 export {
   isTimeoutError,
