@@ -1,5 +1,10 @@
 import { describe, expectTypeOf, test } from 'vitest';
-import { createStore, type EventCallable, type Effect, type Event } from 'effector';
+import {
+  createStore,
+  type EventCallable,
+  type Effect,
+  type Event,
+} from 'effector';
 
 import { type Query } from '../../query/type';
 import { type Mutation } from '../../mutation/type';
