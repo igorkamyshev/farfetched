@@ -55,10 +55,10 @@ export function keepFresh<Params>(
 ): void {
   const triggers: Array<Event<any>> = [];
 
-  const [triggerEvents, protocolCompatibleObjects] = divide(
-    config.triggers ?? [],
-    is.event
-  );
+  const [triggerEvents, protocolCompatibleObjects] = divide<
+    Event<any>,
+    TriggerProtocol
+  >(config.triggers ?? [], is.event);
 
   triggers.push(...triggerEvents);
 
@@ -77,7 +77,11 @@ export function keepFresh<Params>(
       trigger['@@trigger']()
     );
 
-    const $alreadySetup = createStore(false, { serialize: 'ignore' });
+    const $alreadySetup = createStore(false, {
+      serialize: 'ignore',
+      name: 'ff.$alreadySetup',
+      sid: 'ff.$alreadySetup',
+    });
 
     const { setup, teardown } = createApi($alreadySetup, {
       setup: () => true,
@@ -105,7 +109,11 @@ export function keepFresh<Params>(
   if (config.automatically) {
     const finalyParams = query.finished.finally.map(get('params'));
 
-    const $previousSources = createStore<any[]>([], { serialize: 'ignore' });
+    const $previousSources = createStore<any[]>([], {
+      serialize: 'ignore',
+      name: 'ff.$previousSources',
+      sid: 'ff.$previousSources',
+    });
 
     const $partialSources = combine(
       query.__.lowLevelAPI.sourced.map((sourced) =>
@@ -123,7 +131,11 @@ export function keepFresh<Params>(
       target: $previousSources,
     });
 
-    const $nextSources = createStore(null, { serialize: 'ignore' });
+    const $nextSources = createStore(null, {
+      serialize: 'ignore',
+      name: 'ff.$nextSources',
+      sid: 'ff.$nextSources',
+    });
 
     sample({
       // @ts-expect-error I have no idea

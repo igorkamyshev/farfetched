@@ -1,9 +1,9 @@
-import { Event } from 'effector';
+import type { Event, EventCallable } from 'effector';
 
 export type TriggerProtocol = {
   '@@trigger': () => {
-    setup: Event<void>;
-    teardown: Event<void>;
+    setup: EventCallable<void>;
+    teardown: EventCallable<void>;
     fired: Event<unknown> | Event<void>;
   };
 };

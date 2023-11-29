@@ -24,7 +24,11 @@ export function postpone<T>({
 }): EventAsReturnType<T> {
   const target = createEvent<T>();
 
-  const $fired = createStore(false, { serialize: 'ignore' })
+  const $fired = createStore(false, {
+    serialize: 'ignore',
+    name: 'ff.$fired',
+    sid: 'ff.$fired',
+  })
     .on(target, () => true)
     .on(clock, () => false);
 

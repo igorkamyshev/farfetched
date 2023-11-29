@@ -5,6 +5,7 @@ import {
   is,
   sample,
   split,
+  type EventCallable,
   type Effect,
   type Event,
   type Store,
@@ -20,10 +21,10 @@ import { get, Mutex } from '../libs/lohyphen';
 type Performer =
   | RemoteOperation<void, any, any, any>
   | Effect<void, any, any>
-  | { start: Event<void>; end: Event<any> };
+  | { start: EventCallable<void>; end: Event<any> };
 
 type NormalizedPerformer = {
-  start: Event<void> | Effect<void, any, any>;
+  start: EventCallable<void> | Effect<void, any, any>;
   end: Event<void>;
   $pending: Store<boolean>;
 };
@@ -121,7 +122,7 @@ export function createBarrier({
 
   const performers = normalizePerformers(perform ?? []);
 
-  let $active: Store<boolean>;
+  let $active;
   // Overload: active
   if (active) {
     $active = active;
@@ -185,7 +186,9 @@ export function createBarrier({
   };
 }
 
-function startOnlyNotPending(performers: NormalizedPerformer[]): Event<void> {
+function startOnlyNotPending(
+  performers: NormalizedPerformer[]
+): EventCallable<void> {
   const clock = createEvent();
 
   for (const { start, $pending } of performers) {

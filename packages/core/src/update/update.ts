@@ -103,10 +103,10 @@ export function update<
         }),
         queryState: $queryState,
       },
-      fn: ({ partialRule, queryState }, { result, params }) =>
+      fn: ({ partialRule, queryState }, mutation) =>
         partialRule({
           query: queryState,
-          mutation: { result, params: params ?? null },
+          mutation,
         }),
     }),
     match: {
@@ -125,10 +125,10 @@ export function update<
           }),
           queryState: $queryState,
         },
-        fn: ({ partialRule, queryState }, { error, params }) =>
+        fn: ({ partialRule, queryState }, mutation) =>
           partialRule({
             query: queryState,
-            mutation: { error, params: params ?? null },
+            mutation,
           }),
       }),
       match: {
@@ -172,7 +172,7 @@ export function update<
       // @ts-expect-error I do not want to fight with TS here
       return { params: state?.params, refresh: true };
     },
-    target: [query.__.lowLevelAPI.revalidate, query.$stale.reinit!],
+    target: [query.__.lowLevelAPI.revalidate, query.$stale.reinit],
   });
 
   sample({
