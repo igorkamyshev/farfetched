@@ -1,6 +1,6 @@
-import { type Event, type Store } from 'effector';
+import type { EventCallable, Event, Store } from 'effector';
 
-import { Mutex } from '../libs/lohyphen/mutex';
+import type { Mutex } from '../libs/lohyphen/mutex';
 
 export type Barrier = {
   /**
@@ -22,15 +22,15 @@ export type Barrier = {
     /**
      * Call this event every time when operation with applied Barrier tries to start
      */
-    touch: Event<void>;
+    touch: EventCallable<void>;
     /**
      * Call this event every time when operation with applied Barrier fails
      */
-    operationFailed: Event<{ params: unknown; error: unknown }>;
+    operationFailed: EventCallable<{ params: unknown; error: unknown }>;
     /**
      * Call this event every time when operation with applied Barrier succeeds
      */
-    operationDone: Event<{ params: unknown; result: unknown }>;
+    operationDone: EventCallable<{ params: unknown; result: unknown }>;
     /**
      * Barrier ia based on Mutex, this store provides direct access to it
      */
