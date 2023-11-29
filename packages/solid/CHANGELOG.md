@@ -1,5 +1,11 @@
 # @farfetched/solid
 
+## 0.11.0
+
+### Minor Changes
+
+- ffdfffa: Adopt for Effector 23
+
 ## 0.10.6
 
 ## 0.10.5

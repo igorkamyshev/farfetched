@@ -1,5 +1,18 @@
 # @farfetched/core
 
+## 0.11.0
+
+### Minor Changes
+
+- c925412: Introduce Barrier API
+- 67d7288: Hide `isAbortError` from public API
+- ffdfffa: Adopt for Effector 23
+
+### Patch Changes
+
+- ef2d3a5: Support `enabled` in `keepFresh`
+- ec2ab95: Do not throw nonserializable error in case of invalid URL
+
 ## 0.10.6
 
 ### Patch Changes
