@@ -3,6 +3,6 @@
   "version": "0.10.6",
   "type": "commonjs",
   "peerDependencies": {
-    "effector": "23.0.0-rc.6"
+    "effector": "^23.0.0"
   }
 }
