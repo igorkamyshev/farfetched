@@ -1,3 +1,5 @@
+import { configurationError } from '../errors/create_error';
+
 export type FetchApiRecord = Record<
   string,
   string | string[] | number | boolean | null | undefined
@@ -70,7 +72,8 @@ export function formatHeaders(headersRecord: FetchApiRecord): Headers {
 export function formatUrl(
   url: string,
   queryRecord: FetchApiRecord | string
-): string {
+): URL {
+  let urlString: string;
   let queryString: string;
 
   if (typeof queryRecord === 'string') {
@@ -80,10 +83,19 @@ export function formatUrl(
   }
 
   if (!queryString) {
-    return url;
+    urlString = url;
+  } else {
+    urlString = `${url}?${queryString}`;
   }
 
-  return `${url}?${queryString}`;
+  try {
+    return new URL(urlString);
+  } catch (e) {
+    throw configurationError({
+      reason: 'Invalid URL',
+      validationErrors: [`"${urlString}" is not valid URL`],
+    });
+  }
 }
 
 function recordToUrlSearchParams(record: FetchApiRecord): URLSearchParams {

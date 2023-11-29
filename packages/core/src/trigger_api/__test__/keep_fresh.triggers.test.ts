@@ -214,4 +214,56 @@ describe('keepFresh, triggers as TriggerProtocol', () => {
     // 1 initial + 1 after enabling
     expect(setupListener).toBeCalledTimes(2);
   });
+
+  test('call teardown after config disabling and call start again after enabling', async () => {
+    const trigger = {
+      setup: createEvent(),
+      teardown: createEvent(),
+      fired: createEvent(),
+    };
+
+    const scope = fork();
+
+    const $enabled = createStore(true);
+
+    const teardownListener = vi.fn();
+
+    createWatch({
+      unit: trigger.teardown,
+      fn: teardownListener,
+      scope,
+    });
+
+    const setupListener = vi.fn();
+
+    createWatch({
+      unit: trigger.setup,
+      fn: setupListener,
+      scope,
+    });
+
+    const query = createQuery({
+      handler: vi.fn(),
+    });
+
+    keepFresh(query, {
+      enabled: $enabled,
+      triggers: [
+        {
+          '@@trigger': () => trigger,
+        },
+      ],
+    });
+
+    await allSettled(query.refresh, { scope });
+
+    await allSettled($enabled, { scope, params: false });
+
+    expect(teardownListener).toBeCalled();
+
+    await allSettled($enabled, { scope, params: true });
+
+    // 1 initial + 1 after enabling
+    expect(setupListener).toBeCalledTimes(2);
+  });
 });

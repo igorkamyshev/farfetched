@@ -16,6 +16,7 @@ import {
 import { NonOptionalKeys } from '../libs/lohyphen';
 import {
   AbortError,
+  ConfigurationError,
   HttpError,
   InvalidDataError,
   NetworkError,
@@ -143,6 +144,7 @@ interface ApiConfig<B, R extends CreationRequestConfig<B>, P>
 }
 
 export type ApiRequestError =
+  | ConfigurationError
   | TimeoutError
   | PreparationError
   | NetworkError

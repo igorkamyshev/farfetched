@@ -1,5 +1,7 @@
-import { allSettled, createStore, fork } from 'effector';
+import { allSettled, createStore, fork, sample } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
+
+import { configurationError } from '../../errors/create_error';
 
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
@@ -68,5 +70,27 @@ describe('fetch/api.request.url', () => {
     await allSettled($url, { scope, params: 'https://new-api.salo.com' });
     await allSettled(callApiFx, { scope, params: {} });
     expect(fetchMock.mock.calls[1][0].url).toEqual('https://new-api.salo.com/');
+  });
+
+  test('throw configuration error if url is invalid', async () => {
+    const callApiFx = createApiRequest({
+      request: { mapBody, credentials, url: 'LOL KEK', method },
+      response,
+    });
+
+    const $error = createStore<any>(null);
+
+    sample({ clock: callApiFx.failData, target: $error });
+
+    const scope = fork();
+
+    await allSettled(callApiFx, { scope, params: {} });
+
+    expect(scope.getState($error)).toEqual(
+      configurationError({
+        reason: 'Invalid URL',
+        validationErrors: ['"LOL KEK" is not valid URL'],
+      })
+    );
   });
 });
