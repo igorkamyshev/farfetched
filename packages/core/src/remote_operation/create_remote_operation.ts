@@ -192,7 +192,7 @@ export function createRemoteOperation<
 
   const $enabled = normalizeStaticOrReactive(enabled ?? true).map(Boolean);
 
-  const $latestParams = createStore<Params | undefined>(undefined, {
+  const $latestParams = createStore<Params | null>(null, {
     serialize: 'ignore',
     name: `ff.${name}.$latestParams`,
     sid: `ff.${name}.$latestParams`,
@@ -224,7 +224,7 @@ export function createRemoteOperation<
   sample({
     clock: startWithMeta,
     filter: $enabled,
-    fn: ({ params }) => params,
+    fn: ({ params }) => params ?? null,
     target: $latestParams,
   });
 
