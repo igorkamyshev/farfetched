@@ -1,5 +1,5 @@
 import { describe, expectTypeOf, test } from 'vitest';
-import { createStore, type Effect, type Event } from 'effector';
+import { createStore, type EventCallable, type Effect, type Event } from 'effector';
 
 import { type Query } from '../../query/type';
 import { type Mutation } from '../../mutation/type';
@@ -65,7 +65,7 @@ describe('createBarrier', () => {
     });
 
     test('accept start/end Events as performer', () => {
-      const voidEvent: Event<void> = {} as any;
+      const voidEvent: EventCallable<void> = {} as any;
       const paramsEvent: Event<{ id: number }> = {} as any;
 
       // void Event as start is allowed
