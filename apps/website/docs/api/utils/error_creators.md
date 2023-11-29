@@ -146,3 +146,26 @@ test('on error', async () => {
   });
 });
 ```
+
+## `configurationError` <Badge type="tip" text="since v0.11.0" />
+
+`ConfigurationError` is thrown when the query is misconfigured. E.g., when the URL is not URL.
+
+```ts
+import { configurationError } from '@farfetched/core';
+
+test('on error', async () => {
+  const scope = fork({
+    handlers: [
+      [
+        query.__.executeFx,
+        vi.fn(() => {
+          throw configurationError({
+            validationErrors: ['"LOL KEK" is not valid URL'],
+          });
+        }),
+      ],
+    ],
+  });
+});
+```

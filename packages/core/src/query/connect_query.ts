@@ -68,6 +68,9 @@ export function connectQuery<Sources, Target extends Query<any, any, any, any>>(
 
   const $allParentParamsDictionary = createStore<any>(null, {
     serialize: 'ignore',
+    name: 'ff.$allParentParamsDictionary',
+    sid: 'ff.$allParentParamsDictionary',
+    skipVoid: false,
   });
   if (singleParentMode) {
     sample({
@@ -116,7 +119,7 @@ export function connectQuery<Sources, Target extends Query<any, any, any, any>>(
           : zipObject({ result: data, params })
       );
 
-      return mapped?.params ?? null;
+      return mapped?.params;
     },
     target: children.map((t) => t.start),
   });

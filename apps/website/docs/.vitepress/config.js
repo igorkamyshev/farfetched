@@ -132,6 +132,10 @@ export default withMermaid(
                 text: 'Trigger API',
                 link: '/tutorial/trigger_api',
               },
+              {
+                text: 'Barrier API',
+                link: '/tutorial/barrier_api',
+              },
             ],
           },
           {
@@ -180,21 +184,31 @@ export default withMermaid(
                   },
                 ],
               },
+              {
+                text: 'Barrier',
+                items: [
+                  {
+                    text: 'createBarrier',
+                    link: '/api/factories/create_barrier',
+                  },
+                ],
+              },
             ],
           },
           {
             text: 'Operators',
             items: [
-              { text: 'connectQuery', link: '/api/operators/connect_query' },
-              { text: 'update', link: '/api/operators/update' },
+              { text: 'keepFresh', link: '/api/operators/keep_fresh' },
               { text: 'retry', link: '/api/operators/retry' },
               { text: 'timeout', link: '/api/operators/timeout' },
               { text: 'cache', link: '/api/operators/cache' },
-              { text: 'keepFresh', link: '/api/operators/keep_fresh' },
+              { text: 'applyBarrier', link: '/api/operators/apply_barrier' },
+              { text: 'update', link: '/api/operators/update' },
               {
                 text: 'attachOperation',
                 link: '/api/operators/attach_operation',
               },
+              { text: 'connectQuery', link: '/api/operators/connect_query' },
             ],
           },
           {
@@ -203,6 +217,7 @@ export default withMermaid(
             items: [
               { text: 'Query', link: '/api/primitives/query' },
               { text: 'Mutation', link: '/api/primitives/mutation' },
+              { text: 'Barrier', link: '/api/primitives/barrier' },
               { text: 'Contract', link: '/api/primitives/contract' },
               { text: 'Validator', link: '/api/primitives/validator' },
             ],
@@ -280,11 +295,20 @@ export default withMermaid(
                 text: 'Base URL for all operations',
                 link: '/recipes/base_url',
               },
+              {
+                text: 'Auth token for operations',
+                link: '/recipes/auth_token',
+              },
+              {
+                text: 'Pause world until user action',
+                link: '/recipes/terms_of_use',
+              },
             ],
           },
           {
             text: 'Case studies',
             items: [
+              { text: 'Auth token', link: '/recipes/auth_token' },
               { text: 'Feature flags service', link: '/recipes/feature_flags' },
               { text: 'Server side caching', link: '/recipes/server_cache' },
             ],
@@ -370,6 +394,7 @@ export default withMermaid(
           {
             text: 'Releases',
             items: [
+              { text: 'v0.11 Namtok Ngao', link: '/releases/0-11' },
               { text: 'v0.10 Namtok Than Sadet', link: '/releases/0-10' },
               { text: 'v0.9', link: '/releases/0-9' },
               { text: 'v0.8 Saphan Hin', link: '/releases/0-8' },

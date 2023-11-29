@@ -4,6 +4,7 @@ import {
   type Effect,
   type Node,
   type Event,
+  type EventCallable,
 } from 'effector';
 
 import { Defer, createDefer } from '../libs/lohyphen';
@@ -75,7 +76,7 @@ export function getCallObjectEvent<E extends Effect<unknown, unknown, unknown>>(
 
 function createPatchedHandler(
   h: (...p: unknown[]) => unknown,
-  calledEvent: Event<CallObject>
+  calledEvent: EventCallable<CallObject>
 ) {
   function ffMagicHandler(...p: unknown[]): unknown {
     /**

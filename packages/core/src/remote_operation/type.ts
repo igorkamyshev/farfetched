@@ -1,7 +1,13 @@
-import { Effect, Event, EventPayload, Store } from 'effector';
+import type {
+  Effect,
+  Event,
+  EventCallable,
+  EventPayload,
+  Store,
+} from 'effector';
 
-import { SourcedField, type FetchingStatus } from '../libs/patronus';
-import { CallObject } from './with_call_object';
+import type { SourcedField, FetchingStatus } from '../libs/patronus';
+import type { CallObject } from './with_call_object';
 
 interface DefaultMeta {
   name: string;
@@ -42,7 +48,7 @@ export interface RemoteOperation<
    */
   $enabled: Store<boolean>;
   /** Event to trigger query */
-  start: Event<Params>;
+  start: EventCallable<Params>;
   /** Event that trigered after operation started */
   started: Event<{ params: Params; meta: ExecutionMeta }>;
   aborted: Event<{ params: Params; meta: ExecutionMeta }>;
@@ -95,7 +101,7 @@ export interface RemoteOperation<
      * Distinguish different kinds of operations
      */
     kind: unknown;
-    $latestParams: Store<Params | null>;
+    $latestParams: Store<Params | undefined>;
     /**
      * Low-level API, it can be changed anytime without any notice!
      */
@@ -108,11 +114,12 @@ export interface RemoteOperation<
       >;
       sourced: SourcedField<Params, unknown, unknown>[];
       paramsAreMeaningless: boolean;
-      revalidate: Event<{ params: Params; refresh: boolean }>;
-      pushData: Event<Data>;
-      pushError: Event<Error>;
-      startWithMeta: Event<{ params: Params; meta: ExecutionMeta }>;
+      revalidate: EventCallable<{ params: Params; refresh: boolean }>;
+      pushData: EventCallable<Data>;
+      pushError: EventCallable<Error>;
+      startWithMeta: EventCallable<{ params: Params; meta: ExecutionMeta }>;
       callObjectCreated: Event<CallObject>;
+      resetStatus: EventCallable<void>;
     } & ExtraLowLevelAPI;
     experimentalAPI?: {
       attach: <Source, NewParams>(config: {
