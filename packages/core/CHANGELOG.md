@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.11.1
+
+### Patch Changes
+
+- 730ef73: Do not flick `.$status` during cancellation
+
 ## 0.11.0
 
 ### Minor Changes
