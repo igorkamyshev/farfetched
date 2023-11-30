@@ -189,7 +189,7 @@ describe('createJsonQuery concurrency.strategy', () => {
     );
   });
 
-  test.only('do not flick $status', async () => {
+  test('do not flick $status', async () => {
     const query = createJsonQuery({
       request: { method: 'GET', url: 'https://api.salo.com' },
       response: { contract: unknownContract },
@@ -225,9 +225,6 @@ describe('createJsonQuery concurrency.strategy', () => {
       [
         [
           "pending",
-        ],
-        [
-          "initial",
         ],
         [
           "fail",
