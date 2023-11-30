@@ -214,8 +214,17 @@ export function createRemoteOperation<
       finished.failure.map(() => 'fail' as const),
       sample({
         clock: aborted,
-        source: $statusHistory,
-        fn: (history) => history[history.length - 2] ?? 'initial',
+        source: {
+          history: $statusHistory,
+          retrieveDataPengind: retrieveDataFx.pending,
+        },
+        fn: ({ history, retrieveDataPengind }) => {
+          if (retrieveDataPengind) {
+            return 'pending';
+          }
+
+          return history[history.length - 2] ?? 'initial';
+        },
       }),
     ],
     target: $status,
