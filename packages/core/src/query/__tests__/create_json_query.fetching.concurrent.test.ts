@@ -188,4 +188,51 @@ describe('createJsonQuery concurrency.strategy', () => {
       expect.objectContaining({ error: abortError() })
     );
   });
+
+  test.only('do not flick $status', async () => {
+    const query = createJsonQuery({
+      request: { method: 'GET', url: 'https://api.salo.com' },
+      response: { contract: unknownContract },
+      concurrency: { strategy: 'TAKE_LATEST' },
+    });
+
+    const statusListener = vi.fn();
+    const abortedListener = vi.fn();
+
+    const scope = fork({
+      handlers: [
+        [
+          // We have to mock fetchFx because executeFx contains cancellation logic
+          fetchFx,
+          vi.fn().mockImplementation(async () => {
+            await setTimeout(100);
+            throw new Error('cannot');
+          }),
+        ],
+      ],
+    });
+
+    createWatch({ unit: query.$status, fn: statusListener, scope });
+    createWatch({ unit: query.aborted, fn: abortedListener, scope });
+
+    allSettled(query.start, { scope });
+    allSettled(query.start, { scope });
+
+    await allSettled(scope);
+
+    expect(abortedListener).toBeCalledTimes(1);
+    expect(statusListener.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          "pending",
+        ],
+        [
+          "initial",
+        ],
+        [
+          "fail",
+        ],
+      ]
+    `);
+  });
 });
