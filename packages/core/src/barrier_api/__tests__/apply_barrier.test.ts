@@ -121,8 +121,7 @@ describe('applyBarrier', () => {
         .mockResolvedValueOnce('OK'),
     });
 
-    applyBarrier(query1, { barrier: authBarrier });
-    applyBarrier(query2, { barrier: authBarrier });
+    applyBarrier([query1, query2], { barrier: authBarrier });
 
     const scope = fork();
 

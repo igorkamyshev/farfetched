@@ -40,8 +40,9 @@ Next, we need to apply the barrier to the [_Query_](/api/primitives/query) or [_
 ```ts
 import { applyBarrier } from '@farfetched/core';
 
-applyBarrier(sensitiveQuery, termsOfUseBarrier);
-applyBarrier(sensitiveMutation, termsOfUseBarrier);
+applyBarrier([sensitiveQuery, sensitiveMutation], {
+  barrier: termsOfUseBarrier,
+});
 ```
 
 Now it is guaranteed that the `sensitiveQuery` and `sensitiveMutation` will be suspended until the `termsOfUseBarrier` is deactivated. `termsOfUseBarrier` represents the state of the terms of use acceptance.

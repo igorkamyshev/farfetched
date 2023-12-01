@@ -86,9 +86,9 @@ This part is very simple. We just need to [`applyBarrier`](/api/operators/apply_
 ```ts{5}
 import { createQuery, applyBarrier } from '@farfetched/core';
 
-const someQuery = createQuery(/* ... */);
+const someQuery = createQuery({ /* ... */ });
 
-applyBarrier(someQuery, authBarrier);
+applyBarrier(someQuery, { barrier: authBarrier });
 ```
 
 That is it! Now every time `someQuery` is called, `authBarrier` will be checked. If the token is invalid, `authBarrier` will be activated, `someQuery` will be suspended, and `renewTokenMutation` will be called. After `renewTokenMutation` is finished, `someQuery` will be resumed in case of suspension or restarted with the latest parameters in case of failure.

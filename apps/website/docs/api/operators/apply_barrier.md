@@ -4,13 +4,28 @@ Applies the [_Barrier_](/api/primitives/barrier) to the [_Query_](/api/primitive
 
 ## Formulae
 
+### `applyBarrier(operation, { barrier })`
+
 ```ts
 import { applyBarrier } from '@farfetched/core';
 
 applyBarrier(operation, { barrier });
 ```
 
-### Arguments
+#### Arguments
 
 - `operation` - [_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutation) to apply the [_Barrier_](/api/primitives/barrier) to
+- `barrier` - [_Barrier_](/api/primitives/barrier) to apply
+
+### `applyBarrier(operations, { barrier })` <Badge type="tip" text="since v0.12.0" />
+
+```ts
+import { applyBarrier } from '@farfetched/core';
+
+applyBarrier([operation1, operation2], { barrier });
+```
+
+#### Arguments
+
+- `operations` - Array of [_Queries_](/api/primitives/query) or [_Mutations_](/api/primitives/mutation) to apply the [_Barrier_](/api/primitives/barrier) to
 - `barrier` - [_Barrier_](/api/primitives/barrier) to apply
