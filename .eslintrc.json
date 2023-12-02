@@ -18,9 +18,7 @@
               }
             ]
           }
-        ],
-        "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-unused-vars": "off"
+        ]
       }
     },
     {
@@ -30,7 +28,11 @@
     {
       "files": ["*.ts", "*.tsx"],
       "extends": ["plugin:@nx/typescript"],
-      "rules": {}
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/ban-ts-comment": "off"
+      }
     },
     {
       "files": ["*.js", "*.jsx"],
