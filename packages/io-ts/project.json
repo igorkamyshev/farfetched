@@ -17,53 +17,39 @@
       ]
     },
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "project": "packages/io-ts/package.json",
         "outputPath": "dist/packages/io-ts",
-        "entryFile": "packages/io-ts/index.ts",
-        "tsConfig": "packages/io-ts/tsconfig.json",
-        "format": ["esm", "cjs"],
-        "generateExportsField": true,
-        "compiler": "babel",
-        "updateBuildableProjectDepsInPackageJson": true
-      }
-    },
-    "publish": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node tools/scripts/publish.mjs io-ts --rename={args.rename}"
-      },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "pack"
-        }
-      ],
-      "configurations": {
-        "canary": {
-          "args": "--rename=canary"
-        }
+        "main": "packages/io-ts/src/index.ts",
+        "tsConfig": "packages/io-ts/tsconfig.lib.json",
+        "assets": [],
+        "project": "packages/io-ts/package.json",
+        "compiler": "swc",
+        "format": ["cjs", "esm"]
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/io-ts/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/io-ts/**/*.ts",
+          "packages/io-ts/package.json"
+        ]
       }
     },
     "test": {
       "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "config": "packages/io-ts/vite.config.ts"
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/io-ts"
       }
     },
     "typetest": {
       "executor": "@nx/vite:test",
       "options": {
-        "config": "packages/io-ts/vite.config.ts",
         "mode": "typecheck"
       }
     },

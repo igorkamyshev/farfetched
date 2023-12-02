@@ -1,0 +1,1 @@
+export { ioTsContract } from './contract';
