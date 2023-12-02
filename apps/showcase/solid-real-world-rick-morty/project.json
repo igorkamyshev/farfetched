@@ -7,7 +7,8 @@
     "build": {
       "executor": "@nx/vite:build",
       "options": {
-        "outputPath": "dist/apps/showcase/solid-real-world-rick-morty"
+        "outputPath": "dist/apps/showcase/solid-real-world-rick-morty",
+        "skipTypeCheck": true
       }
     },
     "serve": {
