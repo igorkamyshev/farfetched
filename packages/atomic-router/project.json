@@ -17,17 +17,16 @@
       ]
     },
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "project": "packages/atomic-router/package.json",
         "outputPath": "dist/packages/atomic-router",
-        "entryFile": "packages/atomic-router/index.ts",
-        "tsConfig": "packages/atomic-router/tsconfig.json",
-        "format": ["esm", "cjs"],
-        "generateExportsField": true,
-        "compiler": "babel",
-        "updateBuildableProjectDepsInPackageJson": true
+        "main": "packages/atomic-router/src/index.ts",
+        "tsConfig": "packages/atomic-router/tsconfig.lib.json",
+        "assets": [],
+        "project": "packages/atomic-router/package.json",
+        "compiler": "swc",
+        "format": ["cjs", "esm"]
       }
     },
     "publish": {
@@ -51,19 +50,23 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/atomic-router/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/atomic-router/**/*.ts",
+          "packages/atomic-router/package.json"
+        ]
       }
     },
     "test": {
       "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "config": "packages/atomic-router/vite.config.ts"
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/atomic-router"
       }
     },
     "typetest": {
       "executor": "@nx/vite:test",
       "options": {
-        "config": "packages/atomic-router/vite.config.ts",
         "mode": "typecheck"
       }
     },

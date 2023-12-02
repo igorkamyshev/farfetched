@@ -13,6 +13,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@farfetched/atomic-router": ["packages/atomic-router/src/index.ts"],
       "@farfetched/core": ["packages/core/index.ts"],
       "@farfetched/io-ts": ["packages/io-ts/src/index.ts"],
       "@farfetched/runtypes": ["packages/runtypes/src/index.ts"],
