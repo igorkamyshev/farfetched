@@ -5,8 +5,7 @@
   "peerDependencies": {
     "effector": "^23.0.0"
   },
-  "type": "module",
+  "type": "commonjs",
   "main": "./index.cjs",
   "module": "./index.js"
-
 }

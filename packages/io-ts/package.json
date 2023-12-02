@@ -6,8 +6,7 @@
     "io-ts": "^2.2.20",
     "fp-ts": "^2.13.1"
   },
-  "type": "module",
+  "type": "commonjs",
   "main": "./index.cjs",
   "module": "./index.js"
-
 }
