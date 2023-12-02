@@ -1,5 +1,9 @@
-import { createProjectGraphAsync, logger, readJsonFile } from '@nrwl/devkit';
-import { join } from 'path';
+import { join } from 'node:path';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+
+const { createProjectGraphAsync, logger, readJsonFile } = require('@nx/devkit');
 
 const graph = await createProjectGraphAsync();
 

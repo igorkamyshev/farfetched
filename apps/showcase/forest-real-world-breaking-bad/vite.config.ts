@@ -1,9 +1,9 @@
 import { defineConfig } from 'vite';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
 export default defineConfig({
   cacheDir:
     '../../../node_modules/.vite/showcase-forest-real-world-breaking-bad',
-  plugins: [tsconfigPaths()],
+  plugins: [nxViteTsPaths()],
   build: { outDir: '../../../dist/apps/showcase/solid-real-world-rick-morty' },
 });

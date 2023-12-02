@@ -3,31 +3,26 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/solid/src",
   "projectType": "library",
-  "tags": [],
   "targets": {
     "pack": {
       "executor": "nx:run-commands",
       "options": {
         "command": "node tools/scripts/typepack.mjs --package solid"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
+      "dependsOn": ["build"]
     },
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "project": "packages/solid/package.json",
         "outputPath": "dist/packages/solid",
-        "entryFile": "packages/solid/index.ts",
-        "tsConfig": "packages/solid/tsconfig.build.json",
-        "format": ["esm", "cjs"],
-        "generateExportsField": true,
-        "compiler": "babel"
+        "main": "packages/solid/src/index.ts",
+        "tsConfig": "packages/solid/tsconfig.lib.json",
+        "assets": [],
+        "project": "packages/solid/package.json",
+        "compiler": "swc",
+        "format": ["cjs", "esm"],
+        "generateExportsField": true
       }
     },
     "publish": {
@@ -35,12 +30,7 @@
       "options": {
         "command": "node tools/scripts/publish.mjs solid --rename={args.rename}"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "pack"
-        }
-      ],
+      "dependsOn": ["pack"],
       "configurations": {
         "canary": {
           "args": "--rename=canary"
@@ -48,22 +38,27 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/solid/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "packages/solid/**/*.ts",
+          "packages/solid/package.json"
+        ]
       }
     },
     "test": {
-      "executor": "@nrwl/vite:test",
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "config": "vite.config.ts"
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/solid"
       }
     },
     "typetest": {
-      "executor": "@nrwl/vite:test",
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "config": "vite.config.ts",
         "mode": "typecheck"
       }
     },
@@ -73,13 +68,8 @@
         "limit": "1 kB",
         "outputPath": "dist/packages/solid"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
+      "dependsOn": ["build"]
     }
   },
-  "implicitDependencies": ["!test-utils"]
+  "tags": []
 }

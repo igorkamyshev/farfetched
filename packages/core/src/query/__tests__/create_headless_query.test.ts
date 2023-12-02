@@ -1,8 +1,7 @@
 import { allSettled, createStore, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
-import { watchRemoteOperation } from '@farfetched/test-utils';
-
+import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { createHeadlessQuery } from '../create_headless_query';
 import { unknownContract } from '../../contract/unknown_contract';
 import { invalidDataError } from '../../errors/create_error';

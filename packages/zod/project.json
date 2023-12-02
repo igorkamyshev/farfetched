@@ -9,24 +9,20 @@
       "options": {
         "command": "node tools/scripts/typepack.mjs --package zod"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
+      "dependsOn": ["build"]
     },
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "project": "packages/zod/package.json",
         "outputPath": "dist/packages/zod",
-        "entryFile": "packages/zod/index.ts",
-        "tsConfig": "packages/zod/tsconfig.json",
-        "format": ["esm", "cjs"],
-        "generateExportsField": true,
-        "compiler": "babel"
+        "main": "packages/zod/src/index.ts",
+        "tsConfig": "packages/zod/tsconfig.lib.json",
+        "assets": [],
+        "project": "packages/zod/package.json",
+        "compiler": "swc",
+        "format": ["cjs", "esm"],
+        "generateExportsField": true
       }
     },
     "publish": {
@@ -34,12 +30,7 @@
       "options": {
         "command": "node tools/scripts/publish.mjs zod --rename={args.rename}"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "pack"
-        }
-      ],
+      "dependsOn": ["pack"],
       "configurations": {
         "canary": {
           "args": "--rename=canary"
@@ -47,22 +38,27 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/zod/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/zod/**/*.ts",
+          "packages/zod/package.json"
+        ]
       }
     },
     "test": {
-      "executor": "@nrwl/vite:test",
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "config": "vite.config.ts"
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/zod"
       }
     },
     "typetest": {
-      "executor": "@nrwl/vite:test",
+      "executor": "@nx/vite:test",
+
       "options": {
-        "config": "vite.config.ts",
         "mode": "typecheck"
       }
     },
@@ -72,14 +68,8 @@
         "limit": "0.4 kB",
         "outputPath": "dist/packages/zod"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
+      "dependsOn": ["build"]
     }
   },
-  "implicitDependencies": ["!test-utils"],
   "tags": []
 }

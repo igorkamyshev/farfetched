@@ -6,6 +6,5 @@
   "linked": [],
   "access": "public",
   "baseBranch": "origin/master",
-  "updateInternalDependencies": "patch",
-  "ignore": ["@farfetched/test-utils"]
+  "updateInternalDependencies": "patch"
 }

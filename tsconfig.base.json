@@ -13,11 +13,14 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@farfetched/core": ["packages/core/index.ts"],
-      "@farfetched/runtypes": ["packages/runtypes/index.ts"],
-      "@farfetched/solid": ["packages/solid/index.ts"],
-      "@farfetched/test-utils": ["packages/test-utils/index.ts"],
-      "@farfetched/zod": ["packages/zod/index.ts"]
+      "@farfetched/atomic-router": ["packages/atomic-router/src/index.ts"],
+      "@farfetched/core": ["packages/core/src/index.ts"],
+      "@farfetched/io-ts": ["packages/io-ts/src/index.ts"],
+      "@farfetched/runtypes": ["packages/runtypes/src/index.ts"],
+      "@farfetched/solid": ["packages/solid/src/index.ts"],
+      "@farfetched/superstruct": ["packages/superstruct/src/index.ts"],
+      "@farfetched/typed-contracts": ["packages/typed-contracts/src/index.ts"],
+      "@farfetched/zod": ["packages/zod/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

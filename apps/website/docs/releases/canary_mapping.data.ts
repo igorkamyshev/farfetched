@@ -1,4 +1,4 @@
-import { createProjectGraphAsync } from '@nrwl/devkit';
+import { createProjectGraphAsync } from '@nx/devkit';
 
 process.env.NX_DAEMON = 'false';
 

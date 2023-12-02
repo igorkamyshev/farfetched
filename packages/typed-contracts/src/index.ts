@@ -1,0 +1,1 @@
+export { typedContract } from './contract';

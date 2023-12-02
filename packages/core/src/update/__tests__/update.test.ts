@@ -1,8 +1,8 @@
-import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
+import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { createMutation } from '../../mutation/create_mutation';
 import { createQuery } from '../../query/create_query';
 import { update } from '../update';
