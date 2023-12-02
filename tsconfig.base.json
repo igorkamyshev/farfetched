@@ -17,6 +17,7 @@
       "@farfetched/runtypes": ["packages/runtypes/src/index.ts"],
       "@farfetched/solid": ["packages/solid/src/index.ts"],
       "@farfetched/superstruct": ["packages/superstruct/src/index.ts"],
+      "@farfetched/typed-contracts": ["packages/typed-contracts/src/index.ts"],
       "@farfetched/zod": ["packages/zod/index.ts"]
     }
   },

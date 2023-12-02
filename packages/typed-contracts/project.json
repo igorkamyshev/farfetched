@@ -17,17 +17,16 @@
       ]
     },
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "project": "packages/typed-contracts/package.json",
         "outputPath": "dist/packages/typed-contracts",
-        "entryFile": "packages/typed-contracts/index.ts",
-        "tsConfig": "packages/typed-contracts/tsconfig.json",
-        "format": ["esm", "cjs"],
-        "generateExportsField": true,
-        "compiler": "babel",
-        "updateBuildableProjectDepsInPackageJson": true
+        "main": "packages/typed-contracts/src/index.ts",
+        "tsConfig": "packages/typed-contracts/tsconfig.lib.json",
+        "assets": [],
+        "project": "packages/typed-contracts/package.json",
+        "compiler": "swc",
+        "format": ["cjs", "esm"]
       }
     },
     "publish": {
@@ -51,19 +50,24 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/typed-contracts/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/typed-contracts/**/*.ts",
+          "packages/typed-contracts/package.json"
+        ]
       }
     },
     "test": {
       "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "config": "packages/typed-contracts/vite.config.ts"
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/typed-contracts"
       }
     },
     "typetest": {
       "executor": "@nx/vite:test",
+
       "options": {
-        "config": "packages/typed-contracts/vite.config.ts",
         "mode": "typecheck"
       }
     },

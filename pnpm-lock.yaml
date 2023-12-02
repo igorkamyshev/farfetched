@@ -153,9 +153,6 @@ importers:
   packages/runtypes:
     specifiers: {}
 
-  packages/runtypes_old:
-    specifiers: {}
-
   packages/solid:
     specifiers: {}
 
