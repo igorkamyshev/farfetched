@@ -1,7 +1,16 @@
-import { defineConfig } from 'vitest/config';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import { defineConfig } from 'vite';
+
+import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
 export default defineConfig({
-  test: { typecheck: { ignoreSourceErrors: true } },
-  plugins: [tsconfigPaths({ root: '../../' })],
+  cacheDir: '../../node_modules/.vite/superstruct',
+
+  plugins: [nxViteTsPaths()],
+
+  test: {
+    globals: true,
+    cache: { dir: '../../node_modules/.vitest' },
+    environment: 'node',
+    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+  },
 });

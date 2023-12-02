@@ -17,17 +17,16 @@
       ]
     },
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "project": "packages/superstruct/package.json",
         "outputPath": "dist/packages/superstruct",
-        "entryFile": "packages/superstruct/index.ts",
-        "tsConfig": "packages/superstruct/tsconfig.json",
-        "format": ["esm", "cjs"],
-        "generateExportsField": true,
-        "compiler": "babel",
-        "updateBuildableProjectDepsInPackageJson": true
+        "main": "packages/superstruct/src/index.ts",
+        "tsConfig": "packages/superstruct/tsconfig.lib.json",
+        "assets": [],
+        "project": "packages/superstruct/package.json",
+        "compiler": "swc",
+        "format": ["cjs", "esm"]
       }
     },
     "publish": {
@@ -51,19 +50,23 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/superstruct/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/superstruct/**/*.ts",
+          "packages/superstruct/package.json"
+        ]
       }
     },
     "test": {
       "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "config": "packages/superstruct/vite.config.ts"
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/superstruct"
       }
     },
     "typetest": {
       "executor": "@nx/vite:test",
       "options": {
-        "config": "packages/superstruct/vite.config.ts",
         "mode": "typecheck"
       }
     },
