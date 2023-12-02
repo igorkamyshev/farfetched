@@ -1,8 +1,8 @@
-import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, createEvent, createWatch, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
+import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { fetchFx } from '../../fetch/fetch';
 import { createJsonQuery } from '../create_json_query';
 import { unknownContract } from '../../contract/unknown_contract';

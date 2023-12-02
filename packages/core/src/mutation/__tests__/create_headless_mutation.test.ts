@@ -1,7 +1,7 @@
 import { allSettled, fork } from 'effector';
-import { watchRemoteOperation } from '@farfetched/test-utils';
 import { describe, test, expect, vi } from 'vitest';
 
+import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { createHeadlessMutation } from '../create_headless_mutation';
 import { unknownContract } from '../../contract/unknown_contract';
 

@@ -22,6 +22,7 @@ describe('error guards', () => {
       filter: isHttpError,
     });
 
+    // @ts-expect-error
     expectTypeOf(result).toEqualTypeOf<
       Event<{ params: void; error: HttpError<number>; meta: ExecutionMeta }>
     >();

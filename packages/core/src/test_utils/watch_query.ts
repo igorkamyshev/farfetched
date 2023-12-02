@@ -11,7 +11,7 @@ interface RemoteOperationLike {
   };
 }
 
-function watchRemoteOperation(op: RemoteOperationLike, scope: Scope) {
+export function watchRemoteOperation(op: RemoteOperationLike, scope: Scope) {
   const onStart = vi.fn();
 
   const onSuccess = vi.fn();
@@ -57,5 +57,3 @@ function watchRemoteOperation(op: RemoteOperationLike, scope: Scope) {
     },
   };
 }
-
-export { watchRemoteOperation };

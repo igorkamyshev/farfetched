@@ -1,7 +1,7 @@
 import { createWatch, Effect, Scope } from 'effector';
 import { vi } from 'vitest';
 
-function watchEffect(effectFx: Effect<any, any, any>, scope: Scope) {
+export function watchEffect(effectFx: Effect<any, any, any>, scope: Scope) {
   const onCall = vi.fn();
   createWatch({ unit: effectFx, fn: onCall, scope });
 
@@ -22,5 +22,3 @@ function watchEffect(effectFx: Effect<any, any, any>, scope: Scope) {
     listeners: { onCall, onDone, onDoneData, onFail, onFailData, onFinally },
   };
 }
-
-export { watchEffect };

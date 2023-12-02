@@ -13,7 +13,7 @@ describe('createJsonQuery', () => {
       isData: (raw: unknown): raw is unknown => true,
       getErrorMessages: () => [],
     },
-    mapData: ({ result }) => result,
+    mapData: ({ result }: { result: unknown }) => result,
   };
 
   // Does not matter

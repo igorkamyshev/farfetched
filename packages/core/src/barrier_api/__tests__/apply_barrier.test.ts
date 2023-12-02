@@ -2,8 +2,7 @@ import { allSettled, createEffect, createStore, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
-import { watchRemoteOperation } from '@farfetched/test-utils';
-
+import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { createQuery } from '../../query/create_query';
 import { applyBarrier } from '../apply_barrier';
 import { createBarrier } from '../create_barrier';

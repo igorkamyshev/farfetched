@@ -145,9 +145,6 @@ importers:
   packages/superstruct:
     specifiers: {}
 
-  packages/test-utils:
-    specifiers: {}
-
   packages/typed-contracts:
     specifiers: {}
 

@@ -81,6 +81,5 @@
         }
       ]
     }
-  },
-  "implicitDependencies": ["!test-utils"]
+  }
 }

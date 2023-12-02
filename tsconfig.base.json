@@ -16,7 +16,6 @@
       "@farfetched/core": ["packages/core/index.ts"],
       "@farfetched/runtypes": ["packages/runtypes/index.ts"],
       "@farfetched/solid": ["packages/solid/index.ts"],
-      "@farfetched/test-utils": ["packages/test-utils/index.ts"],
       "@farfetched/zod": ["packages/zod/index.ts"]
     }
   },
