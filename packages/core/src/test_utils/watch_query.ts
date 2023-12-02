@@ -1,5 +1,5 @@
 import { createWatch, type Event, type Scope } from 'effector';
-import { vi } from 'vitest';
+import { vi, MockedFunction } from 'vitest';
 
 interface RemoteOperationLike {
   started: Event<any>;
@@ -11,7 +11,21 @@ interface RemoteOperationLike {
   };
 }
 
-export function watchRemoteOperation(op: RemoteOperationLike, scope: Scope) {
+type RemoteOperationWatch = {
+  listeners: {
+    onStart: MockedFunction<any>;
+    onSuccess: MockedFunction<any>;
+    onSkip: MockedFunction<any>;
+    onFailure: MockedFunction<any>;
+    onFinally: MockedFunction<any>;
+  };
+  unwatch: () => void;
+};
+
+export function watchRemoteOperation(
+  op: RemoteOperationLike,
+  scope: Scope
+): RemoteOperationWatch {
   const onStart = vi.fn();
 
   const onSuccess = vi.fn();

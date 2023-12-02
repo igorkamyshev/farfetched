@@ -1,7 +1,21 @@
 import { createWatch, Effect, Scope } from 'effector';
-import { vi } from 'vitest';
+import { vi, type MockedFunction } from 'vitest';
 
-export function watchEffect(effectFx: Effect<any, any, any>, scope: Scope) {
+type EffectWatch = {
+  listeners: {
+    onCall: MockedFunction<any>;
+    onDone: MockedFunction<any>;
+    onDoneData: MockedFunction<any>;
+    onFail: MockedFunction<any>;
+    onFailData: MockedFunction<any>;
+    onFinally: MockedFunction<any>;
+  };
+};
+
+export function watchEffect(
+  effectFx: Effect<any, any, any>,
+  scope: Scope
+): EffectWatch {
   const onCall = vi.fn();
   createWatch({ unit: effectFx, fn: onCall, scope });
 

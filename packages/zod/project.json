@@ -26,7 +26,8 @@
         "assets": [],
         "project": "packages/zod/package.json",
         "compiler": "swc",
-        "format": ["cjs", "esm"]
+        "format": ["cjs", "esm"],
+        "generateExportsField": true
       }
     },
     "publish": {
