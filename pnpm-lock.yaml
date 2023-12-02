@@ -29,17 +29,10 @@ importers:
       atomic-router: '0.6'
       atomic-router-solid: '0.5'
       bytes-iec: ^3.1.1
-<<<<<<< HEAD
-      effector: ^22.5.0
-      effector-react: ^22.3.0
-      effector-solid: 0.22.7
-      eslint: 8.46.0
-=======
       effector: 23.0.0
       effector-react: 23.0.0
       effector-solid: 0.23.0
-      eslint: ~8.15.0
->>>>>>> origin/master
+      eslint: 8.46.0
       forest: ^0.21.2
       fp-ts: ^2.13.1
       glob: ^8.0.3
@@ -109,13 +102,8 @@ importers:
       '@typescript-eslint/parser': 6.12.0_w2tuhq6ybtwthvlnwdedk62lji
       '@vitejs/plugin-react': 4.2.0_vite@4.5.0
       bytes-iec: 3.1.1
-<<<<<<< HEAD
-      effector: 22.5.0
-      eslint: 8.46.0
-=======
       effector: 23.0.0
-      eslint: 8.15.0
->>>>>>> origin/master
+      eslint: 8.46.0
       fp-ts: 2.13.1
       glob: 8.0.3
       io-ts: 2.2.20_fp-ts@2.13.1
@@ -5954,7 +5942,7 @@ packages:
       glob-parent: 6.0.2
       globals: 13.23.0
       graphemer: 1.4.0
-      ignore: 5.2.0
+      ignore: 5.3.0
       imurmurhash: 0.1.4
       is-glob: 4.0.3
       is-path-inside: 3.0.3
@@ -6413,7 +6401,7 @@ packages:
       array-union: 2.1.0
       dir-glob: 3.0.1
       fast-glob: 3.2.11
-      ignore: 5.2.0
+      ignore: 5.3.0
       merge2: 1.4.1
       slash: 3.0.0
     dev: true
@@ -8368,11 +8356,6 @@ packages:
     resolution: {integrity: sha512-E/ZsdU4HLs/68gYzgGTkMicWTLPdAftJLfJFlLUAAKZGkStNU72sZjT66SnMDVOfOWY/YAoiD7Jxa9iHvngcag==}
     dev: true
 
-  /punycode/2.1.1:
-    resolution: {integrity: sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==}
-    engines: {node: '>=6'}
-    dev: true
-
   /punycode/2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
@@ -9243,7 +9226,7 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       psl: 1.9.0
-      punycode: 2.1.1
+      punycode: 2.3.1
       universalify: 0.2.0
       url-parse: 1.5.10
     dev: true
