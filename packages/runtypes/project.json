@@ -17,17 +17,16 @@
       ]
     },
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "project": "packages/runtypes/package.json",
         "outputPath": "dist/packages/runtypes",
-        "entryFile": "packages/runtypes/index.ts",
-        "tsConfig": "packages/runtypes/tsconfig.build.json",
-        "format": ["esm", "cjs"],
-        "generateExportsField": true,
-        "compiler": "babel",
-        "updateBuildableProjectDepsInPackageJson": true
+        "main": "packages/runtypes/src/index.ts",
+        "tsConfig": "packages/runtypes/tsconfig.lib.json",
+        "assets": [],
+        "project": "packages/runtypes/package.json",
+        "compiler": "swc",
+        "format": ["cjs", "esm"]
       }
     },
     "publish": {
@@ -51,19 +50,24 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/runtypes/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/runtypes/**/*.ts",
+          "packages/runtypes/package.json"
+        ]
       }
     },
     "test": {
       "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "config": "packages/runtypes/vite.config.ts"
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/runtypes"
       }
     },
     "typetest": {
       "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "config": "packages/runtypes/vite.config.ts",
         "mode": "typecheck"
       }
     },

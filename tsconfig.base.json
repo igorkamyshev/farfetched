@@ -14,7 +14,7 @@
     "baseUrl": ".",
     "paths": {
       "@farfetched/core": ["packages/core/index.ts"],
-      "@farfetched/runtypes": ["packages/runtypes/index.ts"],
+      "@farfetched/runtypes": ["packages/runtypes/src/index.ts"],
       "@farfetched/solid": ["packages/solid/index.ts"],
       "@farfetched/zod": ["packages/zod/index.ts"]
     }
