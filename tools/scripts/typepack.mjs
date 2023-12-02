@@ -13,7 +13,7 @@ const args = parseArgs({ options: { package: { type: 'string' } } });
 
 const inputDir = path.join('dist', 'packages', args.values.package);
 
-const inputFile = path.join(inputDir, 'index.d.ts');
+const inputFile = path.join(inputDir, 'index.cjs.d.ts');
 const outputFile = inputFile;
 
 const external = Object.values(readCachedProjectGraph().nodes)
