@@ -5,7 +5,8 @@
   "peerDependencies": {
     "typed-contracts": "^3.0.0"
   },
-  "type": "commonjs",
+  "type": "module",
   "main": "./index.cjs",
   "module": "./index.js"
+
 }

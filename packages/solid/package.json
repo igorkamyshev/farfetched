@@ -6,7 +6,8 @@
     "effector-solid": "^0.23.0",
     "solid-js": "^1.4.7"
   },
-  "type": "commonjs",
+  "type": "module",
   "main": "./index.cjs",
   "module": "./index.js"
+
 }

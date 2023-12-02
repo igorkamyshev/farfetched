@@ -2,9 +2,10 @@
   "name": "@farfetched/runtypes",
   "version": "0.11.1",
   "dependencies": {},
-  "type": "commonjs",
+  "type": "module",
   "main": "./index.cjs",
-  "module": "./index.js",
+  "module": "./index.js"
+,
   "peerDependencies": {
     "runtypes": "^6.6.0"
   }

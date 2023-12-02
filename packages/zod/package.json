@@ -8,7 +8,8 @@
   "peerDependencies": {
     "zod": "^3.19"
   },
-  "type": "commonjs",
+  "type": "module",
   "main": "./index.cjs",
   "module": "./index.js"
+
 }
