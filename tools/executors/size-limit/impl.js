@@ -10,7 +10,7 @@ module.exports = async function sizeLimitExecutor(
   { outputPath, limit },
   context
 ) {
-  const files = await glob(path.join(context.cwd, outputPath, '**/*.js'));
+  const files = await glob(path.join(context.cwd, outputPath, '**/*.esm.js'));
 
   const [{ size }] = await sizeLimit([filePlugin], files);
 
