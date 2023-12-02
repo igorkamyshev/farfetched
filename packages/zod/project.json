@@ -17,17 +17,16 @@
       ]
     },
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "project": "packages/zod/package.json",
         "outputPath": "dist/packages/zod",
-        "entryFile": "packages/zod/index.ts",
-        "tsConfig": "packages/zod/tsconfig.json",
-        "format": ["esm", "cjs"],
-        "generateExportsField": true,
-        "compiler": "babel",
-        "updateBuildableProjectDepsInPackageJson": true
+        "main": "packages/zod/src/index.ts",
+        "tsConfig": "packages/zod/tsconfig.lib.json",
+        "assets": [],
+        "project": "packages/zod/package.json",
+        "compiler": "swc",
+        "format": ["cjs", "esm"]
       }
     },
     "publish": {
@@ -51,19 +50,24 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/zod/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/zod/**/*.ts",
+          "packages/zod/package.json"
+        ]
       }
     },
     "test": {
       "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "config": "packages/zod/vite.config.ts"
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/zod"
       }
     },
     "typetest": {
       "executor": "@nx/vite:test",
+
       "options": {
-        "config": "packages/zod/vite.config.ts",
         "mode": "typecheck"
       }
     },
