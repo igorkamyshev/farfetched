@@ -1,8 +1,12 @@
 {
   "name": "@farfetched/solid",
   "version": "0.11.1",
+  "dependencies": {},
   "peerDependencies": {
     "effector-solid": "^0.23.0",
     "solid-js": "^1.4.7"
-  }
+  },
+  "type": "commonjs",
+  "main": "./index.cjs",
+  "module": "./index.js"
 }

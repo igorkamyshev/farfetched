@@ -3,7 +3,6 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/solid/src",
   "projectType": "library",
-  "tags": [],
   "targets": {
     "pack": {
       "executor": "nx:run-commands",
@@ -18,17 +17,16 @@
       ]
     },
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "project": "packages/solid/package.json",
         "outputPath": "dist/packages/solid",
-        "entryFile": "packages/solid/index.ts",
-        "tsConfig": "packages/solid/tsconfig.build.json",
-        "format": ["esm", "cjs"],
-        "generateExportsField": true,
-        "compiler": "babel",
-        "updateBuildableProjectDepsInPackageJson": true
+        "main": "packages/solid/src/index.ts",
+        "tsConfig": "packages/solid/tsconfig.lib.json",
+        "assets": [],
+        "project": "packages/solid/package.json",
+        "compiler": "swc",
+        "format": ["cjs", "esm"]
       }
     },
     "publish": {
@@ -52,19 +50,24 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/solid/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "packages/solid/**/*.ts",
+          "packages/solid/package.json"
+        ]
       }
     },
     "test": {
       "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "config": "packages/solid/vite.config.ts"
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/solid"
       }
     },
     "typetest": {
       "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "config": "packages/solid/vite.config.ts",
         "mode": "typecheck"
       }
     },
@@ -81,5 +84,6 @@
         }
       ]
     }
-  }
+  },
+  "tags": []
 }
