@@ -27,7 +27,7 @@ describe('core/createHeadlessQuery with serialize', () => {
     await allSettled(query.start, { scope, params: {} });
 
     expect(query.__.meta.serialize).toBe('ignore');
-    expect(serialize(scope, { onlyChanges: true })).toEqual({});
+    expect(serialize(scope)).toEqual({});
   });
 
   test('apply custom serialization to data', async () => {
@@ -52,7 +52,7 @@ describe('core/createHeadlessQuery with serialize', () => {
       write: writeMock,
     });
 
-    const serialized = serialize(scope, { onlyChanges: true });
+    const serialized = serialize(scope);
 
     expect(serialized).toEqual(
       expect.objectContaining({

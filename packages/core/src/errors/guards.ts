@@ -3,14 +3,16 @@ import {
   type AbortError,
   HTTP,
   type HttpError,
-  type InvalidDataError,
   INVALID_DATA,
+  type InvalidDataError,
   NETWORK,
-  NetworkError,
+  type NetworkError,
   PREPARATION,
-  PreparationError,
+  type PreparationError,
   TIMEOUT,
-  TimeoutError,
+  type TimeoutError,
+  CONFIGURATION,
+  type ConfigurationError,
 } from './type';
 
 type WithError<T = any, P = Record<string, unknown>> = P & { error: T };
@@ -27,6 +29,12 @@ export function isTimeoutError(
   return args.error?.errorType === TIMEOUT;
 }
 
+/**
+ * Has to be private, do not export it.
+ *
+ * Since Farfetcehd 0.10 aborted RemoteOperation is not considered as an error,
+ * so isAbortError is not needed anymore in userland.
+ */
 export function isAbortError(args: WithError): args is WithError<AbortError> {
   return args.error?.errorType === ABORT;
 }
@@ -59,4 +67,10 @@ export function isNetworkError(
   args: WithError
 ): args is WithError<NetworkError> {
   return args.error?.errorType === NETWORK;
+}
+
+export function isConfigurationError(
+  args: WithError
+): args is WithError<ConfigurationError> {
+  return args.error?.errorType === CONFIGURATION;
 }

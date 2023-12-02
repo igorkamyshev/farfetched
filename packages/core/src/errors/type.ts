@@ -39,3 +39,9 @@ export interface NetworkError extends FarfetchedError<typeof NETWORK> {
   reason: string | null;
   cause?: unknown;
 }
+
+export const CONFIGURATION = 'CONFIGURATION';
+export interface ConfigurationError
+  extends FarfetchedError<typeof CONFIGURATION> {
+  validationErrors: string[];
+}

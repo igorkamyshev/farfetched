@@ -16,6 +16,7 @@ import {
 import { NonOptionalKeys } from '../libs/lohyphen';
 import {
   AbortError,
+  ConfigurationError,
   HttpError,
   InvalidDataError,
   NetworkError,
@@ -143,6 +144,7 @@ interface ApiConfig<B, R extends CreationRequestConfig<B>, P>
 }
 
 export type ApiRequestError =
+  | ConfigurationError
   | TimeoutError
   | PreparationError
   | NetworkError
@@ -161,7 +163,11 @@ export function createApiRequest<
 
   const prepareFx = createEffect(config.response.extract);
 
-  const $haveToBeAborted = createStore(false, { serialize: 'ignore' });
+  const $haveToBeAborted = createStore(false, {
+    serialize: 'ignore',
+    name: 'ff.$haveToBeAborted',
+    sid: 'ff.$haveToBeAborted',
+  });
 
   const apiRequestFx = createEffect<
     DynamicRequestConfig<B> &

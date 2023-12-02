@@ -79,6 +79,7 @@ export {
   type PreparationError,
   type HttpError,
   type NetworkError,
+  type ConfigurationError,
 } from './src/errors/type';
 export {
   invalidDataError,
@@ -87,10 +88,10 @@ export {
   preparationError,
   httpError,
   networkError,
+  configurationError,
 } from './src/errors/create_error';
 export {
   isTimeoutError,
-  isAbortError,
   isPreparationError,
   isHttpError,
   isNetworkError,
@@ -100,3 +101,8 @@ export {
 
 // Trigger API
 export { keepFresh } from './src/trigger_api/keep_fresh';
+
+// Barrier API
+export { type Barrier } from './src/barrier_api/type';
+export { applyBarrier } from './src/barrier_api/apply_barrier';
+export { createBarrier } from './src/barrier_api/create_barrier';

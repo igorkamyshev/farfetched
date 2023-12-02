@@ -155,7 +155,11 @@ export function browserStorageCache(
   }
 
   // -- meta storage
-  const $meta = createStore<Meta | null>(null, { serialize: 'ignore' });
+  const $meta = createStore<Meta | null>(null, {
+    serialize: 'ignore',
+    name: 'ff.browserStorage.$meta',
+    sid: 'ff.browserStorage.$meta',
+  });
 
   const getMetaFx = createEffect(async () => {
     const meta = await getItemFx(META_KEY);

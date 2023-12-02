@@ -1,4 +1,4 @@
-import { Event } from 'effector';
+import { createStore, Event } from 'effector';
 import { describe, test } from 'vitest';
 
 import { Query } from '../../query/type';
@@ -11,6 +11,13 @@ describe('keepFresh', () => {
     keepFresh(q, { automatically: true });
     keepFresh(q, { triggers: [] });
     keepFresh(q, { automatically: true, triggers: [] });
+    keepFresh(q, { automatically: true, enabled: createStore(true) });
+    keepFresh(q, { triggers: [], enabled: createStore(true) });
+    keepFresh(q, {
+      automatically: true,
+      triggers: [],
+      enabled: createStore(true),
+    });
   });
 
   test('supports any Event as trigger', () => {

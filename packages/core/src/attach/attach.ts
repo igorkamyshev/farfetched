@@ -81,7 +81,11 @@ export function attachOperation<
   const { source, mapParams } = config ?? {};
 
   return operation.__.experimentalAPI?.attach({
-    source: source ?? createStore(null, { serialize: 'ignore' }),
+    source:
+      source ??
+      createStore(null, {
+        serialize: 'ignore',
+      }),
     mapParams: mapParams ?? ((v: NewParams) => v as unknown as OriginalParams),
   });
 }

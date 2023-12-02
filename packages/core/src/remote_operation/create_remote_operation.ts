@@ -170,12 +170,17 @@ export function createRemoteOperation<
   // -- Main stores --
   const $status = createStore<FetchingStatus>('initial', {
     sid: `ff.${name}.$status`,
-    name: `${name}.$status`,
+    name: `ff.${name}.$status`,
     serialize,
   });
 
+  const resetStatus = createEvent();
+  sample({ clock: resetStatus, target: $status.reinit });
+
   const $statusHistory = createStore<FetchingStatus[]>([], {
     serialize: 'ignore',
+    name: `ff.${name}.$statusHistory`,
+    sid: `ff.${name}.$statusHistory`,
   });
 
   sample({
@@ -187,8 +192,11 @@ export function createRemoteOperation<
 
   const $enabled = normalizeStaticOrReactive(enabled ?? true).map(Boolean);
 
-  const $latestParams = createStore<Params | null>(null, {
+  const $latestParams = createStore<Params | undefined>(undefined, {
     serialize: 'ignore',
+    name: `ff.${name}.$latestParams`,
+    sid: `ff.${name}.$latestParams`,
+    skipVoid: false,
   });
 
   // -- Derived stores --
@@ -206,8 +214,17 @@ export function createRemoteOperation<
       finished.failure.map(() => 'fail' as const),
       sample({
         clock: aborted,
-        source: $statusHistory,
-        fn: (history) => history[history.length - 2] ?? 'initial',
+        source: {
+          history: $statusHistory,
+          retrieveDataPengind: retrieveDataFx.pending,
+        },
+        fn: ({ history, retrieveDataPengind }) => {
+          if (retrieveDataPengind) {
+            return 'pending';
+          }
+
+          return history[history.length - 2] ?? 'initial';
+        },
       }),
     ],
     target: $status,
@@ -445,6 +462,7 @@ export function createRemoteOperation<
         pushData,
         startWithMeta,
         callObjectCreated,
+        resetStatus,
       },
     },
   };

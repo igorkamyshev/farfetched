@@ -45,7 +45,11 @@ function normalizeSourced<Data, Result, Source>({
 
   if (field === undefined) {
     // do nothing
-    $target = createStore((_: Data) => null as any, { serialize: 'ignore' });
+    $target = createStore((_: Data) => null as any, {
+      serialize: 'ignore',
+      name: 'ff.$target/undefined',
+      sid: 'ff.$target/undefined',
+    });
   } else if (is.store(field)) {
     const $storeField = field as Store<Result>;
 
@@ -71,6 +75,8 @@ function normalizeSourced<Data, Result, Source>({
       (params: Data): Result | null => callbackField(params) ?? null,
       {
         serialize: 'ignore',
+        name: 'ff.$target/callbackField',
+        sid: 'ff.$target/$callbackField',
       }
     );
   } else {
@@ -78,6 +84,8 @@ function normalizeSourced<Data, Result, Source>({
 
     $target = createStore((_: Data): Result | null => valueField ?? null, {
       serialize: 'ignore',
+      name: 'ff.$target/valueField',
+      sid: 'ff.$target/$valueField',
     });
   }
 
@@ -201,6 +209,8 @@ function normalizeStaticOrReactive<T>(
   if (!v) {
     return createStore<Exclude<T, undefined> | null>(null, {
       serialize: 'ignore',
+      name: 'ff.$target/undefined',
+      sid: 'ff.$target/$undefined',
     });
   }
 
@@ -210,6 +220,8 @@ function normalizeStaticOrReactive<T>(
 
   return createStore<Exclude<T, undefined> | null>(v as Exclude<T, undefined>, {
     serialize: 'ignore',
+    name: 'ff.$target/valueField',
+    sid: 'ff.$target/$valueField',
   });
 }
 
@@ -217,7 +229,7 @@ function normalizeStaticOrReactive<T>(
 
 function extractSource<S>(sourced: SourcedField<any, any, S>): Store<S> | null {
   if (is.store(sourced)) {
-    return sourced;
+    return sourced as Store<S>;
   }
 
   if (sourced?.source) {
