@@ -9,12 +9,7 @@
       "options": {
         "command": "node tools/scripts/typepack.mjs --package solid"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
+      "dependsOn": ["build"]
     },
     "build": {
       "executor": "@nx/rollup:rollup",
@@ -35,12 +30,7 @@
       "options": {
         "command": "node tools/scripts/publish.mjs solid --rename={args.rename}"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "pack"
-        }
-      ],
+      "dependsOn": ["pack"],
       "configurations": {
         "canary": {
           "args": "--rename=canary"
@@ -78,12 +68,7 @@
         "limit": "1 kB",
         "outputPath": "dist/packages/solid"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
+      "dependsOn": ["build"]
     }
   },
   "tags": []

@@ -9,12 +9,7 @@
       "options": {
         "command": "node tools/scripts/typepack.mjs --package io-ts"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
+      "dependsOn": ["build"]
     },
     "build": {
       "executor": "@nx/rollup:rollup",
@@ -28,6 +23,18 @@
         "compiler": "swc",
         "format": ["cjs", "esm"],
         "generateExportsField": true
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs io-ts --rename={args.rename}"
+      },
+      "dependsOn": ["pack"],
+      "configurations": {
+        "canary": {
+          "args": "--rename=canary"
+        }
       }
     },
     "lint": {
@@ -60,12 +67,7 @@
         "limit": "0.6 kB",
         "outputPath": "dist/packages/io-ts"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
+      "dependsOn": ["build"]
     }
   },
   "tags": []

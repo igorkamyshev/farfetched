@@ -9,24 +9,14 @@
       "options": {
         "command": "vitepress build apps/website/docs"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "prepare_changelog"
-        }
-      ]
+      "dependsOn": ["prepare_changelog"]
     },
     "serve": {
       "executor": "nx:run-commands",
       "options": {
         "command": "vitepress dev apps/website/docs"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "prepare_changelog"
-        }
-      ]
+      "dependsOn": ["prepare_changelog"]
     },
     "prepare_changelog": {
       "executor": "nx:run-commands",

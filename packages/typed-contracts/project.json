@@ -9,12 +9,7 @@
       "options": {
         "command": "node tools/scripts/typepack.mjs --package typed-contracts"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
+      "dependsOn": ["build"]
     },
     "build": {
       "executor": "@nx/rollup:rollup",
@@ -35,12 +30,7 @@
       "options": {
         "command": "node tools/scripts/publish.mjs typed-contracts --rename={args.rename}"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "pack"
-        }
-      ],
+      "dependsOn": ["pack"],
       "configurations": {
         "canary": {
           "args": "--rename=canary"
@@ -78,12 +68,7 @@
         "limit": "0.6 kB",
         "outputPath": "dist/packages/typed-contracts"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
+      "dependsOn": ["build"]
     }
   },
   "tags": []
