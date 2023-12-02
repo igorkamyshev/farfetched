@@ -1,8 +1,11 @@
 {
   "name": "@farfetched/core",
   "version": "0.11.1",
-  "type": "commonjs",
+  "dependencies": {},
   "peerDependencies": {
     "effector": "^23.0.0"
-  }
+  },
+  "type": "commonjs",
+  "main": "./index.cjs",
+  "module": "./index.js"
 }

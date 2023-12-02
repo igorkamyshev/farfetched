@@ -9,24 +9,20 @@
       "options": {
         "command": "node tools/scripts/typepack.mjs --package superstruct"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
+      "dependsOn": ["build"]
     },
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "project": "packages/superstruct/package.json",
         "outputPath": "dist/packages/superstruct",
-        "entryFile": "packages/superstruct/index.ts",
-        "tsConfig": "packages/superstruct/tsconfig.json",
-        "format": ["esm", "cjs"],
-        "generateExportsField": true,
-        "compiler": "babel"
+        "main": "packages/superstruct/src/index.ts",
+        "tsConfig": "packages/superstruct/tsconfig.lib.json",
+        "assets": [],
+        "project": "packages/superstruct/package.json",
+        "compiler": "swc",
+        "format": ["cjs", "esm"],
+        "generateExportsField": true
       }
     },
     "publish": {
@@ -34,12 +30,7 @@
       "options": {
         "command": "node tools/scripts/publish.mjs superstruct --rename={args.rename}"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "pack"
-        }
-      ],
+      "dependsOn": ["pack"],
       "configurations": {
         "canary": {
           "args": "--rename=canary"
@@ -47,22 +38,26 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/superstruct/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/superstruct/**/*.ts",
+          "packages/superstruct/package.json"
+        ]
       }
     },
     "test": {
-      "executor": "@nrwl/vite:test",
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "config": "vite.config.ts"
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/superstruct"
       }
     },
     "typetest": {
-      "executor": "@nrwl/vite:test",
+      "executor": "@nx/vite:test",
       "options": {
-        "config": "vite.config.ts",
         "mode": "typecheck"
       }
     },
@@ -72,14 +67,8 @@
         "limit": "0.6 kB",
         "outputPath": "dist/packages/superstruct"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
+      "dependsOn": ["build"]
     }
   },
-  "implicitDependencies": ["!test-utils"],
   "tags": []
 }

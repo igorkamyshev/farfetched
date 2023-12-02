@@ -1,8 +1,8 @@
 import { allSettled, createEvent, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
-import { watchEffect } from '@farfetched/test-utils';
 import { describe, test, expect, vi } from 'vitest';
 
+import { watchEffect } from '../../test_utils/watch_effect';
 import { abortError } from '../../errors/create_error';
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';

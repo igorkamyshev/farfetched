@@ -1,4 +1,8 @@
-import { writeJsonFile, readJsonFile } from '@nrwl/devkit';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+
+const { writeJsonFile, readJsonFile } = require('@nx/devkit');
 
 export async function renameForCanary() {
   const originalPackageJson = readJsonFile('package.json');

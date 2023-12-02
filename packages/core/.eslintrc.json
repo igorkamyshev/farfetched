@@ -1,6 +1,6 @@
 {
   "extends": ["../../.eslintrc.json"],
-  "ignorePatterns": ["!**/*", "node_modules"],
+  "ignorePatterns": ["!**/*"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -15,10 +15,10 @@
       "rules": {}
     },
     {
-      "files": ["*.type_spec.ts"],
+      "files": ["*.json"],
+      "parser": "jsonc-eslint-parser",
       "rules": {
-        "no-unused-labels": "off",
-        "@typescript-eslint/no-unused-vars": "off"
+        "@nx/dependency-checks": "off"
       }
     }
   ]

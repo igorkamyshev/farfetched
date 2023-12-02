@@ -1,5 +1,5 @@
 import { createQueryResource } from '@farfetched/solid';
-import { For, Suspense, Show, ErrorBoundary } from 'solid-js';
+import { For, Suspense, Show, ErrorBoundary, JSX } from 'solid-js';
 import { Link } from 'atomic-router-solid';
 
 import { LocationDetails } from '../../entities/location';

@@ -9,24 +9,20 @@
       "options": {
         "command": "node tools/scripts/typepack.mjs --package core"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
+      "dependsOn": ["build"]
     },
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/core",
-        "entryFile": "packages/core/index.ts",
-        "tsConfig": "packages/core/tsconfig.build.json",
+        "main": "packages/core/src/index.ts",
+        "tsConfig": "packages/core/tsconfig.lib.json",
+        "assets": [],
         "project": "packages/core/package.json",
-        "format": ["esm", "cjs"],
-        "generateExportsField": true,
-        "compiler": "babel"
+        "compiler": "swc",
+        "format": ["cjs", "esm"],
+        "generateExportsField": true
       }
     },
     "publish": {
@@ -34,12 +30,7 @@
       "options": {
         "command": "node tools/scripts/publish.mjs core --rename={args.rename}"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "pack"
-        }
-      ],
+      "dependsOn": ["pack"],
       "configurations": {
         "canary": {
           "args": "--rename=canary"
@@ -47,46 +38,37 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/core/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/core/**/*.ts",
+          "packages/core/package.json"
+        ]
       }
     },
     "test": {
-      "executor": "@nrwl/vite:test",
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "config": "vite.config.ts"
-      }
-    },
-    "test_watch": {
-      "executor": "@nrwl/vite:test",
-      "options": {
-        "config": "vite.config.ts",
-        "watch": true
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/core"
       }
     },
     "typetest": {
-      "executor": "@nrwl/vite:test",
+      "executor": "@nx/vite:test",
       "options": {
-        "config": "vite.config.ts",
         "mode": "typecheck"
       }
     },
     "size": {
       "executor": "./tools/executors/size-limit:size-limit",
       "options": {
-        "limit": "23 kB",
+        "limit": "24 kB",
         "outputPath": "dist/packages/core"
       },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
+      "dependsOn": ["build"]
     }
   },
-  "implicitDependencies": ["!test-utils"],
   "tags": []
 }

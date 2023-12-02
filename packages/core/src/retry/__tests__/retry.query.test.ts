@@ -1,4 +1,3 @@
-import { watchRemoteOperation } from '@farfetched/test-utils';
 import {
   type UnitValue,
   allSettled,
@@ -8,6 +7,7 @@ import {
 } from 'effector';
 import { describe, test, vi, expect } from 'vitest';
 
+import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { createQuery } from '../../query/create_query';
 import { retry } from '../retry';
 

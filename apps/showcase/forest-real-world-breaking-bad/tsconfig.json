@@ -18,6 +18,5 @@
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx"
   },
-  "files": [],
   "include": ["**/*.js", "**/*.ts", "src"]
 }
