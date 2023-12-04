@@ -45,19 +45,19 @@ sample({
 
 Sure!
 
-`createStore` creates [_Store_](https://effector.dev/docs/api/effector/store). It's a place where you can store a value and subscribe to changes.
+`createStore` creates [_Store_](https://effector.dev/en/api/effector/store/). It's a place where you can store a value and subscribe to changes.
 
 ```ts
 const $dynamicFaviconEnabled = createStore(false);
 ```
 
-`createEvent` creates [_Event_](https://effector.dev/docs/api/effector/event). It's a way to send a signal and notify subscribers.
+`createEvent` creates [_Event_](https://effector.dev/en/api/effector/event/). It's a way to send a signal and notify subscribers.
 
 ```ts
 const somethingHappened = createEvent();
 ```
 
-`createEffect` creates [_Effect_](https://effector.dev/docs/api/effector/effect). It's a way to perform a side effect, like sending a request to the server or changing favicon.
+`createEffect` creates [_Effect_](https://effector.dev/en/api/effector/effect/). It's a way to perform a side effect, like sending a request to the server or changing favicon.
 
 ```ts
 const changeFaviconFx = createEffect(() => {

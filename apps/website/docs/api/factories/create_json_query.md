@@ -18,7 +18,7 @@ Config fields:
   - `method`: _String_
   - `url`: _[Sourced](/api/primitives/sourced) string_
   - `body`: _[Sourced](/api/primitives/sourced) Json_, any value which can be serialized to JSON and parsed back without loses by JavaScript native module JSON. For example, `{ a: 1, b: 2 }`. Note that body cannot be used in `GET` and `HEAD` requests.
-  - `query?`: _[Sourced](/api/primitives/sourced) object_, keys of the object must be `String` and values must be `String` or `Array<String>` or (since v0.8.0) _[Sourced](/api/primitives/sourced) String_ containing ready-to-use query string
+  - `query?`: _[Sourced](/api/primitives/sourced) object_, keys of the object must be `String` and values must be `String` or `Array<String>` or (since v0.8) _[Sourced](/api/primitives/sourced) String_ containing ready-to-use query string
   - `headers?`: _[Sourced](/api/primitives/sourced) object_, keys of the object must be `String` and values must be `String` or `Array<String>`
 
 - `response`: declarative rules to handle response from the API.
@@ -35,7 +35,7 @@ Config fields:
     - `TAKE_EVERY` execute every request
     - `TAKE_FIRST` skip all requests if there is a pending one
     - `TAKE_LATEST` (**default value**) cancel all pending requests and execute the latest one
-  - `abort?`: [_Event_](https://effector.dev/docs/api/effector/event) after calling which all in-flight requests will be aborted
+  - `abort?`: [_Event_](https://effector.dev/en/api/effector/event/) after calling which all in-flight requests will be aborted
 
 ## Showcases
 

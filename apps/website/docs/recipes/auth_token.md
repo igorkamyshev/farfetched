@@ -40,7 +40,7 @@ The creation of the barrier depends on the type of the token.
 
 If the client has access to the content of the token, we can create a barrier with explicit checking of the token expiration date.
 
-Let us assume that the token is a JWT token that contains the expiration date and could be decoded without any additional information. Such a token would be stored in a [_Store_](https://effector.dev/docs/api/effector/store) and can be accessed across the application.
+Let us assume that the token is a JWT token that contains the expiration date and could be decoded without any additional information. Such a token would be stored in a [_Store_](https://effector.dev/en/api/effector/store/) and can be accessed across the application.
 
 ```ts{6}
 import { createBarrier } from '@farfetched/core';

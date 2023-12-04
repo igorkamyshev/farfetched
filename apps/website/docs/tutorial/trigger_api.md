@@ -12,7 +12,7 @@ In the previous chapters, we learned how to fetch data from the server and how t
 
 ## `.$stale` property of the [_Query_](/api/primitives/query)
 
-Every [_Query_](/api/primitives/query) has a `.$stale` property. It is a [_Store_](https://effector.dev/docs/api/effector/store) that contains a boolean value. It is `true` when the data in the [_Query_](/api/primitives/query) is stale, and `false` when it is fresh.
+Every [_Query_](/api/primitives/query) has a `.$stale` property. It is a [_Store_](https://effector.dev/en/api/effector/store/) that contains a boolean value. It is `true` when the data in the [_Query_](/api/primitives/query) is stale, and `false` when it is fresh.
 
 By default, it is `true` because the [_Query_](/api/primitives/query) is not fetched yet.
 
@@ -26,7 +26,7 @@ In all these cases, the `.$stale` property of the [_Query_](/api/primitives/quer
 
 ## Refresh the data manually
 
-Sometimes you want to start a [_Query_] only if the data is stale and skip it if the data is fresh. For example, you got the data from the server and do not want to fetch it again until on client. For this case, you can use the `.refresh` [_Event_](https://effector.dev/docs/api/effector/event) of the [_Query_](/api/primitives/query).
+Sometimes you want to start a [_Query_] only if the data is stale and skip it if the data is fresh. For example, you got the data from the server and do not want to fetch it again until on client. For this case, you can use the `.refresh` [_Event_](https://effector.dev/en/api/effector/event/) of the [_Query_](/api/primitives/query).
 
 ```ts
 import { sample } from 'effector';

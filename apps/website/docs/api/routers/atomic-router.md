@@ -32,7 +32,7 @@ Integration provides the way to use any [_Query_](/api/primitives/query) in [`ch
 
 ### `freshChain`
 
-After opening a route with `freshChain`, `.refresh` [_Event_](https://effector.dev/docs/api/effector/event) would be executed. So, [_Query_](/api/primitives/query) will be **executed only if it is already `.$stale`**.
+After opening a route with `freshChain`, `.refresh` [_Event_](https://effector.dev/en/api/effector/event/) would be executed. So, [_Query_](/api/primitives/query) will be **executed only if it is already `.$stale`**.
 
 ```ts
 import { createJsonQuery } from '@farfetched/core';
@@ -53,7 +53,7 @@ const postLoadedRoute = chainRoute({
 
 ### `startChain`
 
-After opening a route with `startChain`, `.start` [_Event_](https://effector.dev/docs/api/effector/event) would be executed. So, [_Query_](/api/primitives/query) will be **executed unconditionally**.
+After opening a route with `startChain`, `.start` [_Event_](https://effector.dev/en/api/effector/event/) would be executed. So, [_Query_](/api/primitives/query) will be **executed unconditionally**.
 
 ```ts
 import { createJsonQuery } from '@farfetched/core';

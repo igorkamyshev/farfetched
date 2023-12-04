@@ -66,11 +66,11 @@ Since only **specific** factories are allows Farfetched to have a full control o
 
 The first step is to send a request to the remote source and wait for a response. Because of Farfetched handles this stage internally, user-land code have to describe only the desired result of this stage and the library will perform the request-response cycle internally in the most optimal way.
 
-Failed response stops the data-flow and returns control to the user-land code through `.finished.failed` [_Event_](https://effector.dev/docs/api/effector/event). Successful response continues the data-flow and passes control to the next step — response parsing.
+Failed response stops the data-flow and returns control to the user-land code through `.finished.failed` [_Event_](https://effector.dev/en/api/effector/event/). Successful response continues the data-flow and passes control to the next step — response parsing.
 
 ### Response parsing
 
-Specific factories of Farfetched performs this stage internally, based on a use-case they were created for. In case of parsing error, the data-flow stops and returns control to the user-land code through `.finished.failed` [_Event_](https://effector.dev/docs/api/effector/event). Otherwise, the data-flow continues and passes control to the next step — contract application.
+Specific factories of Farfetched performs this stage internally, based on a use-case they were created for. In case of parsing error, the data-flow stops and returns control to the user-land code through `.finished.failed` [_Event_](https://effector.dev/en/api/effector/event/). Otherwise, the data-flow continues and passes control to the next step — contract application.
 
 ::: details JSON example
 
@@ -84,11 +84,11 @@ For example, if some when in the future `JSON.parse` will be considered as a bot
 
 **Specific factories** require explicit [_Contract_](/api/primitives/contract) because they [consider the response as `unknown` by default](/statements/never_trust). So, the user-land code have to describe the contract of the response or explicitly use `unkownContract` to preserve the `unknown` type.
 
-If parsed data does not satisfy the [_Contract_](/api/primitives/contract), the data-flow stops and returns control to the user-land code through `.finished.failed` [_Event_](https://effector.dev/docs/api/effector/event) with an error-message that is returned from the [_Contract_](/api/primitives/contract). Otherwise, the data-flow continues and passes control to the next step — validation.
+If parsed data does not satisfy the [_Contract_](/api/primitives/contract), the data-flow stops and returns control to the user-land code through `.finished.failed` [_Event_](https://effector.dev/en/api/effector/event/) with an error-message that is returned from the [_Contract_](/api/primitives/contract). Otherwise, the data-flow continues and passes control to the next step — validation.
 
 ### Validation
 
-This is optional stage. It is performed by [_Validator_](/api/primitives/validator) and is used to check if the response is valid. If the response is not valid, the data-flow stops and returns control to the user-land code through `.finished.failed` [_Event_](https://effector.dev/docs/api/effector/event) with an error-message that is returned from the [_Validator_](/api/primitives/validator). Otherwise, the data-flow continues and passes control to the next step — data mapping.
+This is optional stage. It is performed by [_Validator_](/api/primitives/validator) and is used to check if the response is valid. If the response is not valid, the data-flow stops and returns control to the user-land code through `.finished.failed` [_Event_](https://effector.dev/en/api/effector/event/) with an error-message that is returned from the [_Validator_](/api/primitives/validator). Otherwise, the data-flow continues and passes control to the next step — data mapping.
 
 Since [_Validator_](/api/primitives/validator) is a [_Sourced_](/api/primitives/sourced), it's possible to add some extra data from the application to the validation process. For example, it could be a user's session token:
 

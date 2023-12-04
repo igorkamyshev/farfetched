@@ -142,10 +142,10 @@ document.getElementById('logout').addEventListener('click', () => {
 ```
 
 ::: tip
-`createEvent` is a part of [Effector](https://effector.dev) API that creates [_Event_](https://effector.dev/docs/api/effector/event) that could be called and could be watched. In this example, we are calling `logout` event when user clicks on the logout button.
+`createEvent` is a part of [Effector](https://effector.dev) API that creates [_Event_](https://effector.dev/en/api/effector/event/) that could be called and could be watched. In this example, we are calling `logout` event when user clicks on the logout button.
 :::
 
-After calling `purge` [_Event_](https://effector.dev/docs/api/effector/event), all data from cache will be deleted immediately.
+After calling `purge` [_Event_](https://effector.dev/en/api/effector/event/), all data from cache will be deleted immediately.
 
 ## Do not fetch fresh data
 

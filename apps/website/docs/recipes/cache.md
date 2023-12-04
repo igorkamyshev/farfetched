@@ -30,15 +30,15 @@ To achieve this, Every [_Query_](/api/primitives/query) exposes `.__.lowLevelAPI
 
 ## Cache key generation
 
-[`cache`](/api/operators/cache) does not require any manual key generation to work, it uses the [SID](/recipes/sids) of the [_Query_](/api/primitives/query) and all external [_Stores_](https://effector.dev/docs/api/effector/store) that affect [_Query_](/api/primitives/query) to create a unique identifier for every cache entry. It means, key generation is fully automatic, and you don't need to worry about it.
+[`cache`](/api/operators/cache) does not require any manual key generation to work, it uses the [SID](/recipes/sids) of the [_Query_](/api/primitives/query) and all external [_Stores_](https://effector.dev/en/api/effector/store/) that affect [_Query_](/api/primitives/query) to create a unique identifier for every cache entry. It means, key generation is fully automatic, and you don't need to worry about it.
 
 ### Sources extraction
 
-Due to static nature of [Effector](/statements/effector) we can extract all external [_Stores_](https://effector.dev/docs/api/effector/store) that affect [_Query_](/api/primitives/query) right after application loading and use their values in key generation process.
+Due to static nature of [Effector](/statements/effector) we can extract all external [_Stores_](https://effector.dev/en/api/effector/store/) that affect [_Query_](/api/primitives/query) right after application loading and use their values in key generation process.
 
 Every factory has to pass a list of [_Sourced_][_sourced_](/api/primitives/sourced) fields used in the [_Query_](/api/primitives/query) creation process to field `.__.lowLevelAPI.sourced`.
 
-For example, the following [_Query_](/api/primitives/query) uses `$language` and `$region` [_Stores_](https://effector.dev/docs/api/effector/store) to define the final value of the field `url`:
+For example, the following [_Query_](/api/primitives/query) uses `$language` and `$region` [_Stores_](https://effector.dev/en/api/effector/store/) to define the final value of the field `url`:
 
 ```ts
 const locationQuery = createJsonQuery({
@@ -57,10 +57,10 @@ const locationQuery = createJsonQuery({
 Of course, we can just save both `$language` and `$region` to `.__.lowLevelAPI.sourced` and use them in key generation process, but it is not the best solution. Final URL does not include the value of `$region` directly, it cares only if it is `"us"` or not, so we have to emphasize this fact in `.__.lowLevelAPI.sourced`. To solve this issue, let's check internal implementation of [_Sourced_](/api/primitives/sourced) fields.
 
 ::: info
-[_Sourced_](/api/primitives/sourced) fields are special fields in Farfetched that are allows to use any combination of [_Stores_](https://effector.dev/docs/api/effector/store) and functions to define the final value of the field.
+[_Sourced_](/api/primitives/sourced) fields are special fields in Farfetched that are allows to use any combination of [_Stores_](https://effector.dev/en/api/effector/store/) and functions to define the final value of the field.
 :::
 
-Under the hood Farfetched uses special helper `normalizeSourced` that transforms any [_Sourced_](/api/primitives/sourced) field to simple [_Stores_](https://effector.dev/docs/api/effector/store), in our case it would be something like this:
+Under the hood Farfetched uses special helper `normalizeSourced` that transforms any [_Sourced_](/api/primitives/sourced) field to simple [_Stores_](https://effector.dev/en/api/effector/store/), in our case it would be something like this:
 
 ```ts
 // internal function in Farfetched's sources
@@ -106,7 +106,7 @@ So, the key is a hash of the following data:
 
 - `SID` of the [_Query_](/api/primitives/query)
 - `params` of the particular call of the [_Query_](/api/primitives/query)
-- current values of all external [_Stores_](https://effector.dev/docs/api/effector/store) that affect [_Query_](/api/primitives/query)
+- current values of all external [_Stores_](https://effector.dev/en/api/effector/store/) that affect [_Query_](/api/primitives/query)
 
 To get short and unique key, we stringify all data, concatenate it and then hash it with [SHA-1](https://en.wikipedia.org/wiki/SHA-1).
 
@@ -120,7 +120,7 @@ Sometimes it's necessary to replace current cache adapter with a different one. 
 
 ### Adapter internal structure
 
-Fork API allows to replace any [_Store_](https://effector.dev/docs/api/effector/store) value in the particular [_Scope_](https://effector.dev/docs/api/effector/scope/), so we have to provide some "magic" to adapters to make it [_Store_](https://effector.dev/docs/api/effector/store)-like.
+Fork API allows to replace any [_Store_](https://effector.dev/en/api/effector/store/) value in the particular [_Scope_](https://effector.dev/en/api/effector/scope/), so we have to provide some "magic" to adapters to make it [_Store_](https://effector.dev/en/api/effector/store/)-like.
 
 In general, every adapter is a simple object with the following structure:
 

@@ -8,7 +8,7 @@ In web applications, we often need to pause the execution of a particular [_Quer
 
 Let us say we have a website which requires the user to accept the terms of use before the user can use it. We have a bunch of [_Queries_](/api/primitives/query) and [_Mutations_](/api/primitives/mutation), and we want to prevent their execution until the user accepts the terms of use. By legal requirements, we need to show the terms of use to the user and ask the user to accept them and must not allow any network requests until the user accepts it.
 
-Accepting the terms of use is a user action that can be represented as an [_Event_](https://effector.dev/docs/api/effector/event) for this recipe.
+Accepting the terms of use is a user action that can be represented as an [_Event_](https://effector.dev/en/api/effector/event/) for this recipe.
 
 ```ts
 // terms_of_use.model.ts
@@ -18,7 +18,7 @@ export const termsOfUseShowed = createEvent();
 export const userAcceptedTermsOfUse = createEvent();
 ```
 
-[_Event_](https://effector.dev/docs/api/effector/event) `userAcceptedTermsOfUse` should be bound to the button in the terms of use dialog and [_Event_](https://effector.dev/docs/api/effector/event) `termsOfUseShowed` to the lifecycle of the app. However, it is out of scope of this recipe.
+[_Event_](https://effector.dev/en/api/effector/event/) `userAcceptedTermsOfUse` should be bound to the button in the terms of use dialog and [_Event_](https://effector.dev/en/api/effector/event/) `termsOfUseShowed` to the lifecycle of the app. However, it is out of scope of this recipe.
 
 ## Implementation
 

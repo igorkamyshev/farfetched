@@ -149,7 +149,7 @@ test('on error', async () => {
 });
 ```
 
-### `configurationError` <Badge type="tip" text="since v0.11.0" />
+### `configurationError` <Badge type="tip" text="since v0.11" />
 
 `ConfigurationError` is thrown when the query is misconfigured. E.g., when the URL is not URL.
 
