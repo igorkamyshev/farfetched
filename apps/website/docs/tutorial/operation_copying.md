@@ -85,7 +85,7 @@ const currentLocationQuery = attachOperation(locationQuery, {
 });
 ```
 
-In this case, the `valueOfExternalSource` will be equal to the current value of the `$someExternalSource` [_Store_](https://effector.dev/docs/api/effector/store).
+In this case, the `valueOfExternalSource` will be equal to the current value of the `$someExternalSource` [_Store_](https://effector.dev/en/api/effector/store/).
 
 ## Using `attachOperation` with _Mutations_
 

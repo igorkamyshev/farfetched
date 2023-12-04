@@ -76,6 +76,7 @@
     "atomic-router-solid": "0.5",
     "effector-react": "23.0.0",
     "effector-solid": "0.23.0",
+    "effector-vue": "^23.0.0",
     "forest": "^0.21.2",
     "history": "^5.3.0",
     "mermaid": "9.1.7",
@@ -83,7 +84,9 @@
     "react-dom": "18.2.0",
     "react-router-dom": "^6.4.2",
     "runtypes": "^6.5.1",
+    "sandpack-vue3": "^3.1.9",
     "solid-js": "1.5",
-    "typed-contracts": "^3.0.0"
+    "typed-contracts": "^3.0.0",
+    "zod": "^3.19.1"
   }
 }

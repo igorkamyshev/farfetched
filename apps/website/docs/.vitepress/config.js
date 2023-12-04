@@ -299,21 +299,20 @@ export default withMermaid(
                 text: 'Base URL for all operations',
                 link: '/recipes/base_url',
               },
-              {
-                text: 'Auth token for operations',
-                link: '/recipes/auth_token',
-              },
-              {
-                text: 'Pause world until user action',
-                link: '/recipes/terms_of_use',
-              },
             ],
           },
           {
             text: 'Case studies',
             items: [
-              { text: 'Auth token', link: '/recipes/auth_token' },
+              {
+                text: 'Auth token for operations',
+                link: '/recipes/auth_token',
+              },
               { text: 'Feature flags service', link: '/recipes/feature_flags' },
+              {
+                text: 'Pause world until user action',
+                link: '/recipes/terms_of_use',
+              },
               { text: 'Server side caching', link: '/recipes/server_cache' },
             ],
           },

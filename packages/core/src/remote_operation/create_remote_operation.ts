@@ -1,5 +1,4 @@
 import {
-  type Event,
   createEffect,
   createEvent,
   createStore,
@@ -110,6 +109,7 @@ export function createRemoteOperation<
   } = createDataSourceHandlers<Params>(dataSources);
 
   const start = createEvent<Params>();
+  const reset = createEvent();
 
   const started = createEvent<{ params: Params; meta: ExecutionMeta }>();
 
@@ -174,8 +174,7 @@ export function createRemoteOperation<
     serialize,
   });
 
-  const resetStatus = createEvent();
-  sample({ clock: resetStatus, target: $status.reinit });
+  sample({ clock: reset, target: $status.reinit });
 
   const $statusHistory = createStore<FetchingStatus[]>([], {
     serialize: 'ignore',
@@ -440,6 +439,7 @@ export function createRemoteOperation<
     finished,
     started,
     aborted,
+    reset,
     $status,
     $idle,
     $pending,
@@ -462,7 +462,6 @@ export function createRemoteOperation<
         pushData,
         startWithMeta,
         callObjectCreated,
-        resetStatus,
       },
     },
   };

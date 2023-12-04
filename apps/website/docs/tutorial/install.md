@@ -34,8 +34,8 @@ Farfetched declares Effector as a peer dependency to prevent two instances of Ef
 
 Actually, that is all what you need to start, but consider installing one of the following integrations to improve your DX with popular tools:
 
-- [effector-solid](https://effector.dev/docs/api/effector-solid/) and [`@farfetched/solid`](/api/ui/solid) with delicious helpers for Solid
-- [`effector-react`](https://effector.dev/docs/api/effector-react/) with nice hooks for React
+- [`effector-solid`](https://effector.dev/en/api/effector-solid/) and [`@farfetched/solid`](/api/ui/solid) with delicious helpers for Solid
+- [`effector-react`](https://effector.dev/en/api/effector-react/) with nice hooks for React
 
 ## Additional tools
 

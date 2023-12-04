@@ -1,6 +1,6 @@
 # Custom _Query_ creation
 
-[_Query_](/api/primitives/query.md) is a simple object with that stores some reactive primitives — [_Event_](https://effector.dev/docs/api/effector/event), [_Effect_](https://effector.dev/docs/api/effector/effect), and [_Store_](https://effector.dev/docs/api/effector/store). It means you can create Query not only by built-in factories but by your own. E.g. 👇
+[_Query_](/api/primitives/query.md) is a simple object with that stores some reactive primitives — [_Event_](https://effector.dev/en/api/effector/event/), [_Effect_](https://effector.dev/en/api/effector/effect/), and [_Store_](https://effector.dev/en/api/effector/store/). It means you can create Query not only by built-in factories but by your own. E.g. 👇
 
 ```ts
 function createAsyncStorageQuery({ storageKey }) {

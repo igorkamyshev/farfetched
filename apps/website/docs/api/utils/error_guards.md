@@ -73,7 +73,7 @@ const notFound = sample({
 });
 ```
 
-#### `isHttpErrorCode(statusCodes: number[])` <Badge type="tip" text="since v0.9.0" />
+#### `isHttpErrorCode(statusCodes: number[])` <Badge type="tip" text="since v0.9" />
 
 It takes an array of numbers as an argument and returns a function that checks if the error is a `HttpError` with one of the given status codes.
 
@@ -99,7 +99,7 @@ const networkProblems = sample({
 });
 ```
 
-## `inConfigurationError` <Badge type="tip" text="since v0.11.0" />
+## `inConfigurationError` <Badge type="tip" text="since v0.11" />
 
 `ConfigurationError` is thrown when the query is misconfigured. E.g., when the URL is not URL.
 

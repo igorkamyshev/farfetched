@@ -22,9 +22,9 @@ test('let us mock function', async () => {
 
 ## What is "scope"?
 
-[_Scope_](https://effector.dev/docs/api/effector/scope) is an isolated instance of the whole application. It can be used for SSR and testing purposes.
+[_Scope_](https://effector.dev/en/api/effector/scope/) is an isolated instance of the whole application. It can be used for SSR and testing purposes.
 
-To create new [_Scope_](https://effector.dev/docs/api/effector/scope) you can use [`fork`](https://effector.dev/docs/api/effector/fork) function.
+To create new [_Scope_](https://effector.dev/en/api/effector/scope/) you can use [`fork`](https://effector.dev/en/api/effector/fork/) function.
 
 ```ts
 const scope = fork();
@@ -46,7 +46,7 @@ test('let us mock function', async () => {
 
 ## Wait for all computations
 
-So, we have created an isolated instance of our application with fake handlers. Now we have to start Query and wait for all computations settled. There is special function for this purpose — [`allSettled`](https://effector.dev/docs/api/effector/allSettled).
+So, we have created an isolated instance of our application with fake handlers. Now we have to start Query and wait for all computations settled. There is special function for this purpose — [`allSettled`](https://effector.dev/en/api/effector/allsettled/).
 
 ```ts
 const locationQuery = createQuery({ handler: /* some fetcher function */ })
@@ -62,7 +62,7 @@ test('let us mock function', async () => {
 })
 ```
 
-It does not matter how many Queries you have connected to the original one. `allSetteld` provides a guarantee that all computations are settled. It means you can read values from the [_Scope_](https://effector.dev/docs/api/effector/scope) and compare it with expected ones.
+It does not matter how many Queries you have connected to the original one. `allSetteld` provides a guarantee that all computations are settled. It means you can read values from the [_Scope_](https://effector.dev/en/api/effector/scope/) and compare it with expected ones.
 
 ```ts
 const locationQuery = createQuery({ handler: /* some fetcher function */ })

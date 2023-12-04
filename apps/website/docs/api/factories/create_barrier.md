@@ -1,4 +1,4 @@
-# `createBarrier` <Badge type="tip" text="since v0.11.0" />
+# `createBarrier` <Badge type="tip" text="since v0.11" />
 
 Creates a [_Barrier_](/api/primitives/barrier) object.
 
@@ -21,7 +21,7 @@ const authBarrier = createBarrier({
 
 Configuration fields:
 
-- `active`: [_Store_](https://effector.dev/docs/api/effector/store) with boolean that indicates whether [_Barrier_](/api/primitives/barrier) is active or not.
+- `active`: [_Store_](https://effector.dev/en/api/effector/store/) with boolean that indicates whether [_Barrier_](/api/primitives/barrier) is active or not.
 - `perform?`: optional array of [_Performers_](#performer), that will be started in case some operation that uses this [_Barrier_](/api/primitives/barrier) is started and [_Barrier_](/api/primitives/barrier) is `$active`.
 
 ### `createBarrier({ activateOn, perform })`
@@ -56,8 +56,8 @@ const authBarrier = createBarrier({
 
 Configuration fields:
 
-- `activateOn`: [_Event_](https://effector.dev/docs/api/effector/event) that will activate [_Barrier_](/api/primitives/barrier) when called.
-- `deactivateOn`: [_Event_](https://effector.dev/docs/api/effector/event) that will deactivate [_Barrier_](/api/primitives/barrier) when called.
+- `activateOn`: [_Event_](https://effector.dev/en/api/effector/event/) that will activate [_Barrier_](/api/primitives/barrier) when called.
+- `deactivateOn`: [_Event_](https://effector.dev/en/api/effector/event/) that will deactivate [_Barrier_](/api/primitives/barrier) when called.
 
 ## Performer
 
@@ -65,5 +65,5 @@ Any of the following form can be used in `perform` field:
 
 1. [_Query_](/api/primitives/query) that does not accept any parameters
 2. [_Mutation_](/api/primitives/mutation) that does not accept any parameters
-3. [_Effect_](https://effector.dev/docs/api/effector/effect) that does not accept any parameters
-4. Object `{ start, end }` where `start` and `end` are [_Events_](https://effector.dev/docs/api/effector/event) that do not accept any parameters. `start` [_Event_](https://effector.dev/docs/api/effector/event) will be called when the [_Barrier_](/api/primitives/barrier) is activated, `end` [_Event_](https://effector.dev/docs/api/effector/event) is expected to be called when the performer is finished.
+3. [_Effect_](https://effector.dev/en/api/effector/effect/) that does not accept any parameters
+4. Object `{ start, end }` where `start` and `end` are [_Events_](https://effector.dev/en/api/effector/event/) that do not accept any parameters. `start` [_Event_](https://effector.dev/en/api/effector/event/) will be called when the [_Barrier_](/api/primitives/barrier) is activated, `end` [_Event_](https://effector.dev/en/api/effector/event/) is expected to be called when the performer is finished.

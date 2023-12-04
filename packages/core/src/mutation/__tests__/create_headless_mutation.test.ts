@@ -22,6 +22,23 @@ describe('createHeadlessMutation', () => {
     expect(mockFn).toHaveBeenCalledWith(42);
   });
 
+  test('reset reset $status', async () => {
+    const mutation = createHeadlessMutation({
+      contract: unknownContract,
+      mapData: ({ result }) => result,
+    });
+
+    const scope = fork({ handlers: [[mutation.__.executeFx, () => null]] });
+
+    await allSettled(mutation.start, { scope, params: 42 });
+
+    expect(scope.getState(mutation.$status)).toBe('done');
+
+    await allSettled(mutation.reset, { scope });
+
+    expect(scope.getState(mutation.$status)).toBe('initial');
+  });
+
   test('finished.success triggers after executeFx.done', async () => {
     const mutation = createHeadlessMutation({
       contract: unknownContract,
