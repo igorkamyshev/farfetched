@@ -48,8 +48,6 @@ export interface Query<Params, Data, Error, InitialData = null>
    * Is data stale?
    */
   $stale: StoreWritable<boolean>;
-  /** Event to reset the whole state of the query */
-  reset: EventCallable<void>;
   '@@unitShape': () => {
     data: Store<Data | InitialData>;
     error: Store<Error | null>;

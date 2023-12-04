@@ -102,7 +102,6 @@ export function createHeadlessQuery<
   });
 
   const refresh = createEvent<Params>();
-  const reset = createEvent();
 
   // -- Main stores --
   const $data = createStore<MappedData | Initial>(initialData, {
@@ -193,13 +192,8 @@ export function createHeadlessQuery<
   // -- Reset state --
 
   sample({
-    clock: reset,
-    target: [
-      $data.reinit,
-      $error.reinit,
-      $stale.reinit,
-      operation.__.lowLevelAPI.resetStatus,
-    ],
+    clock: operation.reset,
+    target: [$data.reinit, $error.reinit, $stale.reinit],
   });
 
   // -- Protocols --
@@ -254,9 +248,9 @@ export function createHeadlessQuery<
   // -- Public API --
 
   return {
-    reset,
     refresh,
     start: operation.start,
+    reset: operation.reset,
     started: readonly(operation.started),
     $data: readonly($data),
     $error: readonly($error),

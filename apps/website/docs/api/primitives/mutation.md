@@ -14,6 +14,10 @@ This section describes the [_Event_](https://effector.dev/docs/api/effector/even
 
 Unconditionally starts the _Mutation_ with the given parameters.
 
+### `reset` <Badge type="tip" text="since v0.12.0" />
+
+Resets the _Mutation_ to the initial state.
+
 ## Stores
 
 This section describes the [_Stores_](https://effector.dev/docs/api/effector/store) that can be used to read the _Mutation_ state.
