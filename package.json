@@ -86,6 +86,7 @@
     "runtypes": "^6.5.1",
     "sandpack-vue3": "^3.1.9",
     "solid-js": "1.5",
-    "typed-contracts": "^3.0.0"
+    "typed-contracts": "^3.0.0",
+    "zod": "^3.19.1"
   }
 }

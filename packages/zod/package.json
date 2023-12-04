@@ -2,9 +2,6 @@
   "name": "@farfetched/zod",
   "version": "0.11.1",
   "dependencies": {},
-  "devDependencies": {
-    "zod": "^3.19.1"
-  },
   "peerDependencies": {
     "zod": "^3.19"
   },
