@@ -4,6 +4,11 @@ outline: [2, 3]
 
 # `attachOperation` <Badge type="tip" text="since v0.6" />
 
+::: danger
+
+This operator is deprecated since [v0.12](/releases/0-12) and will be removed in v0.14. Please read [this ADR](/adr/attach_operation_deprecation) for more information and migration guide.
+:::
+
 Creates new [_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutation) on top of the existing one.
 
 ::: tip

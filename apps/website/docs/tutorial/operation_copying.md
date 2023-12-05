@@ -1,5 +1,10 @@
 # Operation copying
 
+::: danger
+
+This topic is considered obsolete since [v0.12](/releases/0-12) and will be removed in v0.14. Please read [this ADR](/adr/attach_operation_deprecation) for more information and migration guide.
+:::
+
 > It is advanced topic, so you can write an application without it. But it is useful when you have a lot of similar _Queries_ and _Mutations_ and want to simplify your code.
 
 :::tip You will learn:
