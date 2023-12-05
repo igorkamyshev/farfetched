@@ -116,6 +116,10 @@ The solution is to replace `attachOperation` with a plain JS function does not r
 
 Let us describe migration paths for all possible use cases of `attachOperation`.
 
+::: tip
+You can check an example of migration of [SolidJS Real-world Example](https://github.com/igorkamyshev/farfetched/pull/414/commits/031a37c0e84de05679d513e756c848f3f275cae8).
+:::
+
 #### `attachOperation(originalQuery)`
 
 This overload is used to create a copy of _Query_ or _Mutation_ without any modifications. It can be replaced with a plain JS function:
