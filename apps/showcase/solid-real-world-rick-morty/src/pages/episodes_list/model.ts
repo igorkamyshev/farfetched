@@ -1,9 +1,11 @@
-import { attachOperation } from '@farfetched/core';
 import { sample } from 'effector';
 
-import { episodeListRoute, episodePageQuery } from '../../entities/episode';
+import {
+  episodeListRoute,
+  createEpisodePageQuery,
+} from '../../entities/episode';
 
-const episodesQuery = attachOperation(episodePageQuery);
+const episodesQuery = createEpisodePageQuery();
 
 const $currentPage = episodeListRoute.$params.map((params) => params.page ?? 1);
 

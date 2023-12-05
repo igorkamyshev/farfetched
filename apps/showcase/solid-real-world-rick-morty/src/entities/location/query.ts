@@ -5,8 +5,14 @@ import { TId } from '../../shared/id';
 import { locationUrl } from './api';
 import { Location } from './contract';
 
-export const locationQuery = createJsonQuery({
-  params: declareParams<{ id: TId }>(),
-  request: { url: ({ id }) => locationUrl({ id }), method: 'GET' },
-  response: { contract: runtypeContract(Location) },
-});
+export function createLocationQuery<T>({
+  mapParams,
+}: {
+  mapParams: (params: T) => { id: TId };
+}) {
+  return createJsonQuery({
+    params: declareParams<T>(),
+    request: { url: (params) => locationUrl(mapParams(params)), method: 'GET' },
+    response: { contract: runtypeContract(Location) },
+  });
+}

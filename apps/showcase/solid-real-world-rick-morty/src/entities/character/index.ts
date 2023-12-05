@@ -1,6 +1,6 @@
 export { characterRoute, characterListRoute } from './model';
 export {
-  characterListQuery,
-  characterPageQuery,
-  characterQuery,
+  createCharacterListQuery,
+  createCharacterPageQuery,
+  createCharacterQuery,
 } from './query';

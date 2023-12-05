@@ -66,6 +66,10 @@ export default withMermaid(
               text: 'Releases',
               link: '/releases/',
             },
+            {
+              text: 'ADRs',
+              link: '/adr/',
+            },
             { text: 'Effector', link: 'https://effector.dev' },
           ],
         },
@@ -109,10 +113,6 @@ export default withMermaid(
                   },
                   { text: 'Retries', link: '/tutorial/retries' },
                   { text: 'Caching', link: '/tutorial/caching' },
-                  {
-                    text: 'Operation copying',
-                    link: '/tutorial/operation_copying',
-                  },
                 ],
               },
               {

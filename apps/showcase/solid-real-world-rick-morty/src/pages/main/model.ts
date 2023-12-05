@@ -1,12 +1,12 @@
-import { attachOperation, exponentialDelay, retry } from '@farfetched/core';
+import { exponentialDelay, retry } from '@farfetched/core';
 import { sample } from 'effector';
 
 import {
   characterListRoute,
-  characterPageQuery,
+  createCharacterPageQuery,
 } from '../../entities/character';
 
-const allCharactersQuery = attachOperation(characterPageQuery);
+const allCharactersQuery = createCharacterPageQuery();
 
 retry(allCharactersQuery, { times: 3, delay: exponentialDelay(50) });
 

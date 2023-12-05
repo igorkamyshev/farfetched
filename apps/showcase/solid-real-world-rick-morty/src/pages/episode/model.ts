@@ -1,13 +1,13 @@
-import { attachOperation, connectQuery } from '@farfetched/core';
+import { connectQuery } from '@farfetched/core';
 import { sample } from 'effector';
 
-import { characterListQuery } from '../../entities/character';
-import { episodeQuery, episodeRoute } from '../../entities/episode';
+import { createCharacterListQuery } from '../../entities/character';
+import { createEpisodeQuery, episodeRoute } from '../../entities/episode';
 import { urlToId } from '../../shared/id';
 import { TUrl } from '../../shared/url';
 
-const curentEpisodeQuery = attachOperation(episodeQuery);
-const charactersInEpisodeQuery = attachOperation(characterListQuery, {
+const curentEpisodeQuery = createEpisodeQuery();
+const charactersInEpisodeQuery = createCharacterListQuery({
   mapParams: (urls: TUrl[]) => ({ ids: urls.map(urlToId) }),
 });
 
