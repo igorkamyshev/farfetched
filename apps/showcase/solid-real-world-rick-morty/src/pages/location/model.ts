@@ -1,20 +1,22 @@
-import { attachOperation, connectQuery } from '@farfetched/core';
+import { connectQuery } from '@farfetched/core';
 import { sample } from 'effector';
 
-import { characterListQuery } from '../../entities/character';
-import { locationQuery, locationRoute } from '../../entities/location';
-import { urlToId } from '../../shared/id';
+import { createCharacterListQuery } from '../../entities/character';
+import { createLocationQuery, locationRoute } from '../../entities/location';
+import { TId, urlToId } from '../../shared/id';
 import { TUrl } from '../../shared/url';
 
-const currentLocationQuery = attachOperation(locationQuery);
-const residentsQuery = attachOperation(characterListQuery, {
+const currentLocationQuery = createLocationQuery({
+  mapParams: ({ locationId }: { locationId: TId }) => ({ id: locationId }),
+});
+const residentsQuery = createCharacterListQuery({
   mapParams: (urls: TUrl[]) => ({ ids: urls.map(urlToId) }),
 });
 
 sample({
   clock: locationRoute.opened,
   fn({ params }) {
-    return { id: params.locationId };
+    return params;
   },
   target: currentLocationQuery.start,
 });

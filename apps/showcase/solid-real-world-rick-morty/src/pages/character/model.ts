@@ -1,25 +1,25 @@
-import { attachOperation, connectQuery } from '@farfetched/core';
+import { connectQuery } from '@farfetched/core';
 import { sample } from 'effector';
 
-import { characterQuery, characterRoute } from '../../entities/character';
-import { episodeListQuery } from '../../entities/episode';
-import { locationQuery } from '../../entities/location';
+import { createCharacterQuery, characterRoute } from '../../entities/character';
+import { createEpisodeListQuery } from '../../entities/episode';
+import { createLocationQuery } from '../../entities/location';
 import { urlToId } from '../../shared/id';
 import { TUrl } from '../../shared/url';
 
-const currentCharacterQuery = attachOperation(characterQuery);
-const currentLocationQuery = attachOperation(locationQuery, {
+const currentCharacterQuery = createCharacterQuery();
+const currentLocationQuery = createLocationQuery({
   mapParams: (url: TUrl) => ({ id: urlToId(url) }),
 });
-const originQuery = attachOperation(locationQuery, {
+const originQuery = createLocationQuery({
   mapParams: (url: TUrl) => ({ id: urlToId(url) }),
 });
-const characterEpisodesQuery = attachOperation(episodeListQuery, {
+const characterEpisodesQuery = createEpisodeListQuery({
   mapParams: (urls: TUrl[]) => ({ ids: urls.map(urlToId) }),
 });
 
 connectQuery({
-  source: characterQuery,
+  source: currentCharacterQuery,
   fn({ result: character }) {
     return { params: character.origin.url };
   },
@@ -27,7 +27,7 @@ connectQuery({
 });
 
 connectQuery({
-  source: characterQuery,
+  source: currentCharacterQuery,
   fn({ result: character }) {
     return { params: character.location.url };
   },
@@ -35,7 +35,7 @@ connectQuery({
 });
 
 connectQuery({
-  source: characterQuery,
+  source: currentCharacterQuery,
   fn({ result: character }) {
     return { params: character.episode };
   },
