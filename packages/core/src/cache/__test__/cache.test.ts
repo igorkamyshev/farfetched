@@ -13,6 +13,7 @@ import { createJsonQuery } from '../../query/create_json_query';
 import { declareParams } from '../../remote_operation/params';
 import { unknownContract } from '../../contract/unknown_contract';
 import { fetchFx } from '../../fetch/fetch';
+import { createCacheAdapter } from '../adapters/instance';
 
 describe('cache', () => {
   test('use value from cache on second call, revalidate', async () => {
@@ -397,5 +398,47 @@ describe('cache', () => {
     // After refetch, it's new value
     expect(scope.getState(query.$data)).toEqual({ step: 2 });
     expect(scope.getState(query.$stale)).toBeFalsy();
+  });
+
+  test('allows humanReadableKey', async () => {
+    const q = withFactory({
+      sid: 'test',
+      fn: () => createQuery({ handler: async (id: number) => id }),
+    });
+
+    const get = vi.fn();
+    const set = vi.fn();
+    const unset = vi.fn();
+
+    const myAdapter = createCacheAdapter({
+      get: createEffect(get),
+      set: createEffect(set),
+      purge: createEvent(),
+      unset: createEffect(unset),
+    });
+
+    cache(q, { humanReadableKeys: true, adapter: myAdapter });
+
+    const scope = fork();
+
+    await allSettled(q.start, { scope, params: 1 });
+    await allSettled(q.start, { scope, params: 2 });
+
+    expect(set.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          {
+            "key": "{\\"params\\":1,\\"sid\\":\\"test|dummy\\",\\"sources\\":[]}",
+            "value": 1,
+          },
+        ],
+        [
+          {
+            "key": "{\\"params\\":2,\\"sid\\":\\"test|dummy\\",\\"sources\\":[]}",
+            "value": 2,
+          },
+        ],
+      ]
+    `);
   });
 });
