@@ -1,0 +1,48 @@
+{
+  "name": "cntrct",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/cntrct/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/cntrct",
+        "main": "packages/cntrct/src/index.ts",
+        "tsConfig": "packages/cntrct/tsconfig.lib.json",
+        "assets": [],
+        "project": "packages/cntrct/package.json",
+        "compiler": "swc",
+        "format": ["cjs", "esm"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/cntrct/**/*.ts",
+          "packages/cntrct/package.json"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/cntrct"
+      }
+    },
+    "size": {
+      "executor": "./tools/executors/size-limit:size-limit",
+      "options": {
+        "limit": "553B",
+        "outputPath": "dist/packages/cntrct"
+      },
+      "dependsOn": ["build"]
+    }
+  },
+  "tags": []
+}
