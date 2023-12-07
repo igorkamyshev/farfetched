@@ -228,6 +228,7 @@ export default withMermaid(
             items: [
               { text: 'Error creators', link: '/api/utils/error_creators' },
               { text: 'Error guards', link: '/api/utils/error_guards' },
+              { text: 'onAbort', link: '/api/utils/on_abort' },
             ],
           },
           {

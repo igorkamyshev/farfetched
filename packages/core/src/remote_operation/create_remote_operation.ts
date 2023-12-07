@@ -29,6 +29,7 @@ import { type RemoteOperation } from './type';
 import { get } from '../libs/lohyphen';
 import { isAbortError } from '../errors/guards';
 import { getCallObjectEvent } from './with_call_object';
+import { allowCancelSetting, disallowCancelSetting } from './on_abort';
 
 export function createRemoteOperation<
   Params,
@@ -95,7 +96,11 @@ export function createRemoteOperation<
       { result: unknown; stale: boolean } | null,
       unknown
     >(async ({ params }) => {
-      const result = await executeFx(params);
+      allowCancelSetting();
+      const promise = executeFx(params);
+      disallowCancelSetting();
+
+      const result = await promise;
       return { result, stale: false };
     }),
   };

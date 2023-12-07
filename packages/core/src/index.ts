@@ -59,6 +59,7 @@ export {
   type RemoteOperationError,
   type RemoteOperationParams,
 } from './remote_operation/type';
+export { onAbort } from './remote_operation/on_abort';
 
 // Validation public API
 export { type ValidationResult, type Validator } from './validation/type';
