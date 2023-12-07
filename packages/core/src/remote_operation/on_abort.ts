@@ -21,6 +21,13 @@ export function onAbort(callback: () => void) {
       ],
     });
   }
+
+  if (cancelCallback) {
+    throw configurationError({
+      reason: 'onAbort call is not allowed',
+      validationErrors: ['onAbort can be called only once per operation'],
+    });
+  }
   cancelCallback = callback;
 }
 

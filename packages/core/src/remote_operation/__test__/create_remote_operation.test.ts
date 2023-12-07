@@ -486,4 +486,57 @@ describe('RemoteOperation and onAbort callback', () => {
     `);
     expect(handleCancel).toBeCalledTimes(0);
   });
+
+  test('throw error call onAbort twice', async () => {
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+
+    const handleCancel = vi.fn();
+
+    operation.__.executeFx.use(async () => {
+      onAbort(handleCancel);
+
+      onAbort(() => {
+        // second call
+      });
+
+      return null;
+    });
+
+    const scope = fork();
+
+    const operationFailed = vi.fn();
+    createWatch({
+      unit: operation.finished.failure,
+      scope,
+      fn: operationFailed,
+    });
+
+    await allSettled(operation.start, { scope, params: 42 });
+
+    expect(operationFailed).toBeCalledTimes(1);
+    expect(operationFailed.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          {
+            "error": {
+              "errorType": "CONFIGURATION",
+              "explanation": "Operation is misconfigured",
+              "reason": "onAbort call is not allowed",
+              "validationErrors": [
+                "onAbort can be called only once per operation",
+              ],
+            },
+            "meta": {
+              "stale": false,
+              "stopErrorPropagation": false,
+            },
+            "params": 42,
+          },
+        ],
+      ]
+    `);
+    expect(handleCancel).toBeCalledTimes(0);
+  });
 });
