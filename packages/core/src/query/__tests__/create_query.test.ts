@@ -1,7 +1,10 @@
-import { allSettled, createEffect, fork } from 'effector';
+import { allSettled, createEffect, createWatch, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
 import { createQuery } from '../create_query';
+import { onAbort } from '../../remote_operation/on_abort';
+import { createDefer } from '../../libs/lohyphen';
+import { setTimeout } from 'timers/promises';
 
 describe('core/createQuery/handler', () => {
   test('uses resolved Promise as data source', async () => {
@@ -122,5 +125,43 @@ describe('core/createQuery/effect', () => {
 
     await allSettled(query.start, { scope });
     expect(scope.getState(query.$data)).toBe(17);
+  });
+});
+
+describe('createQuery/onAbort', () => {
+  test('no waiting and plain function', async () => {
+    const q = createQuery({
+      handler: async (_: void) => {
+        const defer = createDefer();
+
+        onAbort(() => defer.reject());
+
+        await setTimeout(10);
+        defer.resolve(null);
+
+        return defer.promise;
+      },
+    });
+
+    const scope = fork();
+
+    createWatch({
+      unit: q.__.lowLevelAPI.callObjectCreated,
+      scope,
+      fn: ({ abort }) => abort(),
+    });
+
+    const abortListener = vi.fn();
+
+    createWatch({
+      unit: q.aborted,
+      scope,
+      fn: abortListener,
+    });
+
+    await allSettled(q.start, { scope });
+
+    expect(scope.getState(q.$status)).toBe('initial');
+    expect(abortListener).toHaveBeenCalledTimes(1);
   });
 });

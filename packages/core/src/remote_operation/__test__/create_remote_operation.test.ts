@@ -5,8 +5,10 @@ import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { unknownContract } from '../../contract/unknown_contract';
 import { createDefer } from '../../libs/lohyphen';
 import { createRemoteOperation } from '../create_remote_operation';
-import { isAbortError, isTimeoutError } from '../../errors/guards';
+import { isTimeoutError } from '../../errors/guards';
 import { timeoutError } from '../../errors/create_error';
+import { onAbort } from '../on_abort';
+import { setTimeout as wait } from 'timers/promises';
 
 const defaultConfig = {
   name: 'test',
@@ -144,7 +146,7 @@ describe('createRemoteOperation, disable in-flight', () => {
   });
 });
 
-describe('RemoteOperation.__.lowLevelAPI.callObjectCreated', async () => {
+describe('RemoteOperation.__.lowLevelAPI.callObjectCreated', () => {
   test('Call object is emitted', async () => {
     const callObjectEmitted = vi.fn();
     const operation = createRemoteOperation({
@@ -402,5 +404,86 @@ describe('RemoteOperation.__.lowLevelAPI.callObjectCreated', async () => {
         promise: expect.anything(),
       })
     );
+  });
+});
+
+describe('RemoteOperation and onAbort callback', () => {
+  test('callObject.abort triggers onAbort callback', async () => {
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+
+    const handleCancel = vi.fn();
+
+    operation.__.executeFx.use(() => {
+      onAbort(handleCancel);
+
+      return null;
+    });
+
+    const scope = fork();
+
+    createWatch({
+      unit: operation.__.lowLevelAPI.callObjectCreated,
+      scope,
+      fn: ({ abort }) => {
+        abort();
+      },
+    });
+
+    await allSettled(operation.start, { scope, params: 42 });
+
+    expect(handleCancel).toBeCalledTimes(1);
+  });
+
+  test('throw error while trying to call onAbort after async operation', async () => {
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+
+    const handleCancel = vi.fn();
+
+    operation.__.executeFx.use(async () => {
+      await wait(0);
+
+      onAbort(handleCancel);
+
+      return null;
+    });
+
+    const scope = fork();
+
+    const operationFailed = vi.fn();
+    createWatch({
+      unit: operation.finished.failure,
+      scope,
+      fn: operationFailed,
+    });
+
+    await allSettled(operation.start, { scope, params: 42 });
+
+    expect(operationFailed).toBeCalledTimes(1);
+    expect(operationFailed.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          {
+            "error": {
+              "errorType": "CONFIGURATION",
+              "explanation": "Operation is misconfigured",
+              "reason": "onAbort call is not allowed",
+              "validationErrors": [
+                "onAbort can be called only in the context of a handler before any async operation is performed",
+              ],
+            },
+            "meta": {
+              "stale": false,
+              "stopErrorPropagation": false,
+            },
+            "params": 42,
+          },
+        ],
+      ]
+    `);
+    expect(handleCancel).toBeCalledTimes(0);
   });
 });
