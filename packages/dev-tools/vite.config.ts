@@ -4,7 +4,7 @@ import dts from 'vite-plugin-dts';
 import * as path from 'path';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import vue from '@vitejs/plugin-vue';
-import injectStyles from 'vite-plugin-lib-inject-style';
+import { libInjectCss } from 'vite-plugin-lib-inject-css';
 
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/dev-tools',
@@ -17,7 +17,7 @@ export default defineConfig({
       skipDiagnostics: true,
     }),
     vue(),
-    injectStyles(),
+    libInjectCss(),
   ],
 
   build: {
