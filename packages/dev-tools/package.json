@@ -1,14 +1,15 @@
 {
   "name": "@farfetched/dev-tools",
   "version": "0.0.1",
-  "dependencies": {
+  "peerDependencies": {
+    "effector": "^23.0.0",
+    "@farfetched/core": "^0.11.1"
+  },
+  "devDependencies": {
     "vue": "^3.2.37",
     "vue-json-viewer": "3"
   },
   "main": "./index.js",
   "module": "./index.mjs",
-  "typings": "./index.d.ts",
-  "devDependencies": {
-    "material-design-icons-iconfont": "^6.7.0"
-  }
+  "typings": "./index.d.ts"
 }

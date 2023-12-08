@@ -4,11 +4,30 @@
   "sourceRoot": "packages/dev-tools/src",
   "projectType": "library",
   "targets": {
+    "pack": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/scripts/typepack.mjs --package dev-tools"
+      },
+      "dependsOn": ["build"]
+    },
     "build": {
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/dev-tools"
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs dev-tools --rename={args.rename}"
+      },
+      "dependsOn": ["pack"],
+      "configurations": {
+        "canary": {
+          "args": "--rename=canary"
+        }
       }
     },
     "test": {
