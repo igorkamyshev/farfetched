@@ -18,6 +18,7 @@ const { visible } = defineProps(['visible']);
   bottom: 0px;
   width: 100vw;
   height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .content {
@@ -27,7 +28,8 @@ const { visible } = defineProps(['visible']);
   padding: 16px;
   margin: 32px;
   box-sizing: border-box;
-  background-color: wheat;
-  border-radius: 8px;
+  background-color: white;
+  border-radius: 18px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.08);
 }
 </style>

@@ -32,4 +32,8 @@ th,
 td {
   border: 1px solid;
 }
+
+td {
+  padding: 8px;
+}
 </style>
