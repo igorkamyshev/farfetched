@@ -60,7 +60,7 @@ Current version of Farfetched Dev Tools is quite new and could have a lack of fe
 Since Farfetched Dev Tools is quite new, it has a lot of features to be implemented. Here is a list of the most important of them:
 
 - Sorting and filtering of [_Queries_](/api/primitives/query) with more convenient UI
-- Displaying [_Mutations_](/api/primitives/mutations) and [_Barriers_](/api/primitives/barrier)
-- Displaying modifiers (like `retry`, `cache` or `timeout`) applied to [_Queries_](/api/primitives/query) and [_Mutations_](/api/primitives/mutations)
-- Interactive map of [_Queries_](/api/primitives/query), [_Mutations_](/api/primitives/mutations) and [_Barriers_](/api/primitives/barrier) based on `connectQuery`, `update` and `applyBarrier` operators
-- Ability to force start [_Queries_](/api/primitives/query) and [_Mutations_](/api/primitives/mutations), to deactivate and activate [_Barriers_](/api/primitives/barrier)
+- Displaying [_Mutations_](/api/primitives/mutation) and [_Barriers_](/api/primitives/barrier)
+- Displaying modifiers (like `retry`, `cache` or `timeout`) applied to [_Queries_](/api/primitives/query) and [_Mutations_](/api/primitives/mutation)
+- Interactive map of [_Queries_](/api/primitives/query), [_Mutations_](/api/primitives/mutation) and [_Barriers_](/api/primitives/barrier) based on `connectQuery`, `update` and `applyBarrier` operators
+- Ability to force start [_Queries_](/api/primitives/query) and [_Mutations_](/api/primitives/mutation), to deactivate and activate [_Barriers_](/api/primitives/barrier)
