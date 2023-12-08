@@ -116,6 +116,10 @@ export default withMermaid(
                 ],
               },
               {
+                text: 'Developer experience',
+                link: '/tutorial/devtools',
+              },
+              {
                 text: 'Factories',
                 items: [
                   {

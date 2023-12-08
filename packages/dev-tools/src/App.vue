@@ -24,7 +24,8 @@ const search = useVModel($search);
   <div class="ff">
     <FloatingButton @click="handleButtonClick">FF DevTools</FloatingButton>
     <Modal :visible="visible" @overlay-click="handleOverlayClick">
-      <h2 class="title">Farfetched DevTools
+      <h2 class="title">
+        Farfetched DevTools
         <Search v-model="search" />
       </h2>
       <Table :headers="operationHeaders" :items="operationsList" />
@@ -38,8 +39,8 @@ const search = useVModel($search);
 
   & * {
     box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, Roboto, Inter,
-      Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, Roboto, Inter, Helvetica,
+      Arial, sans-serif;
   }
 }
 
