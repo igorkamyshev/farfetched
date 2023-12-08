@@ -69,6 +69,7 @@ importers:
       typescript: 5.2.2
       vite: 4.5.0
       vite-plugin-dts: ~2.3.0
+      vite-plugin-lib-inject-style: ^0.1.2
       vite-plugin-solid: '2.5'
       vite-tsconfig-paths: 4.2.1
       vitepress: 1.0.0-beta.2
@@ -144,6 +145,7 @@ importers:
       typescript: 5.2.2
       vite: 4.5.0_@types+node@18.7.14
       vite-plugin-dts: 2.3.0_5nq2f736a4xq2cj5m7eqt7izqq
+      vite-plugin-lib-inject-style: 0.1.2_vite@4.5.0
       vite-plugin-solid: 2.5.0_solid-js@1.5.9+vite@4.5.0
       vite-tsconfig-paths: 4.2.1_cnaluuumdmttzz4zpr3jp6tchm
       vitepress: 1.0.0-beta.2_skgpfosbbuxfan3fiz5zyxwib4
@@ -10060,6 +10062,7 @@ packages:
 
   /sourcemap-codec/1.4.8:
     resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
+    deprecated: Please use @jridgewell/sourcemap-codec instead
 
   /spawndamnit/2.0.0:
     resolution: {integrity: sha512-j4JKEcncSjFlqIwU5L/rp2N5SIPsdxaRsIv678+TZxZ0SRDJTm8JrxJMjE/XuiEZNEir3S8l0Fa3Ke339WI4qA==}
@@ -10778,6 +10781,16 @@ packages:
       - '@types/node'
       - rollup
       - supports-color
+    dev: true
+
+  /vite-plugin-lib-inject-style/0.1.2_vite@4.5.0:
+    resolution: {integrity: sha512-BdFGWIiD/HIXhJ25EZdzvWZ27z/fm7WQ19aVL3UGK7wPfZktkQTfWv6vH4ZBJSz3DhCUS9wKjPg3NkS/tH030g==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      vite: ^3.2.3
+    dependencies:
+      magic-string: 0.26.7
+      vite: 4.5.0_@types+node@18.7.14
     dev: true
 
   /vite-plugin-solid/2.5.0_solid-js@1.5.9+vite@4.5.0:

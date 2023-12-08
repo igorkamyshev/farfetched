@@ -65,6 +65,7 @@
     "typescript": "5.2.2",
     "vite": "4.5.0",
     "vite-plugin-dts": "~2.3.0",
+    "vite-plugin-lib-inject-style": "^0.1.2",
     "vite-plugin-solid": "2.5",
     "vite-tsconfig-paths": "4.2.1",
     "vitepress": "1.0.0-beta.2",
