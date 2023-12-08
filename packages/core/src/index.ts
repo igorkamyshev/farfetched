@@ -109,4 +109,4 @@ export { applyBarrier } from './barrier_api/apply_barrier';
 export { createBarrier } from './barrier_api/create_barrier';
 
 // Inspect API
-export { NodeMetaSumbol } from './inspect';
+export { NodeMetaSumbol, NodeLinksSumbol } from './inspect';

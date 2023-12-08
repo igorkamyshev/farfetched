@@ -1,4 +1,6 @@
 <script setup>
+import ValueView from './ValueView.vue';
+
 const { items, headers } = defineProps(['items', 'headers']);
 </script>
 
@@ -12,7 +14,7 @@ const { items, headers } = defineProps(['items', 'headers']);
     <tbody>
       <tr v-for="item in items">
         <td v-for="cell in item">
-          {{ cell }}
+          <ValueView :item="cell" />
         </td>
       </tr>
     </tbody>

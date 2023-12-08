@@ -2,7 +2,8 @@
   "name": "@farfetched/dev-tools",
   "version": "0.0.1",
   "dependencies": {
-    "vue": "^3.2.37"
+    "vue": "^3.2.37",
+    "vue-json-viewer": "3"
   },
   "main": "./index.js",
   "module": "./index.mjs",
