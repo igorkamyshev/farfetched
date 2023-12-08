@@ -1,5 +1,5 @@
 import { type Struct, is, validate } from 'superstruct';
-import { Contract } from '@farfetched/core';
+import { type Contract } from '@farfetched/core';
 
 /**
  * Transforms superstruct Struct for `data` to internal Contract.

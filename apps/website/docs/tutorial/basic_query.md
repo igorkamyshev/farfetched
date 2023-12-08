@@ -133,6 +133,10 @@ Read more in [React-specific](/tutorial/react/) tutorial.
 
 To extract error from [Query](/api/primitives/query), you can subscribe on `.$error` or use your favorite integration as well.
 
+::: tip
+It can be useful to have a visual representation of the state of the [_Query_](/api/primitives/query). You can use Farfetched DevTools for this purpose. Read more in [DevTools](/tutorial/devtools) tutorial.
+:::
+
 ## Query status
 
 Since [Query](/api/primitives/query) is an asynchronous operation, you can use `.$status` to get current status of the query. It is a [Store](https://effector.dev/en/api/effector/store/) that contains one of the following statuses: "initial", "pending", "success" or "error".

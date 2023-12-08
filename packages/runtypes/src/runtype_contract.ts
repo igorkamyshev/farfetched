@@ -1,5 +1,5 @@
-import { Details, Runtype } from 'runtypes';
-import { Contract } from '@farfetched/core';
+import { type Details, type Runtype } from 'runtypes';
+import { type Contract } from '@farfetched/core';
 
 /**
  * Transforms Runtype contracts for `data` to internal Contract.

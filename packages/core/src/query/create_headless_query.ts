@@ -6,6 +6,7 @@ import {
   createEvent,
   attach,
   split,
+  withRegion,
 } from 'effector';
 
 import { type Contract } from '../contract/type';
@@ -24,6 +25,7 @@ import { type Query, type QueryMeta, QuerySymbol } from './type';
 import { type ExecutionMeta } from '../remote_operation/type';
 import { isEqual } from '../libs/lohyphen';
 import { readonly } from '../libs/patronus';
+import { createMetaNode } from '../inspect';
 
 export interface SharedQueryFactoryConfig<Data, Initial = Data> {
   name?: string;
@@ -72,7 +74,6 @@ export function createHeadlessQuery<
     sourced,
     paramsAreMeaningless,
   } = config;
-
   const initialData = initialDataRaw ?? (null as unknown as Initial);
 
   const operation = createRemoteOperation<
@@ -123,7 +124,11 @@ export function createHeadlessQuery<
     skipVoid: false,
   });
 
-  sample({ clock: operation.finished.success, fn: () => null, target: $error });
+  sample({
+    clock: operation.finished.success,
+    fn: () => null,
+    target: $error,
+  });
   sample({
     clock: operation.finished.success,
     fn: ({ result }) => result,
@@ -247,35 +252,42 @@ export function createHeadlessQuery<
 
   // -- Public API --
 
-  return {
-    refresh,
-    start: operation.start,
-    reset: operation.reset,
-    started: readonly(operation.started),
-    $data: readonly($data),
-    $error: readonly($error),
-    $status: readonly(operation.$status),
-    $idle: readonly(operation.$idle),
-    $pending: readonly(operation.$pending),
-    $succeeded: readonly(operation.$succeeded),
-    $failed: readonly(operation.$failed),
-    $finished: readonly(operation.$finished),
-    $enabled: readonly(operation.$enabled),
-    $stale,
-    aborted: readonly(operation.aborted),
-    finished: {
-      success: readonly(operation.finished.success),
-      failure: readonly(operation.finished.failure),
-      finally: readonly(operation.finished.finally),
-      skip: readonly(operation.finished.skip),
-    },
-    __: {
-      ...operation.__,
-      lowLevelAPI: { ...operation.__.lowLevelAPI, refreshSkipDueToFreshness },
-      experimentalAPI: { attach: attachProtocol },
-    },
-    '@@unitShape': unitShapeProtocol,
-  };
+  const metaNode = createMetaNode(
+    { type: 'query', name: config.name },
+    { $status: operation.$status, $data, $error }
+  );
+
+  return withRegion(metaNode, () => {
+    return {
+      refresh,
+      start: operation.start,
+      reset: operation.reset,
+      started: readonly(operation.started),
+      $data: readonly($data),
+      $error: readonly($error),
+      $status: readonly(operation.$status),
+      $idle: readonly(operation.$idle),
+      $pending: readonly(operation.$pending),
+      $succeeded: readonly(operation.$succeeded),
+      $failed: readonly(operation.$failed),
+      $finished: readonly(operation.$finished),
+      $enabled: readonly(operation.$enabled),
+      $stale,
+      aborted: readonly(operation.aborted),
+      finished: {
+        success: readonly(operation.finished.success),
+        failure: readonly(operation.finished.failure),
+        finally: readonly(operation.finished.finally),
+        skip: readonly(operation.finished.skip),
+      },
+      __: {
+        ...operation.__,
+        lowLevelAPI: { ...operation.__.lowLevelAPI, refreshSkipDueToFreshness },
+        experimentalAPI: { attach: attachProtocol },
+      },
+      '@@unitShape': unitShapeProtocol,
+    };
+  });
 }
 
 function querySid($data: Store<any>): string | null {

@@ -1,6 +1,6 @@
 import { type Type } from 'io-ts';
 import { PathReporter } from 'io-ts/PathReporter';
-import { Contract } from '@farfetched/core';
+import { type Contract } from '@farfetched/core';
 
 /**
  * Transforms io-ts Type for `data` to internal Contract.

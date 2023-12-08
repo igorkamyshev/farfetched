@@ -2,7 +2,7 @@ import {
   type Contract as TypedContract,
   ValidationError,
 } from 'typed-contracts';
-import { Contract } from '@farfetched/core';
+import { type Contract } from '@farfetched/core';
 
 /**
  * Transforms typed-contracts Contract for `data` to internal Contract.
