@@ -1,0 +1,13 @@
+{
+  "name": "@farfetched/dev-tools",
+  "version": "0.0.1",
+  "dependencies": {
+    "vue": "^3.2.37"
+  },
+  "main": "./index.js",
+  "module": "./index.mjs",
+  "typings": "./index.d.ts",
+  "devDependencies": {
+    "material-design-icons-iconfont": "^6.7.0"
+  }
+}
