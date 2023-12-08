@@ -1,5 +1,10 @@
 # Farfetched Dev Tools
 
+::: warning
+
+Currently, Farfetched Dev Tools is in technical preview, so it could have some bugs and lack of features. We are constantly working on it and will be happy to hear your feedback in [issues](https://github.com/igorkamyshev/farfetched/issues).
+:::
+
 To simplify debugging of your application, Farfetched provides a special tool — Farfetched Dev Tools. It is a browser application that allows you to see all [_Queries_](/api/primitives/query) and its states.
 
 ![DevTools UI](./assets/devtools.jpeg)
@@ -53,11 +58,11 @@ That is it, now you can open Farfetched Dev Tools in your browser and see all yo
 
 ## Roadmap
 
-::: info
-Current version of Farfetched Dev Tools is quite new and could have a lack of features. We are constantly working on it and will be happy to hear your feedback in [issues](https://github.com/igorkamyshev/farfetched/issues).
+::: tip
+You can submit a feature request in [issues](https://github.com/igorkamyshev/farfetched/issues).
 :::
 
-Since Farfetched Dev Tools is quite new, it has a lot of features to be implemented. Here is a list of the most important of them:
+Since Farfetched Dev Tools is quite new, it has a lot of features to be implemented. Here is a list of the planned features:
 
 - Sorting and filtering of [_Queries_](/api/primitives/query) with more convenient UI
 - Displaying [_Mutations_](/api/primitives/mutation) and [_Barriers_](/api/primitives/barrier)
