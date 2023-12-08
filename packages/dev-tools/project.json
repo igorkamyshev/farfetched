@@ -7,7 +7,7 @@
     "pack": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/scripts/typepack.mjs --package dev-tools"
+        "command": "node tools/scripts/typepack.mjs --package dev-tools --typings index.d.ts"
       },
       "dependsOn": ["build"]
     },

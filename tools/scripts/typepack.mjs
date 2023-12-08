@@ -9,13 +9,16 @@ const require = createRequire(import.meta.url);
 
 const { readCachedProjectGraph } = require('@nx/devkit');
 
-const args = parseArgs({ options: { package: { type: 'string' } } });
-
-const TYPINGS_FILE_NAME = 'index.cjs.d.ts';
+const args = parseArgs({
+  options: {
+    package: { type: 'string' },
+    typings: { type: 'string', default: 'index.cjs.d.ts' },
+  },
+});
 
 const inputDir = path.join('dist', 'packages', args.values.package);
 
-const inputFile = path.join(inputDir, TYPINGS_FILE_NAME);
+const inputFile = path.join(inputDir, args.values.typings);
 const outputFile = inputFile;
 
 const external = Object.values(readCachedProjectGraph().nodes)
