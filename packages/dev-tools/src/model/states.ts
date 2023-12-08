@@ -1,6 +1,7 @@
 import {
   type Scope,
   type Store,
+  type EventCallable,
   createEffect,
   createStore,
   createWatch,
@@ -29,50 +30,26 @@ const startStatesWatchFx = createEffect(
     operations: FarfetchedDeclaration[];
   }) => {
     for (const operation of operations) {
-      const $statusStore: Store<FetchingStatus> | null =
-        (getFarfetchedLinks(operation)['$status'] as any) ?? null;
+      listenUpdates(
+        operation.id,
+        getFarfetchedLinks(operation)['$status'] as any,
+        newStatus,
+        scope
+      );
 
-      if ($statusStore) {
-        newStatus({ key: operation.id, value: getState($statusStore, scope) });
+      listenUpdates(
+        operation.id,
+        getFarfetchedLinks(operation)['$data'] as any,
+        newData,
+        scope
+      );
 
-        createWatch({
-          unit: $statusStore,
-          scope,
-          fn: (status) => {
-            newStatus({ key: operation.id, value: status });
-          },
-        });
-      }
-
-      const $dataStore: Store<unknown> | null =
-        (getFarfetchedLinks(operation)['$data'] as any) ?? null;
-
-      if ($dataStore) {
-        newData({ key: operation.id, value: getState($dataStore, scope) });
-
-        createWatch({
-          unit: $dataStore,
-          scope,
-          fn: (status) => {
-            newData({ key: operation.id, value: status });
-          },
-        });
-      }
-
-      const $errorStore: Store<unknown> | null =
-        (getFarfetchedLinks(operation)['$error'] as any) ?? null;
-
-      if ($errorStore) {
-        newError({ key: operation.id, value: getState($errorStore, scope) });
-
-        createWatch({
-          unit: $errorStore,
-          scope,
-          fn: (status) => {
-            newError({ key: operation.id, value: status });
-          },
-        });
-      }
+      listenUpdates(
+        operation.id,
+        getFarfetchedLinks(operation)['$error'] as any,
+        newError,
+        scope
+      );
     }
   }
 );
@@ -85,15 +62,6 @@ sample({
 });
 
 // -- utils
-
-function getState<T>($store: Store<T>, scope?: Scope) {
-  if (scope) {
-    return scope.getState($store);
-  }
-
-  return $store.getState();
-}
-
 function createKv<T>() {
   const $store = createStore<Record<string, T>>({});
   const set = createEvent<{ key: string; value: T }>();
@@ -106,4 +74,33 @@ function createKv<T>() {
   });
 
   return [$store, set] as const;
+}
+
+function listenUpdates<T>(
+  id: string,
+  $store: Store<T> | null,
+  listener: EventCallable<{ key: string; value: T }>,
+  scope?: Scope
+) {
+  if (!$store) {
+    return;
+  }
+
+  listener({ key: id, value: getState($store, scope) });
+
+  createWatch({
+    unit: $store,
+    scope,
+    fn: (status) => {
+      listener({ key: id, value: status });
+    },
+  });
+}
+
+function getState<T>($store: Store<T>, scope?: Scope) {
+  if (scope) {
+    return scope.getState($store);
+  }
+
+  return $store.getState();
 }
