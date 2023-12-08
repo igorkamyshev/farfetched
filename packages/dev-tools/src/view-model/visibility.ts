@@ -1,7 +1,6 @@
 import { createEvent, createStore, sample } from 'effector';
 
-// export const $visible = createStore(false)
-export const $visible = createStore(true);
+export const $visible = createStore(false);
 export const show = createEvent();
 export const hide = createEvent();
 

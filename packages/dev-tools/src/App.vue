@@ -25,7 +25,7 @@ const search = useVModel($search);
     <FloatingButton @click="handleButtonClick">FF DevTools</FloatingButton>
     <Modal :visible="visible" @overlay-click="handleOverlayClick">
       <h2 class="title">
-        Farfetched DevTools
+        Farfetched DevTools (Tech Preview)
         <Search v-model="search" />
       </h2>
       <Table :headers="operationHeaders" :items="operationsList" />
