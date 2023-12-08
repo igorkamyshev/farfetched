@@ -1,9 +1,12 @@
 import path from 'node:path';
-import { parseArgs } from 'node:util';
-import { rmdir } from 'node:fs/promises';
+import { parseArgs, promisify } from 'node:util';
+import { rmdir, unlink } from 'node:fs/promises';
 import dts from 'rollup-plugin-dts';
 import { rollup } from 'rollup';
 import { createRequire } from 'node:module';
+import rawGlob from 'glob';
+
+const glob = promisify(rawGlob);
 
 const require = createRequire(import.meta.url);
 
@@ -32,4 +35,9 @@ const bundle = await rollup({
 });
 
 await bundle.write({ file: outputFile, format: 'es' });
-await rmdir(path.join(inputDir, 'src'), { recursive: true });
+
+const allInInput = await glob(path.join(inputDir, '**/*.d.ts'), {
+  ignore: inputFile,
+});
+
+await Promise.all(allInInput.map(unlink));
