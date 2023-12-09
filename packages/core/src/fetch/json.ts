@@ -6,7 +6,6 @@ import { HttpError } from '../errors/type';
 
 import { normalizeStaticOrReactive } from '../libs/patronus';
 import {
-  ApiConfigShared,
   createApiRequest,
   CreationRequestConfigShared,
   ExclusiveRequestConfigShared,
@@ -24,8 +23,7 @@ type CreationRequestConfig =
   CreationRequestConfigShared<ExclusiveRequestConfig> &
     Omit<StaticOnlyRequestConfig<any>, 'mapBody'>;
 
-interface JsonApiConfig<R extends CreationRequestConfig>
-  extends ApiConfigShared {
+interface JsonApiConfig<R extends CreationRequestConfig> {
   request: R;
   response?: { status?: { expected: number | number[] } };
 }

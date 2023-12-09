@@ -65,7 +65,6 @@ Special thanks to all contributors and especially [Alexandr](https://github.com/
 Some of external libraries were inlined to Farfetched due to bundle size and custom features requirements:
 
 - https://github.com/effector/patronum
-- https://github.com/effector/patronum/pull/168
 - https://github.com/emn178/js-sha1/blob/master/tests/test.js
 - http://www.movable-type.co.uk/scripts/sha1.html
 - https://github.com/smelukov/nano-equal

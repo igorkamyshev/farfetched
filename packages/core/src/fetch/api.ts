@@ -1,21 +1,8 @@
-import {
-  attach,
-  createEffect,
-  createEvent,
-  createStore,
-  Event,
-  sample,
-} from 'effector';
+import { attach, createEffect } from 'effector';
 
-import {
-  abortable,
-  AbortContext,
-  normalizeStaticOrReactive,
-  StaticOrReactive,
-} from '../libs/patronus';
+import { normalizeStaticOrReactive, StaticOrReactive } from '../libs/patronus';
 import { NonOptionalKeys } from '../libs/lohyphen';
 import {
-  AbortError,
   ConfigurationError,
   HttpError,
   InvalidDataError,
@@ -23,11 +10,7 @@ import {
   PreparationError,
   TimeoutError,
 } from '../errors/type';
-import {
-  preparationError,
-  invalidDataError,
-  abortError,
-} from '../errors/create_error';
+import { preparationError, invalidDataError } from '../errors/create_error';
 import {
   formatUrl,
   mergeRecords,
@@ -59,6 +42,7 @@ export interface StaticOnlyRequestConfig<B> {
 export interface ExclusiveRequestConfigShared {
   url: string;
   credentials: RequestCredentials;
+  abortController?: AbortController;
 }
 
 export interface ExclusiveRequestConfig<B>
@@ -108,35 +92,7 @@ interface ApiConfigResponse<P> {
   };
 }
 
-export interface ApiConfigShared {
-  /**
-   * Rules to handle concurrent executions of the same request
-   */
-  concurrency?: {
-    /**
-     * Auto-cancelation strategy
-     * - `TAKE_EVERY` will not cancel any requests
-     * - `TAKE_LATEST` will cancel all but the latest request
-     * - `TAKE_FIRST` will ignore all but the first request
-     *
-     * @default "TAKE_EVERY"
-     */
-    strategy?: 'TAKE_LATEST' | 'TAKE_EVERY' | 'TAKE_FIRST';
-  };
-
-  /**
-   * Rules to abort request
-   */
-  abort?: {
-    /**
-     * All requests will be aborted on this event call
-     */
-    clock?: Event<any>;
-  };
-}
-
-interface ApiConfig<B, R extends CreationRequestConfig<B>, P>
-  extends ApiConfigShared {
+interface ApiConfig<B, R extends CreationRequestConfig<B>, P> {
   /** Rules to create Request */
   request: R;
   /** Rules to handle Response */
@@ -163,20 +119,12 @@ export function createApiRequest<
 
   const prepareFx = createEffect(config.response.extract);
 
-  const $haveToBeAborted = createStore(false, {
-    serialize: 'ignore',
-    name: 'ff.$haveToBeAborted',
-    sid: 'ff.$haveToBeAborted',
-  });
-
   const apiRequestFx = createEffect<
-    DynamicRequestConfig<B> &
-      AbortContext & {
-        method: HttpMethod;
-        haveToBeAborted: boolean;
-      },
+    DynamicRequestConfig<B> & {
+      method: HttpMethod;
+    },
     ApiRequestResult,
-    ApiRequestError | AbortError
+    ApiRequestError
   >(
     async ({
       url,
@@ -185,18 +133,8 @@ export function createApiRequest<
       headers,
       credentials,
       body,
-      onAbort,
-      haveToBeAborted,
+      abortController,
     }) => {
-      const abortController = new AbortController();
-      onAbort(() => {
-        abortController.abort();
-      });
-
-      if (haveToBeAborted) {
-        throw abortError();
-      }
-
       const mappedBody = body ? config.request.mapBody(body) : null;
 
       const request = new Request(formatUrl(url, query), {
@@ -204,7 +142,7 @@ export function createApiRequest<
         headers: formatHeaders(headers),
         credentials,
         body: mappedBody,
-        signal: abortController.signal,
+        signal: abortController?.signal,
       });
 
       const response = await requestFx(request).catch((cause) => {
@@ -246,7 +184,7 @@ export function createApiRequest<
     }
   );
 
-  const boundApiRequestFx = attach({
+  return attach({
     source: {
       url: normalizeStaticOrReactive(config.request.url),
       method: normalizeStaticOrReactive(config.request.method),
@@ -254,9 +192,8 @@ export function createApiRequest<
       headers: normalizeStaticOrReactive(config.request.headers),
       credentials: normalizeStaticOrReactive(config.request.credentials),
       body: normalizeStaticOrReactive(config.request.body),
-      haveToBeAborted: $haveToBeAborted,
     },
-    mapParams(dynamicConfig: ApiRequestParams & AbortContext, staticConfig) {
+    mapParams(dynamicConfig: ApiRequestParams, staticConfig) {
       // Exclusive settings
 
       const url: string =
@@ -280,8 +217,9 @@ export function createApiRequest<
       const headers = mergeRecords(staticConfig.headers, dynamicConfig.headers);
 
       // Other settings
-      const { method, haveToBeAborted } = staticConfig;
-      const { onAbort } = dynamicConfig;
+      const { method } = staticConfig;
+      // @ts-expect-error
+      const { abortController } = dynamicConfig;
 
       return {
         url,
@@ -290,54 +228,9 @@ export function createApiRequest<
         headers,
         credentials,
         body,
-        onAbort,
-        haveToBeAborted,
+        abortController,
       };
     },
     effect: apiRequestFx,
   });
-
-  const abortSignal = createEvent();
-
-  const boundAbortableApiRequestFx = abortable<
-    ApiRequestParams,
-    ApiRequestResult,
-    ApiRequestError | AbortError
-  >({
-    abort: { signal: abortSignal },
-    effect(params, abortContext) {
-      return boundApiRequestFx({ ...params, ...abortContext });
-    },
-  });
-
-  // Apply concurrency and abort settings
-
-  if (config.abort?.clock) {
-    sample({ clock: config.abort.clock, target: abortSignal });
-  }
-
-  switch (config.concurrency?.strategy) {
-    case 'TAKE_LATEST':
-      sample({ clock: boundAbortableApiRequestFx, target: abortSignal });
-      break;
-    case 'TAKE_FIRST':
-      sample({
-        clock: apiRequestFx,
-        fn: () => true,
-        target: $haveToBeAborted,
-      });
-      sample({
-        clock: boundAbortableApiRequestFx.finally,
-        fn: () => false,
-        target: $haveToBeAborted,
-      });
-      break;
-    case 'TAKE_EVERY':
-      // Do not have to do anything here
-      break;
-    default:
-    // Do nothing
-  }
-
-  return boundAbortableApiRequestFx;
 }

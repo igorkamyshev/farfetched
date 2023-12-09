@@ -1,4 +1,4 @@
-import { attach, type Json, type Event } from 'effector';
+import { attach, type Json, type Event, createEffect } from 'effector';
 
 import { type Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
@@ -17,6 +17,8 @@ import {
   type SharedMutationFactoryConfig,
 } from './create_headless_mutation';
 import { type Mutation } from './type';
+import { concurrency } from '../concurrency/concurrency';
+import { onAbort } from '../remote_operation/on_abort';
 
 // -- Shared --
 
@@ -201,9 +203,7 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
 
   const requestFx = createJsonApiRequest({
     request: { method: config.request.method, credentials },
-    concurrency: { strategy: 'TAKE_EVERY' },
     response: { status: config.response.status },
-    abort: { clock: config.concurrency?.abort },
   });
 
   const headlessMutation = createHeadlessMutation({
@@ -241,12 +241,24 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
           query: partialQuery(params),
         };
       },
-      effect: requestFx,
+      effect: createEffect((c: any) => {
+        const abortController = new AbortController();
+        onAbort(() => abortController.abort());
+        requestFx({ ...c, abortController });
+      }),
     })
   );
 
-  return {
+  const op = {
     ...headlessMutation,
     __: { ...headlessMutation.__, executeFx: requestFx },
   };
+
+  /* TODO: in future releases we will remove this code and make concurrency a separate function */
+  concurrency(op, {
+    strategy: config.concurrency?.strategy ?? 'TAKE_EVERY',
+    abort: config.concurrency?.abort,
+  });
+
+  return op;
 }
