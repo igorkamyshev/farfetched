@@ -75,8 +75,8 @@
   },
   "dependencies": {
     "@swc/helpers": "~0.5.2",
-    "atomic-router": "0.6",
-    "atomic-router-solid": "0.5",
+    "atomic-router": "0.9.1",
+    "atomic-router-solid": "0.8.1",
     "effector-react": "23.0.0",
     "effector-solid": "0.23.0",
     "effector-vue": "^23.0.0",

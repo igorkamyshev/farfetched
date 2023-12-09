@@ -1,5 +1,11 @@
 # @farfetched/atomic-router
 
+## 0.11.2
+
+### Patch Changes
+
+- 3f09dc5: Bump allowed version of `atmoic-router` to 0.9.1
+
 ## 0.11.1
 
 ## 0.11.0
