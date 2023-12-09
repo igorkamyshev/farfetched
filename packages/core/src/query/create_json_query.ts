@@ -342,6 +342,12 @@ export function createJsonQuery(config: any) {
     paramsAreMeaningless: true,
   });
 
+  const executeFx = createEffect((c: any) => {
+    const abortController = new AbortController();
+    onAbort(() => abortController.abort());
+    return requestFx({ ...c, abortController });
+  });
+
   headlessQuery.__.executeFx.use(
     attach({
       source: {
@@ -369,17 +375,13 @@ export function createJsonQuery(config: any) {
           query: partialQuery(params),
         };
       },
-      effect: createEffect((c: any) => {
-        const abortController = new AbortController();
-        onAbort(() => abortController.abort());
-        return requestFx({ ...c, abortController });
-      }),
+      effect: executeFx,
     })
   );
 
   const op = {
     ...headlessQuery,
-    __: { ...headlessQuery.__, executeFx: requestFx },
+    __: { ...headlessQuery.__, executeFx },
   };
 
   /* TODO: in future releases we will remove this code and make concurrency a separate function */

@@ -214,6 +214,12 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
     name: config.name,
   });
 
+  const executeFx = createEffect((c: any) => {
+    const abortController = new AbortController();
+    onAbort(() => abortController.abort());
+    requestFx({ ...c, abortController });
+  });
+
   headlessMutation.__.executeFx.use(
     attach({
       source: {
@@ -241,17 +247,13 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
           query: partialQuery(params),
         };
       },
-      effect: createEffect((c: any) => {
-        const abortController = new AbortController();
-        onAbort(() => abortController.abort());
-        requestFx({ ...c, abortController });
-      }),
+      effect: executeFx,
     })
   );
 
   const op = {
     ...headlessMutation,
-    __: { ...headlessMutation.__, executeFx: requestFx },
+    __: { ...headlessMutation.__, executeFx },
   };
 
   /* TODO: in future releases we will remove this code and make concurrency a separate function */
