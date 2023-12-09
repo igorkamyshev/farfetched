@@ -217,7 +217,7 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
   const executeFx = createEffect((c: any) => {
     const abortController = new AbortController();
     onAbort(() => abortController.abort());
-    requestFx({ ...c, abortController });
+    return requestFx({ ...c, abortController });
   });
 
   headlessMutation.__.executeFx.use(
