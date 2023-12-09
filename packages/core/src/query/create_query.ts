@@ -7,7 +7,7 @@ import {
 import { Query } from './type';
 import { Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
-import { type DynamicallySourcedField } from '../libs/patronus';
+import { SourcedField, type DynamicallySourcedField } from '../libs/patronus';
 import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
 import { resolveExecuteEffect } from '../remote_operation/resolve_execute_effect';
@@ -70,8 +70,11 @@ export function createQuery<
 >(
   config: {
     effect: Effect<Params, Response, Error>;
-    contract: Contract<Response, ContractData>;
-    validate?: Validator<ContractData, Params, ValidationSource>;
+    contract: SourcedField<
+      Response,
+      Contract<Response, ContractData>,
+      ValidationSource
+    >;
   } & SharedQueryFactoryConfig<ContractData>
 ): Query<Params, ContractData, Error | InvalidDataError>;
 
