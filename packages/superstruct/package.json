@@ -2,9 +2,6 @@
   "name": "@farfetched/superstruct",
   "version": "0.11.1",
   "dependencies": {},
-  "peerDependencies": {
-    "superstruct": "^1.0.3"
-  },
   "type": "commonjs",
   "main": "./index.cjs",
   "module": "./index.js"
