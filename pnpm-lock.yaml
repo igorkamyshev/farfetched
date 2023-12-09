@@ -27,8 +27,8 @@ importers:
       '@typescript-eslint/parser': 5.49.0
       '@vitejs/plugin-react': '3'
       '@vitest/ui': ^0.25.8
-      atomic-router: '0.6'
-      atomic-router-solid: '0.5'
+      atomic-router: 0.9.1
+      atomic-router-solid: 0.8.1
       bytes-iec: ^3.1.1
       effector: 23.0.0
       effector-react: 23.0.0
@@ -67,8 +67,8 @@ importers:
       vitest: ^0.26.2
       vue: ^3.2.37
     dependencies:
-      atomic-router: 0.6.3_tfx2g2o7pjcfmp4gkwc72h3yvy
-      atomic-router-solid: 0.5.1_5wxy56ghzl234n7ehw7n6mnyli
+      atomic-router: 0.9.1_tfx2g2o7pjcfmp4gkwc72h3yvy
+      atomic-router-solid: 0.8.1_jq3275vwkzrdbuypgwetcvinja
       effector-react: 23.0.0_gicv25zqhzpkvioon5x4qz43ru
       effector-solid: 0.23.0_ezer72urxqiungl44fdxkksdxi
       forest: 0.21.2_effector@23.0.0
@@ -4263,16 +4263,16 @@ packages:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
     dev: true
 
-  /atomic-router-solid/0.5.1_5wxy56ghzl234n7ehw7n6mnyli:
-    resolution: {integrity: sha512-Du+LjjxeRA9h/JmHn3A9Ad3wRjhLFqz256TPg9YX3xkV9fK7eqOOyELntlo/MwL+RLagnvculBVuJwD1r6KbKQ==}
+  /atomic-router-solid/0.8.1_jq3275vwkzrdbuypgwetcvinja:
+    resolution: {integrity: sha512-jJu5kztMPZmIwCUYSqd+XgNpEbQX9Rdd1l/5XmWILGd2phcMY2RYCxmfb3jZpuF59HMjPHxacUULBx7463GB7A==}
     peerDependencies:
-      atomic-router: ~0.4.3
-      effector: ~22.3.0
-      effector-solid: ~0.22.1
+      atomic-router: ^0.9.0
+      effector: ^23
+      effector-solid: ^23
       history: ~5
-      solid-js: ~1.4.8
+      solid-js: ^1.4 || ^1.5
     dependencies:
-      atomic-router: 0.6.3_tfx2g2o7pjcfmp4gkwc72h3yvy
+      atomic-router: 0.9.1_tfx2g2o7pjcfmp4gkwc72h3yvy
       classcat: 5.0.4
       effector: 23.0.0
       effector-solid: 0.23.0_ezer72urxqiungl44fdxkksdxi
@@ -4280,11 +4280,11 @@ packages:
       solid-js: 1.5.9
     dev: false
 
-  /atomic-router/0.6.3_tfx2g2o7pjcfmp4gkwc72h3yvy:
-    resolution: {integrity: sha512-hEPoWZIiBYhtesXoppSVgA8QoJVu+GnkjYeIXZKhhzcVX6FZw40DJiQM9yHbkVpOjW5LlFyie4O9Q/xtpEP36Q==}
+  /atomic-router/0.9.1_tfx2g2o7pjcfmp4gkwc72h3yvy:
+    resolution: {integrity: sha512-TFn1CtDvDVETvNCaw5BI+g4ngEnuXLTu+8m4Wybu3sMseMIgtcGebSll4+t8oKoRScaX09f3dBlT3oj9Hip84g==}
     engines: {node: '>=10'}
     peerDependencies:
-      effector: ^22
+      effector: ^22.8.8 || ^23
       history: ^5.3.0
     dependencies:
       effector: 23.0.0
