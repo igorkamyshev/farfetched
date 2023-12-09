@@ -4,15 +4,14 @@ import { allSettled, createWatch, fork } from 'effector';
 import { createQuery } from '../../query/create_query';
 import { timeout } from '../timeout';
 import { isTimeoutError } from '../../errors/guards';
+import { setTimeout } from 'timers/promises';
+import { createDefer } from '../../libs/lohyphen';
+import { onAbort } from '../../remote_operation/on_abort';
 
 describe('timeout(query, time)', () => {
   test('timeout(query, number)', async () => {
-    const handler = vi.fn(
-      async () =>
-        new Promise((r) => {
-          setTimeout(r, 130);
-        })
-    );
+    const handler = vi.fn(createHandler(130));
+
     const query = createQuery({
       handler,
     });
@@ -31,12 +30,7 @@ describe('timeout(query, time)', () => {
   });
 
   test('timeout(query, human-readable)', async () => {
-    const handler = vi.fn(
-      async () =>
-        new Promise((r) => {
-          setTimeout(r, 130);
-        })
-    );
+    const handler = vi.fn(createHandler(130));
     const query = createQuery({
       handler,
     });
@@ -55,12 +49,7 @@ describe('timeout(query, time)', () => {
   });
 
   test('timeout does not leave hanging promise if call is finished before timeout', async () => {
-    const handler = vi.fn(
-      async () =>
-        new Promise((r) => {
-          setTimeout(r, 50);
-        })
-    );
+    const handler = vi.fn(createHandler(50));
     const query = createQuery({
       handler,
     });
@@ -77,17 +66,23 @@ describe('timeout(query, time)', () => {
     expect(scope.getState(query.$error)).toBe(null);
   });
 
-  // TODO: this is a flapping test. Fix it.
   test('multiple calls of timeout-ed queries does not affect each other', async () => {
     let count = 0;
-    const handler = vi.fn(
-      async () =>
-        new Promise((r) => {
-          count++;
-          const ms = count === 2 ? 151 : 50;
-          setTimeout(r, ms);
-        })
-    );
+    const handler = vi.fn(async () => {
+      const defer = createDefer();
+
+      onAbort(() => defer.reject());
+
+      count++;
+
+      const ms = count === 2 ? 151 : 50;
+
+      await setTimeout(ms);
+
+      defer.resolve(null);
+
+      return defer.promise;
+    });
     const query = createQuery({
       handler,
     });
@@ -119,3 +114,17 @@ describe('timeout(query, time)', () => {
     );
   });
 });
+
+function createHandler(waitTime: number) {
+  return async () => {
+    const defer = createDefer();
+
+    onAbort(() => defer.reject());
+
+    await setTimeout(waitTime);
+
+    defer.resolve(null);
+
+    return defer.promise;
+  };
+}
