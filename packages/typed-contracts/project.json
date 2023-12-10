@@ -21,8 +21,7 @@
         "assets": [],
         "project": "packages/typed-contracts/package.json",
         "compiler": "swc",
-        "format": ["cjs", "esm"],
-        "generateExportsField": true
+        "format": ["cjs", "esm"]
       }
     },
     "publish": {
