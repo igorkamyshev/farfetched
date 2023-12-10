@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { parseArgs, promisify } from 'node:util';
-import { rmdir, unlink } from 'node:fs/promises';
+import { unlink } from 'node:fs/promises';
 import dts from 'rollup-plugin-dts';
 import { rollup } from 'rollup';
 import { createRequire } from 'node:module';
