@@ -9,5 +9,5 @@ for (const pkg of packages) {
 
   spawnSync('attw', ['--pack', inputDir], {
     stdio: 'inherit',
-  }).output.toString();
+  });
 }
