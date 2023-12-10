@@ -40,7 +40,7 @@ jobs:
       - run: pnpm size
       - name: Validate typings of all packages
         id: typelint
-        run: echo "result=$(node ./tools/scripts/typelint.mjs)\n" >> $GITHUB_OUTPUT
+        run: echo "result=$(pnpm node ./tools/scripts/typelint.mjs)\n" >> $GITHUB_OUTPUT
       # In case of absence of the comment we will create it with information about latest analysis
       - name: Create comment
         if: steps.find_comment.outputs.comment-id == ''
