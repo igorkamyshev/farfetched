@@ -3,7 +3,7 @@ name: CI
 on: pull_request
 
 jobs:
-  checks:
+  code:
     runs-on: ubuntu-latest
 
     steps:
@@ -40,7 +40,7 @@ jobs:
       - run: pnpm size
       - name: Validate typings of all packages
         id: typelint
-        run: node ./tools/scripts/typelint.mjs >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
+        run: echo "result=$(node ./tools/scripts/typelint.mjs)\n" >> $GITHUB_OUTPUT
       # In case of absence of the comment we will create it with information about latest analysis
       - name: Create comment
         if: steps.find_comment.outputs.comment-id == ''
@@ -50,7 +50,7 @@ jobs:
           body: |
             # ATTW
 
-            Used changeset: ${{ steps.typelint.outputs }}
+            ${{ steps.typelint.outputs.result }}
       # Otherwise we will update it with information about latest analysis
       - name: Update comment
         if: steps.find_comment.outputs.comment-id != ''
@@ -61,4 +61,18 @@ jobs:
           body: |
             # ATTW
 
-            Used changeset: ${{ steps.typelint.outputs }}
+            ${{ steps.typelint.outputs.result }}
+  changes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint:changes
