@@ -13,9 +13,8 @@ for (const pkg of packages) {
     .output.toString()
     .split(',')
     .map(strip)
-    .join('');
+    .join('')
+    .replaceAll('\n', '\n\n');
 
   console.log(result);
 }
-
-console.log('\n');
