@@ -17,3 +17,5 @@ for (const pkg of packages) {
 
   console.log(result);
 }
+
+console.log('\n');
