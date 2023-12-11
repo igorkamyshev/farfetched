@@ -22,13 +22,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Find comment about previous analysis
+      - name: Find comment about previous analysis (ATTW)
         uses: peter-evans/find-comment@v1
-        id: find_comment
+        id: find_attw_comment
         with:
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: 'github-actions[bot]'
           body-includes: ATTW
+      - name: Find comment about previous analysis (Publint)
+        uses: peter-evans/find-comment@v1
+        id: find_publint_comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: publint
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
       - uses: actions/setup-node@v3
@@ -41,9 +48,12 @@ jobs:
       - name: Validate typings of all packages
         id: typelint
         run: echo "result<<EOF"$'\n'"$(pnpm node ./tools/scripts/typelint.mjs)"$'\n'EOF >> $GITHUB_OUTPUT
+      - name: Validate exports of all packages
+        id: publint
+        run: echo "result<<EOF"$'\n'"$(pnpm node ./tools/scripts/publint.mjs)"$'\n'EOF >> $GITHUB_OUTPUT
       # In case of absence of the comment we will create it with information about latest analysis
-      - name: Create comment
-        if: steps.find_comment.outputs.comment-id == ''
+      - name: Create comment (ATTW)
+        if: steps.find_attw_comment.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -54,19 +64,44 @@ jobs:
               <summary>Analysis</summary>
               ${{ steps.typelint.outputs.result }}
             </details>
+      - name: Create comment (publint)
+        if: steps.find_publint_comment.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            # publint
+
+            <details>
+              <summary>Analysis</summary>
+              ${{ steps.publint.outputs.result }}
+            </details>
       # Otherwise we will update it with information about latest analysis
-      - name: Update comment
-        if: steps.find_comment.outputs.comment-id != ''
+      - name: Update comment (ATTW)
+        if: steps.find_attw_comment.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
         with:
           edit-mode: replace
-          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          comment-id: ${{ steps.find_attw_comment.outputs.comment-id }}
           body: |
             # ATTW
 
             <details>
               <summary>Analysis</summary>
               ${{ steps.typelint.outputs.result }}
+            </details>
+      - name: Update comment (publint)
+        if: steps.find_publint_comment.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          edit-mode: replace
+          comment-id: ${{ steps.find_publint_comment.outputs.comment-id }}
+          body: |
+            # publint
+
+            <details>
+              <summary>Analysis</summary>
+              ${{ steps.publint.outputs.result }}
             </details>
   changes:
     runs-on: ubuntu-latest
