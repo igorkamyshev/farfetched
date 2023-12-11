@@ -7,7 +7,11 @@ const packages = await readdir(path.join('dist', 'packages'));
 for (const pkg of packages) {
   const inputDir = path.join('dist', 'packages', pkg);
 
-  spawnSync('publint', [inputDir], {
-    stdio: 'inherit',
-  });
+  /* Save to variable to strip colors */
+  const result = spawnSync('publint', [inputDir])
+    .output.toString()
+    .split(',')
+    .join('');
+
+  console.log(result);
 }
