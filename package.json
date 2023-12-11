@@ -46,6 +46,7 @@
     "@vitejs/plugin-vue": "^4.5.2",
     "@vitest/coverage-v8": "~0.34.6",
     "@vitest/ui": "~0.34.6",
+    "ansicolor": "^2.0.1",
     "bytes-iec": "^3.1.1",
     "effector": "23.0.0",
     "eslint": "8.46.0",
