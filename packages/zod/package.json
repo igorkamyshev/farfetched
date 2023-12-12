@@ -5,7 +5,17 @@
   "peerDependencies": {
     "zod": "^3.19"
   },
-  "type": "commonjs",
-  "main": "./index.cjs",
-  "module": "./index.js"
+  "main": "./index.js",
+  "module": "./index.mjs",
+  "typings": "./index.d.ts",
+  "exports": {
+    ".": {
+      "typings": "./index.d.ts",
+      "import": {
+        "types": "./index.d.mts",
+        "import": "./index.mjs"
+      },
+      "require": "./index.js"
+    }
+  }
 }

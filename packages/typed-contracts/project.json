@@ -5,16 +5,10 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/rollup:rollup",
+      "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/typed-contracts",
-        "main": "packages/typed-contracts/src/index.ts",
-        "tsConfig": "packages/typed-contracts/tsconfig.lib.json",
-        "assets": [],
-        "project": "packages/typed-contracts/package.json",
-        "compiler": "swc",
-        "format": ["cjs", "esm"]
+        "outputPath": "dist/packages/typed-contracts"
       }
     },
     "publish": {

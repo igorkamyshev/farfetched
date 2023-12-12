@@ -6,7 +6,17 @@
     "effector-solid": "^0.23.0",
     "solid-js": "^1.4.7"
   },
-  "type": "commonjs",
-  "main": "./index.cjs",
-  "module": "./index.js"
+  "main": "./index.js",
+  "module": "./index.mjs",
+  "typings": "./index.d.ts",
+  "exports": {
+    ".": {
+      "typings": "./index.d.ts",
+      "import": {
+        "types": "./index.d.mts",
+        "import": "./index.mjs"
+      },
+      "require": "./index.js"
+    }
+  }
 }
