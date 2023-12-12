@@ -6,7 +6,17 @@
     "io-ts": "^2.2.20",
     "fp-ts": "^2.13.1"
   },
-  "type": "commonjs",
-  "main": "./index.cjs",
-  "module": "./index.js"
+  "main": "./index.js",
+  "module": "./index.mjs",
+  "typings": "./index.d.ts",
+  "exports": {
+    ".": {
+      "typings": "./index.d.ts",
+      "import": {
+        "types": "./index.d.mts",
+        "import": "./index.mjs"
+      },
+      "require": "./index.js"
+    }
+  }
 }

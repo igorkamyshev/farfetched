@@ -23,7 +23,7 @@ export default defineConfig({
       formats: ['es', 'cjs'],
     },
     rollupOptions: {
-      external: ['effector', '@farfetched/core'],
+      external: ['effector', '@farfetched/core', 'atomic-router'],
     },
   },
 
