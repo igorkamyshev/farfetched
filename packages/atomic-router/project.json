@@ -4,13 +4,6 @@
   "sourceRoot": "packages/atomic-router/src",
   "projectType": "library",
   "targets": {
-    "pack": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node tools/scripts/typepack.mjs --package atomic-router"
-      },
-      "dependsOn": ["build"]
-    },
     "build": {
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
@@ -23,7 +16,7 @@
       "options": {
         "command": "node tools/scripts/publish.mjs atomic-router --rename={args.rename}"
       },
-      "dependsOn": ["pack"],
+      "dependsOn": ["build"],
       "configurations": {
         "canary": {
           "args": "--rename=canary"

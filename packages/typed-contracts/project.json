@@ -4,13 +4,6 @@
   "sourceRoot": "packages/typed-contracts/src",
   "projectType": "library",
   "targets": {
-    "pack": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node tools/scripts/typepack.mjs --package typed-contracts"
-      },
-      "dependsOn": ["build"]
-    },
     "build": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
@@ -29,7 +22,7 @@
       "options": {
         "command": "node tools/scripts/publish.mjs typed-contracts --rename={args.rename}"
       },
-      "dependsOn": ["pack"],
+      "dependsOn": ["build"],
       "configurations": {
         "canary": {
           "args": "--rename=canary"

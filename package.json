@@ -10,7 +10,7 @@
     "lint": "nx run-many --target=lint --all",
     "lint:format": "nx format:check --all",
     "lint:changes": "changeset status",
-    "build": "nx run-many --target=pack --all",
+    "build": "nx run-many --target=build --all",
     "format": "nx format:write --all",
     "size": "nx run-many --target=size --all",
     "changes": "changeset"
