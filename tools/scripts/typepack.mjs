@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { parseArgs, promisify } from 'node:util';
-import { unlink } from 'node:fs/promises';
+import { unlink, copyFile } from 'node:fs/promises';
 import dts from 'rollup-plugin-dts';
 import { rollup } from 'rollup';
 import { createRequire } from 'node:module';
@@ -35,6 +35,7 @@ const bundle = await rollup({
 });
 
 await bundle.write({ file: outputFile, format: 'es' });
+await copyFile(outputFile, outputFile.replaceAll('.d.ts', '.d.mts'));
 
 const allInInput = await glob(path.join(inputDir, '**/*.d.ts'), {
   ignore: inputFile,
