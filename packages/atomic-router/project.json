@@ -12,16 +12,10 @@
       "dependsOn": ["build"]
     },
     "build": {
-      "executor": "@nx/rollup:rollup",
+      "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/atomic-router",
-        "main": "packages/atomic-router/src/index.ts",
-        "tsConfig": "packages/atomic-router/tsconfig.lib.json",
-        "assets": [],
-        "project": "packages/atomic-router/package.json",
-        "compiler": "swc",
-        "format": ["cjs", "esm"]
+        "outputPath": "dist/packages/atomic-router"
       }
     },
     "publish": {
