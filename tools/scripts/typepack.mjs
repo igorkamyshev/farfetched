@@ -15,7 +15,7 @@ const { readCachedProjectGraph } = require('@nx/devkit');
 const args = parseArgs({
   options: {
     package: { type: 'string' },
-    typings: { type: 'string', default: 'index.cjs.d.ts' },
+    typings: { type: 'string', default: 'index.d.ts' },
   },
 });
 

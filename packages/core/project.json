@@ -12,16 +12,10 @@
       "dependsOn": ["build"]
     },
     "build": {
-      "executor": "@nx/rollup:rollup",
+      "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/core",
-        "main": "packages/core/src/index.ts",
-        "tsConfig": "packages/core/tsconfig.lib.json",
-        "assets": [],
-        "project": "packages/core/package.json",
-        "compiler": "swc",
-        "format": ["cjs", "esm"]
+        "outputPath": "dist/packages/core"
       }
     },
     "publish": {
