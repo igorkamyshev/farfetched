@@ -68,7 +68,7 @@ Note that we catch the error and throw a new one. It is important because we wan
 
 ### Apply the [_Contract_](/api/primitives/contract)
 
-The next step is to apply the [_Contract_](/api/primitives/contract) to the parsed JSON. Luckily, [`createMutation`](/api/factorirs/create_mutation) has a special option for that:
+The next step is to apply the [_Contract_](/api/primitives/contract) to the parsed JSON. Luckily, [`createMutation`](/api/factories/create_mutation) has a special option for that:
 
 ```js
 import { createMutation, preparationError } from '@farfetched';
@@ -162,7 +162,7 @@ const uploadPhotoMutation = createUploadFileMutation();
 If you want to learn more about the reasons behind this requirement, please read [this article](/recipes/sids).
 :::
 
-If you use Farfetched in SSR, want to use [DevTools](/tutorial/devtools) or [`cache`](/api/operators/cache), you need to provide a unique name for each [_Mutation_](/api/primitives/mutation). It can be done by passing the `name` option to the [`createMutation`](/api/factorirs/create_mutation) factory:
+If you use Farfetched in SSR, want to use [DevTools](/tutorial/devtools) or [`cache`](/api/operators/cache), you need to provide a unique name for each [_Mutation_](/api/primitives/mutation). It can be done by passing the `name` option to the [`createMutation`](/api/factories/create_mutation) factory:
 
 ```js
 function createUploadFileMutation({ name }) {
