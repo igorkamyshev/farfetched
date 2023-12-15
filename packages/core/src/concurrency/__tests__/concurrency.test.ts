@@ -86,4 +86,32 @@ describe('concurrency', async () => {
       ]
     `);
   });
+
+  test('TAKE_LATEST and 2 simultaneous requests lead to correct status, issue #426', async () => {
+    const q = createQuery({
+      async handler(id: string) {
+        const defer = createDefer();
+
+        onAbort(() => defer.reject());
+
+        await setTimeout(1);
+        defer.resolve(id);
+
+        return defer.promise;
+      },
+    });
+
+    concurrency(q, { strategy: 'TAKE_LATEST' });
+
+    const scope = fork();
+
+    allSettled(q.start, { scope, params: '1' });
+    allSettled(q.start, { scope, params: '2' });
+
+    expect(scope.getState(q.$pending)).toBeTruthy();
+
+    await allSettled(scope);
+
+    expect(scope.getState(q.$pending)).toBeFalsy();
+  });
 });
