@@ -348,6 +348,7 @@ export default withMermaid(
                 text: 'Your own GraphQL Query',
                 link: '/recipes/graphql_query',
               },
+              { text: 'FormData in Mutation', link: '/recipes/form_data' },
             ],
           },
           {
