@@ -25,7 +25,7 @@ async function uploadFile(file) {
 Now, let's connect it to the [_Mutation_](/api/primitives/mutation):
 
 ```js
-import { createMutation } from '@farfetched';
+import { createMutation } from '@farfetched/core';
 
 const uploadFileMutation = createMutation({ handler: uploadFile });
 ```
@@ -47,7 +47,7 @@ Let us implement these features one by one.
 Actually, it is very easy to do. We just need to call `.json` method of the response and handle the possible errors:
 
 ```js
-import { createMutation, preparationError } from '@farfetched';
+import { createMutation, preparationError } from '@farfetched/core';
 
 const uploadFileMutation = createMutation({
   handler: uploadFile, // [!code --]
@@ -71,7 +71,7 @@ Note that we catch the error and throw a new one. It is important because we wan
 The next step is to apply the [_Contract_](/api/primitives/contract) to the parsed JSON. Luckily, [`createMutation`](/api/factories/create_mutation) has a special option for that:
 
 ```js
-import { createMutation, preparationError } from '@farfetched';
+import { createMutation, preparationError } from '@farfetched/core';
 
 const uploadFileMutation = createMutation({
   effect: createEffect(async (file) => {
@@ -97,7 +97,7 @@ To cancel the [_Mutation_](/api/primitives/mutation), we need to use the [`Abort
 Just create an instance of the [`AbortController`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) and pass its [`signal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) to the `uploadFile` function:
 
 ```js
-import { createMutation, preparationError, onAbort } from '@farfetched';
+import { createMutation, preparationError, onAbort } from '@farfetched/core';
 
 const uploadFileMutation = createMutation({
   effect: createEffect(async (file) => {
@@ -235,7 +235,7 @@ Congratulations! Now you know how to create a [_Mutation_](/api/primitives/mutat
 The basic usage of `FormData` is quite simple:
 
 ```js
-import { createMutation } from '@farfetched';
+import { createMutation } from '@farfetched/core';
 
 const uploadFileMutation = createMutation({ handler: uploadFile });
 
