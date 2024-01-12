@@ -55,11 +55,11 @@ const authBarrier = createBarrier({
 If the client does not have access to the content of the token, we have to rely on the response from the server on particular request. In this case, we can create a barrier with explicit checking of the response status of every request which requires authentication.
 
 ```ts{4-6}
-import { createBarrier, isHttpError } from '@farfetched/core';
+import { createBarrier, isHttpErrorCode } from '@farfetched/core';
 
 const authBarrier = createBarrier({
   activateOn: {
-    failure: isHttpError(401),
+    failure: isHttpErrorCode(401),
   },
 });
 ```
@@ -88,7 +88,7 @@ import { createQuery, applyBarrier } from '@farfetched/core';
 
 const someQuery = createQuery(/* ... */);
 
-applyBarrier(someQuery, authBarrier);
+applyBarrier(someQuery, { barrier: authBarrier });
 ```
 
 That is it! Now every time `someQuery` is called, `authBarrier` will be checked. If the token is invalid, `authBarrier` will be activated, `someQuery` will be suspended, and `renewTokenMutation` will be called. After `renewTokenMutation` is finished, `someQuery` will be resumed in case of suspension or restarted with the latest parameters in case of failure.
