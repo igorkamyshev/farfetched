@@ -1,15 +1,25 @@
 {
   "name": "@farfetched/zod",
   "version": "0.11.2",
-  "dependencies": {},
   "peerDependencies": {
-    "zod": "^3.19"
+    "zod": "^3.19",
+    "@farfetched/core": "workspace:*"
   },
   "scripts": {
     "test:run": "vitest run",
-    "typetest:run": "vitest typecheck --run"
+    "typetest:run": "vitest typecheck --run",
+    "build": "vite build"
   },
-  "type": "commonjs",
-  "main": "./index.cjs",
-  "module": "./index.js"
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/zod.cjs",
+  "module": "./dist/zod.js",
+  "exports": {
+    ".": {
+      "import": "./dist/zod.js",
+      "require": "./dist/zod.cjs"
+    }
+  }
 }

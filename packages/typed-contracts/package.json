@@ -1,15 +1,25 @@
 {
   "name": "@farfetched/typed-contracts",
   "version": "0.11.2",
-  "dependencies": {},
   "peerDependencies": {
-    "typed-contracts": "^3.0.0"
+    "typed-contracts": "^3.0.0",
+    "@farfetched/core": "workspace:*"
   },
   "scripts": {
     "test:run": "vitest run",
-    "typetest:run": "vitest typecheck --run"
+    "typetest:run": "vitest typecheck --run",
+    "build": "vite build"
   },
-  "type": "commonjs",
-  "main": "./index.cjs",
-  "module": "./index.js"
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/typed-contracts.cjs",
+  "module": "./dist/typed-contracts.js",
+  "exports": {
+    ".": {
+      "import": "./dist/typed-contracts.js",
+      "require": "./dist/typed-contracts.cjs"
+    }
+  }
 }

@@ -47,7 +47,6 @@ importers:
       react-dom: 18.2.0
       react-router-dom: ^6.4.2
       rollup: ^3.4.0
-      rollup-plugin-dts: ^5.0.0
       runtypes: ^6.5.1
       sandpack-vue3: ^3.1.9
       semver-parser: ^4.0.1
@@ -117,7 +116,6 @@ importers:
       prettier: 2.7.1
       publint: 0.2.6
       rollup: 3.4.0
-      rollup-plugin-dts: 5.0.0_mxjsan6ypehoeksfxstnzqtf2y
       semver-parser: 4.0.1
       size-limit: 7.0.8
       solid-testing-library: 0.3.0_solid-js@1.5.9
@@ -5406,13 +5404,6 @@ packages:
     dependencies:
       sourcemap-codec: 1.4.8
 
-  /magic-string/0.26.7:
-    resolution: {integrity: sha512-hX9XH3ziStPoPhJxLq1syWuZMxbDvGNbVchfrdCtanC7D13888bMFow61x8axrx+GfHLtVeAx2kxL7tTGRl+Ow==}
-    engines: {node: '>=12'}
-    dependencies:
-      sourcemap-codec: 1.4.8
-    dev: true
-
   /magic-string/0.29.0:
     resolution: {integrity: sha512-WcfidHrDjMY+eLjlU+8OvwREqHwpgCeKVBUpQ3OhYYuvfaYCUgcbuBzappNzZvg/v8onU3oQj+BYpkOJe9Iw4Q==}
     engines: {node: '>=12'}
@@ -6301,20 +6292,6 @@ packages:
 
   /robust-predicates/3.0.1:
     resolution: {integrity: sha512-ndEIpszUHiG4HtDsQLeIuMvRsDnn8c8rYStabochtUeCvfuvNptb5TUbVD68LRAILPX7p9nqQGh4xJgn3EHS/g==}
-
-  /rollup-plugin-dts/5.0.0_mxjsan6ypehoeksfxstnzqtf2y:
-    resolution: {integrity: sha512-OO8ayCvuJCKaQSShyVTARxGurVVk4ulzbuvz+0zFd1f93vlnWFU5pBMT7HFeS6uj7MvvZLx4kUAarGATSU1+Ng==}
-    engines: {node: '>=v14'}
-    peerDependencies:
-      rollup: ^3.0.0
-      typescript: ^4.1
-    dependencies:
-      magic-string: 0.26.7
-      rollup: 3.4.0
-      typescript: 5.2.2
-    optionalDependencies:
-      '@babel/code-frame': 7.23.4
-    dev: true
 
   /rollup/3.29.4:
     resolution: {integrity: sha512-oWzmBZwvYrU0iJHtDmhsm662rC15FRXmcjCk1xD771dFDx5jJ02ufAQQTn0etB2emNk4J9EZg/yWKpsn9BWGRw==}

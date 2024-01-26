@@ -1,15 +1,25 @@
 {
   "name": "@farfetched/superstruct",
   "version": "0.11.2",
-  "dependencies": {},
   "peerDependencies": {
-    "superstruct": "^1.0.3"
+    "superstruct": "^1.0.3",
+    "@farfetched/core": "workspace:*"
   },
   "scripts": {
     "test:run": "vitest run",
-    "typetest:run": "vitest typecheck --run"
+    "typetest:run": "vitest typecheck --run",
+    "build": "vite build"
   },
-  "type": "commonjs",
-  "main": "./index.cjs",
-  "module": "./index.js"
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/superstruct.cjs",
+  "module": "./dist/superstruct.js",
+  "exports": {
+    ".": {
+      "import": "./dist/superstruct.js",
+      "require": "./dist/superstruct.cjs"
+    }
+  }
 }
