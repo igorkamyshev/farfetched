@@ -129,6 +129,14 @@ importers:
       vitest: 0.31.4_cjl2dehdh7un6d6p2sz6rlztbi
       vue: 3.2.37
 
+  apps/website:
+    specifiers:
+      '@farfetched/core': workspace:*
+      '@farfetched/runtypes': workspace:*
+    dependencies:
+      '@farfetched/core': link:../../packages/core
+      '@farfetched/runtypes': link:../../packages/runtypes
+
   packages/atomic-router:
     specifiers: {}
 
