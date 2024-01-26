@@ -7,7 +7,6 @@ export default withMermaid(
     title: 'Farfetched',
     description: 'The advanced data fetching tool for web applications.',
     lastUpdated: true,
-    outDir: '../../../dist/apps/website',
     head: [
       ['link', { rel: 'icon', href: '/favicon.ico', sizes: 'any' }],
       ['link', { rel: 'icon', href: '/icon.svg', type: 'image/svg+xml' }],
