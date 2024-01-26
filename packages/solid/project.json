@@ -4,26 +4,6 @@
   "sourceRoot": "packages/solid/src",
   "projectType": "library",
   "targets": {
-    "pack": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node tools/scripts/typepack.mjs --package solid"
-      },
-      "dependsOn": ["build"]
-    },
-    "build": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/packages/solid",
-        "main": "packages/solid/src/index.ts",
-        "tsConfig": "packages/solid/tsconfig.lib.json",
-        "assets": [],
-        "project": "packages/solid/package.json",
-        "compiler": "swc",
-        "format": ["cjs", "esm"]
-      }
-    },
     "publish": {
       "executor": "nx:run-commands",
       "options": {

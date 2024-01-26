@@ -1,15 +1,25 @@
 {
   "name": "@farfetched/runtypes",
   "version": "0.11.2",
-  "dependencies": {},
-  "type": "commonjs",
-  "main": "./index.cjs",
-  "module": "./index.js",
   "peerDependencies": {
-    "runtypes": "^6.6.0"
+    "runtypes": "^6.6.0",
+    "@farfetched/core": "workspace:*"
   },
   "scripts": {
     "test:run": "vitest run",
-    "typetest:run": "vitest typecheck --run"
+    "typetest:run": "vitest typecheck --run",
+    "build": "vite build"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/runtypes.cjs",
+  "module": "./dist/runtypes.js",
+  "exports": {
+    ".": {
+      "import": "./dist/runtypes.js",
+      "require": "./dist/runtypes.cjs"
+    }
   }
 }
