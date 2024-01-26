@@ -9,6 +9,7 @@
     "experimentalDecorators": true,
     "importHelpers": false,
     "target": "es2018",
+    "strict": true,
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
