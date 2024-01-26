@@ -3,7 +3,7 @@
   "version": "0.11.1",
   "peerDependencies": {
     "effector": "^23.0.0",
-    "@farfetched/core": "^0.11.1"
+    "@farfetched/core": "workspace:*"
   },
   "devDependencies": {
     "vue": "^3.2.37",
@@ -11,9 +11,19 @@
   },
   "scripts": {
     "test:run": "vitest run",
-    "typetest:run": "vitest typecheck --run"
+    "typetest:run": "vitest typecheck --run",
+    "build": "vite build"
   },
-  "main": "./index.js",
-  "module": "./index.mjs",
-  "typings": "./index.d.ts"
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/dev-tools.cjs",
+  "module": "./dist/dev-tools.js",
+  "exports": {
+    ".": {
+      "import": "./dist/dev-tools.js",
+      "require": "./dist/dev-tools.cjs"
+    }
+  }
 }

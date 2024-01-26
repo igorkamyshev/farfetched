@@ -1,7 +1,6 @@
 /// <reference types='vitest' />
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-import * as path from 'path';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import vue from '@vitejs/plugin-vue';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
@@ -11,8 +10,9 @@ export default defineConfig({
     tsconfigPaths(),
     dts({
       entryRoot: 'src',
-      tsConfigFilePath: path.join(__dirname, 'tsconfig.lib.json'),
+      tsConfigFilePath: 'tsconfig.lib.json',
       skipDiagnostics: true,
+      rollupTypes: true,
     }),
     vue(),
     libInjectCss(),
@@ -21,8 +21,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: 'src/index.ts',
-      name: 'dev-tools',
-      fileName: 'index',
+      name: '@farfetched/dev-tools',
+      fileName: 'dev-tools',
       formats: ['es', 'cjs'],
     },
     rollupOptions: {
