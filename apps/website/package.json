@@ -4,5 +4,9 @@
     "prepare": "node ../../tools/scripts/changelog/cli.mjs",
     "dev": "pnpm prepare && vitepress dev docs",
     "build": "pnpm prepare && vitepress build docs"
+  },
+  "dependencies": {
+    "@farfetched/core": "workspace:*",
+    "@farfetched/runtypes": "workspace:*"
   }
 }

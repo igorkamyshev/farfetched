@@ -20,7 +20,7 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm run --filter website build
+      - run: pnpm run -r build
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
