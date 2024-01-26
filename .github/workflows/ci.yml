@@ -17,6 +17,7 @@ jobs:
       # - run: pnpm lint:format
       - run: pnpm run -r test:run
       - run: pnpm run -r typetest:run
+      - run: pnpm vitest run tools
       # - run: pnpm lint
   pkg:
     runs-on: ubuntu-latest

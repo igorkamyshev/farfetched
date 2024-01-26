@@ -4,8 +4,6 @@
   "license": "MIT",
   "packageManager": "pnpm@7.28.0",
   "scripts": {
-    "test:types": "nx run-many --target=typetest --all",
-    "test:tools": "vitest run tools",
     "lint": "nx run-many --target=lint --all",
     "lint:format": "nx format:check --all",
     "lint:changes": "changeset status",
