@@ -30,7 +30,7 @@ Continue reading about Farfetched in the [documentation](https://farfetched.page
   - run linter via `pnpm lint`
   - try to build it via `pnpm build`
   - format code via `pnpm format`
-- fill in changes via `pnpm changes`
+- fill in changes via `pnpm changeset`
 - open a PR
 - enjoy 🎉
 
