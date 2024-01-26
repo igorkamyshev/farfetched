@@ -40,3 +40,4 @@ Thumbs.db
 .nx
 
 **/dist
+**/.vitepress/cache/*
