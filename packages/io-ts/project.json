@@ -36,16 +36,6 @@
         }
       }
     },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/io-ts/**/*.ts",
-          "packages/io-ts/package.json"
-        ]
-      }
-    },
     "size": {
       "executor": "./tools/executors/size-limit:size-limit",
       "options": {

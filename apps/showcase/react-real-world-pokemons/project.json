@@ -16,15 +16,6 @@
         "buildTarget": "showcase-react-real-world-pokemons:build"
       }
     },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "apps/showcase/react-real-world-pokemons/**/*.{ts,tsx,js,jsx}"
-        ]
-      }
-    },
     "preview": {
       "executor": "@nx/vite:preview-server",
       "defaultConfiguration": "development",

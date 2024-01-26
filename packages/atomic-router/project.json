@@ -36,16 +36,6 @@
         }
       }
     },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/atomic-router/**/*.ts",
-          "packages/atomic-router/package.json"
-        ]
-      }
-    },
     "size": {
       "executor": "./tools/executors/size-limit:size-limit",
       "options": {

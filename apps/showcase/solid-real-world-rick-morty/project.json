@@ -17,15 +17,6 @@
         "buildTarget": "showcase-solid-real-world-rick-morty:build"
       }
     },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "apps/showcase/solid-real-world-rick-morty/**/*.{ts,tsx,js,jsx}"
-        ]
-      }
-    },
     "preview": {
       "executor": "@nx/vite:preview-server",
       "defaultConfiguration": "development",

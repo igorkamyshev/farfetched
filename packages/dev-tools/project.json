@@ -29,16 +29,6 @@
           "args": "--rename=canary"
         }
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/dev-tools/**/*.ts",
-          "packages/dev-tools/package.json"
-        ]
-      }
     }
   },
   "tags": []

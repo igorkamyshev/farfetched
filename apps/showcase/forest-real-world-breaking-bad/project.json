@@ -16,15 +16,6 @@
         "buildTarget": "showcase-forest-real-world-breaking-bad:build"
       }
     },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "apps/showcase/forest-real-world-breaking-bad/**/*.{ts,js}"
-        ]
-      }
-    },
     "preview": {
       "executor": "@nx/vite:preview-server",
       "defaultConfiguration": "development",
