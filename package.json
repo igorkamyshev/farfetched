@@ -5,7 +5,6 @@
   "packageManager": "pnpm@7.28.0",
   "scripts": {
     "lint": "nx run-many --target=lint --all",
-    "lint:changes": "changeset status",
     "build": "nx run-many --target=build --all",
     "format": "nx format:write --all",
     "size": "nx run-many --target=size --all",
