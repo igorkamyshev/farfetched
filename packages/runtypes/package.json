@@ -9,6 +9,7 @@
     "runtypes": "^6.6.0"
   },
   "scripts": {
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "typetest:run": "vitest typecheck --run"
   }
 }

@@ -6,7 +6,8 @@
     "zod": "^3.19"
   },
   "scripts": {
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "typetest:run": "vitest typecheck --run"
   },
   "type": "commonjs",
   "main": "./index.cjs",

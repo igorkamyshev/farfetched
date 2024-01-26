@@ -46,13 +46,6 @@
         ]
       }
     },
-    "typetest": {
-      "executor": "@nx/vite:test",
-
-      "options": {
-        "mode": "typecheck"
-      }
-    },
     "size": {
       "executor": "./tools/executors/size-limit:size-limit",
       "options": {
