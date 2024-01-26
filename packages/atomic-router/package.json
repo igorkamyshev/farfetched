@@ -9,7 +9,8 @@
   "scripts": {
     "test:run": "vitest run",
     "typetest:run": "vitest typecheck --run",
-    "build": "vite build"
+    "build": "vite build",
+    "size": "size-limit"
   },
   "type": "module",
   "files": [
@@ -22,5 +23,11 @@
       "import": "./dist/atomic-router.js",
       "require": "./dist/atomic-router.cjs"
     }
-  }
+  },
+  "size-limit": [
+    {
+      "path": "./dist/atomic-router.js",
+      "limit": "314 B"
+    }
+  ]
 }

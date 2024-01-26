@@ -44,7 +44,7 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm run -r build
-      - run: pnpm size
+      - run: pnpm run -r size
       - name: Validate typings of all packages
         id: typelint
         run: echo "result<<EOF"$'\n'"$(pnpm node ./tools/scripts/typelint.mjs)"$'\n'EOF >> $GITHUB_OUTPUT

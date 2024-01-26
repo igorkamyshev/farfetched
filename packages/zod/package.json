@@ -8,7 +8,8 @@
   "scripts": {
     "test:run": "vitest run",
     "typetest:run": "vitest typecheck --run",
-    "build": "vite build"
+    "build": "vite build",
+    "size": "size-limit"
   },
   "type": "module",
   "files": [
@@ -21,5 +22,11 @@
       "import": "./dist/zod.js",
       "require": "./dist/zod.cjs"
     }
-  }
+  },
+  "size-limit": [
+    {
+      "path": "./dist/zod.js",
+      "limit": "231 B"
+    }
+  ]
 }

@@ -9,7 +9,8 @@
   "scripts": {
     "test:run": "vitest run",
     "typetest:run": "vitest typecheck --run",
-    "build": "vite build"
+    "build": "vite build",
+    "size": "size-limit"
   },
   "type": "module",
   "files": [
@@ -22,5 +23,11 @@
       "import": "./dist/io-ts.js",
       "require": "./dist/io-ts.cjs"
     }
-  }
+  },
+  "size-limit": [
+    {
+      "path": "./dist/io-ts.js",
+      "limit": "174 B"
+    }
+  ]
 }

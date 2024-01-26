@@ -15,14 +15,6 @@
           "args": "--rename=canary"
         }
       }
-    },
-    "size": {
-      "executor": "./tools/executors/size-limit:size-limit",
-      "options": {
-        "limit": "0.6 kB",
-        "outputPath": "dist/packages/atomic-router"
-      },
-      "dependsOn": ["build"]
     }
   },
   "tags": []

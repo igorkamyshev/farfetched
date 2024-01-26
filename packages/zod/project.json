@@ -15,14 +15,6 @@
           "args": "--rename=canary"
         }
       }
-    },
-    "size": {
-      "executor": "./tools/executors/size-limit:size-limit",
-      "options": {
-        "limit": "0.4 kB",
-        "outputPath": "dist/packages/zod"
-      },
-      "dependsOn": ["build"]
     }
   },
   "tags": []
