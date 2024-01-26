@@ -4,26 +4,6 @@
   "sourceRoot": "packages/io-ts/src",
   "projectType": "library",
   "targets": {
-    "pack": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node tools/scripts/typepack.mjs --package io-ts"
-      },
-      "dependsOn": ["build"]
-    },
-    "build": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/packages/io-ts",
-        "main": "packages/io-ts/src/index.ts",
-        "tsConfig": "packages/io-ts/tsconfig.lib.json",
-        "assets": [],
-        "project": "packages/io-ts/package.json",
-        "compiler": "swc",
-        "format": ["cjs", "esm"]
-      }
-    },
     "publish": {
       "executor": "nx:run-commands",
       "options": {
