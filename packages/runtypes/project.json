@@ -46,14 +46,6 @@
         ]
       }
     },
-    "test": {
-      "executor": "@nx/vite:test",
-      "outputs": ["{options.reportsDirectory}"],
-      "options": {
-        "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/packages/runtypes"
-      }
-    },
     "typetest": {
       "executor": "@nx/vite:test",
       "outputs": ["{options.reportsDirectory}"],

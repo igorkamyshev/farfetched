@@ -1,19 +1,12 @@
 import { defineConfig } from 'vite';
-
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import tsconfigPaths from 'vite-tsconfig-paths';
 import solidPlugin from 'vite-plugin-solid';
 
 export default defineConfig({
-  cacheDir: '../../node_modules/.vite/solid',
-
-  plugins: [nxViteTsPaths(), solidPlugin()],
-
+  plugins: [tsconfigPaths(), solidPlugin()],
   test: {
     globals: true,
     setupFiles: './test.setup.ts',
-    cache: { dir: '../../node_modules/.vitest' },
-    environment: 'node',
-    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
   },
   resolve: {
     conditions: ['browser'],

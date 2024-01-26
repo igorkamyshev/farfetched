@@ -6,6 +6,9 @@
     "effector-solid": "^0.23.0",
     "solid-js": "^1.4.7"
   },
+  "scripts": {
+    "test:run": "vitest run"
+  },
   "type": "commonjs",
   "main": "./index.cjs",
   "module": "./index.js"

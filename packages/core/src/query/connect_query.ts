@@ -124,7 +124,6 @@ export function connectQuery<Sources, Target extends Query<any, any, any, any>>(
       params: $allParentParamsDictionary,
     },
     filter({ data, params }) {
-      console.log({ data, params });
       return (
         filterFn?.(
           singleParentMode

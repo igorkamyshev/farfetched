@@ -2,15 +2,13 @@
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import * as path from 'path';
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import tsconfigPaths from 'vite-tsconfig-paths';
 import vue from '@vitejs/plugin-vue';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 
 export default defineConfig({
-  cacheDir: '../../node_modules/.vite/dev-tools',
-
   plugins: [
-    nxViteTsPaths(),
+    tsconfigPaths(),
     dts({
       entryRoot: 'src',
       tsConfigFilePath: path.join(__dirname, 'tsconfig.lib.json'),
@@ -33,11 +31,6 @@ export default defineConfig({
   },
 
   test: {
-    globals: true,
-    cache: {
-      dir: '../../node_modules/.vitest',
-    },
-    environment: 'node',
-    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    passWithNoTests: true,
   },
 });

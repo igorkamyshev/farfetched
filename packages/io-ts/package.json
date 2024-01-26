@@ -6,6 +6,9 @@
     "io-ts": "^2.2.20",
     "fp-ts": "^2.13.1"
   },
+  "scripts": {
+    "test:run": "vitest run"
+  },
   "type": "commonjs",
   "main": "./index.cjs",
   "module": "./index.js"
