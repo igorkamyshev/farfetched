@@ -15,12 +15,12 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/runtypes.cjs",
-  "module": "./dist/runtypes.js",
+  "main": "./dist/solid.cjs",
+  "module": "./dist/solid.js",
   "exports": {
     ".": {
-      "import": "./dist/runtypes.js",
-      "require": "./dist/runtypes.cjs"
+      "import": "./dist/solid.js",
+      "require": "./dist/solid.cjs"
     }
   }
 }
