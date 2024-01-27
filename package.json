@@ -25,7 +25,6 @@
     "node-html-markdown": "^1.2.0",
     "prettier": "^2.6.2",
     "publint": "^0.2.6",
-    "rollup": "^3.4.0",
     "semver-parser": "^4.0.1",
     "size-limit": "^7.0.8",
     "solid-testing-library": "^0.3.0",

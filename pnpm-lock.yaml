@@ -44,7 +44,6 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0
       react-router-dom: ^6.4.2
-      rollup: ^3.4.0
       runtypes: ^6.5.1
       sandpack-vue3: ^3.1.9
       semver-parser: ^4.0.1
@@ -106,14 +105,13 @@ importers:
       node-html-markdown: 1.2.0
       prettier: 2.7.1
       publint: 0.2.6
-      rollup: 3.4.0
       semver-parser: 4.0.1
       size-limit: 7.0.8
       solid-testing-library: 0.3.0_solid-js@1.5.9
       superstruct: 1.0.3
       typescript: 5.2.2
       vite: 4.5.0_@types+node@18.7.14
-      vite-plugin-dts: 2.3.0_5nq2f736a4xq2cj5m7eqt7izqq
+      vite-plugin-dts: 2.3.0_e4nkblrkd6lw5ravge7cyvc3km
       vite-plugin-lib-inject-css: 1.3.0_vite@4.5.0
       vite-plugin-solid: 2.5.0_solid-js@1.5.9+vite@4.5.0
       vite-tsconfig-paths: 4.2.1_cnaluuumdmttzz4zpr3jp6tchm
@@ -1827,7 +1825,7 @@ packages:
     engines: {node: '>=14'}
     dev: false
 
-  /@rollup/pluginutils/5.1.0_rollup@3.4.0:
+  /@rollup/pluginutils/5.1.0:
     resolution: {integrity: sha512-XTIWOPPcpvyKI6L1NHo0lFlCyznUEyPmPY1mc3KpPVDYulHSTvyeLNVW00QTLIAFNhR3kYnJTQHeGqU4M3n09g==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -1839,7 +1837,6 @@ packages:
       '@types/estree': 1.0.5
       estree-walker: 2.0.2
       picomatch: 2.3.1
-      rollup: 3.4.0
     dev: true
 
   /@rushstack/node-core-library/3.62.0_@types+node@18.7.14:
@@ -5523,14 +5520,6 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /rollup/3.4.0:
-    resolution: {integrity: sha512-4g8ZrEFK7UbDvy3JF+d5bLiC8UKkS3n/27/cnVeESwB1LVPl6MoPL32/6+SCQ1vHTp6Mvp2veIHtwELhi+uXEw==}
-    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
-    hasBin: true
-    optionalDependencies:
-      fsevents: 2.3.2
-    dev: true
-
   /rrweb-cssom/0.6.0:
     resolution: {integrity: sha512-APM0Gt1KoXBz0iIkkdB/kfvGOwC4UuJFeG/c+yV7wSc7q96cG/kJ0HiYCnzivD9SB53cLV1MlHFNfOuPaadYSw==}
     dev: true
@@ -6237,7 +6226,7 @@ packages:
       - terser
     dev: true
 
-  /vite-plugin-dts/2.3.0_5nq2f736a4xq2cj5m7eqt7izqq:
+  /vite-plugin-dts/2.3.0_e4nkblrkd6lw5ravge7cyvc3km:
     resolution: {integrity: sha512-WbJgGtsStgQhdm3EosYmIdTGbag5YQpZ3HXWUAPCDyoXI5qN6EY0V7NXq0lAmnv9hVQsvh0htbYcg0Or5Db9JQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -6245,7 +6234,7 @@ packages:
     dependencies:
       '@babel/parser': 7.23.4
       '@microsoft/api-extractor': 7.38.5_@types+node@18.7.14
-      '@rollup/pluginutils': 5.1.0_rollup@3.4.0
+      '@rollup/pluginutils': 5.1.0
       '@rushstack/node-core-library': 3.62.0_@types+node@18.7.14
       debug: 4.3.4
       fast-glob: 3.3.2
