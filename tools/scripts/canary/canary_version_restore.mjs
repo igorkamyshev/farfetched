@@ -58,10 +58,6 @@ if (latestCanaryVerison) {
     const nextPackageJson = {
       ...originalPackageJson,
       version: latestCanaryVerison,
-      name: originalPackageJson.name.replace(
-        '@farfetched',
-        '@farfetched-canary'
-      ),
     };
 
     await writeFile(packageJsonPath, JSON.stringify(nextPackageJson));
