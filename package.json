@@ -1,5 +1,9 @@
 {
   "packageManager": "pnpm@7.28.0",
+  "scripts": {
+    "format:check": "pnpm prettier {packages,apps}/**/*.{ts,tsx,md,vue} --check",
+    "format:apply": "pnpm prettier {packages,apps}/**/*.{ts,tsx,md,vue} --write"
+  },
   "devDependencies": {
     "@algolia/client-search": "^4.14.2",
     "@arethetypeswrong/cli": "^0.13.3",
