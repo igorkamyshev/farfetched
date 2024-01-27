@@ -6,7 +6,7 @@ export async function getPckagesInfo() {
 
   console.log(`Canary name is ${branch}`);
 
-  const PACKAGES_PATH = '../../packages';
+  const PACKAGES_PATH = '../../../packages';
 
   const inDirList = await readdir(PACKAGES_PATH);
 
