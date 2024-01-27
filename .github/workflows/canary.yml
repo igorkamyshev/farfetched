@@ -42,7 +42,7 @@ jobs:
         run: node ./tools/scripts/canary/canary_name_change.mjs
       - name: Publish canary release
         if: steps.canary_required.outputs.skipCanary == ''
-        run: pnpm -r publish --dry-run --no-git-checks
+        run: pnpm -r publish --no-git-checks
       - name: Retrieve information about latest canary release
         id: canary_info
         run: node ./tools/scripts/canary/canary_info.mjs >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
