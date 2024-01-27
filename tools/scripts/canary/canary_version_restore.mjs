@@ -2,13 +2,13 @@ import { execSync } from 'node:child_process';
 import { readFile, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
 
-import { getPckagesInfo } from '../shared/packages.mjs';
+import { getPackagesInfo } from '../shared/packages.mjs';
 
 const [, , branch] = process.argv;
 
 console.log(`Canary name is ${branch}`);
 
-const packages = await getPckagesInfo();
+const packages = await getPackagesInfo();
 
 const canaryNames = packages.map(({ name }) => `@farfetched-canary/${name}`);
 
@@ -58,6 +58,10 @@ if (latestCanaryVerison) {
     const nextPackageJson = {
       ...originalPackageJson,
       version: latestCanaryVerison,
+      name: originalPackageJson.name.replace(
+        '@farfetched',
+        '@farfetched-canary'
+      ),
     };
 
     await writeFile(packageJsonPath, JSON.stringify(nextPackageJson));

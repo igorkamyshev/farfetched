@@ -1,9 +1,9 @@
 import { join } from 'node:path';
 import { readFile } from 'node:fs/promises';
 
-import { getPckagesInfo } from '../shared/packages.mjs';
+import { getPackagesInfo } from '../shared/packages.mjs';
 
-const packages = await getPckagesInfo();
+const packages = await getPackagesInfo();
 
 const { root } = packages.at(0);
 const packageJsonPath = join(process.cwd(), root, 'package.json');

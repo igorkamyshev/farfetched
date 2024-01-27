@@ -1,7 +1,15 @@
 {
   "name": "@farfetched/solid",
   "version": "0.11.2",
-  "dependencies": {},
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/igorkamyshev/farfetched",
+  "devDependencies": {
+    "effector-solid": "^0.23.0",
+    "solid-js": "^1.4.7"
+  },
   "peerDependencies": {
     "effector-solid": "^0.23.0",
     "solid-js": "^1.4.7"

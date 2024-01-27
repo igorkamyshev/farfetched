@@ -1,6 +1,16 @@
 {
   "name": "@farfetched/io-ts",
   "version": "0.11.2",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/igorkamyshev/farfetched",
+  "devDependencies": {
+    "io-ts": "^2.2.20",
+    "fp-ts": "^2.13.1",
+    "@farfetched/core": "workspace:*"
+  },
   "peerDependencies": {
     "io-ts": "^2.2.20",
     "fp-ts": "^2.13.1",

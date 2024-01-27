@@ -1,7 +1,4 @@
 {
-  "name": "farfetched",
-  "version": "0.0.0",
-  "license": "MIT",
   "packageManager": "pnpm@7.28.0",
   "devDependencies": {
     "@algolia/client-search": "^4.14.2",

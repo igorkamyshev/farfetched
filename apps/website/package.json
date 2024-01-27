@@ -7,9 +7,5 @@
     "dev": "pnpm prepare && vitepress dev docs",
     "build": "pnpm prepare && vitepress build docs",
     "test:run": "vitest run"
-  },
-  "dependencies": {
-    "@farfetched/core": "workspace:*",
-    "@farfetched/runtypes": "workspace:*"
   }
 }

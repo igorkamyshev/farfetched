@@ -40,7 +40,7 @@ jobs:
         run: node ./tools/scripts/canary/canary_required.mjs """${{ steps.find_comment.outputs.comment-body }}""" >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
       - name: Publish canary release
         if: steps.canary_required.outputs.skipCanary == ''
-        run: pnpm nx run-many --output-style=static --target=publish --all --configuration=canary
+        run: pnpm -r publish --dry-run --no-git-checks
       - name: Retrieve information about latest canary release
         id: canary_info
         run: node ./tools/scripts/canary/canary_info.mjs >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT

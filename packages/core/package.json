@@ -1,6 +1,14 @@
 {
   "name": "@farfetched/core",
   "version": "0.11.2",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/igorkamyshev/farfetched",
+  "devDependencies": {
+    "effector": "^23.0.0"
+  },
   "peerDependencies": {
     "effector": "^23.0.0"
   },

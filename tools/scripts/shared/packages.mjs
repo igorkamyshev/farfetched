@@ -1,7 +1,7 @@
 import { readFile, readdir, stat } from 'node:fs/promises';
 import * as path from 'node:path';
 
-export async function getPckagesInfo() {
+export async function getPackagesInfo() {
   const [, , branch] = process.argv;
 
   console.log(`Canary name is ${branch}`);
