@@ -2,7 +2,7 @@ lockfileVersion: 5.4
 
 patchedDependencies:
   '@changesets/assemble-release-plan@6.0.0':
-    hash: 4cxtn3kffelrs2zyuacphfbska
+    hash: jdqth67xtsf45pbu7rygkwiw64
     path: patches/@changesets__assemble-release-plan@6.0.0.patch
 
 importers:
@@ -952,7 +952,7 @@ packages:
       semver: 7.5.4
     dev: true
 
-  /@changesets/assemble-release-plan/6.0.0_4cxtn3kffelrs2zyuacphfbska:
+  /@changesets/assemble-release-plan/6.0.0_jdqth67xtsf45pbu7rygkwiw64:
     resolution: {integrity: sha512-4QG7NuisAjisbW4hkLCmGW2lRYdPrKzro+fCtZaILX+3zdUELSvYjpL4GTv0E4aM9Mef3PuIQp89VmHJ4y2bfw==}
     dependencies:
       '@babel/runtime': 7.23.9
@@ -976,7 +976,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.23.9
       '@changesets/apply-release-plan': 7.0.0
-      '@changesets/assemble-release-plan': 6.0.0_4cxtn3kffelrs2zyuacphfbska
+      '@changesets/assemble-release-plan': 6.0.0_jdqth67xtsf45pbu7rygkwiw64
       '@changesets/changelog-git': 0.2.0
       '@changesets/config': 3.0.0
       '@changesets/errors': 0.2.0
@@ -1040,7 +1040,7 @@ packages:
     resolution: {integrity: sha512-9L9xCUeD/Tb6L/oKmpm8nyzsOzhdNBBbt/ZNcjynbHC07WW4E1eX8NMGC5g5SbM5z/V+MOrYsJ4lRW41GCbg3w==}
     dependencies:
       '@babel/runtime': 7.23.9
-      '@changesets/assemble-release-plan': 6.0.0_4cxtn3kffelrs2zyuacphfbska
+      '@changesets/assemble-release-plan': 6.0.0_jdqth67xtsf45pbu7rygkwiw64
       '@changesets/config': 3.0.0
       '@changesets/pre': 2.0.0
       '@changesets/read': 0.6.0
