@@ -6,7 +6,7 @@ export async function getPckagesInfo() {
 
   console.log(`Canary name is ${branch}`);
 
-  const PACKAGES_PATH = '../../../packages';
+  const PACKAGES_PATH = 'packages';
 
   const inDirList = await readdir(PACKAGES_PATH);
 
@@ -14,7 +14,7 @@ export async function getPckagesInfo() {
 
   await Promise.all(
     inDirList.map(async (dir) => {
-      const stats = await stat(`${PACKAGES_PATH}/${dir}`);
+      const stats = await stat(path.join(PACKAGES_PATH, dir));
       if (!stats.isDirectory()) {
         return;
       }
@@ -25,9 +25,11 @@ export async function getPckagesInfo() {
       ).then(JSON.parse);
 
       packages.push({
-        name: packageJson.name,
+        name: packageJson.name.replace('@farfetched/', ''),
         root: path.join(PACKAGES_PATH, dir),
       });
     })
   );
+
+  return packages;
 }
