@@ -12,7 +12,8 @@
   "scripts": {
     "test:run": "vitest run",
     "typetest:run": "vitest typecheck --run",
-    "build": "vite build"
+    "build": "vite build",
+    "publint": "node ../../tools/scripts/publint.mjs"
   },
   "type": "module",
   "files": [
