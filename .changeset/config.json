@@ -1,9 +1,10 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@2.1.0/schema.json",
   "changelog": "@changesets/cli/changelog",
-  "commit": false,
+  "commit": "../tools/utils/commit_message.js",
   "fixed": [["@farfetched/*"]],
   "linked": [],
+  "ignore": ["website"],
   "access": "public",
   "baseBranch": "origin/master",
   "updateInternalDependencies": "patch",
