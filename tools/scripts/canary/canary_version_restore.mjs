@@ -1,25 +1,14 @@
 import { execSync } from 'node:child_process';
-import { join } from 'node:path';
-import { createRequire } from 'node:module';
+import { readFile, writeFile } from 'node:fs/promises';
+import * as path from 'node:path';
 
-const require = createRequire(import.meta.url);
-
-const {
-  createProjectGraphAsync,
-  logger,
-  readJsonFile,
-  writeJsonFile,
-} = require('@nx/devkit');
+import { getPckagesInfo } from '../shared/packages.mjs';
 
 const [, , branch] = process.argv;
 
-logger.info(`Canary name is ${branch}`);
+console.log(`Canary name is ${branch}`);
 
-const graph = await createProjectGraphAsync();
-
-const packages = Object.entries(graph.nodes)
-  .filter(([_name, { type, data }]) => type === 'lib' && data.targets.publish)
-  .map(([name, { data }]) => ({ name, root: data.root }));
+const packages = await getPckagesInfo();
 
 const canaryNames = packages.map(({ name }) => `@farfetched-canary/${name}`);
 
@@ -38,7 +27,7 @@ const canaryVersions = new Set(
     .filter((version) => version.includes(`-${branch}.`))
 );
 
-logger.info(
+console.log(
   `Found canary versions: ${JSON.stringify(Array.from(canaryVersions))}`
 );
 
@@ -57,24 +46,26 @@ for (const canaryVersion of canaryVersions.values()) {
 }
 
 if (latestCanaryVerison) {
-  logger.info(`Latest canary version: ${latestCanaryVerison}`);
+  console.log(`Latest canary version: ${latestCanaryVerison}`);
 
   for (const { root } of packages) {
-    const packageJsonPath = join(process.cwd(), root, 'package.json');
+    const packageJsonPath = path.join(process.cwd(), root, 'package.json');
 
-    const originalPackageJson = readJsonFile(packageJsonPath);
+    const originalPackageJson = await readFile(packageJsonPath, 'utf-8').then(
+      JSON.parse
+    );
 
     const nextPackageJson = {
       ...originalPackageJson,
       version: latestCanaryVerison,
     };
 
-    writeJsonFile(packageJsonPath, nextPackageJson);
+    await writeFile(packageJsonPath, JSON.stringify(nextPackageJson));
 
-    logger.info(
+    console.log(
       `Updated ${packageJsonPath} with version: ${nextPackageJson.version}`
     );
   }
 } else {
-  logger.info(`No canary versions found`);
+  console.log(`No canary versions found`);
 }

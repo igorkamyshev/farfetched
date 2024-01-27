@@ -1,23 +1,24 @@
-import { createRequire } from 'node:module';
-
-const require = createRequire(import.meta.url);
-
-const { writeJsonFile, readJsonFile } = require('@nx/devkit');
+import { readFile, writeFile } from 'node:fs/promises';
 
 export async function renameForCanary() {
-  const originalPackageJson = readJsonFile('package.json');
+  const originalPackageJson = await readFile('package.json', 'utf-8').then(
+    JSON.parse
+  );
 
-  writeJsonFile('package.json', {
-    ...originalPackageJson,
-    name: adjustPackageName(originalPackageJson.name),
-    peerDependencies: mapValues(
-      originalPackageJson.peerDependencies ?? {},
-      (version, name) =>
-        name.includes('@farfetched')
-          ? `npm:${adjustPackageName(name)}@${version}`
-          : version
-    ),
-  });
+  await writeFile(
+    'package.json',
+    JSON.stringify({
+      ...originalPackageJson,
+      name: adjustPackageName(originalPackageJson.name),
+      peerDependencies: mapValues(
+        originalPackageJson.peerDependencies ?? {},
+        (version, name) =>
+          name.includes('@farfetched')
+            ? `npm:${adjustPackageName(name)}@${version}`
+            : version
+      ),
+    })
+  );
 }
 
 // utils

@@ -1,24 +1,22 @@
 import { join } from 'node:path';
-import { createRequire } from 'node:module';
+import { readFile } from 'node:fs/promises';
 
-const require = createRequire(import.meta.url);
+import { getPckagesInfo } from '../shared/packages.mjs';
 
-const { createProjectGraphAsync, logger, readJsonFile } = require('@nx/devkit');
-
-const graph = await createProjectGraphAsync();
-
-const packages = Object.entries(graph.nodes)
-  .filter(([_name, { type, data }]) => type === 'lib' && data.targets.publish)
-  .map(([name, { data }]) => ({ name, root: data.root }));
+const packages = await getPckagesInfo();
 
 const { root } = packages.at(0);
 const packageJsonPath = join(process.cwd(), root, 'package.json');
 
-const canaryVersion = readJsonFile(packageJsonPath).version;
+const { version: canaryVersion } = await readFile(
+  packageJsonPath,
+  'utf-8'
+).then(JONS.parse);
 
-const usedChangesets = readJsonFile(
-  join(process.cwd(), '.changeset', 'pre.json')
-).changesets;
+const { changesets: usedChangesets } = await readFile(
+  join(process.cwd(), '.changeset', 'pre.json'),
+  'utf-8'
+).then(JSON.parse);
 
-logger.log(`canaryVersion="${canaryVersion}"`);
-logger.log(`usedChangesets="${JSON.stringify(usedChangesets)}"`);
+console.log(`canaryVersion="${canaryVersion}"`);
+console.log(`usedChangesets="${JSON.stringify(usedChangesets)}"`);
