@@ -1,6 +1,6 @@
 <script setup>
-import coreRaw from '../../../../../dist/packages/core?raw';
-import runtypesRaw from '../../../../../dist/packages/runtypes?raw';
+import coreRaw from '../../../../../packages/core/dist/core.js?raw';
+import runtypesRaw from '../../../../../packages/runtypes/dist/runtypes.js?raw';
 import { Sandpack } from 'sandpack-vue3';
 
 const props = defineProps(['demoFile']);

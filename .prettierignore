@@ -3,5 +3,4 @@
 /dist
 /coverage
 pnpm-lock.yaml
-/.nx/cache
 apps/website/docs/.vitepress/cache/

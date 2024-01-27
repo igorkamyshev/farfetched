@@ -1,16 +1,19 @@
 import { defineConfig } from 'vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import dts from '../../tools/vite/types';
 
 export default defineConfig({
-  cacheDir: '../../node_modules/.vite/superstruct',
-
-  plugins: [nxViteTsPaths()],
-
-  test: {
-    globals: true,
-    cache: { dir: '../../node_modules/.vitest' },
-    environment: 'node',
-    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+  plugins: [tsconfigPaths(), dts()],
+  build: {
+    lib: {
+      entry: 'src/index.ts',
+      name: '@farfetched/superstruct',
+      fileName: 'superstruct',
+      formats: ['es', 'cjs'],
+    },
+    rollupOptions: {
+      external: ['superstruct'],
+    },
   },
 });

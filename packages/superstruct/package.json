@@ -1,11 +1,50 @@
 {
   "name": "@farfetched/superstruct",
   "version": "0.11.2",
-  "dependencies": {},
-  "peerDependencies": {
-    "superstruct": "^1.0.3"
+  "publishConfig": {
+    "access": "public"
   },
-  "type": "commonjs",
-  "main": "./index.cjs",
-  "module": "./index.js"
+  "license": "MIT",
+  "repository": "https://github.com/igorkamyshev/farfetched",
+  "devDependencies": {
+    "superstruct": "^1.0.3",
+    "@farfetched/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "superstruct": "^1.0.3",
+    "@farfetched/core": "workspace:*"
+  },
+  "scripts": {
+    "test:run": "vitest run",
+    "typetest:run": "vitest typecheck --run",
+    "build": "vite build",
+    "size": "size-limit",
+    "publint": "node ../../tools/scripts/publint.mjs",
+    "typelint": "attw --pack"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/superstruct.cjs",
+  "module": "./dist/superstruct.js",
+  "types": "./dist/superstruct.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/superstruct.d.ts",
+        "default": "./dist/superstruct.js"
+      },
+      "require": {
+        "types": "./dist/superstruct.d.cts",
+        "default": "./dist/superstruct.cjs"
+      }
+    }
+  },
+  "size-limit": [
+    {
+      "path": "./dist/superstruct.js",
+      "limit": "233 B"
+    }
+  ]
 }
