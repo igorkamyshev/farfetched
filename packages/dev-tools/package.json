@@ -13,7 +13,8 @@
     "test:run": "vitest run",
     "typetest:run": "vitest typecheck --run",
     "build": "vite build",
-    "publint": "node ../../tools/scripts/publint.mjs"
+    "publint": "node ../../tools/scripts/publint.mjs",
+    "typelint": "attw --pack"
   },
   "type": "module",
   "files": [
