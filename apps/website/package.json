@@ -1,5 +1,7 @@
 {
   "name": "website",
+  "private": true,
+  "version": "0.0.1-433.0",
   "scripts": {
     "prepare": "node changelog/cli.mjs",
     "dev": "pnpm prepare && vitepress dev docs",
