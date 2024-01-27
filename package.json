@@ -3,7 +3,7 @@
   "devDependencies": {
     "@algolia/client-search": "^4.14.2",
     "@arethetypeswrong/cli": "^0.13.3",
-    "@changesets/cli": "^2.24.1",
+    "@changesets/cli": "^2.27.1",
     "@octokit/rest": "^19.0.7",
     "@size-limit/file": "^7.0.8",
     "@testing-library/jest-dom": "^5.16.5",
@@ -57,5 +57,10 @@
     "solid-js": "1.5",
     "typed-contracts": "^3.0.0",
     "zod": "^3.19.1"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@changesets/assemble-release-plan@6.0.0": "patches/@changesets__assemble-release-plan@6.0.0.patch"
+    }
   }
 }
