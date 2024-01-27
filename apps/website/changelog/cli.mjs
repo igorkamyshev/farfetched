@@ -10,7 +10,7 @@ import { resolve } from 'node:path';
 import { groupByVersions } from './lib.mjs';
 
 const files = await promisify(glob)(
-  '{packages,deleted_packages}/*/CHANGELOG.md',
+  '../../{packages,deleted_packages}/*/CHANGELOG.md',
   {
     absolute: true,
   }
@@ -28,10 +28,7 @@ for (const [release, changelog] of mergeChangelogs(changelogs).entries()) {
   const md = renderChangelog(changelog);
 
   const releaseFile = release.replaceAll('.', '-');
-  const filePath = resolve(
-    'apps/website/docs/releases',
-    `${releaseFile}.changelog.md`
-  );
+  const filePath = resolve('docs/releases', `${releaseFile}.changelog.md`);
 
   await writeFile(filePath, md);
 }

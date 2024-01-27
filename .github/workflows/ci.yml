@@ -17,7 +17,6 @@ jobs:
       - run: pnpm prettier {packages,apps}/**/*.{ts,tsx} --check
       - run: pnpm run -r test:run
       - run: pnpm run -r typetest:run
-      - run: pnpm vitest run tools
   pkg:
     runs-on: ubuntu-latest
 

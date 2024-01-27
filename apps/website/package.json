@@ -1,9 +1,10 @@
 {
   "name": "website",
   "scripts": {
-    "prepare": "node ../../tools/scripts/changelog/cli.mjs",
+    "prepare": "node changelog/cli.mjs",
     "dev": "pnpm prepare && vitepress dev docs",
-    "build": "pnpm prepare && vitepress build docs"
+    "build": "pnpm prepare && vitepress build docs",
+    "test:run": "vitest run"
   },
   "dependencies": {
     "@farfetched/core": "workspace:*",
