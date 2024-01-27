@@ -11,7 +11,7 @@ const packageJsonPath = join(process.cwd(), root, 'package.json');
 const { version: canaryVersion } = await readFile(
   packageJsonPath,
   'utf-8'
-).then(JONS.parse);
+).then(JSON.parse);
 
 const { changesets: usedChangesets } = await readFile(
   join(process.cwd(), '.changeset', 'pre.json'),
