@@ -19,7 +19,7 @@ for (const pkg of packages) {
       originalPackageJson.peerDependencies ?? {},
       (version, name) =>
         name.includes('@farfetched')
-          ? `npm:${adjustPackageName(name)}@${version}`
+          ? `npm:${adjustPackageName(name)}@${originalPackageJson.version}`
           : version
     ),
   };
