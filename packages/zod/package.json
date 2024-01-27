@@ -17,10 +17,17 @@
   ],
   "main": "./dist/zod.cjs",
   "module": "./dist/zod.js",
+  "types": "./dist/zod.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/zod.js",
-      "require": "./dist/zod.cjs"
+      "import": {
+        "types": "./dist/zod.d.ts",
+        "default": "./dist/zod.js"
+      },
+      "require": {
+        "types": "./dist/zod.d.cts",
+        "default": "./dist/zod.cjs"
+      }
     }
   },
   "size-limit": [

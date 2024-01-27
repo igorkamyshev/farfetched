@@ -18,10 +18,17 @@
   ],
   "main": "./dist/io-ts.cjs",
   "module": "./dist/io-ts.js",
+  "types": "./dist/io-ts.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/io-ts.js",
-      "require": "./dist/io-ts.cjs"
+      "import": {
+        "types": "./dist/io-ts.d.ts",
+        "default": "./dist/io-ts.js"
+      },
+      "require": {
+        "types": "./dist/io-ts.d.cts",
+        "default": "./dist/io-ts.cjs"
+      }
     }
   },
   "size-limit": [

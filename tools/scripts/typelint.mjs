@@ -10,8 +10,6 @@ for (const pkg of packages) {
 
   const inputDir = path.join('packages', pkg);
 
-  console.log(`Linting ${pkg}...`);
-
   spawnSync('attw', ['--pack', inputDir, '--format', 'ascii'], {
     stdio: 'inherit',
   });

@@ -1,22 +1,13 @@
 /// <reference types='vitest' />
 import { defineConfig } from 'vite';
-import dts from 'vite-plugin-dts';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import vue from '@vitejs/plugin-vue';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 
+import dts from '../../tools/vite/types';
+
 export default defineConfig({
-  plugins: [
-    tsconfigPaths(),
-    dts({
-      entryRoot: 'src',
-      tsConfigFilePath: 'tsconfig.lib.json',
-      skipDiagnostics: true,
-      rollupTypes: true,
-    }),
-    vue(),
-    libInjectCss(),
-  ],
+  plugins: [tsconfigPaths(), dts(), vue(), libInjectCss()],
 
   build: {
     lib: {

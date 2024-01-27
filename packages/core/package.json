@@ -16,10 +16,17 @@
   ],
   "main": "./dist/core.cjs",
   "module": "./dist/core.js",
+  "types": "./dist/core.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/core.js",
-      "require": "./dist/core.cjs"
+      "import": {
+        "types": "./dist/core.d.ts",
+        "default": "./dist/core.js"
+      },
+      "require": {
+        "types": "./dist/core.d.cts",
+        "default": "./dist/core.cjs"
+      }
     }
   },
   "size-limit": [

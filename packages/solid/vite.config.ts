@@ -1,19 +1,11 @@
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import solidPlugin from 'vite-plugin-solid';
-import dts from 'vite-plugin-dts';
+
+import dts from '../../tools/vite/types';
 
 export default defineConfig({
-  plugins: [
-    tsconfigPaths(),
-    solidPlugin(),
-    dts({
-      entryRoot: 'src',
-      tsConfigFilePath: 'tsconfig.lib.json',
-      skipDiagnostics: true,
-      rollupTypes: true,
-    }),
-  ],
+  plugins: [tsconfigPaths(), solidPlugin(), dts()],
   test: {
     globals: true,
     setupFiles: './test.setup.ts',

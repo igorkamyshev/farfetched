@@ -18,10 +18,17 @@
   ],
   "main": "./dist/solid.cjs",
   "module": "./dist/solid.js",
+  "types": "./dist/solid.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/solid.js",
-      "require": "./dist/solid.cjs"
+      "import": {
+        "types": "./dist/solid.d.ts",
+        "default": "./dist/solid.js"
+      },
+      "require": {
+        "types": "./dist/solid.d.cts",
+        "default": "./dist/solid.cjs"
+      }
     }
   },
   "size-limit": [

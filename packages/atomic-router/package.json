@@ -18,10 +18,17 @@
   ],
   "main": "./dist/atomic-router.cjs",
   "module": "./dist/atomic-router.js",
+  "types": "./dist/atomic-router.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/atomic-router.js",
-      "require": "./dist/atomic-router.cjs"
+      "import": {
+        "types": "./dist/atomic-router.d.ts",
+        "default": "./dist/atomic-router.js"
+      },
+      "require": {
+        "types": "./dist/atomic-router.d.cts",
+        "default": "./dist/atomic-router.cjs"
+      }
     }
   },
   "size-limit": [

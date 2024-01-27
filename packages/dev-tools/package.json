@@ -20,10 +20,17 @@
   ],
   "main": "./dist/dev-tools.cjs",
   "module": "./dist/dev-tools.js",
+  "types": "./dist/dev-tools.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/dev-tools.js",
-      "require": "./dist/dev-tools.cjs"
+      "import": {
+        "types": "./dist/dev-tools.d.ts",
+        "default": "./dist/dev-tools.js"
+      },
+      "require": {
+        "types": "./dist/dev-tools.d.cts",
+        "default": "./dist/dev-tools.cjs"
+      }
     }
   }
 }

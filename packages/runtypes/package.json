@@ -17,10 +17,17 @@
   ],
   "main": "./dist/runtypes.cjs",
   "module": "./dist/runtypes.js",
+  "types": "./dist/runtypes.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/runtypes.js",
-      "require": "./dist/runtypes.cjs"
+      "import": {
+        "types": "./dist/runtypes.d.ts",
+        "default": "./dist/runtypes.js"
+      },
+      "require": {
+        "types": "./dist/runtypes.d.cts",
+        "default": "./dist/runtypes.cjs"
+      }
     }
   },
   "size-limit": [

@@ -17,10 +17,17 @@
   ],
   "main": "./dist/typed-contracts.cjs",
   "module": "./dist/typed-contracts.js",
+  "types": "./dist/typed-contracts.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/typed-contracts.js",
-      "require": "./dist/typed-contracts.cjs"
+      "import": {
+        "types": "./dist/typed-contracts.d.ts",
+        "default": "./dist/typed-contracts.js"
+      },
+      "require": {
+        "types": "./dist/typed-contracts.d.cts",
+        "default": "./dist/typed-contracts.cjs"
+      }
     }
   },
   "size-limit": [
