@@ -47,9 +47,9 @@ After merging PR to master-branch, [Version-action](./.github/workflows/version.
 
 #### New package creation
 
-```sh
-pnpm nx generate @nx/js:library --name=NAME --importPath @farfetched/NAME
-```
+Copy-paste `packages/atomic-router` directory, rename it to the package name. Then, update `package.json`, `README.md` and `vite.config.ts` files. Then, delete `CHANGELOG.md` file and any other files that are not needed in the new package.
+
+Fancy generator will be added in the future.
 
 ## Credits
 
