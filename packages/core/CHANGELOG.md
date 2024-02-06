@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.11.3
+
+### Patch Changes
+
+- 3649ae9: Support Cloudflare Workers runtime by deleting explicitly setting credentials in internal code, observed behavior has not changed for other runtimes
+
 ## 0.11.2
 
 ## 0.11.1
