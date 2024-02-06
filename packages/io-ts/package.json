@@ -1,6 +1,6 @@
 {
   "name": "@farfetched/io-ts",
-  "version": "0.11.2",
+  "version": "0.11.3",
   "type": "commonjs",
   "peerDependencies": {
     "io-ts": "^2.2.20",
