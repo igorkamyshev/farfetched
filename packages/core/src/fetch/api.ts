@@ -58,7 +58,7 @@ export interface StaticOnlyRequestConfig<B> {
 // These settings can be defined once — statically or dynamically
 export interface ExclusiveRequestConfigShared {
   url: string;
-  credentials: RequestCredentials;
+  credentials?: RequestCredentials;
 }
 
 export interface ExclusiveRequestConfig<B>
