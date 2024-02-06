@@ -196,8 +196,8 @@ export function createJsonMutation<
 
 // -- Implementation --
 export function createJsonMutation(config: any): Mutation<any, any, any> {
-  const credentials: RequestCredentials =
-    config.request.credentials ?? 'same-origin';
+  const credentials: RequestCredentials | undefined =
+    config.request.credentials;
 
   const requestFx = createJsonApiRequest({
     request: { method: config.request.method, credentials },
