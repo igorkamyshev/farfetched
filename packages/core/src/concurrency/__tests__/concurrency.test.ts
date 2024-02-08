@@ -22,9 +22,9 @@ describe('concurrency', async () => {
 
     const listenAborted = vi.fn();
 
-    const abort = createEvent();
+    const abortAll = createEvent();
 
-    concurrency(q, { abort });
+    concurrency(q, { abortAll });
 
     const scope = fork();
 
@@ -33,7 +33,7 @@ describe('concurrency', async () => {
     allSettled(q.start, { scope });
     allSettled(q.start, { scope });
 
-    await allSettled(abort, { scope });
+    await allSettled(abortAll, { scope });
 
     expect(listenAborted).toHaveBeenCalledTimes(2);
   });

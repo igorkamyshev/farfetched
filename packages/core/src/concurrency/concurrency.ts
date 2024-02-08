@@ -16,16 +16,16 @@ import { abortError } from '../errors/create_error';
  * - `TAKE_EVERY` will not cancel any requests
  * - `TAKE_LATEST` will cancel all but the latest request
  * - `TAKE_FIRST` will ignore all but the first request
- * @param config.abort All requests will be aborted on this event call
+ * @param config.abortAll All requests will be aborted on this event call
  */
 export function concurrency(
   op: RemoteOperation<any, any, any, any>,
   {
     strategy,
-    abort,
+    abortAll,
   }: {
     strategy?: 'TAKE_LATEST' | 'TAKE_EVERY' | 'TAKE_FIRST';
-    abort?: Event<any>;
+    abortAll?: Event<any>;
   }
 ) {
   const $callObjects = createStore<CallObject[]>([], { serialize: 'ignore' });
@@ -110,8 +110,8 @@ export function concurrency(
     }
   }
 
-  if (abort) {
-    sample({ clock: abort, target: abortAllFx });
+  if (abortAll) {
+    sample({ clock: abortAll, target: abortAllFx });
   }
 
   return op;
