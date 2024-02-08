@@ -110,3 +110,6 @@ export { createBarrier } from './barrier_api/create_barrier';
 
 // Inspect API
 export { NodeMetaSumbol, NodeLinksSumbol } from './inspect';
+
+// Concurrency API
+export { concurrency } from './concurrency/concurrency';
