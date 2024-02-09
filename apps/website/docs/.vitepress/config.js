@@ -205,6 +205,7 @@ export default withMermaid(
               { text: 'retry', link: '/api/operators/retry' },
               { text: 'timeout', link: '/api/operators/timeout' },
               { text: 'cache', link: '/api/operators/cache' },
+              { text: 'concurrency', link: '/api/operators/concurrency' },
               { text: 'applyBarrier', link: '/api/operators/apply_barrier' },
               { text: 'update', link: '/api/operators/update' },
               {
