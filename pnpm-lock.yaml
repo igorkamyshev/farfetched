@@ -207,6 +207,16 @@ importers:
       '@farfetched/core': link:../core
       typed-contracts: 3.0.0
 
+  packages/valibot:
+    specifiers:
+      '@farfetched/core': workspace:*
+      effector: ^23.0.0
+      valibot: ^0.28.0
+    devDependencies:
+      '@farfetched/core': link:../core
+      effector: 23.0.0
+      valibot: 0.28.1
+
   packages/zod:
     specifiers:
       '@farfetched/core': workspace:*
@@ -6183,6 +6193,10 @@ packages:
       '@jridgewell/trace-mapping': 0.3.20
       '@types/istanbul-lib-coverage': 2.0.4
       convert-source-map: 2.0.0
+    dev: true
+
+  /valibot/0.28.1:
+    resolution: {integrity: sha512-zQnjwNJuXk6362Leu0+4eFa/SMwRom3/hEvH6s1EGf3oXIPbo2WFKDra9ymnbVh3clLRvd8hw4sKF5ruI2Lyvw==}
     dev: true
 
   /validate-npm-package-license/3.0.4:
