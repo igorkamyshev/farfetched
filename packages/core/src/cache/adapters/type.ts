@@ -1,4 +1,4 @@
-import type { Effect, Event, EventCallable, Store } from 'effector';
+import type { Effect, EventCallable, StoreWritable } from 'effector';
 
 import { Time } from '../../libs/date-nfs';
 
@@ -22,5 +22,5 @@ export interface CacheAdapterOptions {
 
 export interface CacheAdapter extends CacheAdapterInstance {
   // To support Fork API adapter should be used only thru $instance
-  __: { $instance: Store<CacheAdapterInstance> };
+  __: { $instance: StoreWritable<CacheAdapterInstance> };
 }
