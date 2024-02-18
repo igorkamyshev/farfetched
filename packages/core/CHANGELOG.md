@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.11.4
+
+### Patch Changes
+
+- f14f944: Fix incorrect type of `__.$instance` in Cache API
+
 ## 0.11.3
 
 ### Patch Changes
