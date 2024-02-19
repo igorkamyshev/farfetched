@@ -387,7 +387,7 @@ export function createJsonQuery(config: any) {
   /* TODO: in future releases we will remove this code and make concurrency a separate function */
   concurrency(op, {
     strategy: config.concurrency?.strategy ?? 'TAKE_LATEST',
-    abort: config.concurrency?.abort,
+    abortAll: config.concurrency?.abort,
   });
 
   return op;
