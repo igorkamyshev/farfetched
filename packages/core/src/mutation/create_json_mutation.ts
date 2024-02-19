@@ -259,7 +259,7 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
   /* TODO: in future releases we will remove this code and make concurrency a separate function */
   concurrency(op, {
     strategy: config.concurrency?.strategy ?? 'TAKE_EVERY',
-    abort: config.concurrency?.abort,
+    abortAll: config.concurrency?.abort,
   });
 
   return op;
