@@ -83,7 +83,7 @@ So, Farfetched's API is moving from configuration to operators ([`retry`](/api/o
 
 ### Historical context
 
-Historically, concurrency settings were applied directly to the [_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutation) using [`createJsonQuery`](/api/factories/create_json_query) and [`createJsonMutation`](/api/factories/create_json_mutataion) factories and `concurrency` field:
+Historically, concurrency settings were applied directly to the [_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutation) using [`createJsonQuery`](/api/factories/create_json_query) and [`createJsonMutation`](/api/factories/create_json_mutation) factories and `concurrency` field:
 
 ```ts
 import { createJsonQuery } from '@farfetched/core';
@@ -99,7 +99,7 @@ This behavior is considered harmful and after introducing the [`concurrency`](/a
 
 ### Configuration to operator
 
-Field `concurrency` in [`createJsonQuery`](/api/factories/create_json_query) and [`createJsonMutation`](/api/factories/create_json_mutataion) is deprecated. Instead, use [`concurrency`](/api/operators/concurrency) operator.
+Field `concurrency` in [`createJsonQuery`](/api/factories/create_json_query) and [`createJsonMutation`](/api/factories/create_json_mutation) is deprecated. Instead, use [`concurrency`](/api/operators/concurrency) operator.
 
 `strategy` is mapped as is:
 
@@ -143,8 +143,8 @@ Since this change requires a change in the user code, it is scheduled for the co
 #### v0.13
 
 - [`createJsonQuery`](/api/factories/create_json_query) **requires** applying [`concurrency`](/api/operators/concurrency) operator on then to specify concurrency settings. Otherwise, a deprecation message is written with `console.warning`. The reason for this is to make sure that the user is aware of the change of default behavior.
-- `concurrency` field in [`createJsonQuery`](/api/factories/create_json_query) and [`createJsonMutation`](/api/factories/create_json_mutataion) is deprecated.
+- `concurrency` field in [`createJsonQuery`](/api/factories/create_json_query) and [`createJsonMutation`](/api/factories/create_json_mutation) is deprecated.
 
 #### v0.14
 
-- `concurrency` field in [`createJsonQuery`](/api/factories/create_json_query) and [`createJsonMutation`](/api/factories/create_json_mutataion) is removed. Default strategy is `TAKE_EVERY` for any [_Mutation_](/api/primitives/mutation) or any [_Query_](/api/primitives/query).
+- `concurrency` field in [`createJsonQuery`](/api/factories/create_json_query) and [`createJsonMutation`](/api/factories/create_json_mutation) is removed. Default strategy is `TAKE_EVERY` for any [_Mutation_](/api/primitives/mutation) or any [_Query_](/api/primitives/query).
