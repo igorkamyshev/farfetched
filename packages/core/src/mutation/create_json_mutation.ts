@@ -59,7 +59,7 @@ interface BaseJsonMutationConfigNoParams<
     UrlSource
   >;
   /**
-   * @deprecated since 0.12, use `concurrency` operator instead
+   * @deprecated Deprecated since 0.12, use `concurrency` operator instead
    * @see {@link https://farfetched.pages.dev/adr/concurrency}
    */
   concurrency?: ConcurrencyConfig;
@@ -82,7 +82,7 @@ interface BaseJsonMutationConfigWithParams<
     UrlSource
   >;
   /**
-   * @deprecated since 0.12, use `concurrency` operator instead
+   * @deprecated Deprecated since 0.12, use `concurrency` operator instead
    * @see {@link https://farfetched.pages.dev/adr/concurrency}
    */
   concurrency?: ConcurrencyConfig;
