@@ -111,6 +111,7 @@ export default withMermaid(
                     link: '/tutorial/update_query',
                   },
                   { text: 'Retries', link: '/tutorial/retries' },
+                  { text: 'Concurrency', link: '/tutorial/concurrency' },
                   { text: 'Caching', link: '/tutorial/caching' },
                 ],
               },

@@ -26,4 +26,4 @@ Config fields:
 
 ## References
 
-- [ADR: Introduction of concurrency](/adr/concurrency)
+- [ADR: Introduction of `concurrency`](/adr/concurrency)
