@@ -59,6 +59,10 @@ interface BaseJsonQueryConfigNoParams<
     HeadersSource,
     UrlSource
   >;
+  /**
+   * @deprecated since 0.12, use `concurrency` operator instead
+   * @see {@link https://farfetched.pages.dev/adr/concurrency}
+   */
   concurrency?: ConcurrencyConfig;
 }
 
@@ -78,6 +82,10 @@ interface BaseJsonQueryConfigWithParams<
     HeadersSource,
     UrlSource
   >;
+  /**
+   * @deprecated since 0.12, use `concurrency` operator instead
+   * @see {@link https://farfetched.pages.dev/adr/concurrency}
+   */
   concurrency?: ConcurrencyConfig;
 }
 

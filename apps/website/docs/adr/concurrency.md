@@ -137,13 +137,13 @@ Since this change requires a change in the user code, it is scheduled for the co
 #### v0.12
 
 - Operator [`concurrency`](/api/operators/concurrency) is introduced. It can be used to apply concurrency settings to any [_Queries_](/api/primitives/query) or [_Mutations_](/api/primitives/mutation).
+- `concurrency` field in [`createJsonQuery`](/api/factories/create_json_query) and [`createJsonMutation`](/api/factories/create_json_mutation) is deprecated.
 - In case of usage operator [`concurrency`](/api/operators/concurrency) with [`createJsonQuery`](/api/factories/create_json_query) **without `concurrency` field**, everything is fine. No deprecation message is written.
 - In case of usage operator [`concurrency`](/api/operators/concurrency) with [`createJsonQuery`](/api/factories/create_json_query) **with `concurrency` field**, deprecation message is written with `console.warning`.
 
 #### v0.13
 
 - [`createJsonQuery`](/api/factories/create_json_query) **requires** applying [`concurrency`](/api/operators/concurrency) operator on then to specify concurrency settings. Otherwise, a deprecation message is written with `console.warning`. The reason for this is to make sure that the user is aware of the change of default behavior.
-- `concurrency` field in [`createJsonQuery`](/api/factories/create_json_query) and [`createJsonMutation`](/api/factories/create_json_mutation) is deprecated.
 
 #### v0.14
 
