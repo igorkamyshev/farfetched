@@ -28,6 +28,13 @@ export function concurrency(
     abortAll?: Event<any>;
   }
 ) {
+  if (op.__.meta.flags.concurrencyFieldUsed) {
+    console.warn(
+      `Both concurrency-operator and concurrency-field are used  on operation ${op.__.meta.name}!`
+    );
+  }
+  op.__.meta.flags.concurrencyOperatorUsed = true;
+
   const $callObjects = createStore<CallObject[]>([], { serialize: 'ignore' });
   sample({
     clock: op.__.lowLevelAPI.callObjectCreated,
