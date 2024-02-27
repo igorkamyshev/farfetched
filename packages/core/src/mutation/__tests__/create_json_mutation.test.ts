@@ -8,6 +8,7 @@ import { abortError } from '../../errors/create_error';
 import { fetchFx } from '../../fetch/fetch';
 import { createJsonMutation } from '../create_json_mutation';
 import { isMutation } from '../type';
+import { concurrency } from '../../concurrency/concurrency';
 
 describe('createJsonMutation', () => {
   test('isMutation', () => {
@@ -154,8 +155,9 @@ describe('createJsonMutation', () => {
     const mutation = createJsonMutation({
       request: { method: 'GET', url: 'https://api.salo.com' },
       response: { contract: unknownContract },
-      concurrency: { abort },
     });
+
+    concurrency(mutation, { abortAll: abort });
 
     const scope = fork({
       handlers: [
