@@ -1,4 +1,4 @@
-import { createJsonQuery, declareParams } from '@farfetched/core';
+import { concurrency, createJsonQuery, declareParams } from '@farfetched/core';
 import { runtypeContract } from '@farfetched/runtypes';
 import { Array, Record } from 'runtypes';
 
@@ -8,7 +8,7 @@ import { characterUrl } from './api';
 import { Character } from './contract';
 
 export function createCharacterQuery() {
-  return createJsonQuery({
+  const q = createJsonQuery({
     params: declareParams<{ id: TId }>(),
     request: {
       url: ({ id }) => characterUrl({ id }),
@@ -16,6 +16,10 @@ export function createCharacterQuery() {
     },
     response: { contract: runtypeContract(Character) },
   });
+
+  concurrency(q, { strategy: 'TAKE_LATEST' });
+
+  return q;
 }
 
 export function createCharacterListQuery<T>({
@@ -23,7 +27,7 @@ export function createCharacterListQuery<T>({
 }: {
   mapParams: (params: T) => { ids: TId[] };
 }) {
-  return createJsonQuery({
+  const q = createJsonQuery({
     params: declareParams<T>(),
     request: {
       url: (params) => characterUrl(mapParams(params)),
@@ -31,10 +35,14 @@ export function createCharacterListQuery<T>({
     },
     response: { contract: runtypeContract(Array(Character)) },
   });
+
+  concurrency(q, { strategy: 'TAKE_LATEST' });
+
+  return q;
 }
 
 export function createCharacterPageQuery() {
-  return createJsonQuery({
+  const q = createJsonQuery({
     params: declareParams<{ page: number }>(),
     request: {
       url: characterUrl(),
@@ -47,4 +55,8 @@ export function createCharacterPageQuery() {
       ),
     },
   });
+
+  concurrency(q, { strategy: 'TAKE_LATEST' });
+
+  return q;
 }

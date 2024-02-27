@@ -1,4 +1,4 @@
-import { createJsonQuery, declareParams } from '@farfetched/core';
+import { concurrency, createJsonQuery, declareParams } from '@farfetched/core';
 import { runtypeContract } from '@farfetched/runtypes';
 import { Array, Number, Record } from 'runtypes';
 import { createGate } from 'effector-react';
@@ -37,6 +37,8 @@ const pokemonListQuery = createJsonQuery({
     },
   },
 });
+
+concurrency(pokemonListQuery, { strategy: 'TAKE_LATEST' });
 
 export const $pokemonList = pokemonListQuery.$data.map(
   (response) => response?.results ?? []
