@@ -1,6 +1,6 @@
 {
   "name": "@farfetched/core",
-  "version": "0.11.2",
+  "version": "0.11.4",
   "publishConfig": {
     "access": "public"
   },

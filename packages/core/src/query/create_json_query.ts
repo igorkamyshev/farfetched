@@ -313,8 +313,8 @@ export function createJsonQuery<
 
 // -- Implementation --
 export function createJsonQuery(config: any) {
-  const credentials: RequestCredentials =
-    config.request.credentials ?? 'same-origin';
+  const credentials: RequestCredentials | undefined =
+    config.request.credentials;
 
   // Basement
   const requestFx = createJsonApiRequest({
