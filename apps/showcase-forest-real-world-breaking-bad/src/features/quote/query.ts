@@ -1,4 +1,4 @@
-import { createJsonQuery, declareParams } from '@farfetched/core';
+import { concurrency, createJsonQuery, declareParams } from '@farfetched/core';
 import { runtypeContract } from '@farfetched/runtypes';
 import { Array } from 'runtypes';
 
@@ -16,3 +16,5 @@ export const randomQuotesQuery = createJsonQuery({
     contract: runtypeContract(Array(Quote)),
   },
 });
+
+concurrency(randomQuotesQuery, { strategy: 'TAKE_LATEST' });

@@ -30,6 +30,13 @@ Config fields:
     - `{ source: Store, fn: (data, { result, params }) => mapped }`
 
 - `concurrency?`: concurrency settings for the [_Query_](/api/primitives/query)
+  ::: danger Deprecation warning
+
+  This field is deprecated since [v0.12](/releases/0-12) and will be removed in v0.14. Use [`concurrency` operator](/api/operators/concurrency) instead.
+
+  Please read [this ADR](/adr/concurrency) for more information and migration guide.
+
+  :::
 
   - `strategy?`: available values:
     - `TAKE_EVERY` execute every request

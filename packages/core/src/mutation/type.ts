@@ -5,7 +5,7 @@ export const MutationSymbol = Symbol('Mutation');
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Mutation<Params, Data, Error>
-  extends RemoteOperation<Params, Data, Error, null> {
+  extends RemoteOperation<Params, Data, Error, {}> {
   '@@unitShape': () => {
     start: EventCallable<Params>;
     pending: Store<boolean>;

@@ -11,6 +11,7 @@ import type { CallObject } from './with_call_object';
 
 interface DefaultMeta {
   name: string;
+  flags: Record<string, boolean>;
 }
 
 export interface RemoteOperation<

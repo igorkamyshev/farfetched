@@ -1,4 +1,9 @@
-import { connectQuery, createJsonQuery, declareParams } from '@farfetched/core';
+import {
+  concurrency,
+  connectQuery,
+  createJsonQuery,
+  declareParams,
+} from '@farfetched/core';
 import { runtypeContract } from '@farfetched/runtypes';
 import { createGate } from 'effector-react';
 import { combine, sample } from 'effector';
@@ -30,6 +35,8 @@ const pokemonQuery = createJsonQuery({
   },
 });
 
+concurrency(pokemonQuery, { strategy: 'TAKE_LATEST' });
+
 const speciesQuery = createJsonQuery({
   params: declareParams<{ id: TId }>(),
   request: {
@@ -40,6 +47,8 @@ const speciesQuery = createJsonQuery({
     contract: runtypeContract(Species),
   },
 });
+
+concurrency(speciesQuery, { strategy: 'TAKE_LATEST' });
 
 export const $pending = pokemonQuery.$pending;
 export const $pokemon = combine(

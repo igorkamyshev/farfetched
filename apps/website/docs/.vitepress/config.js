@@ -111,6 +111,7 @@ export default withMermaid(
                     link: '/tutorial/update_query',
                   },
                   { text: 'Retries', link: '/tutorial/retries' },
+                  { text: 'Concurrency', link: '/tutorial/concurrency' },
                   { text: 'Caching', link: '/tutorial/caching' },
                 ],
               },
@@ -205,6 +206,7 @@ export default withMermaid(
               { text: 'retry', link: '/api/operators/retry' },
               { text: 'timeout', link: '/api/operators/timeout' },
               { text: 'cache', link: '/api/operators/cache' },
+              { text: 'concurrency', link: '/api/operators/concurrency' },
               { text: 'applyBarrier', link: '/api/operators/apply_barrier' },
               { text: 'update', link: '/api/operators/update' },
               {

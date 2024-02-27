@@ -5,5 +5,8 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build"
+  },
+  "dependencies": {
+    "runtypes": "^6.5.1"
   }
 }
