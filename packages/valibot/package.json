@@ -1,0 +1,52 @@
+{
+  "name": "@farfetched/valibot",
+  "version": "0.11.2",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/igorkamyshev/farfetched",
+  "devDependencies": {
+    "effector": "^23.0.0",
+    "@farfetched/core": "workspace:*",
+    "valibot": "^0.28.0"
+  },
+  "peerDependencies": {
+    "effector": "^23.0.0",
+    "@farfetched/core": "workspace:*",
+    "valibot": "^0.28.0"
+  },
+  "scripts": {
+    "test:run": "vitest run",
+    "typetest:run": "vitest typecheck --run",
+    "build": "vite build",
+    "size": "size-limit",
+    "publint": "node ../../tools/scripts/publint.mjs",
+    "typelint": "attw --pack"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/valibot.cjs",
+  "module": "./dist/valibot.js",
+  "types": "./dist/valibot.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/valibot.d.ts",
+        "default": "./dist/valibot.js"
+      },
+      "require": {
+        "types": "./dist/valibot.d.cts",
+        "default": "./dist/valibot.cjs"
+      }
+    }
+  },
+  "size-limit": [
+    {
+      "path": "./dist/valibot.js",
+      "limit": "663 B"
+    }
+  ]
+}

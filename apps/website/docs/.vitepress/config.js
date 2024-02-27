@@ -272,6 +272,10 @@ export default withMermaid(
                     text: 'typed-contracts',
                     link: '/api/contracts/typed-contracts',
                   },
+                  {
+                    text: 'Valibot',
+                    link: '/api/contracts/valibot',
+                  },
                 ],
               },
               {
