@@ -30,7 +30,8 @@ export function concurrency(
 ) {
   if (op.__.meta.flags.concurrencyFieldUsed) {
     console.warn(
-      `Both concurrency-operator and concurrency-field are used  on operation ${op.__.meta.name}!`
+      `Both concurrency-operator and concurrency-field are used  on operation ${op.__.meta.name}.`,
+      `Please use only concurrency-operator, because field concurrency-field in createJsonQuery and createJsonMutation is deprecated and will be deleted soon.`
     );
   }
   op.__.meta.flags.concurrencyOperatorUsed = true;
