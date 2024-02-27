@@ -10,7 +10,7 @@ version: v0.12
 
 This ADR is effective starting from [v0.12](/releases/0-12).
 
-::: info TL;DR
+::: tip TL;DR
 
 To apply concurrency settings to the [_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutation) use [`concurrency` operator](/api/operators/concurrency):
 
@@ -32,6 +32,8 @@ concurrency(operation, { abortAll });
 ```
 
 By default, no concurrency settings are applied.
+
+Field `concurrency` in factories [`createJsonQuery`](/api/factories/create_json_query) and [`createJsonMutation`](/api/factories/create_json_mutation)  will be deleted.
 
 :::
 
