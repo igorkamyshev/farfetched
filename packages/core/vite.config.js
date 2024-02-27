@@ -4,7 +4,8 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import dts from '../../tools/vite/types';
 
 export default defineConfig({
-  plugins: [tsconfigPaths(), dts()],
+  plugins: [tsconfigPaths(), dts({ tsconfig: 'tsconfig.lib.json' })],
+  test: { typecheck: { tsconfig: 'tsconfig.spec.json' } },
   build: {
     lib: {
       entry: 'src/index.ts',

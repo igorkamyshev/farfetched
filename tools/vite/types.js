@@ -2,10 +2,10 @@ import dts from 'vite-plugin-dts';
 import { readdir, copyFile } from 'node:fs/promises';
 import * as path from 'node:path';
 
-export default function typesPlugin() {
+export default function typesPlugin({ tsconfig } = {}) {
   return dts({
     entryRoot: 'src',
-    tsConfigFilePath: 'tsconfig.lib.json',
+    tsConfigFilePath: tsconfig ?? 'tsconfig.lib.json',
     skipDiagnostics: true,
     rollupTypes: true,
     async afterBuild() {
