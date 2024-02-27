@@ -1,7 +1,9 @@
 # Farfetched
 
-:::warning
-Current version of Farfetched is not stable yet. Please, read [Releases policy](/statements/releases) before using it.
+:::tip
+
+Farfetched 1.0 is scheduled for release in the end of 2024. All future releases before it would be focused on API clean up and stability improvements. Please, read [Releases policy](/statements/releases) and [Roadmap](/roadmap) to get more details.
+
 :::
 
 Farfetched is a **missing data-fetching library for frontend**, in more technical terms, it makes fetching, caching, synchronizing and updating server state in your web applications a breeze.
