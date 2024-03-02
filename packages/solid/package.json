@@ -9,12 +9,14 @@
   "devDependencies": {
     "effector-solid": "^0.23.0",
     "effector": "^23.0.0",
-    "solid-js": "^1.4.7"
+    "solid-js": "^1.4.7",
+    "@farfetched/core": "workspace:*"
   },
   "peerDependencies": {
     "effector-solid": "^0.23.0",
     "effector": "^23.0.0",
-    "solid-js": "^1.4.7"
+    "solid-js": "^1.4.7",
+    "@farfetched/core": "workspace:*"
   },
   "scripts": {
     "test:run": "vitest run",

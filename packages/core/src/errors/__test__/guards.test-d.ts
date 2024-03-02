@@ -13,8 +13,7 @@ describe('error guards', () => {
     expectTypeOf(isHttpError({ error })).toBeBoolean();
   });
 
-  // TODO: impossible due to TypeScript
-  test.skip('narrow type of result event', () => {
+  test('narrow type of result event', () => {
     const query: Query<void, unknown, unknown> = {} as any;
 
     const result = sample({
@@ -22,7 +21,6 @@ describe('error guards', () => {
       filter: isHttpError,
     });
 
-    // @ts-expect-error
     expectTypeOf(result).toEqualTypeOf<
       Event<{ params: void; error: HttpError<number>; meta: ExecutionMeta }>
     >();

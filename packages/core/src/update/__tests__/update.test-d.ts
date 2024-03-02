@@ -1,5 +1,5 @@
 import { type Effect } from 'effector';
-import { expectTypeOf } from 'vitest';
+import { expectTypeOf, test, describe } from 'vitest';
 
 import { createMutation } from '../../mutation/create_mutation';
 import { createQuery } from '../../query/create_query';

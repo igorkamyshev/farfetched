@@ -5,7 +5,7 @@ import * as path from 'node:path';
 export default function typesPlugin() {
   return dts({
     entryRoot: 'src',
-    tsConfigFilePath: 'tsconfig.lib.json',
+    tsConfigFilePath: 'tsconfig.json',
     skipDiagnostics: true,
     rollupTypes: true,
     async afterBuild() {
