@@ -17,8 +17,7 @@
     "@farfetched/core": "workspace:*"
   },
   "scripts": {
-    "test:run": "vitest run",
-    "typetest:run": "vitest typecheck --run",
+    "test:run": "vitest run --typecheck",
     "build": "vite build",
     "size": "size-limit",
     "publint": "node ../../tools/scripts/publint.mjs",

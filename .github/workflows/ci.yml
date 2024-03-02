@@ -16,7 +16,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run format:check
       - run: pnpm run -r test:run
-      - run: pnpm run -r typetest:run
   pkg:
     runs-on: ubuntu-latest
 

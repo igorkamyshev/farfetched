@@ -81,8 +81,8 @@ describe('valibot/valibotContract short', () => {
       [
         "Invalid type: Expected true but received false, path: 0.y",
         "Invalid set, expected set of strings, path: 0.k",
-        "Invalid type: Expected \\"Uhm?\\" but received \\"Answer is:\\", path: 1",
-        "Invalid type: Expected 42 but received \\"42\\", path: 2",
+        "Invalid type: Expected "Uhm?" but received "Answer is:", path: 1",
+        "Invalid type: Expected 42 but received "42", path: 2",
       ]
     `);
   });
@@ -112,7 +112,7 @@ describe('valibot/valibotContract short', () => {
       })
     ).toMatchInlineSnapshot(`
       [
-        "Invalid type: Expected number but received \\"42\\", path: x",
+        "Invalid type: Expected number but received "42", path: x",
         "Invalid type: Expected string but received 123, path: y.z",
         "Invalid type: Expected boolean but received Map, path: y.k.j",
       ]
