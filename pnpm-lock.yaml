@@ -122,20 +122,34 @@ importers:
 
   apps/showcase-forest-real-world-breaking-bad:
     specifiers:
+      '@farfetched/core': workspace:*
+      '@farfetched/runtypes': workspace:*
       runtypes: ^6.5.1
     dependencies:
+      '@farfetched/core': link:../../packages/core
+      '@farfetched/runtypes': link:../../packages/runtypes
       runtypes: 6.7.0
 
   apps/showcase-react-real-world-pokemons:
     specifiers:
+      '@farfetched/core': workspace:*
+      '@farfetched/runtypes': workspace:*
       runtypes: ^6.5.1
     dependencies:
+      '@farfetched/core': link:../../packages/core
+      '@farfetched/runtypes': link:../../packages/runtypes
       runtypes: 6.7.0
 
   apps/showcase-solid-real-world-rick-morty:
     specifiers:
+      '@farfetched/core': workspace:*
+      '@farfetched/dev-tools': workspace:*
+      '@farfetched/runtypes': workspace:*
       runtypes: ^6.5.1
     dependencies:
+      '@farfetched/core': link:../../packages/core
+      '@farfetched/dev-tools': link:../../packages/dev-tools
+      '@farfetched/runtypes': link:../../packages/runtypes
       runtypes: 6.7.0
 
   apps/website:
