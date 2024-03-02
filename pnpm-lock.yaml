@@ -145,11 +145,13 @@ importers:
       '@farfetched/core': workspace:*
       '@farfetched/dev-tools': workspace:*
       '@farfetched/runtypes': workspace:*
+      '@farfetched/solid': workspace:*
       runtypes: ^6.5.1
     dependencies:
       '@farfetched/core': link:../../packages/core
       '@farfetched/dev-tools': link:../../packages/dev-tools
       '@farfetched/runtypes': link:../../packages/runtypes
+      '@farfetched/solid': link:../../packages/solid
       runtypes: 6.7.0
 
   apps/website:
