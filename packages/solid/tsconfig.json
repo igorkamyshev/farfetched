@@ -1,13 +1,18 @@
 {
   "extends": "../../tsconfig.base.json",
-  "files": [],
-  "include": [],
+  "compilerOptions": {
+    "declaration": true,
+    "types": ["node", "@testing-library/jest-dom"],
+    "outDir": "dist",
+    "rootDir": "src",
+    "baseUrl": "src",
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js"
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "references": [
     {
-      "path": "./tsconfig.lib.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
+      "path": "../core"
     }
   ]
 }

@@ -1,6 +1,6 @@
 import { allSettled, createEffect, createEvent, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
-import { describe, vi, expect, test } from 'vitest';
+import { describe, vi, expect, test, beforeAll, afterAll } from 'vitest';
 
 import { withFactory } from '../../libs/patronus';
 import { parseTime } from '../../libs/date-nfs';
@@ -428,13 +428,13 @@ describe('cache', () => {
       [
         [
           {
-            "key": "{\\"params\\":1,\\"sid\\":\\"test|dummy\\",\\"sources\\":[]}",
+            "key": "{"params":1,"sid":"test|dummy","sources":[]}",
             "value": 1,
           },
         ],
         [
           {
-            "key": "{\\"params\\":2,\\"sid\\":\\"test|dummy\\",\\"sources\\":[]}",
+            "key": "{"params":2,"sid":"test|dummy","sources":[]}",
             "value": 2,
           },
         ],

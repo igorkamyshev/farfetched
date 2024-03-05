@@ -1,14 +1,19 @@
-import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import solidPlugin from 'vite-plugin-solid';
 
 import dts from '../../tools/vite/types';
 
-export default defineConfig({
+export default {
   plugins: [tsconfigPaths(), solidPlugin(), dts()],
   test: {
     globals: true,
     setupFiles: './test.setup.ts',
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        useAtomics: true,
+      },
+    },
   },
   resolve: {
     conditions: ['browser'],
@@ -24,4 +29,4 @@ export default defineConfig({
       external: ['solid-js', 'effector-solid', '@farfetched/core'],
     },
   },
-});
+};

@@ -33,7 +33,7 @@ concurrency(operation, { abortAll });
 
 By default, no concurrency settings are applied.
 
-Field `concurrency` in factories [`createJsonQuery`](/api/factories/create_json_query) and [`createJsonMutation`](/api/factories/create_json_mutation)  will be deleted.
+Field `concurrency` in factories [`createJsonQuery`](/api/factories/create_json_query) and [`createJsonMutation`](/api/factories/create_json_mutation) will be deleted.
 
 :::
 

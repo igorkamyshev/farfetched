@@ -7,6 +7,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "runtypes": "^6.5.1"
+    "runtypes": "^6.5.1",
+    "@farfetched/runtypes": "workspace:*",
+    "@farfetched/core": "workspace:*"
   }
 }

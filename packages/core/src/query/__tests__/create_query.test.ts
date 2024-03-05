@@ -79,7 +79,7 @@ describe('core/createQuery/effect', () => {
   test('core/createQuery/no-handler-or-effect', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(() => createQuery({} as any)).toThrowErrorMatchingInlineSnapshot(
-      `"handler or effect must be passed to the config"`
+      `[Error: handler or effect must be passed to the config]`
     );
   });
 

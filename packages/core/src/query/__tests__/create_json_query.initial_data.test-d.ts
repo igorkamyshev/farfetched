@@ -21,8 +21,7 @@ describe('createJsonQuery', () => {
     expectTypeOf(query).toEqualTypeOf<
       Query<number, string, JsonApiRequestError, string>
     >();
-    // @ts-expect-error invalid initial initial data type
-    expectTypeOf(query).toEqualTypeOf<
+    expectTypeOf(query).not.toEqualTypeOf<
       Query<number, string, JsonApiRequestError>
     >();
   });
@@ -40,8 +39,7 @@ describe('createJsonQuery', () => {
     expectTypeOf(query).toEqualTypeOf<
       Query<number, string, JsonApiRequestError, string>
     >();
-    // @ts-expect-error invalid initial initial data type
-    expectTypeOf(query).toEqualTypeOf<
+    expectTypeOf(query).not.toEqualTypeOf<
       Query<number, string, JsonApiRequestError>
     >();
   });
@@ -59,8 +57,7 @@ describe('createJsonQuery', () => {
     expectTypeOf(query).toEqualTypeOf<
       Query<void, string, JsonApiRequestError, string>
     >();
-    // @ts-expect-error invalid initial initial data type
-    expectTypeOf(query).toEqualTypeOf<
+    expectTypeOf(query).not.toEqualTypeOf<
       Query<void, string, JsonApiRequestError>
     >();
   });
@@ -77,8 +74,7 @@ describe('createJsonQuery', () => {
     expectTypeOf(query).toEqualTypeOf<
       Query<void, string, JsonApiRequestError, string>
     >();
-    // @ts-expect-error invalid initial initial data type
-    expectTypeOf(query).toEqualTypeOf<
+    expectTypeOf(query).not.toEqualTypeOf<
       Query<void, string, JsonApiRequestError>
     >();
   });

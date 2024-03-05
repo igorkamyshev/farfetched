@@ -30,7 +30,6 @@ Repository contains [several showcases](./apps/) of Farfetched usage. To start p
 - make changes
 - make sure that your changes is passing checks:
   - run tests via `pnpm run -r test:run`
-  - run type tests via `pnpm run -r typetest:run`
   - try to build it via `pnpm run -r build`
   - format code via `pnpm run format:check`
 - fill in changes via `pnpm changeset`
