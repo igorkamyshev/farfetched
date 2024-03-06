@@ -191,6 +191,23 @@ describe('connectQuery', () => {
     });
   });
 
+  test('does not require fn for void start Query created with handler, issue #443', () => {
+    const refPageQuery = createQuery({
+      name: 'refPageQuery',
+      handler: async () => ({} as any),
+    });
+
+    const createRefQuery = createQuery({
+      name: 'createRefQuery',
+      handler: async () => ({} as any),
+    });
+
+    connectQuery({
+      source: createRefQuery,
+      target: refPageQuery,
+    });
+  });
+
   test('can use query with initialData', () => {
     type Query1Data = { foo: string };
     type Query2Data = { bar: string };

@@ -13,11 +13,24 @@ import { Validator } from '../validation/type';
 import { resolveExecuteEffect } from '../remote_operation/resolve_execute_effect';
 
 // Overload: Only handler
+export function createQuery<Response>(
+  config: {
+    handler: () => Promise<Response>;
+  } & SharedQueryFactoryConfig<Response>
+): Query<void, Response, unknown>;
+
 export function createQuery<Params, Response>(
   config: {
     handler: (p: Params) => Promise<Response>;
   } & SharedQueryFactoryConfig<Response>
 ): Query<Params, Response, unknown>;
+
+export function createQuery<Response>(
+  config: {
+    initialData: Response;
+    handler: () => Promise<Response>;
+  } & SharedQueryFactoryConfig<Response>
+): Query<void, Response, unknown, Response>;
 
 export function createQuery<Params, Response>(
   config: {
