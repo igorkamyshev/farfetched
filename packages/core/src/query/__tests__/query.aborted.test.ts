@@ -6,6 +6,7 @@ import { unknownContract } from '../../contract/unknown_contract';
 import { fetchFx } from '../../fetch/fetch';
 import { declareParams } from '../../remote_operation/params';
 import { createJsonQuery } from '../create_json_query';
+import { concurrency } from '../../concurrency/concurrency';
 
 describe('Query#aborted', () => {
   test('should be fired of operation is aborted after initial', async () => {
@@ -22,8 +23,9 @@ describe('Query#aborted', () => {
       response: {
         contract: unknownContract,
       },
-      concurrency: { abort: signal },
     });
+
+    concurrency(query, { abortAll: signal });
 
     const scope = fork({
       handlers: [[fetchFx, vi.fn(async () => setTimeout(100))]],
@@ -57,8 +59,9 @@ describe('Query#aborted', () => {
       response: {
         contract: unknownContract,
       },
-      concurrency: { abort: signal },
     });
+
+    concurrency(query, { abortAll: signal });
 
     const scope = fork({
       handlers: [

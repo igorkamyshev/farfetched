@@ -11,6 +11,7 @@ import type { CallObject } from './with_call_object';
 
 interface DefaultMeta {
   name: string;
+  flags: Record<string, boolean>;
 }
 
 export interface RemoteOperation<
@@ -47,8 +48,10 @@ export interface RemoteOperation<
    * + true — query will be executed after any `start` call
    */
   $enabled: Store<boolean>;
-  /** Event to trigger query */
+  /** Event to trigger operation */
   start: EventCallable<Params>;
+  /** Event to reset the whole state of the operation */
+  reset: EventCallable<void>;
   /** Event that trigered after operation started */
   started: Event<{ params: Params; meta: ExecutionMeta }>;
   aborted: Event<{ params: Params; meta: ExecutionMeta }>;
@@ -119,7 +122,6 @@ export interface RemoteOperation<
       pushError: EventCallable<Error>;
       startWithMeta: EventCallable<{ params: Params; meta: ExecutionMeta }>;
       callObjectCreated: Event<CallObject>;
-      resetStatus: EventCallable<void>;
     } & ExtraLowLevelAPI;
     experimentalAPI?: {
       attach: <Source, NewParams>(config: {

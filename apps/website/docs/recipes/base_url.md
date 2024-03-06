@@ -45,7 +45,7 @@ const usersQuery = createJsonQuery({
 });
 ```
 
-For more complex cases you can even use a URL creator that returns a [_Store_](https://effector.dev/docs/api/effector/store) with desired URL. Let us assume that you have a [_Store_](https://effector.dev/docs/api/effector/store) with a current language, and you want to use it in your API requests:
+For more complex cases you can even use a URL creator that returns a [_Store_](https://effector.dev/en/api/effector/store/) with desired URL. Let us assume that you have a [_Store_](https://effector.dev/en/api/effector/store/) with a current language, and you want to use it in your API requests:
 
 ```ts
 import { combine } from 'effector';

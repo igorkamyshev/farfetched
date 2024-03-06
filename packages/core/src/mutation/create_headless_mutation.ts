@@ -107,6 +107,7 @@ export function createHeadlessMutation<
 
   return {
     start: operation.start,
+    reset: operation.reset,
     started: readonly(operation.started),
     aborted: readonly(operation.aborted),
     $status: readonly(operation.$status),

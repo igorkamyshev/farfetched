@@ -9,6 +9,7 @@ import {
 
 import { Defer, createDefer } from '../libs/lohyphen';
 import { abortError } from '../errors/create_error';
+import { occupyCurrentCancelCallback } from './on_abort';
 
 export type CallObject = {
   id: string;
@@ -123,10 +124,13 @@ function createCallObject(def?: Defer<unknown, unknown>) {
     def.promise.then(finish, finish);
   }
 
+  const cancelCallback = occupyCurrentCancelCallback();
+
   const callObj: CallObject = {
     id: getCallId(),
     status: callStatus,
     abort: (error: unknown = abortError()) => {
+      cancelCallback?.();
       if (callStatus === 'finished') {
         /**
          * It is not possible to abort already finished call,

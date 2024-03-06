@@ -1,18 +1,33 @@
-import { createProjectGraphAsync } from '@nrwl/devkit';
-
-process.env.NX_DAEMON = 'false';
+import { readdir, readFile, stat } from 'node:fs/promises';
+import * as path from 'node:path';
 
 export default {
   async load() {
-    const graph = await createProjectGraphAsync();
+    const PACKAGES_PATH = '../../packages';
 
-    return Object.values(graph.nodes)
-      .filter(
-        (node) => node.type === 'lib' && Boolean(node.data.targets?.build)
-      )
-      .map((node) => ({
-        release: `@farfetched/${node.name}`,
-        canary: `@farfetched-canary/${node.name}`,
-      }));
+    const inDirList = await readdir(PACKAGES_PATH);
+
+    const packageNames: string[] = [];
+
+    await Promise.all(
+      inDirList.map(async (dir) => {
+        const stats = await stat(`${PACKAGES_PATH}/${dir}`);
+        if (!stats.isDirectory()) {
+          return;
+        }
+
+        const packageJson = await readFile(
+          path.join(PACKAGES_PATH, dir, 'package.json'),
+          'utf-8'
+        ).then(JSON.parse);
+
+        packageNames.push(packageJson.name);
+      })
+    );
+
+    return packageNames.map((packageName) => ({
+      release: packageName,
+      canary: packageName.replace('@farfetched', '@farfetched-canary'),
+    }));
   },
 };

@@ -69,7 +69,7 @@ After this call [Query](/api/primitives/query) will start its handler with the g
 
 ## Data extraction
 
-Farfetched is built as a reactive library, so all data is stored inside [Stores](https://effector.dev/docs/api/effector/store). [Query](/api/primitives/query) is no exception, it stores result of the request inside [Stores](https://effector.dev/docs/api/effector/store) in field `.$data`, in the most common use case you will subscribe on this field to get the result:
+Farfetched is built as a reactive library, so all data is stored inside [Stores](https://effector.dev/en/api/effector/store/). [Query](/api/primitives/query) is no exception, it stores result of the request inside [Stores](https://effector.dev/en/api/effector/store/) in field `.$data`, in the most common use case you will subscribe on this field to get the result:
 
 ```ts
 characterQuery.$data.watch((data) => {
@@ -106,7 +106,7 @@ Read more in [Solid-specific](/tutorial/solid/) tutorial.
 
 ::: details React
 
-In React, you can use [`useUnit`](https://effector.dev/docs/api/effector-react/useUnit) hook to subscribe on [Query](/api/primitives/query) and get its data:
+In React, you can use [`useUnit`](https://effector.dev/en/api/effector-react/useunit/) hook to subscribe on [Query](/api/primitives/query) and get its data:
 
 ```tsx
 import { useUnit } from 'effector-react';
@@ -133,9 +133,13 @@ Read more in [React-specific](/tutorial/react/) tutorial.
 
 To extract error from [Query](/api/primitives/query), you can subscribe on `.$error` or use your favorite integration as well.
 
+::: tip
+It can be useful to have a visual representation of the state of the [_Query_](/api/primitives/query). You can use Farfetched DevTools for this purpose. Read more in [DevTools](/tutorial/devtools) tutorial.
+:::
+
 ## Query status
 
-Since [Query](/api/primitives/query) is an asynchronous operation, you can use `.$status` to get current status of the query. It is a [Store](https://effector.dev/docs/api/effector/store) that contains one of the following statuses: "initial", "pending", "success" or "error".
+Since [Query](/api/primitives/query) is an asynchronous operation, you can use `.$status` to get current status of the query. It is a [Store](https://effector.dev/en/api/effector/store/) that contains one of the following statuses: "initial", "pending", "success" or "error".
 
 ::: info
 All integrations provide a convenient way to subscribe on `.$status` in the UI as well.

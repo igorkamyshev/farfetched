@@ -1,4 +1,4 @@
-import { attach, type Json, type Event } from 'effector';
+import { attach, type Json, type Event, createEffect } from 'effector';
 
 import { type Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
@@ -17,6 +17,8 @@ import {
   type SharedMutationFactoryConfig,
 } from './create_headless_mutation';
 import { type Mutation } from './type';
+import { concurrency } from '../concurrency/concurrency';
+import { onAbort } from '../remote_operation/on_abort';
 
 // -- Shared --
 
@@ -56,6 +58,10 @@ interface BaseJsonMutationConfigNoParams<
     HeadersSource,
     UrlSource
   >;
+  /**
+   * @deprecated Deprecated since 0.12, use `concurrency` operator instead
+   * @see {@link https://farfetched.pages.dev/adr/concurrency}
+   */
   concurrency?: ConcurrencyConfig;
 }
 
@@ -75,6 +81,10 @@ interface BaseJsonMutationConfigWithParams<
     HeadersSource,
     UrlSource
   >;
+  /**
+   * @deprecated Deprecated since 0.12, use `concurrency` operator instead
+   * @see {@link https://farfetched.pages.dev/adr/concurrency}
+   */
   concurrency?: ConcurrencyConfig;
 }
 
@@ -201,9 +211,7 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
 
   const requestFx = createJsonApiRequest({
     request: { method: config.request.method, credentials },
-    concurrency: { strategy: 'TAKE_EVERY' },
     response: { status: config.response.status },
-    abort: { clock: config.concurrency?.abort },
   });
 
   const headlessMutation = createHeadlessMutation({
@@ -212,6 +220,12 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
     validate: config.response.validate,
     enabled: config.enabled,
     name: config.name,
+  });
+
+  const executeFx = createEffect((c: any) => {
+    const abortController = new AbortController();
+    onAbort(() => abortController.abort());
+    return requestFx({ ...c, abortController });
   });
 
   headlessMutation.__.executeFx.use(
@@ -241,12 +255,30 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
           query: partialQuery(params),
         };
       },
-      effect: requestFx,
+      effect: executeFx,
     })
   );
 
-  return {
+  const op = {
     ...headlessMutation,
-    __: { ...headlessMutation.__, executeFx: requestFx },
+    __: { ...headlessMutation.__, executeFx },
   };
+
+  /* TODO: in future releases we will remove this code and make concurrency a separate function */
+  if (config.concurrency) {
+    op.__.meta.flags.concurrencyFieldUsed = true;
+  }
+
+  if (config.concurrency) {
+    setTimeout(() => {
+      if (!op.__.meta.flags.concurrencyOperatorUsed) {
+        concurrency(op, {
+          strategy: config.concurrency?.strategy ?? 'TAKE_EVERY',
+          abortAll: config.concurrency?.abort,
+        });
+      }
+    });
+  }
+
+  return op;
 }

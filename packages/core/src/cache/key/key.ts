@@ -2,6 +2,22 @@ import { Query } from '../../query/type';
 import { sha1 } from '../lib/hash';
 import { stableStringify } from '../lib/stable_stringify';
 
+export function createHumanReadbleKey({
+  sid,
+  params = null,
+  sources,
+}: {
+  sid: string;
+  params: unknown;
+  sources: unknown[];
+}): string | null {
+  try {
+    return stableStringify({ params, sources, sid }) ?? null;
+  } catch (e: unknown) {
+    return null;
+  }
+}
+
 export function createKey({
   sid,
   params = null,

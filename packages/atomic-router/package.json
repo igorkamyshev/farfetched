@@ -1,5 +1,49 @@
 {
   "name": "@farfetched/atomic-router",
   "version": "0.11.4",
-  "type": "commonjs"
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/igorkamyshev/farfetched",
+  "devDependencies": {
+    "effector": "^23.0.0",
+    "@farfetched/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "effector": "^23.0.0",
+    "@farfetched/core": "workspace:*"
+  },
+  "scripts": {
+    "test:run": "vitest run --typecheck",
+    "build": "vite build",
+    "size": "size-limit",
+    "publint": "node ../../tools/scripts/publint.mjs",
+    "typelint": "attw --pack"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/atomic-router.cjs",
+  "module": "./dist/atomic-router.js",
+  "types": "./dist/atomic-router.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/atomic-router.d.ts",
+        "default": "./dist/atomic-router.js"
+      },
+      "require": {
+        "types": "./dist/atomic-router.d.cts",
+        "default": "./dist/atomic-router.cjs"
+      }
+    }
+  },
+  "size-limit": [
+    {
+      "path": "./dist/atomic-router.js",
+      "limit": "314 B"
+    }
+  ]
 }

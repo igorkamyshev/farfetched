@@ -1,12 +1,13 @@
-import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, createEvent, createWatch, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
+import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { fetchFx } from '../../fetch/fetch';
 import { createJsonQuery } from '../create_json_query';
 import { unknownContract } from '../../contract/unknown_contract';
 import { abortError } from '../../errors/create_error';
+import { concurrency } from '../../concurrency/concurrency';
 
 describe('createJsonQuery concurrency.strategy', () => {
   test('abort inflight requests by default', async () => {
@@ -17,6 +18,8 @@ describe('createJsonQuery concurrency.strategy', () => {
       },
       response: { contract: unknownContract },
     });
+
+    concurrency(query, { strategy: 'TAKE_LATEST' });
 
     const firstResponse = { first: 1 };
     const secondResponse = { second: 2 };
@@ -68,8 +71,9 @@ describe('createJsonQuery concurrency.strategy', () => {
         method: 'GET' as const,
       },
       response: { contract: unknownContract },
-      concurrency: { strategy: 'TAKE_EVERY' },
     });
+
+    concurrency(query, { strategy: 'TAKE_EVERY' });
 
     const firstResponse = { first: 1 };
     const secondResponse = { second: 2 };
@@ -108,8 +112,9 @@ describe('createJsonQuery concurrency.strategy', () => {
         method: 'GET' as const,
       },
       response: { contract: unknownContract },
-      concurrency: { strategy: 'TAKE_FIRST' },
     });
+
+    concurrency(query, { strategy: 'TAKE_FIRST' });
 
     const firstResponse = { first: 1 };
     const secondResponse = { second: 2 };
@@ -159,8 +164,9 @@ describe('createJsonQuery concurrency.strategy', () => {
     const query = createJsonQuery({
       request: { method: 'GET', url: 'https://api.salo.com' },
       response: { contract: unknownContract },
-      concurrency: { abort },
     });
+
+    concurrency(query, { abortAll: abort });
 
     const scope = fork({
       handlers: [
@@ -193,8 +199,9 @@ describe('createJsonQuery concurrency.strategy', () => {
     const query = createJsonQuery({
       request: { method: 'GET', url: 'https://api.salo.com' },
       response: { contract: unknownContract },
-      concurrency: { strategy: 'TAKE_LATEST' },
     });
+
+    concurrency(query, { strategy: 'TAKE_LATEST' });
 
     const statusListener = vi.fn();
     const abortedListener = vi.fn();

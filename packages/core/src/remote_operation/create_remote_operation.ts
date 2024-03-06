@@ -1,5 +1,4 @@
 import {
-  type Event,
   createEffect,
   createEvent,
   createStore,
@@ -30,6 +29,7 @@ import { type RemoteOperation } from './type';
 import { get } from '../libs/lohyphen';
 import { isAbortError } from '../errors/guards';
 import { getCallObjectEvent } from './with_call_object';
+import { allowCancelSetting, disallowCancelSetting } from './on_abort';
 
 export function createRemoteOperation<
   Params,
@@ -96,7 +96,11 @@ export function createRemoteOperation<
       { result: unknown; stale: boolean } | null,
       unknown
     >(async ({ params }) => {
-      const result = await executeFx(params);
+      allowCancelSetting();
+      const promise = executeFx(params);
+      disallowCancelSetting();
+
+      const result = await promise;
       return { result, stale: false };
     }),
   };
@@ -110,6 +114,7 @@ export function createRemoteOperation<
   } = createDataSourceHandlers<Params>(dataSources);
 
   const start = createEvent<Params>();
+  const reset = createEvent();
 
   const started = createEvent<{ params: Params; meta: ExecutionMeta }>();
 
@@ -174,8 +179,7 @@ export function createRemoteOperation<
     serialize,
   });
 
-  const resetStatus = createEvent();
-  sample({ clock: resetStatus, target: $status.reinit });
+  sample({ clock: reset, target: $status.reinit });
 
   const $statusHistory = createStore<FetchingStatus[]>([], {
     serialize: 'ignore',
@@ -440,6 +444,7 @@ export function createRemoteOperation<
     finished,
     started,
     aborted,
+    reset,
     $status,
     $idle,
     $pending,
@@ -449,7 +454,7 @@ export function createRemoteOperation<
     $enabled,
     __: {
       executeFx,
-      meta: { ...meta, name },
+      meta: { ...meta, name, flags: {} },
       kind,
       $latestParams: readonly($latestParams),
       lowLevelAPI: {
@@ -462,7 +467,6 @@ export function createRemoteOperation<
         pushData,
         startWithMeta,
         callObjectCreated,
-        resetStatus,
       },
     },
   };

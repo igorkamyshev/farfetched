@@ -14,7 +14,7 @@
 Since we have an abstraction to retrieve data from the remote source, we have to have an abstraction to send data to the remote source. Farfetched provides [_Mutations_](/api/primitives/mutation) for this purpose. All you need to know about [_Mutation_](/api/primitives/mutation):
 
 1. it has handler that performs operation on the remote source
-2. it does not store any data inside, it provides only lifecycle [_Events_](https://effector.dev/docs/api/effector/event)
+2. it does not store any data inside, it provides only lifecycle [_Events_](https://effector.dev/en/api/effector/event/)
 3. it can be started with some parameters
 
 That's it, that is all what you need to know about [Mutation](/api/primitives/mutation). Let's create our first [Mutation](/api/primitives/mutation)!
@@ -69,7 +69,7 @@ After this call [Mutation](/api/primitives/mutation) will start its handler with
 
 ## _Mutation_ result
 
-Since [_Mutation_](/api/primitives/mutation) does not store any data inside, it provides only lifecycle [_Events_](https://effector.dev/docs/api/effector/event). The most important of them are `finished.success` and `finished.failure`. Let's subscribe to these events:
+Since [_Mutation_](/api/primitives/mutation) does not store any data inside, it provides only lifecycle [_Events_](https://effector.dev/en/api/effector/event/). The most important of them are `finished.success` and `finished.failure`. Let's subscribe to these events:
 
 ```ts
 createEntityMutation.finished.success.watch(({ params, data }) => {
@@ -95,4 +95,4 @@ In real applications, we assume that the result of the [_Mutation_](/api/primiti
 
 ## _Mutation_ status
 
-Since [_Mutation_](/api/primitives/mutation) is an asynchronous operation, you can use `.$status` to get current status of the operation. It is a [Store](https://effector.dev/docs/api/effector/store) that contains one of the following statuses: "initial", "pending", "success" or "fail".
+Since [_Mutation_](/api/primitives/mutation) is an asynchronous operation, you can use `.$status` to get current status of the operation. It is a [Store](https://effector.dev/en/api/effector/store/) that contains one of the following statuses: "initial", "pending", "success" or "fail".

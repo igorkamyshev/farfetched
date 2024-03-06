@@ -1,7 +1,25 @@
-import { defineConfig } from 'vitest/config';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import dts from '../../tools/vite/types';
 
-export default defineConfig({
-  test: { typecheck: { ignoreSourceErrors: true }, passWithNoTests: true },
-  plugins: [tsconfigPaths()],
-});
+export default {
+  plugins: [tsconfigPaths(), dts()],
+  test: {
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        useAtomics: true,
+      },
+    },
+  },
+  build: {
+    lib: {
+      entry: 'src/index.ts',
+      name: '@farfetched/runtypes',
+      fileName: 'runtypes',
+      formats: ['es', 'cjs'],
+    },
+    rollupOptions: {
+      external: ['runtypes'],
+    },
+  },
+};

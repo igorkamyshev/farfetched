@@ -1,7 +1,7 @@
 import { allSettled, fork } from 'effector';
-import { watchRemoteOperation } from '@farfetched/test-utils';
 import { describe, test, expect, vi } from 'vitest';
 
+import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { createHeadlessMutation } from '../create_headless_mutation';
 import { unknownContract } from '../../contract/unknown_contract';
 
@@ -20,6 +20,23 @@ describe('createHeadlessMutation', () => {
 
     expect(mockFn).toHaveBeenCalledTimes(1);
     expect(mockFn).toHaveBeenCalledWith(42);
+  });
+
+  test('reset reset $status', async () => {
+    const mutation = createHeadlessMutation({
+      contract: unknownContract,
+      mapData: ({ result }) => result,
+    });
+
+    const scope = fork({ handlers: [[mutation.__.executeFx, () => null]] });
+
+    await allSettled(mutation.start, { scope, params: 42 });
+
+    expect(scope.getState(mutation.$status)).toBe('done');
+
+    await allSettled(mutation.reset, { scope });
+
+    expect(scope.getState(mutation.$status)).toBe('initial');
   });
 
   test('finished.success triggers after executeFx.done', async () => {

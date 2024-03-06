@@ -2,8 +2,7 @@ import { allSettled, createEffect, createStore, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
-import { watchRemoteOperation } from '@farfetched/test-utils';
-
+import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { createQuery } from '../../query/create_query';
 import { applyBarrier } from '../apply_barrier';
 import { createBarrier } from '../create_barrier';
@@ -121,8 +120,7 @@ describe('applyBarrier', () => {
         .mockResolvedValueOnce('OK'),
     });
 
-    applyBarrier(query1, { barrier: authBarrier });
-    applyBarrier(query2, { barrier: authBarrier });
+    applyBarrier([query1, query2], { barrier: authBarrier });
 
     const scope = fork();
 

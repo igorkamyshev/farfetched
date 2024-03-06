@@ -18,7 +18,7 @@ export function connectQuery<Sources, Target extends Query<any, any, any, any>>(
     target: Target | [...Target[]];
   } & (Target extends Query<infer P, any, any, any>
     ? P extends void
-      ? { fn?: undefined }
+      ? { fn?: undefined; filter?: () => boolean }
       : Sources extends Query<any, any, any>
       ? {
           fn: (sources: {
@@ -27,6 +27,10 @@ export function connectQuery<Sources, Target extends Query<any, any, any, any>>(
           }) => {
             params: RemoteOperationParams<Target>;
           };
+          filter?: (sources: {
+            result: RemoteOperationResult<Sources>;
+            params: RemoteOperationParams<Sources>;
+          }) => boolean;
         }
       : Sources extends Record<string, Query<any, any, any>>
       ? {
@@ -36,6 +40,12 @@ export function connectQuery<Sources, Target extends Query<any, any, any, any>>(
               params: RemoteOperationParams<Sources[index]>;
             };
           }) => { params: RemoteOperationParams<Target> };
+          filter?: (sources: {
+            [index in keyof Sources]: {
+              result: RemoteOperationResult<Sources[index]>;
+              params: RemoteOperationParams<Sources[index]>;
+            };
+          }) => boolean;
         }
       : NonExtendable
     : NonExtendable)
@@ -50,6 +60,7 @@ export function connectQuery<Sources, Target extends Query<any, any, any, any>>(
     ? [source]
     : Object.values(source as any);
   const mapperFn = args?.fn as (args: any) => { params?: any };
+  const filterFn = args?.filter as (args: any) => boolean;
 
   // Helper untis
   const anyParentStarted = merge(parents.map((query) => query.start));
@@ -111,6 +122,15 @@ export function connectQuery<Sources, Target extends Query<any, any, any, any>>(
     source: {
       data: $allParentDataDictionary,
       params: $allParentParamsDictionary,
+    },
+    filter({ data, params }) {
+      return (
+        filterFn?.(
+          singleParentMode
+            ? { result: data, params }
+            : zipObject({ result: data, params })
+        ) ?? true
+      );
     },
     fn({ data, params }) {
       const mapped = mapperFn?.(

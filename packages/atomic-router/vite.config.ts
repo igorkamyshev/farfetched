@@ -1,7 +1,26 @@
-import { defineConfig } from 'vitest/config';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-export default defineConfig({
-  test: { typecheck: { ignoreSourceErrors: true }, passWithNoTests: true },
-  plugins: [tsconfigPaths()],
-});
+import dts from '../../tools/vite/types';
+
+export default {
+  plugins: [tsconfigPaths(), dts()],
+  test: {
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        useAtomics: true,
+      },
+    },
+  },
+  build: {
+    lib: {
+      entry: 'src/index.ts',
+      name: '@farfetched/atomic-router',
+      fileName: 'atomic-router',
+      formats: ['es', 'cjs'],
+    },
+    rollupOptions: {
+      external: ['effector', '@farfetched/core'],
+    },
+  },
+};

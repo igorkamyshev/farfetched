@@ -26,7 +26,7 @@ describe('ioTsContract', () => {
     expect(contract.isData(data)).toBe(false);
     expect(contract.getErrorMessages(data)).toMatchInlineSnapshot(`
       [
-        "\`value.age\` must be number, but \\"not a number\\" (string) given",
+        "\`value.age\` must be number, but "not a number" (string) given",
         "\`value.name\` must be string, but 11 (number) given",
       ]
     `);
@@ -42,7 +42,7 @@ describe('ioTsContract', () => {
     expect(contract.isData(data)).toBe(false);
     expect(contract.getErrorMessages(data)).toMatchInlineSnapshot(`
       [
-        "\`value.user.age\` must be number, but \\"not a number\\" (string) given",
+        "\`value.user.age\` must be number, but "not a number" (string) given",
         "\`value.user.name\` must be string, but 11 (number) given",
       ]
     `);
@@ -64,7 +64,7 @@ describe('ioTsContract', () => {
     expect(contract.isData(data)).toBe(false);
     expect(contract.getErrorMessages(data)).toMatchInlineSnapshot(`
       [
-        "\`value.users[1].age\` must be number, but \\"eleven\\" (string) given",
+        "\`value.users[1].age\` must be number, but "eleven" (string) given",
         "\`value.users[1].name\` must be string, but 11 (number) given",
       ]
     `);

@@ -1,4 +1,4 @@
-# `createJsonMutation` <Badge type="tip" text="since v0.2.0" />
+# `createJsonMutation` <Badge type="tip" text="since v0.2" />
 
 ## Formulae
 
@@ -16,7 +16,7 @@ Config fields:
   - `method`: _String_
   - `url`: _[Sourced](/api/primitives/sourced) string_
   - `body`: _[Sourced](/api/primitives/sourced) Json_, any value which can be serialized to JSON and parsed back without loses by JavaScript native module JSON. For example, `{ a: 1, b: 2 }`. Note that body cannot be used in `GET` and `HEAD` requests.
-  - `query?`: _[Sourced](/api/primitives/sourced) object_, keys of the object must be `String` and values must be `String` or `Array<String>` or (since v0.8.0) _[Sourced](/api/primitives/sourced) String_ containing ready-to-use query string
+  - `query?`: _[Sourced](/api/primitives/sourced) object_, keys of the object must be `String` and values must be `String` or `Array<String>` or (since v0.8) _[Sourced](/api/primitives/sourced) String_ containing ready-to-use query string
   - `headers?`: _[Sourced](/api/primitives/sourced) object_, keys of the object must be `String` and values must be `String` or `Array<String>`
 
 - `response`: declarative rules to handle response from the API.
@@ -29,4 +29,12 @@ Config fields:
   - `status.expected`: `number` or `Array<number>` of expected HTTP status codes, if the response status code is not in the list, the mutation will be treated as failed
 
 - `concurrency?`: concurrency settings for the [_Query_](/api/primitives/query)
-  - `abort?`: [_Event_](https://effector.dev/docs/api/effector/event) after calling which all in-flight requests will be aborted
+  ::: danger Deprecation warning
+
+  This field is deprecated since [v0.12](/releases/0-12) and will be removed in v0.14. Use [`concurrency` operator](/api/operators/concurrency) instead.
+
+  Please read [this ADR](/adr/concurrency) for more information and migration guide.
+
+  :::
+
+  - `abort?`: [_Event_](https://effector.dev/en/api/effector/event/) after calling which all in-flight requests will be aborted

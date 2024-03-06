@@ -1,0 +1,16 @@
+{
+  "name": "showcase-solid-real-world-rick-morty",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "runtypes": "^6.5.1",
+    "@farfetched/runtypes": "workspace:*",
+    "@farfetched/core": "workspace:*",
+    "@farfetched/solid": "workspace:*",
+    "@farfetched/dev-tools": "workspace:*"
+  }
+}

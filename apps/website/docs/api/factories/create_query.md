@@ -3,7 +3,7 @@
 ## Formulae
 
 ::: info
-Option `initialData` available in all overloads since v0.3.0
+Option `initialData` available in all overloads since [v0.3](/releases/0-3)
 :::
 
 ### `createQuery({ handler, initialData? })`
@@ -22,9 +22,9 @@ const languagesQuery = createQuery({
 
 ### `createQuery({ effect, validate?, initialData? })`
 
-Creates [_Query_](/api/primitives/query) based on given [_Effect_](https://effector.dev/docs/api/effector/effect).
+Creates [_Query_](/api/primitives/query) based on given [_Effect_](https://effector.dev/en/api/effector/effect/).
 
-Usage of [_Effect_](https://effector.dev/docs/api/effector/effect) instead of simple asynchronous function allows you to declare types of possible errors statically that will be passed to [_Query_](/api/primitives/query).
+Usage of [_Effect_](https://effector.dev/en/api/effector/effect/) instead of simple asynchronous function allows you to declare types of possible errors statically that will be passed to [_Query_](/api/primitives/query).
 
 This form allows you to dynamically validate received data using [_Validator_](/api/primitives/validator) in the optional `validate` field.
 
@@ -48,7 +48,7 @@ const languagesQuery = createQuery({
 
 ### `createQuery({ effect, contract, validate?, initialData? })`
 
-Creates [_Query_](/api/primitives/query) based on given [_Effect_](https://effector.dev/docs/api/effector/effect).
+Creates [_Query_](/api/primitives/query) based on given [_Effect_](https://effector.dev/en/api/effector/effect/).
 
 [_Contract_](../primitives/contract) allows you to validate the response and decide how your application should treat it — as a success response or as a failed one. Furthermore, this form allows you to dynamically validate received data using [_Validator_](/api/primitives/validator) in the optional `validate` field.
 
@@ -75,7 +75,7 @@ const languagesQuery = createQuery({
 
 ### `createQuery({ effect, contract?, validate?, mapData: Function, initialData? })`
 
-Creates [_Query_](/api/primitives/query) based on given [_Effect_](https://effector.dev/docs/api/effector/effect). Result of the effect will be validated against the [_Contract_](/api/primitives/contract) and the optional [_Validator_](/api/primitives/validator). Invalid result will cause the [_Query_](/api/primitives/query) to fail.
+Creates [_Query_](/api/primitives/query) based on given [_Effect_](https://effector.dev/en/api/effector/effect/). Result of the effect will be validated against the [_Contract_](/api/primitives/contract) and the optional [_Validator_](/api/primitives/validator). Invalid result will cause the [_Query_](/api/primitives/query) to fail.
 
 A valid data is passed to `mapData` callback as well as original parameters of the [_Query_](/api/primitives/query), result of the callback will be treated as a result of the [_Query_](/api/primitives/query).
 
@@ -100,9 +100,9 @@ const languagesQuery = createQuery({
 
 ### `createQuery({ effect, contract?, validate?, mapData: { source, fn }, initialData? })`
 
-Creates [_Query_](/api/primitives/query) based on given [_Effect_](https://effector.dev/docs/api/effector/effect). Result of the effect will be validated against the [_Contract_](/api/primitives/contract) and the optional [_Validator_](/api/primitives/validator). Invalid result will cause the query to fail.
+Creates [_Query_](/api/primitives/query) based on given [_Effect_](https://effector.dev/en/api/effector/effect/). Result of the effect will be validated against the [_Contract_](/api/primitives/contract) and the optional [_Validator_](/api/primitives/validator). Invalid result will cause the query to fail.
 
-A valid data is passed to `mapData.fn` callback as well as original parameters of the [_Query_](/api/primitives/query) and current value of `mapData.source` [_Store_](https://effector.dev/docs/api/effector/store), result of the callback will be treated as a result of the [_Query_](/api/primitives/query).
+A valid data is passed to `mapData.fn` callback as well as original parameters of the [_Query_](/api/primitives/query) and current value of `mapData.source` [_Store_](https://effector.dev/en/api/effector/store/), result of the callback will be treated as a result of the [_Query_](/api/primitives/query).
 
 ```ts
 const $minimalLanguagesCount = createStore(1);

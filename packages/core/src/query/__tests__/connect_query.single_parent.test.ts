@@ -1,7 +1,7 @@
-import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
+import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { unknownContract } from '../../contract/unknown_contract';
 import { withFactory } from '../../libs/patronus';
 import { connectQuery } from '../connect_query';

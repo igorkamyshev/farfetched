@@ -1,4 +1,4 @@
-# `update` <Badge type="tip" text="since v0.5.0" />
+# `update` <Badge type="tip" text="since v0.5" />
 
 Updates [_Query_](/api/primitives/query) after [_Mutation_](/api/primitives/query) execution.
 
@@ -23,7 +23,7 @@ An update rule can be either:
 
 - a function that accepts the [_Query_](/api/primitives/query) and [_Mutation_](/api/primitives/mutation) state and returns an object for new [_Query_](/api/primitives/query) state
 - an object with the following fields:
-  - `source` - any external [_Store_](https://effector.dev/docs/api/effector/store)
+  - `source` - any external [_Store_](https://effector.dev/en/api/effector/store/)
   - `fn` - a function that accepts the [_Query_](/api/primitives/query), [_Mutation_](/api/primitives/mutation) state and current value of the `source` and returns an object for new [_Query_](/api/primitives/query) state
 
 ### Arguments

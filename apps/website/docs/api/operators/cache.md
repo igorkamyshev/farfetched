@@ -2,7 +2,7 @@
 outline: [2, 3]
 ---
 
-# `cache` <Badge type="tip" text="since v0.3.0" />
+# `cache` <Badge type="tip" text="since v0.3" />
 
 Saves result of the [_Query_](/api/primitives/query) to some storage and allows to restore it back.
 
@@ -18,7 +18,8 @@ Config fields:
 
 - `adapter?`: _CacheAdapter_
 - `staleAfter?`: [_Time_](/api/primitives/time) after which the data is considered stale and will be re-fetched immediately
-- `purge?`: [_Event_](https://effector.dev/docs/api/effector/event) after calling which all records will be deleted from the cache
+- `purge?`: [_Event_](https://effector.dev/en/api/effector/event/) after calling which all records will be deleted from the cache
+- `humanReadableKeys?`: <Badge type="tip" text="since v0.12" /> _boolean_ whether to use human-readable keys in the cache. Default is `false` and the key is not human-readable.
 
 ## Adapters
 
@@ -66,14 +67,14 @@ cache(query, {
 Farfetched provides a helper function to attach observability to the custom adapter — `attachObservability`. It accepts the object with the following properties:
 
 - `adapter` — the adapter instance itself
-- `options` — the object with [_Events_](https://effector.dev/docs/api/effector/event) which should be **passed by the user to the adapter from application code**:
-  - `hit` — the [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered on cache hit
-  - `miss` — the [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered on cache miss
-  - `expired` — the [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered on cache expiration
-  - `evicted` — the [_Event_](https://effector.dev/docs/api/effector/event) that will be triggered on cache eviction
-- `events` — the object with [_Events_](https://effector.dev/docs/api/effector/event) which have to be **triggered by the adapter itself**:
-  - `itemEvicted` — the [_Event_](https://effector.dev/docs/api/effector/event) that is triggered on cache eviction
-  - `itemExpired` — the [_Event_](https://effector.dev/docs/api/effector/event) that is triggered on cache expiration
+- `options` — the object with [_Events_](https://effector.dev/en/api/effector/event/) which should be **passed by the user to the adapter from application code**:
+  - `hit` — the [_Event_](https://effector.dev/en/api/effector/event/) that will be triggered on cache hit
+  - `miss` — the [_Event_](https://effector.dev/en/api/effector/event/) that will be triggered on cache miss
+  - `expired` — the [_Event_](https://effector.dev/en/api/effector/event/) that will be triggered on cache expiration
+  - `evicted` — the [_Event_](https://effector.dev/en/api/effector/event/) that will be triggered on cache eviction
+- `events` — the object with [_Events_](https://effector.dev/en/api/effector/event/) which have to be **triggered by the adapter itself**:
+  - `itemEvicted` — the [_Event_](https://effector.dev/en/api/effector/event/) that is triggered on cache eviction
+  - `itemExpired` — the [_Event_](https://effector.dev/en/api/effector/event/) that is triggered on cache expiration
 
 ```ts
 import { createEvent } from 'effector';
@@ -108,7 +109,7 @@ function myCustomAdapter({
 
 However, we still need to trigger `itemEvicted` and `itemExpired` events in our adapter.
 
-### Custom serialization <Badge type="tip" text="since v0.9.0" />
+### Custom serialization <Badge type="tip" text="since v0.9" />
 
 Adapters that use `localStorage` and `sessionStorage` as a storage for cached results use `JSON.stringify` and `JSON.parse` to serialize and deserialize data. If you need to use custom serialization, you can use `serialize` field in the adapter config:
 

@@ -2,12 +2,17 @@
 outline: [2, 3]
 ---
 
-# `attachOperation` <Badge type="tip" text="since v0.6.0" />
+# `attachOperation` <Badge type="tip" text="since v0.6" />
+
+::: danger
+
+This operator is deprecated since [v0.12](/releases/0-12) and will be removed in v0.14. Please read [this ADR](/adr/attach_operation_deprecation) for more information and migration guide.
+:::
 
 Creates new [_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutation) on top of the existing one.
 
 ::: tip
-It is analog of [attach](https://effector.dev/docs/api/effector/attach) from Effector for [_Queries_](/api/primitives/query) or [_Mutations_](/api/primitives/mutation).
+It is analog of [attach](https://effector.dev/en/api/effector/attach/) from Effector for [_Queries_](/api/primitives/query) or [_Mutations_](/api/primitives/mutation).
 :::
 
 ## Formulae
@@ -41,7 +46,7 @@ const attachedQuery = attachOperation(originalQuery, {
 
 ### `attachOperation(query, { source, mapParams })`
 
-Creates new [_Query_](/api/primitives/query) on top of the existing one, transforming its parameters through `mapParams` function with accept a value from `source` [_Store_](https://effector.dev/docs/api/effector/store) as a second argument.
+Creates new [_Query_](/api/primitives/query) on top of the existing one, transforming its parameters through `mapParams` function with accept a value from `source` [_Store_](https://effector.dev/en/api/effector/store/) as a second argument.
 
 ```ts
 import { createStore } from 'effector';
@@ -89,7 +94,7 @@ const attachedMutation = attachOperation(originaMutation, {
 
 ### `attachOperation(mutation, { source, mapParams })`
 
-Creates new [_Mutation_](/api/primitives/mutation) on top of the existing one, transforming its parameters through `mapParams` function with accept a value from `source` [_Store_](https://effector.dev/docs/api/effector/store) as a second argument.
+Creates new [_Mutation_](/api/primitives/mutation) on top of the existing one, transforming its parameters through `mapParams` function with accept a value from `source` [_Store_](https://effector.dev/en/api/effector/store/) as a second argument.
 
 ```ts
 import { createStore } from 'effector';

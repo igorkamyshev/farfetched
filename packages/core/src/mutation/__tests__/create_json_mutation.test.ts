@@ -1,13 +1,14 @@
-import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, createEvent, createWatch, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
+import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { unknownContract } from '../../contract/unknown_contract';
 import { abortError } from '../../errors/create_error';
 import { fetchFx } from '../../fetch/fetch';
 import { createJsonMutation } from '../create_json_mutation';
 import { isMutation } from '../type';
+import { concurrency } from '../../concurrency/concurrency';
 
 describe('createJsonMutation', () => {
   test('isMutation', () => {
@@ -154,8 +155,9 @@ describe('createJsonMutation', () => {
     const mutation = createJsonMutation({
       request: { method: 'GET', url: 'https://api.salo.com' },
       response: { contract: unknownContract },
-      concurrency: { abort },
     });
+
+    concurrency(mutation, { abortAll: abort });
 
     const scope = fork({
       handlers: [

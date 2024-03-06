@@ -1,7 +1,26 @@
-import { defineConfig } from 'vitest/config';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-export default defineConfig({
-  test: { typecheck: { ignoreSourceErrors: true }, passWithNoTests: true },
-  plugins: [tsconfigPaths()],
-});
+import dts from '../../tools/vite/types';
+
+export default {
+  plugins: [tsconfigPaths(), dts()],
+  test: {
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        useAtomics: true,
+      },
+    },
+  },
+  build: {
+    lib: {
+      entry: 'src/index.ts',
+      name: '@farfetched/superstruct',
+      fileName: 'superstruct',
+      formats: ['es', 'cjs'],
+    },
+    rollupOptions: {
+      external: ['superstruct'],
+    },
+  },
+};

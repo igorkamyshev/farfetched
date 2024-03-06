@@ -1,11 +1,27 @@
 import { type Effect } from 'effector';
-import { expectTypeOf } from 'vitest';
+import { expectTypeOf, test, describe } from 'vitest';
 
 import { createMutation } from '../../mutation/create_mutation';
 import { createQuery } from '../../query/create_query';
+import { Mutation } from '../../mutation/type';
+import { Query } from '../../query/type';
 import { update } from '../update';
 
 describe('update', () => {
+  test('allow to return defaultValue from callback, issue #432', () => {
+    const query: Query<void, number, any, string> = {} as any;
+    const mutation: Mutation<void, number, any> = {} as any;
+
+    update(query, {
+      on: mutation,
+      by: {
+        success: () => {
+          return { result: 'defaultValue' };
+        },
+      },
+    });
+  });
+
   test('use null if initial data type is not provided, issue #370', () => {
     const queryFx: Effect<void, number[]> = {} as any;
     const mutationFx: Effect<number, number> = {} as any;

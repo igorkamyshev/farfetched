@@ -76,40 +76,10 @@ export function createBarrier({
   deactivateOn?: Event<any>;
   perform?: Array<Performer>;
 }): Barrier {
-  const $mutex = createStore<Mutex | null>(null, { serialize: 'ignore' });
-
   const activated = createEvent();
   const deactivated = createEvent();
 
   const touch = createEvent();
-
-  sample({
-    clock: touch,
-    source: $mutex,
-    filter: (mutex) => mutex === null,
-    fn: () => new Mutex(),
-    target: $mutex,
-  });
-
-  sample({
-    clock: activated,
-    target: attach({
-      source: $mutex,
-      async effect(mutex) {
-        await mutex?.acquire();
-      },
-    }),
-  });
-
-  sample({
-    clock: deactivated,
-    target: attach({
-      source: $mutex,
-      async effect(mutex) {
-        mutex?.release();
-      },
-    }),
-  });
 
   const operationFailed = createEvent<{
     params: unknown;
@@ -176,6 +146,36 @@ export function createBarrier({
     clock: touch,
     filter: $active,
     target: startOnlyNotPending(performers),
+  });
+
+  const $mutex = createStore<Mutex | null>(null, { serialize: 'ignore' });
+
+  sample({
+    clock: touch,
+    source: { mutex: $mutex, active: $active },
+    filter: ({ mutex }) => mutex === null,
+    fn: ({ active }) => new Mutex(active),
+    target: $mutex,
+  });
+
+  sample({
+    clock: activated,
+    target: attach({
+      source: $mutex,
+      effect(mutex) {
+        mutex?.acquire();
+      },
+    }),
+  });
+
+  sample({
+    clock: deactivated,
+    target: attach({
+      source: $mutex,
+      effect(mutex) {
+        mutex?.release();
+      },
+    }),
   });
 
   return {

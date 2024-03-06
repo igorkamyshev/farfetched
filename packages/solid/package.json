@@ -1,8 +1,53 @@
 {
   "name": "@farfetched/solid",
   "version": "0.11.4",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/igorkamyshev/farfetched",
+  "devDependencies": {
+    "effector-solid": "^0.23.0",
+    "effector": "^23.0.0",
+    "solid-js": "^1.4.7",
+    "@farfetched/core": "workspace:*"
+  },
   "peerDependencies": {
     "effector-solid": "^0.23.0",
-    "solid-js": "^1.4.7"
-  }
+    "effector": "^23.0.0",
+    "solid-js": "^1.4.7",
+    "@farfetched/core": "workspace:*"
+  },
+  "scripts": {
+    "test:run": "vitest run --typecheck",
+    "build": "vite build",
+    "size": "size-limit",
+    "publint": "node ../../tools/scripts/publint.mjs",
+    "typelint": "attw --pack"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/solid.cjs",
+  "module": "./dist/solid.js",
+  "types": "./dist/solid.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/solid.d.ts",
+        "default": "./dist/solid.js"
+      },
+      "require": {
+        "types": "./dist/solid.d.cts",
+        "default": "./dist/solid.cjs"
+      }
+    }
+  },
+  "size-limit": [
+    {
+      "path": "./dist/solid.js",
+      "limit": "571 B"
+    }
+  ]
 }

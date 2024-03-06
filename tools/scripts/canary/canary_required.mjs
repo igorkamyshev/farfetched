@@ -1,5 +1,5 @@
-import { logger, readJsonFile } from '@nrwl/devkit';
-import { join } from 'path';
+import { join } from 'node:path';
+import { readFile } from 'node:fs/promises';
 
 const [, , commentBody] = process.argv;
 
@@ -15,9 +15,10 @@ const previousChangesets = (
   .map((changeset) => changeset.replaceAll('[', '').replaceAll(']', ''))
   .filter(Boolean);
 
-const usedChangesets = readJsonFile(
-  join(process.cwd(), '.changeset', 'pre.json')
-).changesets;
+const { changesets: usedChangesets } = await readFile(
+  join(process.cwd(), '.changeset', 'pre.json'),
+  'utf-8'
+).then(JSON.parse);
 
 previousChangesets.sort();
 usedChangesets.sort();
@@ -26,9 +27,9 @@ const skipCanary = isArraysEquals(previousChangesets, usedChangesets)
   ? 'skip'
   : '';
 
-logger.log(`previousChangesets="${JSON.stringify(previousChangesets)}"`);
-logger.log(`usedChangesets="${JSON.stringify(usedChangesets)}"`);
-logger.log(`skipCanary=${skipCanary}`);
+console.log(`previousChangesets="${JSON.stringify(previousChangesets)}"`);
+console.log(`usedChangesets="${JSON.stringify(usedChangesets)}"`);
+console.log(`skipCanary=${skipCanary}`);
 
 // utils
 

@@ -4,29 +4,39 @@ import { parseTime, type Time } from '../libs/date-nfs';
 import { type Query } from '../query/type';
 import { inMemoryCache } from './adapters/in_memory';
 import { type CacheAdapter, type CacheAdapterInstance } from './adapters/type';
-import { createKey, queryUniqId } from './key/key';
+import { createHumanReadbleKey, createKey, queryUniqId } from './key/key';
 import { createSourcedReader } from '../libs/patronus';
 
 interface CacheParameters {
   adapter?: CacheAdapter;
   staleAfter?: Time;
   purge?: Event<void>;
+  humanReadableKeys?: boolean;
 }
 
 interface CacheParametersDefaulted {
   adapter: CacheAdapter;
   staleAfter?: Time;
   purge?: Event<void>;
+  humanReadableKeys: boolean;
 }
 
 export function cache<Q extends Query<any, any, any, any>>(
   query: Q,
   rawParams?: CacheParameters
 ): void {
-  const { adapter, staleAfter, purge }: CacheParametersDefaulted = {
+  const {
+    adapter,
+    staleAfter,
+    purge,
+    humanReadableKeys,
+  }: CacheParametersDefaulted = {
     adapter: rawParams?.adapter ?? inMemoryCache(),
+    humanReadableKeys: false,
     ...rawParams,
   };
+
+  const keyCreator = humanReadableKeys ? createHumanReadbleKey : createKey;
 
   const id = queryUniqId(query);
 
@@ -44,7 +54,7 @@ export function cache<Q extends Query<any, any, any, any>>(
     any
   >(async ({ instance, params }) => {
     const sources = await readAllSourcedFx(params);
-    const key = createKey({
+    const key = keyCreator({
       sid: id,
       params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
       sources,
@@ -68,7 +78,7 @@ export function cache<Q extends Query<any, any, any, any>>(
   >(async ({ instance, params, result }) => {
     const sources = await readAllSourcedFx(params);
 
-    const key = createKey({
+    const key = keyCreator({
       sid: id,
       params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
       sources,
@@ -88,7 +98,7 @@ export function cache<Q extends Query<any, any, any, any>>(
   >(async ({ params, instance }) => {
     const sources = await readAllSourcedFx(params);
 
-    const key = createKey({
+    const key = keyCreator({
       sid: id,
       params: query.__.lowLevelAPI.paramsAreMeaningless ? null : params,
       sources,

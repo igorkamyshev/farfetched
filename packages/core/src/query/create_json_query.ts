@@ -1,4 +1,4 @@
-import { attach, type Event, type Json } from 'effector';
+import { attach, createEffect, type Event, type Json } from 'effector';
 
 import { type Contract } from '../contract/type';
 import { createJsonApiRequest } from '../fetch/json';
@@ -17,6 +17,8 @@ import {
 } from './create_headless_query';
 import { unknownContract } from '../contract/unknown_contract';
 import { type Validator } from '../validation/type';
+import { concurrency } from '../concurrency/concurrency';
+import { onAbort } from '../remote_operation/on_abort';
 
 // -- Shared
 
@@ -57,6 +59,10 @@ interface BaseJsonQueryConfigNoParams<
     HeadersSource,
     UrlSource
   >;
+  /**
+   * @deprecated Deprecated since 0.12, use `concurrency` operator instead
+   * @see {@link https://farfetched.pages.dev/adr/concurrency}
+   */
   concurrency?: ConcurrencyConfig;
 }
 
@@ -76,6 +82,10 @@ interface BaseJsonQueryConfigWithParams<
     HeadersSource,
     UrlSource
   >;
+  /**
+   * @deprecated Deprecated since 0.12, use `concurrency` operator instead
+   * @see {@link https://farfetched.pages.dev/adr/concurrency}
+   */
   concurrency?: ConcurrencyConfig;
 }
 
@@ -312,8 +322,6 @@ export function createJsonQuery(config: any) {
       method: config.request.method,
       credentials,
     },
-    concurrency: { strategy: config.concurrency?.strategy ?? 'TAKE_LATEST' },
-    abort: { clock: config.concurrency?.abort },
   });
 
   const headlessQuery = createHeadlessQuery<
@@ -340,6 +348,12 @@ export function createJsonQuery(config: any) {
       config.request.query,
     ],
     paramsAreMeaningless: true,
+  });
+
+  const executeFx = createEffect((c: any) => {
+    const abortController = new AbortController();
+    onAbort(() => abortController.abort());
+    return requestFx({ ...c, abortController });
   });
 
   headlessQuery.__.executeFx.use(
@@ -369,12 +383,28 @@ export function createJsonQuery(config: any) {
           query: partialQuery(params),
         };
       },
-      effect: requestFx,
+      effect: executeFx,
     })
   );
 
-  return {
+  const op = {
     ...headlessQuery,
-    __: { ...headlessQuery.__, executeFx: requestFx },
+    __: { ...headlessQuery.__, executeFx },
   };
+
+  /* TODO: in future releases we will remove this code and make concurrency a separate function */
+  if (config.concurrency) {
+    op.__.meta.flags.concurrencyFieldUsed = true;
+  }
+
+  setTimeout(() => {
+    if (!op.__.meta.flags.concurrencyOperatorUsed) {
+      concurrency(op, {
+        strategy: config.concurrency?.strategy ?? 'TAKE_LATEST',
+        abortAll: config.concurrency?.abort,
+      });
+    }
+  });
+
+  return op;
 }

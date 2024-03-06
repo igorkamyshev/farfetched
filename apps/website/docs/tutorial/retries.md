@@ -32,7 +32,7 @@ retry(characterQuery, {
 This code works is pretty straightforward, after first failure of `characterQuery`, it calls it again after 500ms. If it fails again, it will call it again after 500ms and so on up yo 5 times. If it succeeded, it will stop retrying.
 
 ::: tip
-As soon as Farfetched is [based on Effector](/statements/effector), almost every field of its configs could be static or reactive. So, you can pass a [_Store_](https://effector.dev/docs/api/effector/store) with a number of retires to `times` option as well.
+As soon as Farfetched is [based on Effector](/statements/effector), almost every field of its configs could be static or reactive. So, you can pass a [_Store_](https://effector.dev/en/api/effector/store/) with a number of retires to `times` option as well.
 :::
 
 ## Filter retries
@@ -83,7 +83,7 @@ retry(characterQuery, {
 ```
 
 ::: tip
-This type of fields is called [_Sourced_](/api/primitives/sourced) in Farfetched. It is a special type of field that can be either a static value, a [_Store_](https://effector.dev/docs/api/effector/store), a function or the combination of these variants. It is useful to make configs more flexible.
+This type of fields is called [_Sourced_](/api/primitives/sourced) in Farfetched. It is a special type of field that can be either a static value, a [_Store_](https://effector.dev/en/api/effector/store/), a function or the combination of these variants. It is useful to make configs more flexible.
 :::
 
 ## Dynamic delay

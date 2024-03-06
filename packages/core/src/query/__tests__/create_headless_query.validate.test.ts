@@ -8,7 +8,7 @@ import { createHeadlessQuery } from '../create_headless_query';
 describe('core/createHeadlessQuery with validate', () => {
   const defaultConfig = {
     contract: unknownContract,
-    mapData: ({ result }) => result,
+    mapData: ({ result }: { result: unknown }) => result,
   };
   const defaultHandler = () => 'Random string';
 

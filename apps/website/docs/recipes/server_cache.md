@@ -103,16 +103,16 @@ function redisCache({ maxAge }: { maxAge: number }) {
 ```
 
 ::: tip Effects
-Because Farfetched uses [Effector](/statements/effector) under the hood, it is required to use make all the side effects in custom adapters performed by [_Effects_](https://effector.dev/docs/api/effector/effect) that are created by [`createEffect`](https://effector.dev/docs/api/effector/createEffect) function.
+Because Farfetched uses [Effector](/statements/effector) under the hood, it is required to use make all the side effects in custom adapters performed by [_Effects_](https://effector.dev/en/api/effector/effect/) that are created by [`createEffect`](https://effector.dev/en/api/effector/createeffect/) function.
 :::
 
 Now, let's implement all methods of the adapter one by one.
 
 #### `get`
 
-`get` [_Effect_](https://effector.dev/docs/api/effector/effect) accepts a single argument — an object with `key` property. It should return an object with `value` and `cachedAt` properties or `null` if there is no value in the cache.
+`get` [_Effect_](https://effector.dev/en/api/effector/effect/) accepts a single argument — an object with `key` property. It should return an object with `value` and `cachedAt` properties or `null` if there is no value in the cache.
 
-This [_Effect_](https://effector.dev/docs/api/effector/effect) can fail with an error if something went wrong.
+This [_Effect_](https://effector.dev/en/api/effector/effect/) can fail with an error if something went wrong.
 
 ```ts{4,7-14}
 import Redis from 'ioreis';
@@ -138,11 +138,11 @@ function redisCache({ maxAge }) {
 
 #### `set`
 
-`set` [_Effect_](https://effector.dev/docs/api/effector/effect) accepts a single argument — an object with `key` and `value` properties. It should store the value in the cache.
+`set` [_Effect_](https://effector.dev/en/api/effector/effect/) accepts a single argument — an object with `key` and `value` properties. It should store the value in the cache.
 
 Because of internal implementation of the `cache` operator, it is required to store the `cachedAt` property in the cache. It is a timestamp of the moment when the value was cached. So, let's store it together with the value in the cache.
 
-This [_Effect_](https://effector.dev/docs/api/effector/effect) can fail with an error if something went wrong.
+This [_Effect_](https://effector.dev/en/api/effector/effect/) can fail with an error if something went wrong.
 
 ```ts{4,8-17}
 import Redis from 'ioreis';
@@ -170,9 +170,9 @@ function redisCache({ maxAge }) {
 
 #### `unset`
 
-`unset` [_Effect_](https://effector.dev/docs/api/effector/effect) accepts a single argument — an object with `key` property. It should remove the value from the cache.
+`unset` [_Effect_](https://effector.dev/en/api/effector/effect/) accepts a single argument — an object with `key` property. It should remove the value from the cache.
 
-This [_Effect_](https://effector.dev/docs/api/effector/effect) should not fail with an error. So, you have to provide a guarantee that the value will be removed from the cache after resolving the [_Effect_](https://effector.dev/docs/api/effector/effect). We skip this step in this example, but it's required to implement it in the real application.
+This [_Effect_](https://effector.dev/en/api/effector/effect/) should not fail with an error. So, you have to provide a guarantee that the value will be removed from the cache after resolving the [_Effect_](https://effector.dev/en/api/effector/effect/). We skip this step in this example, but it's required to implement it in the real application.
 
 ```ts{4,9-11}
 import Redis from 'ioredis';
@@ -193,9 +193,9 @@ function redisCache({ maxAge }) {
 
 #### `purge`
 
-`purge` [_Effect_](https://effector.dev/docs/api/effector/effect) doesn't accept any arguments. It should remove all the values from the cache.
+`purge` [_Effect_](https://effector.dev/en/api/effector/effect/) doesn't accept any arguments. It should remove all the values from the cache.
 
-This [_Effect_](https://effector.dev/docs/api/effector/effect) should not fail with an error. So, you have to provide a guarantee that all values will be removed from the cache after resolving the [_Effect_](https://effector.dev/docs/api/effector/effect). We skip this step in this example, but it's required to implement it in the real application.
+This [_Effect_](https://effector.dev/en/api/effector/effect/) should not fail with an error. So, you have to provide a guarantee that all values will be removed from the cache after resolving the [_Effect_](https://effector.dev/en/api/effector/effect/). We skip this step in this example, but it's required to implement it in the real application.
 
 ```ts{4,10-12}
 import Redis from 'ioredis';
@@ -218,7 +218,7 @@ function redisCache({ maxAge }) {
 
 So far, we have implemented a custom adapter for the `cache` operator. But we still need to use it in our application. And we need to use different adapters in different environments — on server and on client.
 
-Effector has a built-in mechanism to inject different implementations of the same value in different environments — [Fork API](https://effector.dev/docs/api/effector/fork). Let's use it to inject different adapters in different environments.
+Effector has a built-in mechanism to inject different implementations of the same value in different environments — [Fork API](https://effector.dev/en/api/effector/fork/). Let's use it to inject different adapters in different environments.
 
 Write default path in the regular way:
 
@@ -273,7 +273,7 @@ However, in case of our Redis adapter it is not recommended to track external st
 
 #### Dynamic configuration
 
-In this recipe, we have skipped Redis configuration. But in real applications, it is required to configure Redis connection. We can do it by passing the configuration through [_Store_](https://effector.dev/docs/api/effector/store):
+In this recipe, we have skipped Redis configuration. But in real applications, it is required to configure Redis connection. We can do it by passing the configuration through [_Store_](https://effector.dev/en/api/effector/store/):
 
 ```ts
 import Redis from 'ioreis';
@@ -283,7 +283,7 @@ const $redisConnection = createStore<string | null>(null);
 const $redis = $redisConnection.map((connection) => new Redis(connection));
 ```
 
-In the adapter, we can use [`attach`](https://effector.dev/docs/api/effector/attach/) to pass instance of `Redis` to any [_Effect_](https://effector.dev/docs/api/effector/effect):
+In the adapter, we can use [`attach`](https://effector.dev/en/api/effector/attach//) to pass instance of `Redis` to any [_Effect_](https://effector.dev/en/api/effector/effect/):
 
 ```ts{7-10}
 import { attach } from 'effector';

@@ -1,4 +1,3 @@
-export { abortable, type AbortContext } from './abortable';
 export { delay } from './delay';
 export { every } from './every';
 export { not } from './not';

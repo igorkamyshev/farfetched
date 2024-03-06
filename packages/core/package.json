@@ -1,8 +1,47 @@
 {
   "name": "@farfetched/core",
   "version": "0.11.4",
-  "type": "commonjs",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/igorkamyshev/farfetched",
+  "devDependencies": {
+    "effector": "^23.0.0"
+  },
   "peerDependencies": {
     "effector": "^23.0.0"
-  }
+  },
+  "scripts": {
+    "test:run": "vitest run --typecheck",
+    "build": "vite build",
+    "size": "size-limit",
+    "publint": "node ../../tools/scripts/publint.mjs",
+    "typelint": "attw --pack"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/core.cjs",
+  "module": "./dist/core.js",
+  "types": "./dist/core.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/core.d.ts",
+        "default": "./dist/core.js"
+      },
+      "require": {
+        "types": "./dist/core.d.cts",
+        "default": "./dist/core.cjs"
+      }
+    }
+  },
+  "size-limit": [
+    {
+      "path": "./dist/core.js",
+      "limit": "15.9 kB"
+    }
+  ]
 }

@@ -130,8 +130,7 @@ describe('createJsonMutation', () => {
       }>
     >();
 
-    // @ts-expect-error invalid result
-    expectTypeOf(mutation.finished.success).toEqualTypeOf<
+    expectTypeOf(mutation.finished.success).not.toEqualTypeOf<
       Event<{
         result: string;
         params: void;
@@ -287,8 +286,7 @@ describe('createJsonMutation', () => {
       Event<{ result: boolean; params: string; meta: ExecutionMeta }>
     >();
 
-    // @ts-expect-error invalid result
-    expectTypeOf(mutationOne.finished.success).toEqualTypeOf<
+    expectTypeOf(mutationOne.finished.success).not.toEqualTypeOf<
       Event<{ result: number; params: string; meta: ExecutionMeta }>
     >();
   });
@@ -328,8 +326,7 @@ describe('createJsonMutation', () => {
     expectTypeOf(mutationTwo.finished.success).toEqualTypeOf<
       Event<{ result: boolean; params: string; meta: ExecutionMeta }>
     >();
-    // @ts-expect-error invalid result
-    expectTypeOf(mutationTwo.finished.success).toEqualTypeOf<
+    expectTypeOf(mutationTwo.finished.success).not.toEqualTypeOf<
       Event<{ result: number; params: string; meta: ExecutionMeta }>
     >();
   });
@@ -362,8 +359,7 @@ describe('createJsonMutation', () => {
       Event<{ result: boolean; params: void; meta: ExecutionMeta }>
     >();
 
-    // @ts-expect-error invalid result
-    expectTypeOf(mutationOne.finished.success).toEqualTypeOf<
+    expectTypeOf(mutationOne.finished.success).not.toEqualTypeOf<
       Event<{ result: number; params: void; meta: ExecutionMeta }>
     >();
   });
@@ -402,8 +398,7 @@ describe('createJsonMutation', () => {
     expectTypeOf(mutationTwo.finished.success).toEqualTypeOf<
       Event<{ result: boolean; params: void; meta: ExecutionMeta }>
     >();
-    // @ts-expect-error invalid result
-    expectTypeOf(mutationTwo.finished.success).toEqualTypeOf<
+    expectTypeOf(mutationTwo.finished.success).not.toEqualTypeOf<
       Event<{ result: number; params: void; meta: ExecutionMeta }>
     >();
   });

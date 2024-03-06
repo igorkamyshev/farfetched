@@ -4,9 +4,11 @@ Creates static connection between [_Queries_](../primitives/query.md). Every tim
 
 ## Formulae
 
-### `connectQuery({ source, target })`
+### `connectQuery({ source, target, filter? })`
 
 This form is used for `target` [_Query_](../primitives/query.md) without parameters. It does not pass any data to `target`.
+
+<Badge type="tip" text="since v0.12" /> Optional `filter` function can be used to filter out unnecessary updates. It accepts an object with the shape from `source`, each field contains `result` and `params` of the corresponding [_Query_](../primitives/query.md) and returns `true` if `target` [_Query_](../primitives/query.md) should be started.
 
 ```ts
 const languagesQuery: Query<unknown, unknown, unknown>;
@@ -20,11 +22,13 @@ connectQuery({
 });
 ```
 
-### `connectQuery({ source, fn, target })`
+### `connectQuery({ source, fn, target, filter? })`
 
 This form is used for `target` [_Query_](../primitives/query.md) with parameters. It gets results and parameters of `source`, transforms it through `fn` and uses it for `target` [_Query_](../primitives/query.md).
 
 `fn` accepts an object with the shape from `source`, each field contains `result` and `params` of the corresponding [_Query_](../primitives/query.md) and returns an object with a single field `params` which is used to start `target` [_Query_](../primitives/query.md).
+
+<Badge type="tip" text="since v0.12" /> Optional `filter` function can be used to filter out unnecessary updates. It accepts an object with the shape from `source`, each field contains `result` and `params` of the corresponding [_Query_](../primitives/query.md) and returns `true` if `target` [_Query_](../primitives/query.md) should be started.
 
 ```ts
 const blocksQuery: Query<unknown, string, unknown>;

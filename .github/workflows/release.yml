@@ -19,4 +19,5 @@ jobs:
       - run: |
           echo "//registry.npmjs.org/:_authToken="${{secrets.NPM_TOKEN}}"" > ~/.npmrc
         shell: sh
-      - run: pnpm nx run-many --output-style=static --target=publish --all
+      - run: pnpm run -r build
+      - run: pnpm -r publish --no-git-checks

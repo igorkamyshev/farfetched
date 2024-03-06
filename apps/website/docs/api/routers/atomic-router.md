@@ -32,7 +32,7 @@ Integration provides the way to use any [_Query_](/api/primitives/query) in [`ch
 
 ### `freshChain`
 
-After opening a route with `freshChain`, `.refresh` [_Event_](https://effector.dev/docs/api/effector/event) would be executed. So, [_Query_](/api/primitives/query) will be **executed only if it is already `.$stale`**.
+After opening a route with `freshChain`, `.refresh` [_Event_](https://effector.dev/en/api/effector/event/) would be executed. So, [_Query_](/api/primitives/query) will be **executed only if it is already `.$stale`**.
 
 ```ts
 import { createJsonQuery } from '@farfetched/core';
@@ -53,7 +53,7 @@ const postLoadedRoute = chainRoute({
 
 ### `startChain`
 
-After opening a route with `startChain`, `.start` [_Event_](https://effector.dev/docs/api/effector/event) would be executed. So, [_Query_](/api/primitives/query) will be **executed unconditionally**.
+After opening a route with `startChain`, `.start` [_Event_](https://effector.dev/en/api/effector/event/) would be executed. So, [_Query_](/api/primitives/query) will be **executed unconditionally**.
 
 ```ts
 import { createJsonQuery } from '@farfetched/core';
@@ -69,5 +69,26 @@ const postQuery = createJsonQuery({
 const postLoadedRoute = chainRoute({
   route: postRoute,
   ...startChain(postQuery),
+});
+```
+
+### `barrierChain` <Badge type="tip" text="since v0.12.0" />
+
+After opening a route with `barrierChain`, [_Barrier_](/api/primitives/barrier) `.$active` status will be checked. Route will be opened only after [_Barrier_](/api/primitives/barrier) deactivation. If [_Barrier_](/api/primitives/barrier) is not active, route will be opened immediately.
+
+```ts
+import { createBarrier } from '@farfetched/core';
+import { barrierChain } from '@farfetched/atomic-router';
+import { chainRoute, createRoute } from 'atmoic-router';
+
+const anyRoute = createRoute();
+
+const authBarrier = createBarrier({
+  /* ... */
+});
+
+const authOnlyRoute = chainRoute({
+  route: anyRoute,
+  ...barrierChain(authBarrier),
 });
 ```

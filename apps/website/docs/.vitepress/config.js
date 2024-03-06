@@ -7,7 +7,6 @@ export default withMermaid(
     title: 'Farfetched',
     description: 'The advanced data fetching tool for web applications.',
     lastUpdated: true,
-    outDir: '../../../dist/apps/website',
     head: [
       ['link', { rel: 'icon', href: '/favicon.ico', sizes: 'any' }],
       ['link', { rel: 'icon', href: '/icon.svg', type: 'image/svg+xml' }],
@@ -66,6 +65,10 @@ export default withMermaid(
               text: 'Releases',
               link: '/releases/',
             },
+            {
+              text: 'ADRs',
+              link: '/adr/',
+            },
             { text: 'Effector', link: 'https://effector.dev' },
           ],
         },
@@ -108,12 +111,13 @@ export default withMermaid(
                     link: '/tutorial/update_query',
                   },
                   { text: 'Retries', link: '/tutorial/retries' },
+                  { text: 'Concurrency', link: '/tutorial/concurrency' },
                   { text: 'Caching', link: '/tutorial/caching' },
-                  {
-                    text: 'Operation copying',
-                    link: '/tutorial/operation_copying',
-                  },
                 ],
+              },
+              {
+                text: 'Developer experience',
+                link: '/tutorial/devtools',
               },
               {
                 text: 'Factories',
@@ -202,6 +206,7 @@ export default withMermaid(
               { text: 'retry', link: '/api/operators/retry' },
               { text: 'timeout', link: '/api/operators/timeout' },
               { text: 'cache', link: '/api/operators/cache' },
+              { text: 'concurrency', link: '/api/operators/concurrency' },
               { text: 'applyBarrier', link: '/api/operators/apply_barrier' },
               { text: 'update', link: '/api/operators/update' },
               {
@@ -228,6 +233,7 @@ export default withMermaid(
             items: [
               { text: 'Error creators', link: '/api/utils/error_creators' },
               { text: 'Error guards', link: '/api/utils/error_guards' },
+              { text: 'onAbort', link: '/api/utils/on_abort' },
             ],
           },
           {
@@ -266,6 +272,10 @@ export default withMermaid(
                     text: 'typed-contracts',
                     link: '/api/contracts/typed-contracts',
                   },
+                  {
+                    text: 'Valibot',
+                    link: '/api/contracts/valibot',
+                  },
                 ],
               },
               {
@@ -291,21 +301,20 @@ export default withMermaid(
                 text: 'Base URL for all operations',
                 link: '/recipes/base_url',
               },
-              {
-                text: 'Auth token for operations',
-                link: '/recipes/auth_token',
-              },
-              {
-                text: 'Pause world until user action',
-                link: '/recipes/terms_of_use',
-              },
             ],
           },
           {
             text: 'Case studies',
             items: [
-              { text: 'Auth token', link: '/recipes/auth_token' },
+              {
+                text: 'Auth token for operations',
+                link: '/recipes/auth_token',
+              },
               { text: 'Feature flags service', link: '/recipes/feature_flags' },
+              {
+                text: 'Pause world until user action',
+                link: '/recipes/terms_of_use',
+              },
               { text: 'Server side caching', link: '/recipes/server_cache' },
             ],
           },
@@ -340,6 +349,7 @@ export default withMermaid(
                 text: 'Your own GraphQL Query',
                 link: '/recipes/graphql_query',
               },
+              { text: 'FormData in Mutation', link: '/recipes/form_data' },
             ],
           },
           {
@@ -390,6 +400,7 @@ export default withMermaid(
           {
             text: 'Releases',
             items: [
+              { text: 'v0.12 Talat Noi', link: '/releases/0-12' },
               { text: 'v0.11 Namtok Ngao', link: '/releases/0-11' },
               { text: 'v0.10 Namtok Than Sadet', link: '/releases/0-10' },
               { text: 'v0.9', link: '/releases/0-9' },
