@@ -30,19 +30,6 @@ const timedOut = sample({
 });
 ```
 
-## `isAbortError`
-
-`AbortError` is thrown when the query is aborted.
-
-```ts
-import { isAbortError } from '@farfetched/core';
-
-const aborted = sample({
-  clock: query.finished.failure,
-  filter: isAbortError,
-});
-```
-
 ## `isPreparationError`
 
 Preparation error is thrown when the response cannot be prepared for some reason. For example, when the response is not a JSON string, but supposed to be.
@@ -71,7 +58,11 @@ const httpError = sample({
 
 ### `isHttpErrorCode`
 
-This function is a more specific version of `isHttpError`. It takes a number as an argument and returns a function that checks if the error is a `HttpError` with the given status code.
+This function is a more specific version of `isHttpError`.
+
+#### `isHttpErrorCode(statusCode: number)`
+
+It takes a number as an argument and returns a function that checks if the error is a `HttpError` with the given status code.
 
 ```ts
 import { isHttpErrorCode } from '@farfetched/core';
@@ -79,6 +70,19 @@ import { isHttpErrorCode } from '@farfetched/core';
 const notFound = sample({
   clock: query.finished.failure,
   filter: isHttpErrorCode(404),
+});
+```
+
+#### `isHttpErrorCode(statusCodes: number[])` <Badge type="tip" text="since v0.9" />
+
+It takes an array of numbers as an argument and returns a function that checks if the error is a `HttpError` with one of the given status codes.
+
+```ts
+import { isHttpErrorCode } from '@farfetched/core';
+
+const notFoundOrForbidden = sample({
+  clock: query.finished.failure,
+  filter: isHttpErrorCode([404, 403]),
 });
 ```
 
@@ -92,5 +96,18 @@ import { isNetworkError } from '@farfetched/core';
 const networkProblems = sample({
   clock: query.finished.failure,
   filter: isNetworkError,
+});
+```
+
+## `inConfigurationError` <Badge type="tip" text="since v0.11" />
+
+`ConfigurationError` is thrown when the query is misconfigured. E.g., when the URL is not URL.
+
+```ts
+import { inConfigurationError } from '@farfetched/core';
+
+const configurationProblems = sample({
+  clock: query.finished.failure,
+  filter: inConfigurationError,
 });
 ```

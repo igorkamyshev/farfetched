@@ -19,8 +19,7 @@ describe('createMutation', () => {
     expectTypeOf(mutation.finished.success).toEqualTypeOf<
       Event<{ params: number; result: string; meta: ExecutionMeta }>
     >();
-    // @ts-expect-error invalid result type
-    expectTypeOf(mutation.finished.success).toEqualTypeOf<
+    expectTypeOf(mutation.finished.success).not.toEqualTypeOf<
       Event<{ params: string; result: string; meta: ExecutionMeta }>
     >();
   });
@@ -39,16 +38,14 @@ describe('createMutation', () => {
     expectTypeOf(mutation.finished.success).toEqualTypeOf<
       Event<{ params: number; result: string; meta: ExecutionMeta }>
     >();
-    // @ts-expect-error invalid result type
-    expectTypeOf(mutation.finished.success).toEqualTypeOf<
+    expectTypeOf(mutation.finished.success).not.toEqualTypeOf<
       Event<{ params: string; result: string; meta: ExecutionMeta }>
     >();
 
     expectTypeOf(mutation.finished.failure).toEqualTypeOf<
       Event<{ params: number; error: boolean; meta: ExecutionMeta }>
     >();
-    // @ts-expect-error invalid error type
-    expectTypeOf(mutation.finished.failure).toEqualTypeOf<
+    expectTypeOf(mutation.finished.failure).not.toEqualTypeOf<
       Event<{ params: string; error: boolean; meta: ExecutionMeta }>
     >();
   });
@@ -62,8 +59,7 @@ describe('createMutation', () => {
     expectTypeOf(mutation.finished.success).toEqualTypeOf<
       Event<{ params: number; result: string; meta: ExecutionMeta }>
     >();
-    // @ts-expect-error invalid result type
-    expectTypeOf(mutation.finished.success).toEqualTypeOf<
+    expectTypeOf(mutation.finished.success).not.toEqualTypeOf<
       Event<{ params: string; result: string; meta: ExecutionMeta }>
     >();
 
@@ -74,8 +70,7 @@ describe('createMutation', () => {
         meta: ExecutionMeta;
       }>
     >();
-    // @ts-expect-error invalid error type
-    expectTypeOf(mutation.finished.failure).toEqualTypeOf<
+    expectTypeOf(mutation.finished.failure).not.toEqualTypeOf<
       Event<{ params: number; error: boolean; meta: ExecutionMeta }>
     >();
   });

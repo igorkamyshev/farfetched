@@ -1,7 +1,7 @@
-import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, createEffect, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
+import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { createMutation } from '../create_mutation';
 
 describe('createMutation', () => {

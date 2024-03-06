@@ -10,7 +10,9 @@ All errors are serializable, so they can be safely transmitted through network.
 
 E.g., you can use error creators to [create your own factory](/recipes/custom_query) and want to reuse existing error handling infrastructure in Farfetched, or to imitate these errors in tests.
 
-## `invalidDataError`
+## Creators
+
+### `invalidDataError`
 
 `InvalidDataError` is thrown when the response data is invalid against the given [_Contract_](/api/primitives/contract) or [_Validator_](/api/primitives/validator).
 
@@ -34,7 +36,7 @@ test('on error', async () => {
 });
 ```
 
-## `timeoutError`
+### `timeoutError`
 
 `TimeoutError` is thrown when the query takes too long to complete.
 
@@ -57,7 +59,7 @@ test('on error', async () => {
 });
 ```
 
-## `abortError`
+### `abortError`
 
 `AbortError` is thrown when the query is aborted.
 
@@ -78,7 +80,7 @@ test('on error', async () => {
 });
 ```
 
-## `preparationError`
+### `preparationError`
 
 Preparation error is thrown when the response cannot be prepared for some reason. For example, when the response is not a JSON string, but supposed to be.
 
@@ -99,7 +101,7 @@ test('on error', async () => {
 });
 ```
 
-## `httpError`
+### `httpError`
 
 `HttpError` is thrown when the response status code is not 2xx.
 
@@ -124,7 +126,7 @@ test('on error', async () => {
 });
 ```
 
-## `networkError`
+### `networkError`
 
 `NetworkError` is thrown when the query fails because of network problems.
 
@@ -146,3 +148,36 @@ test('on error', async () => {
   });
 });
 ```
+
+### `configurationError` <Badge type="tip" text="since v0.11" />
+
+`ConfigurationError` is thrown when the query is misconfigured. E.g., when the URL is not URL.
+
+```ts
+import { configurationError } from '@farfetched/core';
+
+test('on error', async () => {
+  const scope = fork({
+    handlers: [
+      [
+        query.__.executeFx,
+        vi.fn(() => {
+          throw configurationError({
+            validationErrors: ['"LOL KEK" is not valid URL'],
+          });
+        }),
+      ],
+    ],
+  });
+});
+```
+
+## Live demo
+
+You can play around with error creators in the live demo below to see how it works 👇
+
+<script setup lang="ts">
+import demoFile from './error_creators.live.vue?raw';
+</script>
+
+<LiveDemo :demoFile="demoFile" />

@@ -1,7 +1,7 @@
 import { allSettled, fork } from 'effector';
-import { watchEffect } from '@farfetched/test-utils';
 import { describe, test, expect, vi } from 'vitest';
 
+import { watchEffect } from '../../test_utils/watch_effect';
 import { createApiRequest } from '../api';
 import { fetchFx } from '../fetch';
 import { preparationError } from '../../errors/create_error';

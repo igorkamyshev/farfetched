@@ -6,7 +6,6 @@ import { HttpError } from '../errors/type';
 
 import { normalizeStaticOrReactive } from '../libs/patronus';
 import {
-  ApiConfigShared,
   createApiRequest,
   CreationRequestConfigShared,
   ExclusiveRequestConfigShared,
@@ -24,8 +23,7 @@ type CreationRequestConfig =
   CreationRequestConfigShared<ExclusiveRequestConfig> &
     Omit<StaticOnlyRequestConfig<any>, 'mapBody'>;
 
-interface JsonApiConfig<R extends CreationRequestConfig>
-  extends ApiConfigShared {
+interface JsonApiConfig<R extends CreationRequestConfig> {
   request: R;
   response?: { status?: { expected: number | number[] } };
 }
@@ -40,11 +38,16 @@ export function createJsonApiRequest<R extends CreationRequestConfig>(
       headers: normalizeStaticOrReactive(config.request.headers),
     },
     ({ method, headers }) =>
-      ['GET', 'HEAD'].includes(method!) // TODO: fix type inferences
-        ? headers
-        : mergeRecords(headers, {
-            'Content-Type': 'application/json',
-          })
+      // reversed merge order to allow any modifications in the user code
+      mergeRecords(
+        {
+          Accept: 'application/json',
+          'Content-Type': ['GET', 'HEAD'].includes(method)
+            ? undefined
+            : 'application/json',
+        },
+        headers
+      )
   );
 
   const jsonApiCallFx = createApiRequest<

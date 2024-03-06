@@ -1,9 +1,51 @@
 {
   "name": "@farfetched/io-ts",
-  "version": "0.8.14",
-  "type": "commonjs",
+  "version": "0.12.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/igorkamyshev/farfetched",
+  "devDependencies": {
+    "io-ts": "^2.2.20",
+    "fp-ts": "^2.13.1",
+    "@farfetched/core": "workspace:*"
+  },
   "peerDependencies": {
     "io-ts": "^2.2.20",
-    "fp-ts": "^2.13.1"
-  }
+    "fp-ts": "^2.13.1",
+    "@farfetched/core": "workspace:*"
+  },
+  "scripts": {
+    "test:run": "vitest run --typecheck",
+    "build": "vite build",
+    "size": "size-limit",
+    "publint": "node ../../tools/scripts/publint.mjs",
+    "typelint": "attw --pack"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/io-ts.cjs",
+  "module": "./dist/io-ts.js",
+  "types": "./dist/io-ts.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/io-ts.d.ts",
+        "default": "./dist/io-ts.js"
+      },
+      "require": {
+        "types": "./dist/io-ts.d.cts",
+        "default": "./dist/io-ts.cjs"
+      }
+    }
+  },
+  "size-limit": [
+    {
+      "path": "./dist/io-ts.js",
+      "limit": "174 B"
+    }
+  ]
 }

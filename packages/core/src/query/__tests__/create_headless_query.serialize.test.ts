@@ -8,7 +8,7 @@ import { createHeadlessQuery } from '../create_headless_query';
 describe('core/createHeadlessQuery with serialize', () => {
   const defaultConfig = {
     contract: unknownContract,
-    mapData: ({ result }) => result,
+    mapData: ({ result }: { result: unknown }) => result,
   };
   const defaultHandler = () => 'Random string';
 
@@ -27,7 +27,7 @@ describe('core/createHeadlessQuery with serialize', () => {
     await allSettled(query.start, { scope, params: {} });
 
     expect(query.__.meta.serialize).toBe('ignore');
-    expect(serialize(scope, { onlyChanges: true })).toEqual({});
+    expect(serialize(scope)).toEqual({});
   });
 
   test('apply custom serialization to data', async () => {
@@ -52,7 +52,7 @@ describe('core/createHeadlessQuery with serialize', () => {
       write: writeMock,
     });
 
-    const serialized = serialize(scope, { onlyChanges: true });
+    const serialized = serialize(scope);
 
     expect(serialized).toEqual(
       expect.objectContaining({

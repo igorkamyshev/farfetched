@@ -1,8 +1,7 @@
 import { allSettled, createStore, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
 
-import { watchRemoteOperation } from '@farfetched/test-utils';
-
+import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { createHeadlessQuery } from '../create_headless_query';
 import { unknownContract } from '../../contract/unknown_contract';
 import { invalidDataError } from '../../errors/create_error';
@@ -43,7 +42,7 @@ describe('core/createHeadlessQuery without contract', () => {
 
     expect(listeners.onFinally).toHaveBeenCalledTimes(1);
     expect(listeners.onFinally).toHaveBeenCalledWith(
-      expect.objectContaining({ params: 42 })
+      expect.objectContaining({ params: 42, result: 42, status: 'done' })
     );
   });
 
@@ -79,7 +78,11 @@ describe('core/createHeadlessQuery without contract', () => {
 
     expect(listeners.onFinally).toHaveBeenCalledTimes(1);
     expect(listeners.onFinally).toHaveBeenCalledWith(
-      expect.objectContaining({ params: 42 })
+      expect.objectContaining({
+        params: 42,
+        error: new Error('from mock'),
+        status: 'fail',
+      })
     );
   });
 

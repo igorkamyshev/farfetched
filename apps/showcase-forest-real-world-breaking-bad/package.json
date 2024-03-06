@@ -1,0 +1,14 @@
+{
+  "name": "showcase-forest-real-world-breaking-bad",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "runtypes": "^6.5.1",
+    "@farfetched/runtypes": "workspace:*",
+    "@farfetched/core": "workspace:*"
+  }
+}

@@ -4,8 +4,11 @@
   "commit": "../tools/utils/commit_message.js",
   "fixed": [["@farfetched/*"]],
   "linked": [],
+  "ignore": ["website", "showcase-*"],
   "access": "public",
   "baseBranch": "origin/master",
   "updateInternalDependencies": "patch",
-  "ignore": ["@farfetched/test-utils"]
+  "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
+    "onlyUpdatePeerDependentsWhenOutOfRange": true
+  }
 }

@@ -4,7 +4,7 @@
 The process of creating custom factory for [_Mutation_](/api/primitives/mutation.md) is similar to same process for [_Query_](/api/primitives/query.md).
 :::
 
-[_Mutation_](/api/primitives/mutation.md) is a simple object with that stores some reactive primitives — [_Event_](https://effector.dev/docs/api/effector/event), [_Effect_](https://effector.dev/docs/api/effector/effect), and [_Store_](https://effector.dev/docs/api/effector/store). It means you can create [_Mutation_](/api/primitives/mutation.md) not only by built-in factories but by your own. E.g. 👇
+[_Mutation_](/api/primitives/mutation.md) is a simple object with that stores some reactive primitives — [_Event_](https://effector.dev/en/api/effector/event/), [_Effect_](https://effector.dev/en/api/effector/effect/), and [_Store_](https://effector.dev/en/api/effector/store/). It means you can create [_Mutation_](/api/primitives/mutation.md) not only by built-in factories but by your own. E.g. 👇
 
 ```ts
 function createAsyncStorageMutation({ storageKey }) {

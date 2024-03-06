@@ -1,20 +1,35 @@
-import { createEffect, createEvent, createStore, sample } from 'effector';
+import {
+  createEffect,
+  createEvent,
+  createStore,
+  type Json,
+  sample,
+} from 'effector';
 
 import { delay } from '../../libs/patronus';
 import { parseTime } from '../../libs/date-nfs';
 import { createCacheAdapter } from './instance';
 import { attachObservability } from './observability';
-import { CacheAdapter, CacheAdapterOptions } from './type';
+import { type CacheAdapter, type CacheAdapterOptions } from './type';
 import { get } from '../../libs/lohyphen';
 
 export const META_KEY = '__farfetched_meta__';
 
+export type SerializeConfig = {
+  serialize?: {
+    read: (value: Json) => unknown;
+    write: (value: unknown) => Json;
+  };
+};
+
 export function browserStorageCache(
   config: {
     storage: () => Storage;
-  } & CacheAdapterOptions
+  } & CacheAdapterOptions &
+    SerializeConfig
 ): CacheAdapter {
-  const { storage, observability, maxAge, maxEntries } = config;
+  const { storage, observability, maxAge, maxEntries, serialize } = config;
+
   // -- adapter
   function storageCache(): CacheAdapter {
     const getSavedItemFx = createEffect(async (key: string) => {
@@ -25,7 +40,10 @@ export function browserStorageCache(
       try {
         const parsed = JSON.parse(item);
 
-        return parsed as SavedItem;
+        return {
+          ...parsed,
+          value: serialize?.read ? serialize.read(parsed.value) : parsed.value,
+        } as SavedItem;
       } catch {
         return null;
       }
@@ -33,7 +51,10 @@ export function browserStorageCache(
 
     const setSavedItemFx = createEffect(
       async ({ key, value }: { key: string; value: unknown }) => {
-        const item = JSON.stringify({ value, timestamp: Date.now() });
+        const item = JSON.stringify({
+          value: serialize?.write ? serialize.write(value) : value,
+          timestamp: Date.now(),
+        });
 
         metaStorage.addKey({ key });
 
@@ -134,7 +155,11 @@ export function browserStorageCache(
   }
 
   // -- meta storage
-  const $meta = createStore<Meta | null>(null, { serialize: 'ignore' });
+  const $meta = createStore<Meta | null>(null, {
+    serialize: 'ignore',
+    name: 'ff.browserStorage.$meta',
+    sid: 'ff.browserStorage.$meta',
+  });
 
   const getMetaFx = createEffect(async () => {
     const meta = await getItemFx(META_KEY);

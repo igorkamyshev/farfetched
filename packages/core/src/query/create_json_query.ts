@@ -1,22 +1,24 @@
-import { attach, createEvent, Event, sample, type Json } from 'effector';
+import { attach, createEffect, type Event, type Json } from 'effector';
 
-import { Contract } from '../contract/type';
+import { type Contract } from '../contract/type';
 import { createJsonApiRequest } from '../fetch/json';
-import { HttpMethod, JsonApiRequestError } from '../fetch/api';
+import { type HttpMethod, type JsonApiRequestError } from '../fetch/api';
 import {
   normalizeSourced,
   type SourcedField,
   type DynamicallySourcedField,
 } from '../libs/patronus';
 import { type ParamsDeclaration } from '../remote_operation/params';
-import { Query } from './type';
-import { FetchApiRecord } from '../fetch/lib';
+import { type Query } from './type';
+import { type FetchApiRecord } from '../fetch/lib';
 import {
   createHeadlessQuery,
-  SharedQueryFactoryConfig,
+  type SharedQueryFactoryConfig,
 } from './create_headless_query';
 import { unknownContract } from '../contract/unknown_contract';
-import { Validator } from '../validation/type';
+import { type Validator } from '../validation/type';
+import { concurrency } from '../concurrency/concurrency';
+import { onAbort } from '../remote_operation/on_abort';
 
 // -- Shared
 
@@ -57,6 +59,10 @@ interface BaseJsonQueryConfigNoParams<
     HeadersSource,
     UrlSource
   >;
+  /**
+   * @deprecated Deprecated since 0.12, use `concurrency` operator instead
+   * @see {@link https://farfetched.pages.dev/adr/concurrency}
+   */
   concurrency?: ConcurrencyConfig;
 }
 
@@ -76,6 +82,10 @@ interface BaseJsonQueryConfigWithParams<
     HeadersSource,
     UrlSource
   >;
+  /**
+   * @deprecated Deprecated since 0.12, use `concurrency` operator instead
+   * @see {@link https://farfetched.pages.dev/adr/concurrency}
+   */
   concurrency?: ConcurrencyConfig;
 }
 
@@ -303,8 +313,8 @@ export function createJsonQuery<
 
 // -- Implementation --
 export function createJsonQuery(config: any) {
-  const credentials: RequestCredentials =
-    config.request.credentials ?? 'same-origin';
+  const credentials: RequestCredentials | undefined =
+    config.request.credentials;
 
   // Basement
   const requestFx = createJsonApiRequest({
@@ -312,12 +322,7 @@ export function createJsonQuery(config: any) {
       method: config.request.method,
       credentials,
     },
-    concurrency: { strategy: config.concurrency?.strategy ?? 'TAKE_LATEST' },
-    abort: { clock: config.concurrency?.abort },
   });
-
-  // Connections
-  const internalStart = createEvent<any>();
 
   const headlessQuery = createHeadlessQuery<
     any,
@@ -345,38 +350,61 @@ export function createJsonQuery(config: any) {
     paramsAreMeaningless: true,
   });
 
+  const executeFx = createEffect((c: any) => {
+    const abortController = new AbortController();
+    onAbort(() => abortController.abort());
+    return requestFx({ ...c, abortController });
+  });
+
   headlessQuery.__.executeFx.use(
     attach({
       source: {
-        url: normalizeSourced({
+        partialUrl: normalizeSourced({
           field: config.request.url,
-          clock: internalStart,
         }),
-        body: normalizeSourced({
+        partialBody: normalizeSourced({
           field: config.request.body,
-          clock: internalStart,
         }),
-        headers: normalizeSourced({
+        partialHeaders: normalizeSourced({
           field: config.request.headers,
-          clock: internalStart,
         }),
-        query: normalizeSourced({
+        partialQuery: normalizeSourced({
           field: config.request.query,
-          clock: internalStart,
         }),
       },
-      effect: requestFx,
+      mapParams(
+        params: any,
+        { partialUrl, partialBody, partialHeaders, partialQuery }
+      ) {
+        return {
+          url: partialUrl(params),
+          body: partialBody(params),
+          headers: partialHeaders(params),
+          query: partialQuery(params),
+        };
+      },
+      effect: executeFx,
     })
   );
 
-  sample({
-    clock: [headlessQuery.start, headlessQuery.__.executeFx],
-    target: internalStart,
-    greedy: true,
+  const op = {
+    ...headlessQuery,
+    __: { ...headlessQuery.__, executeFx },
+  };
+
+  /* TODO: in future releases we will remove this code and make concurrency a separate function */
+  if (config.concurrency) {
+    op.__.meta.flags.concurrencyFieldUsed = true;
+  }
+
+  setTimeout(() => {
+    if (!op.__.meta.flags.concurrencyOperatorUsed) {
+      concurrency(op, {
+        strategy: config.concurrency?.strategy ?? 'TAKE_LATEST',
+        abortAll: config.concurrency?.abort,
+      });
+    }
   });
 
-  return {
-    ...headlessQuery,
-    __: { ...headlessQuery.__, executeFx: requestFx },
-  };
+  return op;
 }

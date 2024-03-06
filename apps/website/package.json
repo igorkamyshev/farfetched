@@ -1,0 +1,15 @@
+{
+  "name": "website",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "prepare": "node changelog/cli.mjs",
+    "dev": "pnpm prepare && vitepress dev docs",
+    "build": "pnpm prepare && vitepress build docs",
+    "test:run": "vitest run"
+  },
+  "dependencies": {
+    "@farfetched/core": "workspace:*",
+    "@farfetched/runtypes": "workspace:*"
+  }
+}

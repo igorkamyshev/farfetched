@@ -1,13 +1,14 @@
-import { watchRemoteOperation } from '@farfetched/test-utils';
-import { allSettled, createEvent, fork } from 'effector';
+import { allSettled, createEvent, createWatch, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
+import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { unknownContract } from '../../contract/unknown_contract';
 import { abortError } from '../../errors/create_error';
 import { fetchFx } from '../../fetch/fetch';
 import { createJsonMutation } from '../create_json_mutation';
 import { isMutation } from '../type';
+import { concurrency } from '../../concurrency/concurrency';
 
 describe('createJsonMutation', () => {
   test('isMutation', () => {
@@ -154,8 +155,9 @@ describe('createJsonMutation', () => {
     const mutation = createJsonMutation({
       request: { method: 'GET', url: 'https://api.salo.com' },
       response: { contract: unknownContract },
-      concurrency: { abort },
     });
+
+    concurrency(mutation, { abortAll: abort });
 
     const scope = fork({
       handlers: [
@@ -171,12 +173,15 @@ describe('createJsonMutation', () => {
     });
 
     const { listeners } = watchRemoteOperation(mutation, scope);
+    const onAbort = vi.fn();
+    createWatch({ unit: mutation.aborted, fn: onAbort, scope });
 
     allSettled(mutation.start, { scope });
     await allSettled(abort, { scope });
 
-    expect(listeners.onFailure).toBeCalledTimes(1);
-    expect(listeners.onFailure).toHaveBeenCalledWith(
+    expect(listeners.onFailure).not.toBeCalled();
+    expect(onAbort).toBeCalledTimes(1);
+    expect(onAbort).toHaveBeenCalledWith(
       expect.objectContaining({ error: abortError() })
     );
   });

@@ -8,6 +8,7 @@ import {
 
 import {
   not,
+  readonly,
   normalizeSourced,
   normalizeStaticOrReactive,
   type DynamicallySourcedField,
@@ -26,6 +27,9 @@ import { unwrapValidationResult } from '../validation/unwrap_validation_result';
 import { validValidator } from '../validation/valid_validator';
 import { type RemoteOperation } from './type';
 import { get } from '../libs/lohyphen';
+import { isAbortError } from '../errors/guards';
+import { getCallObjectEvent } from './with_call_object';
+import { allowCancelSetting, disallowCancelSetting } from './on_abort';
 
 export function createRemoteOperation<
   Params,
@@ -64,6 +68,8 @@ export function createRemoteOperation<
   paramsAreMeaningless?: boolean;
 }): RemoteOperation<Params, MappedData, Error | InvalidDataError, Meta> {
   const revalidate = createEvent<{ params: Params; refresh: boolean }>();
+  const pushData = createEvent<MappedData>();
+  const pushError = createEvent<Error | InvalidDataError>();
   const startWithMeta = createEvent<{ params: Params; meta: ExecutionMeta }>();
 
   const applyContractFx = createContractApplier<Params, Data, ContractData>(
@@ -81,6 +87,8 @@ export function createRemoteOperation<
     name: `${name}.executeFx`,
   });
 
+  const callObjectCreated = getCallObjectEvent(executeFx);
+
   const remoteDataSoruce: DataSource<Params> = {
     name: 'remote_source',
     get: createEffect<
@@ -88,8 +96,11 @@ export function createRemoteOperation<
       { result: unknown; stale: boolean } | null,
       unknown
     >(async ({ params }) => {
-      const result = await executeFx(params);
+      allowCancelSetting();
+      const promise = executeFx(params);
+      disallowCancelSetting();
 
+      const result = await promise;
       return { result, stale: false };
     }),
   };
@@ -102,16 +113,10 @@ export function createRemoteOperation<
     notifyAboutDataInvalidationFx,
   } = createDataSourceHandlers<Params>(dataSources);
 
-  /*
-   * Start event, it's used as it or to pipe it in head-full factory
-   *
-   * sample({
-   *  clock: externalStart,
-   *  target: headlessQuery.start,
-   *  greedy: true
-   * })
-   */
   const start = createEvent<Params>();
+  const reset = createEvent();
+
+  const started = createEvent<{ params: Params; meta: ExecutionMeta }>();
 
   sample({
     clock: start,
@@ -135,20 +140,67 @@ export function createRemoteOperation<
       meta: ExecutionMeta;
     }>(),
     skip: createEvent<{ params: Params; meta: ExecutionMeta }>(),
-    finally: createEvent<{ params: Params; meta: ExecutionMeta }>(),
+    finally: createEvent<
+      { params: Params; meta: ExecutionMeta } & (
+        | {
+            status: 'done';
+            result: MappedData;
+          }
+        | { status: 'fail'; error: Error | InvalidDataError }
+        | { status: 'skip' }
+      )
+    >(),
   };
+  const failedNoFilters = createEvent<{
+    params: Params;
+    error: Error | InvalidDataError;
+    meta: ExecutionMeta;
+  }>();
+  const aborted = createEvent<{
+    params: Params;
+    meta: ExecutionMeta;
+  }>();
+
+  split({
+    source: failedNoFilters,
+    match: {
+      aborted: ({ error }) => isAbortError({ error }),
+    },
+    cases: {
+      aborted,
+      __: finished.failure,
+    },
+  });
 
   // -- Main stores --
   const $status = createStore<FetchingStatus>('initial', {
     sid: `ff.${name}.$status`,
-    name: `${name}.$status`,
+    name: `ff.${name}.$status`,
     serialize,
+  });
+
+  sample({ clock: reset, target: $status.reinit });
+
+  const $statusHistory = createStore<FetchingStatus[]>([], {
+    serialize: 'ignore',
+    name: `ff.${name}.$statusHistory`,
+    sid: `ff.${name}.$statusHistory`,
+  });
+
+  sample({
+    clock: $status.updates,
+    source: $statusHistory,
+    fn: (history, nextStatus) => [...history, nextStatus],
+    target: $statusHistory,
   });
 
   const $enabled = normalizeStaticOrReactive(enabled ?? true).map(Boolean);
 
-  const $latestParams = createStore<Params | null>(null, {
+  const $latestParams = createStore<Params | undefined>(undefined, {
     serialize: 'ignore',
+    name: `ff.${name}.$latestParams`,
+    sid: `ff.${name}.$latestParams`,
+    skipVoid: false,
   });
 
   // -- Derived stores --
@@ -156,6 +208,7 @@ export function createRemoteOperation<
   const $pending = $status.map((status) => status === 'pending');
   const $failed = $status.map((status) => status === 'fail');
   const $succeeded = $status.map((status) => status === 'done');
+  const $finished = $status.map((status) => ['fail', 'done'].includes(status));
 
   // -- Indicate status --
   sample({
@@ -163,6 +216,20 @@ export function createRemoteOperation<
       retrieveDataFx.map(() => 'pending' as const),
       finished.success.map(() => 'done' as const),
       finished.failure.map(() => 'fail' as const),
+      sample({
+        clock: aborted,
+        source: {
+          history: $statusHistory,
+          retrieveDataPengind: retrieveDataFx.pending,
+        },
+        fn: ({ history, retrieveDataPengind }) => {
+          if (retrieveDataPengind) {
+            return 'pending';
+          }
+
+          return history[history.length - 2] ?? 'initial';
+        },
+      }),
     ],
     target: $status,
   });
@@ -213,6 +280,8 @@ export function createRemoteOperation<
     target: retrieveDataFx,
   });
 
+  sample({ clock: retrieveDataFx, target: started });
+
   sample({
     clock: retrieveDataFx.done,
     fn: ({ params, result }) => ({
@@ -226,31 +295,41 @@ export function createRemoteOperation<
 
   sample({
     clock: retrieveDataFx.fail,
-    fn: ({ error, params }) => ({
-      error: error,
+    source: $enabled,
+    filter: (enabled, { error }) => enabled && !error.stopErrorPropagation,
+    fn: (_, { error, params }) => ({
+      error: error.error as any,
       params: params.params,
-      meta: { stopErrorPropagation: false, stale: false },
+      meta: { stopErrorPropagation: error.stopErrorPropagation, stale: false },
     }),
-    filter: $enabled,
-    target: finished.failure,
+    target: failedNoFilters,
   });
 
   const { validDataRecieved, __: invalidDataRecieved } = split(
     sample({
       clock: applyContractFx.done,
-      source: normalizeSourced({
-        field: validate ?? validValidator,
-        clock: applyContractFx.done.map(({ result, params }) => ({
+      source: {
+        partialValidator: normalizeSourced({
+          field: validate ?? validValidator,
+        }),
+      },
+      fn: (
+        { partialValidator },
+        {
+          params: {
+            /* Extract original params, it is params of params */ params,
+            meta,
+          },
           result,
-          params: params.params, // Extract original params, it is params of params
-        })),
-      }),
-      fn: (validation, { params, result }) => ({
+        }
+      ) => ({
         result,
-        // Extract original params, it is params of params
-        params: params.params,
-        validation,
-        meta: params.meta,
+        params,
+        validation: partialValidator({
+          result,
+          params,
+        }),
+        meta,
       }),
     }),
     {
@@ -260,12 +339,13 @@ export function createRemoteOperation<
 
   sample({
     clock: validDataRecieved,
-    source: normalizeSourced({
-      field: mapData,
-      clock: validDataRecieved,
-    }),
-    fn: (result, { params, meta }) => ({
-      result,
+    source: {
+      partialMapper: normalizeSourced({
+        field: mapData,
+      }),
+    },
+    fn: ({ partialMapper }, { params, result, meta }) => ({
+      result: partialMapper({ params, result }),
       params,
       meta,
     }),
@@ -294,7 +374,7 @@ export function createRemoteOperation<
       params: params.params,
       meta: params.meta,
     }),
-    target: finished.failure,
+    target: failedNoFilters,
   });
 
   sample({
@@ -308,7 +388,7 @@ export function createRemoteOperation<
       }),
       meta,
     }),
-    target: finished.failure,
+    target: failedNoFilters,
   });
 
   // Emit skip for disabling in-flight operation
@@ -328,34 +408,65 @@ export function createRemoteOperation<
 
   // -- Send finally --
   sample({
-    clock: [finished.success, finished.failure, finished.skip],
-    fn({ params, meta }) {
-      return { params, meta };
-    },
+    clock: finished.success,
+    fn: ({ params, result, meta }) => ({
+      status: 'done' as const,
+      params,
+      result,
+      meta,
+    }),
+    target: finished.finally,
+  });
+
+  sample({
+    clock: finished.failure,
+    fn: ({ params, error, meta }) => ({
+      status: 'fail' as const,
+      params,
+      error,
+      meta,
+    }),
+    target: finished.finally,
+  });
+
+  sample({
+    clock: finished.skip,
+    fn: ({ params, meta }) => ({
+      status: 'skip' as const,
+      params,
+      meta,
+    }),
     target: finished.finally,
   });
 
   return {
     start,
     finished,
+    started,
+    aborted,
+    reset,
     $status,
     $idle,
     $pending,
     $failed,
     $succeeded,
+    $finished,
     $enabled,
     __: {
       executeFx,
-      meta: { ...meta, name },
+      meta: { ...meta, name, flags: {} },
       kind,
-      $latestParams,
+      $latestParams: readonly($latestParams),
       lowLevelAPI: {
         dataSources,
         dataSourceRetrieverFx: retrieveDataFx,
         sourced: sourced ?? [],
         paramsAreMeaningless: paramsAreMeaningless ?? false,
         revalidate,
+        pushError,
+        pushData,
         startWithMeta,
+        callObjectCreated,
       },
     },
   };
@@ -369,22 +480,32 @@ function createDataSourceHandlers<Params>(dataSources: DataSource<Params>[]) {
       meta: ExecutionMeta;
     },
     { result: unknown; stale: boolean },
-    any
+    { stopErrorPropagation: boolean; error: unknown }
   >({
     handler: async ({ params, skipStale }) => {
       for (const dataSource of dataSources) {
-        const fromSource = await dataSource.get({ params });
+        try {
+          const fromSource = await dataSource.get({ params });
 
-        if (skipStale && fromSource?.stale) {
-          continue;
-        }
+          if (skipStale && fromSource?.stale) {
+            continue;
+          }
 
-        if (fromSource) {
-          return fromSource;
+          if (fromSource) {
+            return fromSource;
+          }
+        } catch (error) {
+          throw {
+            stopErrorPropagation: false,
+            error,
+          };
         }
       }
 
-      throw new Error('No data source returned data');
+      throw {
+        stopErrorPropagation: false,
+        error: new Error('No data source returned data'),
+      };
     },
   });
 

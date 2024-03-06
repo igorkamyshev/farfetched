@@ -1,4 +1,4 @@
-# `createMutation` <Badge type="tip" text="since v0.2.0" />
+# `createMutation` <Badge type="tip" text="since v0.2" />
 
 ## Formulae
 
@@ -21,9 +21,9 @@ const loginMutation = createMutation({
 
 ### `createMutation({ effect })`
 
-Creates [_Mutation_](/api/primitives/mutation) based on given [_Effect_](https://effector.dev/docs/api/effector/effect).
+Creates [_Mutation_](/api/primitives/mutation) based on given [_Effect_](https://effector.dev/en/api/effector/effect/).
 
-Usage of [_Effect_](https://effector.dev/docs/api/effector/effect) instead of simple asynchronous function allows you to declare types of possible errors statically that will be passed to [_Mutation_](/api/primitives/mutation).
+Usage of [_Effect_](https://effector.dev/en/api/effector/effect/) instead of simple asynchronous function allows you to declare types of possible errors statically that will be passed to [_Mutation_](/api/primitives/mutation).
 
 ```ts
 const loginMutation = createMutation({
@@ -53,7 +53,7 @@ const loginMutation = createMutation({
 
 ### `createMutation({ effect, contract })`
 
-Creates [_Mutation_](/api/primitives/mutation) based on given [_Effect_](https://effector.dev/docs/api/effector/effect).
+Creates [_Mutation_](/api/primitives/mutation) based on given [_Effect_](https://effector.dev/en/api/effector/effect/).
 
 [_Contract_](../primitives/contract) allows you to validate the response and decide how your application should treat it — as a success response or as a failed one.
 

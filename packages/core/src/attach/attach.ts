@@ -11,6 +11,10 @@ import {
 
 // -- Query overloads
 
+/**
+ * @deprecated Deprecated since 0.12
+ * @see {@link https://farfetched.pages.dev/adr/attach_operation_deprecation.html#how-to-migrate}
+ */
 export function attachOperation<
   NewParams,
   Q extends Query<any, any, any, any>,
@@ -28,6 +32,10 @@ export function attachOperation<
   QueryInitialData<Q>
 >;
 
+/**
+ * @deprecated Deprecated since 0.12
+ * @see {@link https://farfetched.pages.dev/adr/attach_operation_deprecation.html#how-to-migrate}
+ */
 export function attachOperation<NewParams, Q extends Query<any, any, any, any>>(
   operation: Q,
   config: { mapParams: (params: NewParams) => RemoteOperationParams<Q> }
@@ -38,12 +46,20 @@ export function attachOperation<NewParams, Q extends Query<any, any, any, any>>(
   QueryInitialData<Q>
 >;
 
+/**
+ * @deprecated Deprecated since 0.12
+ * @see {@link https://farfetched.pages.dev/adr/attach_operation_deprecation.html#how-to-migrate}
+ */
 export function attachOperation<Q extends Query<any, any, any, any>>(
   operation: Q
 ): Q;
 
 // -- Mutation overloads
 
+/**
+ * @deprecated Deprecated since 0.12
+ * @see {@link https://farfetched.pages.dev/adr/attach_operation_deprecation.html#how-to-migrate}
+ */
 export function attachOperation<
   NewParams,
   M extends Mutation<any, any, any>,
@@ -56,17 +72,29 @@ export function attachOperation<
   }
 ): Mutation<NewParams, RemoteOperationResult<M>, RemoteOperationError<M>>;
 
+/**
+ * @deprecated Deprecated since 0.12
+ * @see {@link https://farfetched.pages.dev/adr/attach_operation_deprecation.html#how-to-migrate}
+ */
 export function attachOperation<NewParams, M extends Mutation<any, any, any>>(
   operation: M,
   config: { mapParams: (params: NewParams) => RemoteOperationParams<M> }
 ): Mutation<NewParams, RemoteOperationResult<M>, RemoteOperationError<M>>;
 
+/**
+ * @deprecated Deprecated since 0.12
+ * @see {@link https://farfetched.pages.dev/adr/attach_operation_deprecation.html#how-to-migrate}
+ */
 export function attachOperation<M extends Mutation<any, any, any>>(
   operation: M
 ): M;
 
 // -- Implementation
 
+/**
+ * @deprecated Deprecated since 0.12
+ * @see {@link https://farfetched.pages.dev/adr/attach_operation_deprecation.html#how-to-migrate}
+ */
 export function attachOperation<
   NewParams,
   OriginalParams,
@@ -81,7 +109,11 @@ export function attachOperation<
   const { source, mapParams } = config ?? {};
 
   return operation.__.experimentalAPI?.attach({
-    source: source ?? createStore(null, { serialize: 'ignore' }),
+    source:
+      source ??
+      createStore(null, {
+        serialize: 'ignore',
+      }),
     mapParams: mapParams ?? ((v: NewParams) => v as unknown as OriginalParams),
   });
 }

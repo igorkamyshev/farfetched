@@ -1,6 +1,6 @@
-import { Event, sample } from 'effector';
+import { type Event, sample } from 'effector';
 
-import { CacheAdapterInstance, CacheAdapterOptions } from './type';
+import type { CacheAdapterInstance, CacheAdapterOptions } from './type';
 
 export function attachObservability({
   adapter,

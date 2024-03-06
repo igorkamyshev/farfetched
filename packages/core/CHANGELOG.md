@@ -1,5 +1,126 @@
 # @farfetched/core
 
+## 0.12.0
+
+### Minor Changes
+
+- 7331eb8: Add `.reset` _Event_ to _Mutation_
+- 66991a0: Add `filter` parameter to `connectQuery` operator
+- ef2bf7d: Add `onAbort` to save abort handlers in `createQuery`/`createMutation`
+- 004c47b: Initial release of Dev Tools interface
+- b9d84bb: Add parameter `humanReadableKeys` to operator `cache`
+- 2ea13bd: Deprecate `attachOperation`
+- e8d0512: New overload `applyBarrier(operations, { barrier })`
+
+### Patch Changes
+
+- 0b8df65: Fix types of `update` operator to allow returning InitialData from callback
+- 896e27d: Update build tool-chain
+
+## 0.11.4
+
+### Patch Changes
+
+- f14f944: Fix incorrect type of `__.$instance` in Cache API
+
+## 0.11.3
+
+### Patch Changes
+
+- 3649ae9: Support Cloudflare Workers runtime by deleting explicitly setting credentials in internal code, observed behavior has not changed for other runtimes
+
+## 0.11.2
+
+## 0.11.1
+
+### Patch Changes
+
+- 730ef73: Do not flick `.$status` during cancellation
+
+## 0.11.0
+
+### Minor Changes
+
+- c925412: Introduce Barrier API
+- 67d7288: Hide `isAbortError` from public API
+- ffdfffa: Adopt for Effector 23
+
+### Patch Changes
+
+- ef2d3a5: Support `enabled` in `keepFresh`
+- ec2ab95: Do not throw nonserializable error in case of invalid URL
+
+## 0.10.6
+
+### Patch Changes
+
+- a3b87b6: Add missed header Accept in `createJsonQuery`/`createJsonMutation`
+
+## 0.10.5
+
+### Patch Changes
+
+- 4a86b3e: Fix undefined case in isEqual with custom classes with no valueOf
+- ac5e2d8: Support null-prototype objects as first-class citizens in `keepFresh` operator. Aftershock for release 0.10.3.
+
+## 0.10.4
+
+### Patch Changes
+
+- 0f30158: Add missed export of `JsonApiRequestError`
+
+## 0.10.3
+
+### Patch Changes
+
+- 54d3bf1: Do not stop refreshing if source contains weird object
+
+## 0.10.2
+
+### Patch Changes
+
+- 8590dfb: Allow passing to connectQuery query with initialData
+
+## 0.10.1
+
+### Patch Changes
+
+- e8a1385: Support _Query_ with initial data in `update` operator types
+
+## 0.10.0
+
+### Minor Changes
+
+- f118011: Finalize separation of `.aborted` _Event_ in _Remote Operation_
+- f118011: Add `timeout` operator
+- f118011: Change default value of `supressIntermediateErrors` in `retry` operator
+- f118011: Allow to pass `null` and `undefined` to `FetchApiRecord`, it will be ignored
+
+## 0.9.0
+
+### Minor Changes
+
+- 961f32f: Allow passing array of codes to `isHttpErrorCode`
+- a5f4f38: Add _Event_ `.started` to _Query_ and _Mutation_
+- e632dca: Support custom serialization in `localStorageCache` and `sessionStorageCache`
+- 7e909d2: Add _Event_ `aborted` to _Query_
+- faa19ec: Mark read-only _Events_ and _Stores_ with `readonly`
+- ca20587: Add _Store_ `.$finished` to _Remote Operation_
+- 7448b5c: Delete `externalCache`
+- 1ec644e: Add option `supressIntermediateErrors` to `retry` operator
+- f759034: Add info about _Query_ status and corresponding data to `.finished.finally` _Event_
+
+### Patch Changes
+
+- 3ecc6ea: Rework internal structure of sourced fields to fix race-condition in `attachOperation`
+- 43917a7: Add `ExecutionMeta` to `otherwise` _Event_ in `retry` operator
+
+## 0.8.15
+
+### Patch Changes
+
+- 7790cb2: Introduce `@farfetched/atomic-router`
+
 ## 0.8.14
 
 ### Patch Changes

@@ -11,9 +11,7 @@ describe('zodContract', () => {
 
     if (stringContract.isData(smth)) {
       expectTypeOf(smth).toEqualTypeOf<string>();
-
-      // @ts-expect-error string is not a number
-      expectTypeOf(smth).toEqualTypeOf<number>();
+      expectTypeOf(smth).not.toEqualTypeOf<number>();
     }
   });
 
@@ -45,11 +43,9 @@ describe('zodContract', () => {
         ]
       >();
 
-      // @ts-expect-error ComplexObject is not a number
-      expectTypeOf(smth).toEqualTypeOf<number>();
+      expectTypeOf(smth).not.toEqualTypeOf<number>();
 
-      // @ts-expect-error this is other complex object, x is string
-      expectTypeOf(smth).toEqualTypeOf<
+      expectTypeOf(smth).not.toEqualTypeOf<
         [
           {
             x: string;

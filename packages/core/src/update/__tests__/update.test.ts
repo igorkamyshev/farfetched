@@ -1,8 +1,8 @@
-import { watchRemoteOperation } from '@farfetched/test-utils';
 import { allSettled, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
+import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { createMutation } from '../../mutation/create_mutation';
 import { createQuery } from '../../query/create_query';
 import { update } from '../update';
@@ -245,7 +245,7 @@ describe('update', () => {
     await allSettled(mutation.start, { scope });
     expect(successRule).toBeCalledWith(
       expect.objectContaining({
-        query: { result: 'original result', params: null },
+        query: { result: 'original result', params: undefined },
       })
     );
 
@@ -255,7 +255,7 @@ describe('update', () => {
     await allSettled(mutation.start, { scope });
     expect(failureRule).toBeCalledWith(
       expect.objectContaining({
-        query: { error: 'original failure', params: null },
+        query: { error: 'original failure', params: undefined },
       })
     );
   });
@@ -349,12 +349,18 @@ describe('update', () => {
     await allSettled(mutation.start, { scope });
     expect(successRule).toBeCalledWith(
       expect.objectContaining({
-        mutation: { result: 'mutation result', params: null },
+        mutation: expect.objectContaining({
+          result: 'mutation result',
+          params: undefined,
+        }),
       })
     );
     expect(successRule).toBeCalledWith(
       expect.objectContaining({
-        mutation: { result: 'mutation result', params: null },
+        mutation: expect.objectContaining({
+          result: 'mutation result',
+          params: undefined,
+        }),
       })
     );
 
@@ -362,12 +368,18 @@ describe('update', () => {
     await allSettled(mutation.start, { scope });
     expect(failureRule).toBeCalledWith(
       expect.objectContaining({
-        mutation: { error: 'mutation failure', params: null },
+        mutation: expect.objectContaining({
+          error: 'mutation failure',
+          params: undefined,
+        }),
       })
     );
     expect(failureRule).toBeCalledWith(
       expect.objectContaining({
-        mutation: { error: 'mutation failure', params: null },
+        mutation: expect.objectContaining({
+          error: 'mutation failure',
+          params: undefined,
+        }),
       })
     );
   });
@@ -398,12 +410,18 @@ describe('update', () => {
     await allSettled(mutation.start, { scope, params: 1 });
     expect(successRule).toBeCalledWith(
       expect.objectContaining({
-        mutation: { result: 'mutation result', params: 1 },
+        mutation: expect.objectContaining({
+          result: 'mutation result',
+          params: 1,
+        }),
       })
     );
     expect(successRule).toBeCalledWith(
       expect.objectContaining({
-        mutation: { result: 'mutation result', params: 1 },
+        mutation: expect.objectContaining({
+          result: 'mutation result',
+          params: 1,
+        }),
       })
     );
 
@@ -411,13 +429,51 @@ describe('update', () => {
     await allSettled(mutation.start, { scope, params: 2 });
     expect(failureRule).toBeCalledWith(
       expect.objectContaining({
-        mutation: { error: 'mutation failure', params: 2 },
+        mutation: expect.objectContaining({
+          error: 'mutation failure',
+          params: 2,
+        }),
       })
     );
     expect(failureRule).toBeCalledWith(
       expect.objectContaining({
-        mutation: { error: 'mutation failure', params: 2 },
+        mutation: expect.objectContaining({
+          error: 'mutation failure',
+          params: 2,
+        }),
       })
+    );
+  });
+
+  test('use initial data type in case of not started query, issue #370', async () => {
+    const queryHandler = vi.fn(async (p: string) => [1, Number(p)]);
+    const mutationHandler = vi.fn(async (x: number) => x);
+
+    const query = createQuery({
+      handler: queryHandler,
+      initialData: [1],
+    });
+
+    const mutation = createMutation({
+      handler: mutationHandler,
+    });
+
+    const successHandler = vi.fn(() => ({ result: [], refetch: true }));
+
+    update(query, {
+      on: mutation,
+      by: {
+        success: successHandler,
+      },
+    });
+
+    const scope = fork();
+
+    await allSettled(mutation.start, { scope, params: 10 });
+
+    expect(queryHandler).not.toBeCalled();
+    expect(successHandler).toBeCalledWith(
+      expect.objectContaining({ query: { result: [1] } })
     );
   });
 });

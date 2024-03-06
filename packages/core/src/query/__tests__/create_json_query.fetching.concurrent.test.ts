@@ -1,12 +1,13 @@
-import { watchRemoteOperation } from '@farfetched/test-utils';
-import { allSettled, createEvent, fork } from 'effector';
+import { allSettled, createEvent, createWatch, fork } from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
+import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { fetchFx } from '../../fetch/fetch';
 import { createJsonQuery } from '../create_json_query';
 import { unknownContract } from '../../contract/unknown_contract';
 import { abortError } from '../../errors/create_error';
+import { concurrency } from '../../concurrency/concurrency';
 
 describe('createJsonQuery concurrency.strategy', () => {
   test('abort inflight requests by default', async () => {
@@ -17,6 +18,8 @@ describe('createJsonQuery concurrency.strategy', () => {
       },
       response: { contract: unknownContract },
     });
+
+    concurrency(query, { strategy: 'TAKE_LATEST' });
 
     const firstResponse = { first: 1 };
     const secondResponse = { second: 2 };
@@ -36,6 +39,8 @@ describe('createJsonQuery concurrency.strategy', () => {
     });
 
     const watcher = watchRemoteOperation(query, scope);
+    const onAborted = vi.fn();
+    createWatch({ unit: query.aborted, fn: onAborted, scope });
 
     // Do not wait
     allSettled(query.start, { scope });
@@ -43,9 +48,10 @@ describe('createJsonQuery concurrency.strategy', () => {
     await allSettled(query.start, { scope });
 
     expect(requestMock).toHaveBeenCalledTimes(2);
-    expect(watcher.listeners.onFinally).toBeCalledTimes(2);
-
-    expect(watcher.listeners.onFailure).toBeCalledWith(
+    expect(watcher.listeners.onFinally).toBeCalledTimes(1);
+    expect(watcher.listeners.onFailure).not.toBeCalled();
+    expect(onAborted).toBeCalledTimes(1);
+    expect(onAborted).toBeCalledWith(
       expect.objectContaining({
         params: undefined,
         error: abortError(),
@@ -65,8 +71,9 @@ describe('createJsonQuery concurrency.strategy', () => {
         method: 'GET' as const,
       },
       response: { contract: unknownContract },
-      concurrency: { strategy: 'TAKE_EVERY' },
     });
+
+    concurrency(query, { strategy: 'TAKE_EVERY' });
 
     const firstResponse = { first: 1 };
     const secondResponse = { second: 2 };
@@ -105,8 +112,9 @@ describe('createJsonQuery concurrency.strategy', () => {
         method: 'GET' as const,
       },
       response: { contract: unknownContract },
-      concurrency: { strategy: 'TAKE_FIRST' },
     });
+
+    concurrency(query, { strategy: 'TAKE_FIRST' });
 
     const firstResponse = { first: 1 };
     const secondResponse = { second: 2 };
@@ -126,6 +134,8 @@ describe('createJsonQuery concurrency.strategy', () => {
     });
 
     const watcher = watchRemoteOperation(query, scope);
+    const onAborted = vi.fn();
+    createWatch({ unit: query.aborted, fn: onAborted, scope });
 
     // Do not wait
     allSettled(query.start, { scope });
@@ -133,9 +143,9 @@ describe('createJsonQuery concurrency.strategy', () => {
     await allSettled(query.start, { scope });
 
     expect(requestMock).toHaveBeenCalledTimes(1);
-    expect(watcher.listeners.onFinally).toBeCalledTimes(2);
-
-    expect(watcher.listeners.onFailure).toBeCalledWith(
+    expect(watcher.listeners.onFinally).toBeCalledTimes(1);
+    expect(onAborted).toHaveBeenCalledTimes(1);
+    expect(onAborted).toBeCalledWith(
       expect.objectContaining({
         params: undefined,
         error: abortError(),
@@ -154,8 +164,9 @@ describe('createJsonQuery concurrency.strategy', () => {
     const query = createJsonQuery({
       request: { method: 'GET', url: 'https://api.salo.com' },
       response: { contract: unknownContract },
-      concurrency: { abort },
     });
+
+    concurrency(query, { abortAll: abort });
 
     const scope = fork({
       handlers: [
@@ -171,13 +182,61 @@ describe('createJsonQuery concurrency.strategy', () => {
     });
 
     const { listeners } = watchRemoteOperation(query, scope);
+    const onAborted = vi.fn();
+    createWatch({ unit: query.aborted, fn: onAborted, scope });
 
     allSettled(query.start, { scope });
     await allSettled(abort, { scope });
 
-    expect(listeners.onFailure).toBeCalledTimes(1);
-    expect(listeners.onFailure).toHaveBeenCalledWith(
+    expect(listeners.onFailure).toBeCalledTimes(0);
+    expect(onAborted).toBeCalledTimes(1);
+    expect(onAborted).toHaveBeenCalledWith(
       expect.objectContaining({ error: abortError() })
     );
+  });
+
+  test('do not flick $status', async () => {
+    const query = createJsonQuery({
+      request: { method: 'GET', url: 'https://api.salo.com' },
+      response: { contract: unknownContract },
+    });
+
+    concurrency(query, { strategy: 'TAKE_LATEST' });
+
+    const statusListener = vi.fn();
+    const abortedListener = vi.fn();
+
+    const scope = fork({
+      handlers: [
+        [
+          // We have to mock fetchFx because executeFx contains cancellation logic
+          fetchFx,
+          vi.fn().mockImplementation(async () => {
+            await setTimeout(100);
+            throw new Error('cannot');
+          }),
+        ],
+      ],
+    });
+
+    createWatch({ unit: query.$status, fn: statusListener, scope });
+    createWatch({ unit: query.aborted, fn: abortedListener, scope });
+
+    allSettled(query.start, { scope });
+    allSettled(query.start, { scope });
+
+    await allSettled(scope);
+
+    expect(abortedListener).toBeCalledTimes(1);
+    expect(statusListener.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          "pending",
+        ],
+        [
+          "fail",
+        ],
+      ]
+    `);
   });
 });

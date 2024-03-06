@@ -1,5 +1,13 @@
 # Code generation with OpenAPI
 
+::: danger
+
+Many users of Farfetched have reported that the organization https://github.com/openapi/ is basically abandoned by its maintainers, it does not work in various cases ([example #1](https://github.com/openapi/openapi/issues/5), [example #2](https://github.com/openapi/openapi/issues/11), [example #3](https://github.com/openapi/preset-effector/issues/18)).
+
+We are currently looking for a better alternative. If you have any suggestions, please let us know in [issues](https://github.com/igorkamyshev/farfetched/issues).
+
+:::
+
 Farfetched itself does not have any code generation capabilities. However, it is possible to use the OpenAPI specification (and its implementation Swagger) to generate code for the client with external open-source tools.
 
 In this recipe, we will use the [OpenAPI Generator](https://github.com/openapi/openapi) with a special [preset for Effector](https://github.com/openapi/preset-effector).
@@ -11,7 +19,7 @@ In this recipe, we will use the [OpenAPI Generator](https://github.com/openapi/o
 ::: code-group
 
 ```sh [pnpm]
-pnpm install --dev openapi@^1.0.0 openapi-preset-effector typed-contracts
+pnpm add --save-dev openapi@^1.0.0 openapi-preset-effector typed-contracts
 ```
 
 ```sh [yarn]
@@ -30,7 +38,7 @@ npm install --dev openapi@^1.0.0 openapi-preset-effector typed-contracts
 To prevent using many contract systems in your project, we recommend using `typed-contracts` across the whole project. Farfetched supports it out of the box, read more the API reference for [`@farfetched/typed-contracts`](/api/contracts/typed-contracts).
 :::
 
-2. Create base [_Effect_](https://effector.dev/docs/api/effector/effect) that will be used in the generated code, put it in the `./src/api/shared/request.ts` file. In general, it has to be any [_Effect_](https://effector.dev/docs/api/effector/effect) with the following signature:
+2. Create base [_Effect_](https://effector.dev/en/api/effector/effect/) that will be used in the generated code, put it in the `./src/api/shared/request.ts` file. In general, it has to be any [_Effect_](https://effector.dev/en/api/effector/effect/) with the following signature:
 
 ```ts
 export interface Request {
@@ -107,7 +115,7 @@ The generated code will be placed in the `./src/api/shared` directory. You must 
 
 ## Make it farfetched
 
-Generated code contains [_Effects_](https://effector.dev/docs/api/effector/effect), but Farfetched's APIs work only with [_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutation). So, we need to wrap the generated code with Farfetched's APIs. Let's create a file `./src/api/shared/index.ts` with the following contents:
+Generated code contains [_Effects_](https://effector.dev/en/api/effector/effect/), but Farfetched's APIs work only with [_Query_](/api/primitives/query) or [_Mutation_](/api/primitives/mutation). So, we need to wrap the generated code with Farfetched's APIs. Let's create a file `./src/api/shared/index.ts` with the following contents:
 
 ```ts
 import { createQuery } from '@farfetched/core';

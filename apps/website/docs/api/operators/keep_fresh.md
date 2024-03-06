@@ -1,4 +1,4 @@
-# `keepFresh` <Badge type="tip" text="since v0.8.0" />
+# `keepFresh` <Badge type="tip" text="since v0.8" />
 
 Refreshes the data in a [_Query_](/api/primitives/query) automatically or on demand.
 
@@ -12,8 +12,9 @@ Refreshes the data in a [_Query_](/api/primitives/query) automatically or on dem
 
 Config fields:
 
-- `automatically?`: _true_ to refresh the data in a [_Query_](/api/primitives/query) automatically if any [_Store_](https://effector.dev/docs/api/effector/store) that is used in the [_Query_](/api/primitives/query) creation is changed.
-- `triggers?`: _Array_ of [_Events_](https://effector.dev/docs/api/effector/event) after which operator starts refreshing the data in the [_Query_](/api/primitives/query).
+- `automatically?`: _true_ to refresh the data in a [_Query_](/api/primitives/query) automatically if any [_Store_](https://effector.dev/en/api/effector/store/) that is used in the [_Query_](/api/primitives/query) creation is changed.
+- `triggers?`: _Array_ of [_Events_](https://effector.dev/en/api/effector/event/) after which operator starts refreshing the data in the [_Query_](/api/primitives/query).
+- `enabled?`: <Badge type="tip" text="since v0.11" /> [_Store_](https://effector.dev/en/api/effector/store/) with the current enabled state. Disabled _keepFresh_ will not execute queries, instead, they will be treated as skipped. Can be `true` or `false`.
 
 ```ts
 import { keepFresh } from '@farfetched/core';

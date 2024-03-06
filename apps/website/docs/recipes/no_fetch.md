@@ -11,7 +11,11 @@ import { createQuery } from '@farfetched/core';
 import axios from 'axios';
 
 const usersQuery = createQuery({
-  handler: () => axios.get('/users').then((res) => res.data),
+  async handler() {
+    const response = await axios.get('/users');
+
+    return response.data;
+  },
 });
 ```
 
@@ -32,11 +36,42 @@ import { createMutation } from '@farfetched/core';
 import axios from 'axios';
 
 const loginMutation = createMutation({
-  handler: ({ login, password }) =>
-    axios.post('/login', { login, password }).then((res) => res.data),
+  async handler({ login, password } {
+    const response = await axios.post('/login', { login, password })
+
+    return response.data;
+  },
 });
 ```
 
 That is it, `loginMutation` is a regular [_Mutation_](/api/primitives/mutation.md) that can be used in any function from Farfetched. Of course, you can use any other library to make HTTP calls the same way.
 
 Furthermore, you can consider [creating a custom _Mutation_ factory](/recipes/custom_mutation) to simplify [_Mutation_](/api/primitives/mutation.md) creation across the application.
+
+## Cancellation support
+
+Since we took control over HTTP calls from Farfetched, we need to take care about cancellation by ourselves. Fortunately, it is not hard to do. Let us see how it can be done.
+
+Farfetched provides [`onAbort`-function](/api/utils/on_abort.md) that allows to bind a passed function to the aborting of the [_Query_](/api/primitives/query.md) or [_Mutation_](/api/primitives/mutation.md). Let us use it to abort `axios`-based [_Query_](/api/primitives/query.md) 👇
+
+```ts
+import { createQuery, onAbort } from '@farfetched/core';
+import axios from 'axios';
+
+const usersQuery = createQuery({
+  async handler() {
+    const controller = new AbortController(); // [!code ++]
+    onAbort(() => controller.abort()); // [!code ++]
+
+    const response = await axios.get('/users', {
+      signal: controller.signal, // [!code ++]
+    });
+
+    return response.data;
+  },
+});
+```
+
+That is it, `usersQuery` supports cancellation now and operators like [`timeout`](/api/operators/timeout.md) will perform cancellation correctly.
+
+You can use the same approach to add cancellation support to [_Mutation_](/api/primitives/mutation.md).

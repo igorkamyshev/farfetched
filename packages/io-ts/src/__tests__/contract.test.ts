@@ -26,7 +26,7 @@ describe('ioTsContract', () => {
     expect(contract.isData(data)).toBe(false);
     expect(contract.getErrorMessages(data)).toMatchInlineSnapshot(`
       [
-        "Invalid value \\"not a number\\" supplied to : { age: number, name: string }/age: number",
+        "Invalid value "not a number" supplied to : { age: number, name: string }/age: number",
         "Invalid value 11 supplied to : { age: number, name: string }/name: string",
       ]
     `);
@@ -42,7 +42,7 @@ describe('ioTsContract', () => {
     expect(contract.isData(data)).toBe(false);
     expect(contract.getErrorMessages(data)).toMatchInlineSnapshot(`
       [
-        "Invalid value \\"not a number\\" supplied to : { user: { age: number, name: string } }/user: { age: number, name: string }/age: number",
+        "Invalid value "not a number" supplied to : { user: { age: number, name: string } }/user: { age: number, name: string }/age: number",
         "Invalid value 11 supplied to : { user: { age: number, name: string } }/user: { age: number, name: string }/name: string",
       ]
     `);
@@ -64,7 +64,7 @@ describe('ioTsContract', () => {
     expect(contract.isData(data)).toBe(false);
     expect(contract.getErrorMessages(data)).toMatchInlineSnapshot(`
       [
-        "Invalid value \\"eleven\\" supplied to : { users: Array<{ age: number, name: string }> }/users: Array<{ age: number, name: string }>/1: { age: number, name: string }/age: number",
+        "Invalid value "eleven" supplied to : { users: Array<{ age: number, name: string }> }/users: Array<{ age: number, name: string }>/1: { age: number, name: string }/age: number",
         "Invalid value 11 supplied to : { users: Array<{ age: number, name: string }> }/users: Array<{ age: number, name: string }>/1: { age: number, name: string }/name: string",
       ]
     `);

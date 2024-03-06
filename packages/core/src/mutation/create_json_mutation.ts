@@ -1,22 +1,24 @@
-import { attach, createEvent, Event, sample, type Json } from 'effector';
+import { attach, type Json, type Event, createEffect } from 'effector';
 
-import { Contract } from '../contract/type';
+import { type Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
-import { HttpMethod, JsonApiRequestError } from '../fetch/api';
+import { type HttpMethod, type JsonApiRequestError } from '../fetch/api';
 import { createJsonApiRequest } from '../fetch/json';
-import { FetchApiRecord } from '../fetch/lib';
-import { ParamsDeclaration } from '../remote_operation/params';
+import { type FetchApiRecord } from '../fetch/lib';
+import { type ParamsDeclaration } from '../remote_operation/params';
 import {
-  DynamicallySourcedField,
+  type DynamicallySourcedField,
+  type SourcedField,
   normalizeSourced,
-  SourcedField,
 } from '../libs/patronus';
-import { Validator } from '../validation/type';
+import { type Validator } from '../validation/type';
 import {
   createHeadlessMutation,
-  SharedMutationFactoryConfig,
+  type SharedMutationFactoryConfig,
 } from './create_headless_mutation';
-import { Mutation } from './type';
+import { type Mutation } from './type';
+import { concurrency } from '../concurrency/concurrency';
+import { onAbort } from '../remote_operation/on_abort';
 
 // -- Shared --
 
@@ -56,6 +58,10 @@ interface BaseJsonMutationConfigNoParams<
     HeadersSource,
     UrlSource
   >;
+  /**
+   * @deprecated Deprecated since 0.12, use `concurrency` operator instead
+   * @see {@link https://farfetched.pages.dev/adr/concurrency}
+   */
   concurrency?: ConcurrencyConfig;
 }
 
@@ -75,6 +81,10 @@ interface BaseJsonMutationConfigWithParams<
     HeadersSource,
     UrlSource
   >;
+  /**
+   * @deprecated Deprecated since 0.12, use `concurrency` operator instead
+   * @see {@link https://farfetched.pages.dev/adr/concurrency}
+   */
   concurrency?: ConcurrencyConfig;
 }
 
@@ -196,14 +206,12 @@ export function createJsonMutation<
 
 // -- Implementation --
 export function createJsonMutation(config: any): Mutation<any, any, any> {
-  const credentials: RequestCredentials =
-    config.request.credentials ?? 'same-origin';
+  const credentials: RequestCredentials | undefined =
+    config.request.credentials;
 
   const requestFx = createJsonApiRequest({
     request: { method: config.request.method, credentials },
-    concurrency: { strategy: 'TAKE_EVERY' },
     response: { status: config.response.status },
-    abort: { clock: config.concurrency?.abort },
   });
 
   const headlessMutation = createHeadlessMutation({
@@ -214,40 +222,63 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
     name: config.name,
   });
 
-  const internalStart = createEvent<any>();
+  const executeFx = createEffect((c: any) => {
+    const abortController = new AbortController();
+    onAbort(() => abortController.abort());
+    return requestFx({ ...c, abortController });
+  });
 
   headlessMutation.__.executeFx.use(
     attach({
       source: {
-        url: normalizeSourced({
+        partialUrl: normalizeSourced({
           field: config.request.url,
-          clock: internalStart,
         }),
-        body: normalizeSourced({
+        partialBody: normalizeSourced({
           field: config.request.body,
-          clock: internalStart,
         }),
-        headers: normalizeSourced({
+        partialHeaders: normalizeSourced({
           field: config.request.headers,
-          clock: internalStart,
         }),
-        query: normalizeSourced({
+        partialQuery: normalizeSourced({
           field: config.request.query,
-          clock: internalStart,
         }),
       },
-      effect: requestFx,
+      mapParams(
+        params: any,
+        { partialUrl, partialBody, partialHeaders, partialQuery }
+      ) {
+        return {
+          url: partialUrl(params),
+          body: partialBody(params),
+          headers: partialHeaders(params),
+          query: partialQuery(params),
+        };
+      },
+      effect: executeFx,
     })
   );
 
-  sample({
-    clock: [headlessMutation.start, headlessMutation.__.executeFx],
-    target: internalStart,
-    greedy: true,
-  });
-
-  return {
+  const op = {
     ...headlessMutation,
-    __: { ...headlessMutation.__, executeFx: requestFx },
+    __: { ...headlessMutation.__, executeFx },
   };
+
+  /* TODO: in future releases we will remove this code and make concurrency a separate function */
+  if (config.concurrency) {
+    op.__.meta.flags.concurrencyFieldUsed = true;
+  }
+
+  if (config.concurrency) {
+    setTimeout(() => {
+      if (!op.__.meta.flags.concurrencyOperatorUsed) {
+        concurrency(op, {
+          strategy: config.concurrency?.strategy ?? 'TAKE_EVERY',
+          abortAll: config.concurrency?.abort,
+        });
+      }
+    });
+  }
+
+  return op;
 }

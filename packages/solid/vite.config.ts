@@ -1,16 +1,32 @@
-import { defineConfig } from 'vitest/config';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import solidPlugin from 'vite-plugin-solid';
 
-export default defineConfig({
-  plugins: [tsconfigPaths(), solidPlugin()],
+import dts from '../../tools/vite/types';
+
+export default {
+  plugins: [tsconfigPaths(), solidPlugin(), dts()],
   test: {
     globals: true,
     setupFiles: './test.setup.ts',
-    typecheck: { ignoreSourceErrors: true },
-    passWithNoTests: true,
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        useAtomics: true,
+      },
+    },
   },
   resolve: {
     conditions: ['browser'],
   },
-});
+  build: {
+    lib: {
+      entry: 'src/index.ts',
+      name: '@farfetched/solid',
+      fileName: 'solid',
+      formats: ['es', 'cjs'],
+    },
+    rollupOptions: {
+      external: ['solid-js', 'effector-solid', '@farfetched/core'],
+    },
+  },
+};

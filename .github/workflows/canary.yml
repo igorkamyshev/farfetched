@@ -1,0 +1,83 @@
+name: Canary
+
+on: pull_request
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      # We store information about used changeset in the comment
+      # So we need to find it to check if we need to publish a new canary release
+      # Also we will update this comment with new information in case of new canary release
+      - name: Find comment about previous canary release
+        uses: peter-evans/find-comment@v1
+        id: find_comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Farfetched Canary
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+      - name: Authenticate with NPM
+        run: |
+          echo "//registry.npmjs.org/:_authToken="${{secrets.NPM_TOKEN}}"" > ~/.npmrc
+      - run: pnpm install --frozen-lockfile
+      # Parse latest published version of the canary release and update local package.json for all packages
+      - name: Restore canary release version
+        run: node ./tools/scripts/canary/canary_version_restore.mjs ${{ github.event.pull_request.number }}
+      # Update version in package.json for all packages with changeset and generate pre.json file
+      - run: pnpm changeset pre enter ${{ github.event.pull_request.number }}
+      - run: pnpm changeset version
+      - run: pnpm changeset pre exit
+      # Check if we need to publish a new canary release
+      # it uses pre.json file and information about previous canary relase from the comment
+      - name: Check if new canary release is required
+        id: canary_required
+        run: node ./tools/scripts/canary/canary_required.mjs """${{ steps.find_comment.outputs.comment-body }}""" >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
+      - name: Prepare package names
+        if: steps.canary_required.outputs.skipCanary == ''
+        run: node ./tools/scripts/canary/canary_name_change.mjs
+      - name: Publish canary release
+        if: steps.canary_required.outputs.skipCanary == ''
+        run: pnpm -r publish --no-git-checks
+      - name: Retrieve information about latest canary release
+        id: canary_info
+        run: node ./tools/scripts/canary/canary_info.mjs >> $GITHUB_OUTPUT && cat $GITHUB_OUTPUT
+      # In case of absence of the comment we will create it with information about latest canary release
+      - name: Create comment
+        if: steps.find_comment.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            # Farfetched Canary
+
+            Latest canary version is ${{ steps.canary_info.outputs.canaryVersion }}
+
+            [More information about canary versions](https://farfetched.pages.dev/releases/canary.html)
+
+            ---
+
+            Used changeset: ${{ steps.canary_info.outputs.usedChangesets }}
+      # Otherwise we will update it with information about latest caanry release,
+      # but only if we published a new canary release
+      - name: Update comment
+        if: steps.find_comment.outputs.comment-id != '' && steps.canary_required.outputs.skipCanary == ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          edit-mode: replace
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          body: |
+            # Farfetched Canary
+              
+            Latest canary version is ${{ steps.canary_info.outputs.canaryVersion }}
+
+            [More information about canary versions](https://farfetched.pages.dev/releases/canary.html)
+
+            ---
+
+            Used changeset: ${{ steps.canary_info.outputs.usedChangesets }}

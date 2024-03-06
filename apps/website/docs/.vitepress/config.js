@@ -7,7 +7,6 @@ export default withMermaid(
     title: 'Farfetched',
     description: 'The advanced data fetching tool for web applications.',
     lastUpdated: true,
-    outDir: '../../../dist/apps/website',
     head: [
       ['link', { rel: 'icon', href: '/favicon.ico', sizes: 'any' }],
       ['link', { rel: 'icon', href: '/icon.svg', type: 'image/svg+xml' }],
@@ -66,6 +65,10 @@ export default withMermaid(
               text: 'Releases',
               link: '/releases/',
             },
+            {
+              text: 'ADRs',
+              link: '/adr/',
+            },
             { text: 'Effector', link: 'https://effector.dev' },
           ],
         },
@@ -108,12 +111,13 @@ export default withMermaid(
                     link: '/tutorial/update_query',
                   },
                   { text: 'Retries', link: '/tutorial/retries' },
+                  { text: 'Concurrency', link: '/tutorial/concurrency' },
                   { text: 'Caching', link: '/tutorial/caching' },
-                  {
-                    text: 'Operation copying',
-                    link: '/tutorial/operation_copying',
-                  },
                 ],
+              },
+              {
+                text: 'Developer experience',
+                link: '/tutorial/devtools',
               },
               {
                 text: 'Factories',
@@ -131,6 +135,10 @@ export default withMermaid(
               {
                 text: 'Trigger API',
                 link: '/tutorial/trigger_api',
+              },
+              {
+                text: 'Barrier API',
+                link: '/tutorial/barrier_api',
               },
             ],
           },
@@ -223,20 +231,32 @@ export default withMermaid(
                   },
                 ],
               },
+              {
+                text: 'Barrier',
+                items: [
+                  {
+                    text: 'createBarrier',
+                    link: '/api/factories/create_barrier',
+                  },
+                ],
+              },
             ],
           },
           {
             text: 'Operators',
             items: [
-              { text: 'connectQuery', link: '/api/operators/connect_query' },
-              { text: 'update', link: '/api/operators/update' },
-              { text: 'retry', link: '/api/operators/retry' },
-              { text: 'cache', link: '/api/operators/cache' },
               { text: 'keepFresh', link: '/api/operators/keep_fresh' },
+              { text: 'retry', link: '/api/operators/retry' },
+              { text: 'timeout', link: '/api/operators/timeout' },
+              { text: 'cache', link: '/api/operators/cache' },
+              { text: 'concurrency', link: '/api/operators/concurrency' },
+              { text: 'applyBarrier', link: '/api/operators/apply_barrier' },
+              { text: 'update', link: '/api/operators/update' },
               {
                 text: 'attachOperation',
                 link: '/api/operators/attach_operation',
               },
+              { text: 'connectQuery', link: '/api/operators/connect_query' },
             ],
           },
           {
@@ -245,6 +265,7 @@ export default withMermaid(
             items: [
               { text: 'Query', link: '/api/primitives/query' },
               { text: 'Mutation', link: '/api/primitives/mutation' },
+              { text: 'Barrier', link: '/api/primitives/barrier' },
               { text: 'Contract', link: '/api/primitives/contract' },
               { text: 'Validator', link: '/api/primitives/validator' },
             ],
@@ -255,6 +276,7 @@ export default withMermaid(
             items: [
               { text: 'Error creators', link: '/api/utils/error_creators' },
               { text: 'Error guards', link: '/api/utils/error_guards' },
+              { text: 'onAbort', link: '/api/utils/on_abort' },
             ],
           },
           {
@@ -293,6 +315,16 @@ export default withMermaid(
                     text: 'typed-contracts',
                     link: '/api/contracts/typed-contracts',
                   },
+                  {
+                    text: 'Valibot',
+                    link: '/api/contracts/valibot',
+                  },
+                ],
+              },
+              {
+                text: 'Routers',
+                items: [
+                  { text: 'Atomic Router', link: '/api/routers/atomic-router' },
                 ],
               },
             ],
@@ -305,40 +337,27 @@ export default withMermaid(
               { text: 'Server side rendering', link: '/recipes/ssr' },
               { text: 'Testing', link: '/recipes/testing' },
               {
-                text: 'Customization',
-                items: [
-                  {
-                    text: 'How not to use Fetch API',
-                    link: '/recipes/no_fetch',
-                  },
-                  {
-                    text: 'Custom Query creation',
-                    link: '/recipes/custom_query',
-                  },
-                  {
-                    text: 'Custom Mutation creation',
-                    link: '/recipes/custom_mutation',
-                  },
-                  {
-                    text: 'Your own GraphQL Query',
-                    link: '/recipes/graphql_query',
-                  },
-                ],
-              },
-              {
                 text: 'Vite',
                 link: '/recipes/vite',
               },
               {
-                text: 'Code generation with OpenAPI',
-                link: '/recipes/open_api',
+                text: 'Base URL for all operations',
+                link: '/recipes/base_url',
               },
             ],
           },
           {
             text: 'Case studies',
             items: [
+              {
+                text: 'Auth token for operations',
+                link: '/recipes/auth_token',
+              },
               { text: 'Feature flags service', link: '/recipes/feature_flags' },
+              {
+                text: 'Pause world until user action',
+                link: '/recipes/terms_of_use',
+              },
               { text: 'Server side caching', link: '/recipes/server_cache' },
             ],
           },
@@ -352,6 +371,28 @@ export default withMermaid(
                 link: '/recipes/data_flow',
               },
               { text: 'Automated cache', link: '/recipes/cache' },
+            ],
+          },
+          {
+            text: 'Customization',
+            items: [
+              {
+                text: 'How not to use Fetch API',
+                link: '/recipes/no_fetch',
+              },
+              {
+                text: 'Custom Query creation',
+                link: '/recipes/custom_query',
+              },
+              {
+                text: 'Custom Mutation creation',
+                link: '/recipes/custom_mutation',
+              },
+              {
+                text: 'Your own GraphQL Query',
+                link: '/recipes/graphql_query',
+              },
+              { text: 'FormData in Mutation', link: '/recipes/form_data' },
             ],
           },
           {
@@ -390,6 +431,7 @@ export default withMermaid(
                 text: 'Render as you fetch',
                 link: '/statements/render_as_you_fetch',
               },
+              { text: 'No globals', link: '/statements/no_globals' },
               { text: 'Testing', link: '/statements/tests' },
               { text: 'Effector', link: '/statements/effector' },
               { text: 'TypeScript', link: '/statements/typescript' },
@@ -401,6 +443,10 @@ export default withMermaid(
           {
             text: 'Releases',
             items: [
+              { text: 'v0.12 Talat Noi', link: '/releases/0-12' },
+              { text: 'v0.11 Namtok Ngao', link: '/releases/0-11' },
+              { text: 'v0.10 Namtok Than Sadet', link: '/releases/0-10' },
+              { text: 'v0.9', link: '/releases/0-9' },
               { text: 'v0.8 Saphan Hin', link: '/releases/0-8' },
               { text: 'v0.7 Nam Phu Chet Si', link: '/releases/0-7' },
               { text: 'v0.6 Huai Nam Dang', link: '/releases/0-6' },

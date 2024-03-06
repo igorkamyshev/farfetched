@@ -22,7 +22,7 @@ const validator = ({ result, params }): ValidationResult =>
 
 ### Function with external source
 
-_Validator_ can be an object with field `source` which is any [_Store_](https://effector.dev/docs/api/effector/store) and `fn` witch is a function that accepts object `{ result, params }` and the value of `source` and returns `ValidationResult`.
+_Validator_ can be an object with field `source` which is any [_Store_](https://effector.dev/en/api/effector/store/) and `fn` witch is a function that accepts object `{ result, params }` and the value of `source` and returns `ValidationResult`.
 
 ```ts
 const validator = {

@@ -1,7 +1,7 @@
-import { Store, Event } from 'effector';
+import type { Store, Event, EventCallable, StoreWritable } from 'effector';
 
-import { RemoteOperation } from '../remote_operation/type';
-import { type Serialize } from '../libs/patronus';
+import type { RemoteOperation } from '../remote_operation/type';
+import type { Serialize } from '../libs/patronus';
 
 export const QuerySymbol = Symbol('Query');
 
@@ -13,14 +13,25 @@ export interface QueryMeta<Data, InitialData> {
    */
   serialize: Serialize<Data | InitialData>;
   initialData: InitialData;
+  sid: string | null;
 }
 
+export type QueryExtraLowLevelAPI = {
+  refreshSkipDueToFreshness: Event<void>;
+};
+
 export interface Query<Params, Data, Error, InitialData = null>
-  extends RemoteOperation<Params, Data, Error, QueryMeta<Data, InitialData>> {
+  extends RemoteOperation<
+    Params,
+    Data,
+    Error,
+    QueryMeta<Data, InitialData>,
+    QueryExtraLowLevelAPI
+  > {
   /**
    * Start fetching data if it is absent or stale.
    */
-  refresh: Event<Params>;
+  refresh: EventCallable<Params>;
   /**
    * The reactive value of the latest received data.
    *
@@ -36,15 +47,13 @@ export interface Query<Params, Data, Error, InitialData = null>
   /**
    * Is data stale?
    */
-  $stale: Store<boolean>;
-  /** Event to reset the whole state of the query */
-  reset: Event<void>;
+  $stale: StoreWritable<boolean>;
   '@@unitShape': () => {
     data: Store<Data | InitialData>;
     error: Store<Error | null>;
     stale: Store<boolean>;
     pending: Store<boolean>;
-    start: Event<Params>;
+    start: EventCallable<Params>;
   };
 }
 

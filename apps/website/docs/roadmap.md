@@ -1,35 +1,31 @@
 # Roadmap
 
-Farfetched is under development now, before the first stable release we are going to provide solutions for plenty of common cases. This roadmap displays the list of planned features and its order. It could change a bit, but in general, we will follow it.
-
-## The next release
-
-### v.0.9
-
-- DevTools interface
+Since Farfetched [v0.12](/releases/0-12) we declare feature freeze and focus on stability and performance improvements. We are going to release a new version every 2-3 months and finish the development of Farfetched 1.0 by the end of 2024.
 
 ## Future releases
 
-### v.0.10
+### v0.13
 
-- Pagination and infinite scroll
+- Strong deprecation of `attachOperation` according to [the ADR](/adr/attach_operation_deprecation)
+- Strong deprecation of `concurrency` field in `creteJsonQuery` and `createJsonMutation` according to [the ADR](/adr/concurrency)
 
-### v.0.11
+### v0.14
 
-- GraphQL add-on — `@farfetched/graphql`
-  - `createGraphQLQuery`
-  - `createGraphQLMutation`
-  - optional auto-batching
-  - import, parsing, and usage of schema
-  - automatic optimistic update for Query based on Mutation and schema
+- Delete `attachOperation` according to [the ADR](/adr/attach_operation_deprecation)
+- Delete `concurrency` field in `creteJsonQuery` and `createJsonMutation` according to [the ADR](/adr/concurrency)
 
-### v.0.12
+### v0.x
 
-- WebSocket
-- Server Sent Events
-- HTTP Polling
+The following changes are planned for some releases **before** Farfetched 1.0, but we are not sure about the exact version:
 
-### v.0.13
+- Specification of behavior for many operators of the single type applied to the single operation
+- Merge of `contract` and `validate` fields in all built-in factories
+- DX improvements for `update` operator
 
-- Add-on `@farfetched/rest`
-  - `createREST` — return set of Queries and Mutations for typical REST API
+### v1.x
+
+The following features are planned for some releases **after** Farfetched 1.0, but we are not sure about the exact version:
+
+- Code generation based on the API schema
+- Built-in support for GraphQL and REST APIs
+- Support for SSE and Web Sockets

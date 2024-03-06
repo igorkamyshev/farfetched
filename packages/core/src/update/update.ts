@@ -1,13 +1,23 @@
-import { combine, createEvent, merge, sample, split, Store } from 'effector';
+import {
+  combine,
+  createEvent,
+  merge,
+  sample,
+  split,
+  type Store,
+} from 'effector';
 
 import { isNotEmpty } from '../libs/lohyphen';
-import { DynamicallySourcedField, normalizeSourced } from '../libs/patronus';
-import { Mutation } from '../mutation/type';
-import { Query } from '../query/type';
 import {
-  RemoteOperationError,
-  RemoteOperationParams,
-  RemoteOperationResult,
+  type DynamicallySourcedField,
+  normalizeSourced,
+} from '../libs/patronus';
+import { type Mutation } from '../mutation/type';
+import { type QueryInitialData, type Query } from '../query/type';
+import {
+  type RemoteOperationError,
+  type RemoteOperationParams,
+  type RemoteOperationResult,
 } from '../remote_operation/type';
 
 type QueryState<Q extends Query<any, any, any, any>> =
@@ -19,7 +29,7 @@ type QueryState<Q extends Query<any, any, any, any>> =
       error: RemoteOperationError<Q>;
       params: RemoteOperationParams<Q>;
     }
-  | null;
+  | (QueryInitialData<Q> extends null ? null : { result: QueryInitialData<Q> });
 
 type Refetch<Q extends Query<any, any, any, any>> =
   | boolean
@@ -27,7 +37,7 @@ type Refetch<Q extends Query<any, any, any, any>> =
 
 type RuleResult<Q extends Query<any, any, any, any>> =
   | {
-      result: RemoteOperationResult<Q>;
+      result: RemoteOperationResult<Q> | QueryInitialData<Q>;
       refetch?: Refetch<Q>;
     }
   | {
@@ -76,7 +86,7 @@ export function update<
   const $queryState = queryState(query);
 
   const fillQueryData = createEvent<{
-    result: RemoteOperationResult<Q>;
+    result: RemoteOperationResult<Q> | QueryInitialData<Q>;
     refetch?: Refetch<Q>;
   }>();
   const fillQueryError = createEvent<{
@@ -87,17 +97,17 @@ export function update<
   split({
     source: sample({
       clock: mutation.finished.success,
-      source: normalizeSourced({
-        field: rules.success,
-        clock: sample({
-          clock: mutation.finished.success,
-          source: $queryState,
-          fn: (query, { result, params }) => ({
-            query,
-            mutation: { result, params: params ?? null },
-          }),
+      source: {
+        partialRule: normalizeSourced({
+          field: rules.success,
         }),
-      }),
+        queryState: $queryState,
+      },
+      fn: ({ partialRule, queryState }, mutation) =>
+        partialRule({
+          query: queryState,
+          mutation,
+        }),
     }),
     match: {
       fillData: (payload: any) => isNotEmpty(payload.result),
@@ -109,17 +119,17 @@ export function update<
     split({
       source: sample({
         clock: mutation.finished.failure,
-        source: normalizeSourced({
-          field: rules.failure,
-          clock: sample({
-            clock: mutation.finished.failure,
-            source: $queryState,
-            fn: (query, { error, params }) => ({
-              query,
-              mutation: { error, params: params ?? null },
-            }),
+        source: {
+          partialRule: normalizeSourced({
+            field: rules.failure,
           }),
-        }),
+          queryState: $queryState,
+        },
+        fn: ({ partialRule, queryState }, mutation) =>
+          partialRule({
+            query: queryState,
+            mutation,
+          }),
       }),
       match: {
         fillData: (payload: any) => isNotEmpty(payload.result),
@@ -131,13 +141,13 @@ export function update<
   sample({
     clock: fillQueryData,
     fn: ({ result }) => result,
-    target: [query.$data, query.$error.reinit!],
+    target: query.__.lowLevelAPI.pushData,
   });
 
   sample({
     clock: fillQueryError,
     fn: ({ error }) => error,
-    target: [query.$error, query.$data.reinit!],
+    target: query.__.lowLevelAPI.pushError,
   });
 
   // -- Refetching
@@ -151,21 +161,28 @@ export function update<
   sample({
     clock: shouldRefetch,
     source: $queryState,
+    filter: (state, refetch) =>
+      (typeof refetch === 'object' && 'params' in refetch) ||
+      (state && 'params' in state),
     fn: (state, refetch) => {
       if (typeof refetch === 'object' && 'params' in refetch) {
         return { params: refetch.params, refresh: true };
       }
 
+      // @ts-expect-error I do not want to fight with TS here
       return { params: state?.params, refresh: true };
     },
-    target: [query.__.lowLevelAPI.revalidate, query.$stale.reinit!],
+    target: [query.__.lowLevelAPI.revalidate, query.$stale.reinit],
   });
 
   sample({
     clock: shouldNotRefetch,
     source: $queryState,
-    filter: Boolean,
-    fn: (state) => ({ params: state.params, refresh: false }),
+    filter: (state) => state && 'params' in state,
+    fn: (state: any): { params: any; refresh: false } => ({
+      params: state.params,
+      refresh: false,
+    }),
     target: query.__.lowLevelAPI.revalidate,
   });
 }
@@ -175,17 +192,26 @@ function queryState<Q extends Query<any, any, any, any>>(
 ): Store<QueryState<Q>> {
   return combine(
     {
+      idle: query.$idle,
       result: query.$data,
       params: query.__.$latestParams,
       error: query.$error,
       failed: query.$failed,
     },
-    ({ result, params, error, failed }): QueryState<Q> => {
-      if (!result && !error) {
+    ({ idle, result, params, error, failed }): any => {
+      if (result == null && error == null) {
         return null;
       }
 
-      return failed ? { error, params: params! } : { result, params: params! };
+      if (idle) {
+        return { result };
+      }
+
+      if (failed) {
+        return { error, params };
+      }
+
+      return { result, params };
     }
   );
 }

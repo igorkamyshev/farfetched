@@ -1,12 +1,27 @@
-import { Effect, Event, EventPayload, Store } from 'effector';
+import type {
+  Effect,
+  Event,
+  EventCallable,
+  EventPayload,
+  Store,
+} from 'effector';
 
-import { SourcedField, type FetchingStatus } from '../libs/patronus';
+import type { SourcedField, FetchingStatus } from '../libs/patronus';
+import type { CallObject } from './with_call_object';
 
 interface DefaultMeta {
   name: string;
+  flags: Record<string, boolean>;
 }
 
-export interface RemoteOperation<Params, Data, Error, Meta> {
+export interface RemoteOperation<
+  Params,
+  Data,
+  Error,
+  Meta,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  ExtraLowLevelAPI = {}
+> {
   /**
    * Reactive current request status
    *
@@ -24,6 +39,8 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
   $failed: Store<boolean>;
   /** Is fetching succeeded? */
   $succeeded: Store<boolean>;
+  /** Is fetching finished? */
+  $finished: Store<boolean>;
   /**
    * Is operation enabled?
    *
@@ -31,8 +48,13 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
    * + true — query will be executed after any `start` call
    */
   $enabled: Store<boolean>;
-  /** Event to trigger query */
-  start: Event<Params>;
+  /** Event to trigger operation */
+  start: EventCallable<Params>;
+  /** Event to reset the whole state of the operation */
+  reset: EventCallable<void>;
+  /** Event that trigered after operation started */
+  started: Event<{ params: Params; meta: ExecutionMeta }>;
+  aborted: Event<{ params: Params; meta: ExecutionMeta }>;
   /** Set of events that represent end of query */
   finished: {
     /** Query was successfully ended, data will be passed as a payload */
@@ -42,7 +64,13 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
     /** Query execution was skipped due to `enabled` field in config */
     skip: Event<{ params: Params; meta: ExecutionMeta }>;
     /** Query was ended, it merges `success`, `error` and `skip` */
-    finally: Event<{ params: Params; meta: ExecutionMeta }>;
+    finally: Event<
+      { params: Params; meta: ExecutionMeta } & (
+        | { status: 'done'; result: Data }
+        | { status: 'fail'; error: Error }
+        | { status: 'skip' }
+      )
+    >;
   };
   /**
    * DO NOT USE THIS FIELD IN PRODUCTION
@@ -76,7 +104,7 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
      * Distinguish different kinds of operations
      */
     kind: unknown;
-    $latestParams: Store<Params | null>;
+    $latestParams: Store<Params | undefined>;
     /**
      * Low-level API, it can be changed anytime without any notice!
      */
@@ -89,9 +117,12 @@ export interface RemoteOperation<Params, Data, Error, Meta> {
       >;
       sourced: SourcedField<Params, unknown, unknown>[];
       paramsAreMeaningless: boolean;
-      revalidate: Event<{ params: Params; refresh: boolean }>;
-      startWithMeta: Event<{ params: Params; meta: ExecutionMeta }>;
-    };
+      revalidate: EventCallable<{ params: Params; refresh: boolean }>;
+      pushData: EventCallable<Data>;
+      pushError: EventCallable<Error>;
+      startWithMeta: EventCallable<{ params: Params; meta: ExecutionMeta }>;
+      callObjectCreated: Event<CallObject>;
+    } & ExtraLowLevelAPI;
     experimentalAPI?: {
       attach: <Source, NewParams>(config: {
         source: Store<Source>;

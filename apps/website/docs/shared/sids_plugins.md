@@ -14,12 +14,16 @@ Read more about `effector/babel-plugin` configuration in the [Effector's documen
 
 **SWC plugin**
 
+::: warning
+Note that [plugins for SWC are experimental](https://github.com/swc-project/swc/discussions/3540) and may not work as expected. We recommend to stick with Babel for now.
+:::
+
 [SWC](https://swc.rs) is a blazing fast alternative to Babel. If you are using it, you can install `@effector/swc-plugin` to get the same DX as with Babel.
 
 ::: code-group
 
 ```sh [pnpm]
-pnpm install --dev @effector/swc-plugin @swc/core
+pnpm add --save-dev @effector/swc-plugin @swc/core
 ```
 
 ```sh [yarn]
