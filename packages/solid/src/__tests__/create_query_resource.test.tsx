@@ -45,7 +45,7 @@ describe('createQueryResource', () => {
       </Provider>
     ));
 
-    boundStart({});
+    boundStart();
 
     const loadingText = await screen.findByText('Loading');
     expect(loadingText).toBeInTheDocument();
@@ -82,7 +82,7 @@ describe('createQueryResource', () => {
       </Provider>
     ));
 
-    boundStart({});
+    boundStart();
 
     const loadingText = await screen.findByText('Loading');
     expect(loadingText).toBeInTheDocument();
@@ -92,7 +92,7 @@ describe('createQueryResource', () => {
     const helloText = await screen.findByText('Hello');
     expect(helloText).toBeInTheDocument();
 
-    boundStart({});
+    boundStart();
     expect(loadingText).toBeInTheDocument();
 
     await allSettled(scope);
@@ -125,7 +125,7 @@ describe('createQueryResource', () => {
       </Provider>
     ));
 
-    boundStart({});
+    boundStart();
 
     defer.reject('WOW');
     await allSettled(scope);
@@ -161,15 +161,15 @@ describe('createQueryResource', () => {
       </Provider>
     ));
 
-    await allSettled(controlledQuery.start, { scope, params: {} });
+    await allSettled(controlledQuery.start, { scope });
 
     const insideText = await screen.findByText('Weird situation');
     expect(insideText).toBeInTheDocument();
   });
 
   test('show Suspense-fallback while pending and nested data', async () => {
-    const defer = createDefer<any, unknown>();
-    const controlledQuery = createQuery<void, { name: string }>({
+    const defer = createDefer<{ name: string }, unknown>();
+    const controlledQuery = createQuery({
       handler: () => defer.promise,
     });
 
@@ -325,7 +325,7 @@ describe('createQueryResource', () => {
       </Provider>
     ));
 
-    boundStart({});
+    boundStart();
 
     defer.resolve('Hello');
     await allSettled(scope);
