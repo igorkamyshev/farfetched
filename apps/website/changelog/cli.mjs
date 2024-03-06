@@ -7,7 +7,7 @@ import { NodeHtmlMarkdown } from 'node-html-markdown';
 import { parseSemVer, compareSemVer } from 'semver-parser';
 import { resolve } from 'node:path';
 
-import { groupByVersions } from './lib.mjs';
+import { excludeTrashUpdates, groupByVersions } from './lib.mjs';
 
 const files = await promisify(glob)(
   '../../{packages,deleted_packages}/*/CHANGELOG.md',
@@ -88,7 +88,13 @@ function mergeChangelogs(packages) {
         logForVersion.push(['para', `::: details ${packageName}`]);
 
         for (const [type, items] of pacakgeChangesEntries) {
-          logForVersion.push(['para', ['strong', type]], ...items);
+          const cleanItems = excludeTrashUpdates(items);
+
+          if (cleanItems.length === 0) {
+            continue;
+          }
+
+          logForVersion.push(['para', ['strong', type]], ...cleanItems);
         }
 
         logForVersion.push(['para', ':::']);

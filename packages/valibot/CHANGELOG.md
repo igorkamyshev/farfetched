@@ -2,6 +2,10 @@
 
 ## 0.12.0
 
+### Minor Changes
+
+- 0966310: Initial release of `@farfetched/valibot`
+
 ### Patch Changes
 
 - Updated dependencies [0b8df65]

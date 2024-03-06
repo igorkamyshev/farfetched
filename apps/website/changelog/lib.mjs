@@ -20,3 +20,21 @@ export function groupByVersions(packages) {
 
   return groupedByVersions;
 }
+
+export function excludeTrashUpdates(items) {
+  return items
+    .map((tags) => {
+      const [header, ...body] = tags;
+
+      const filteredBody = body.filter(
+        (item) => !item.at(1).toLowerCase().includes('updated dependencies')
+      );
+
+      if (filteredBody.length === 0) {
+        return null;
+      }
+
+      return [header, ...filteredBody];
+    })
+    .filter(Boolean);
+}

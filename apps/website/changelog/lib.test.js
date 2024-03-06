@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 
-import { groupByVersions } from './lib.mjs';
+import { groupByVersions, excludeTrashUpdates } from './lib.mjs';
 
 describe('groupByVersion', () => {
   test('correct grouping', () => {
@@ -191,5 +191,56 @@ describe('groupByVersion', () => {
         ],
       },
     ]);
+  });
+});
+
+describe('excludeTrashUpdates', () => {
+  test('delete trash updates from the list', () => {
+    const trashUpdates = [
+      [
+        'bulletlist',
+        ['listitem', '896e27d: Update build tool-chain'],
+        ['listitem', 'Updated dependencies ', [Array]],
+        ['listitem', 'Updated dependencies ', [Array]],
+        ['listitem', 'Updated dependencies ', [Array]],
+        ['listitem', 'Updated dependencies ', [Array]],
+        ['listitem', 'Updated dependencies ', [Array]],
+        ['listitem', 'Updated dependencies ', [Array]],
+        ['listitem', 'Updated dependencies ', [Array]],
+        ['listitem', 'Updated dependencies ', [Array]],
+        ['listitem', 'Updated dependencies ', [Array], [Array]],
+      ],
+    ];
+
+    expect(excludeTrashUpdates(trashUpdates)).toMatchInlineSnapshot(`
+      [
+        [
+          "bulletlist",
+          [
+            "listitem",
+            "896e27d: Update build tool-chain",
+          ],
+        ],
+      ]
+    `);
+  });
+
+  test('delete the whole list in case of only updated deps', () => {
+    const trashUpdates = [
+      [
+        'bulletlist',
+        ['listitem', 'Updated dependencies ', [Array]],
+        ['listitem', 'Updated dependencies ', [Array]],
+        ['listitem', 'Updated dependencies ', [Array]],
+        ['listitem', 'Updated dependencies ', [Array]],
+        ['listitem', 'Updated dependencies ', [Array]],
+        ['listitem', 'Updated dependencies ', [Array]],
+        ['listitem', 'Updated dependencies ', [Array]],
+        ['listitem', 'Updated dependencies ', [Array]],
+        ['listitem', 'Updated dependencies ', [Array], [Array]],
+      ],
+    ];
+
+    expect(excludeTrashUpdates(trashUpdates)).toMatchInlineSnapshot(`[]`);
   });
 });
