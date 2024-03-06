@@ -12,32 +12,41 @@ import { InvalidDataError } from '../errors/type';
 import { Validator } from '../validation/type';
 import { resolveExecuteEffect } from '../remote_operation/resolve_execute_effect';
 
+/**
+ * Copy-paste from Effector's sources
+ */
+type OptionalParams<Args extends any[]> = Args['length'] extends 0 // does handler accept 0 arguments?
+  ? void // works since TS v3.3.3
+  : 0 | 1 extends Args['length'] // is the first argument optional?
+  ? /**
+     * Applying `infer` to a variadic arguments here we'll get `Args` of
+     * shape `[T]` or `[T?]`, where T(?) is a type of handler `params`.
+     * In case T is optional we get `T | undefined` back from `Args[0]`.
+     * We lose information about argument's optionality, but we can make it
+     * optional again by appending `void` type, so the result type will be
+     * `T | undefined | void`.
+     *
+     * The disadvantage of this method is that we can't restore optonality
+     * in case of `params?: any` because in a union `any` type absorbs any
+     * other type (`any | undefined | void` becomes just `any`). And we
+     * have similar situation also with the `unknown` type.
+     */
+    Args[0] | void
+  : Args[0];
+
 // Overload: Only handler
-export function createQuery<Response>(
+export function createQuery<Params extends any[], Response>(
   config: {
-    handler: () => Promise<Response>;
+    handler: (...p: Params) => Promise<Response>;
   } & SharedQueryFactoryConfig<Response>
-): Query<void, Response, unknown>;
+): Query<OptionalParams<Params>, Response, unknown>;
 
-export function createQuery<Params, Response>(
-  config: {
-    handler: (p: Params) => Promise<Response>;
-  } & SharedQueryFactoryConfig<Response>
-): Query<Params, Response, unknown>;
-
-export function createQuery<Response>(
+export function createQuery<Params extends any[], Response>(
   config: {
     initialData: Response;
-    handler: () => Promise<Response>;
+    handler: (...p: Params) => Promise<Response>;
   } & SharedQueryFactoryConfig<Response>
-): Query<void, Response, unknown, Response>;
-
-export function createQuery<Params, Response>(
-  config: {
-    initialData: Response;
-    handler: (p: Params) => Promise<Response>;
-  } & SharedQueryFactoryConfig<Response>
-): Query<Params, Response, unknown, Response>;
+): Query<OptionalParams<Params>, Response, unknown, Response>;
 
 // Overload: Effect and MapData
 export function createQuery<

@@ -137,7 +137,7 @@ describe('createQuery', () => {
       handler: async (_: void) => 12,
     });
     expectTypeOf(handleQuery).toEqualTypeOf<
-      Query<void, number, unknown, number>
+      Query<void | undefined, number, unknown, number>
     >();
 
     const effectQuery = createQuery({
