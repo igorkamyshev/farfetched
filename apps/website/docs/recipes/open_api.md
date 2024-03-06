@@ -1,5 +1,13 @@
 # Code generation with OpenAPI
 
+::: danger
+
+Many users of Farfetched have reported that the organization https://github.com/openapi/ is basically abandoned by its maintainers, it does not work in various cases ([example #1](https://github.com/openapi/openapi/issues/5), [example #2](https://github.com/openapi/openapi/issues/11), [example #3](https://github.com/openapi/preset-effector/issues/18)).
+
+We are currently looking for a better alternative. If you have any suggestions, please let us know in [issues](https://github.com/igorkamyshev/farfetched/issues).
+
+:::
+
 Farfetched itself does not have any code generation capabilities. However, it is possible to use the OpenAPI specification (and its implementation Swagger) to generate code for the client with external open-source tools.
 
 In this recipe, we will use the [OpenAPI Generator](https://github.com/openapi/openapi) with a special [preset for Effector](https://github.com/openapi/preset-effector).
