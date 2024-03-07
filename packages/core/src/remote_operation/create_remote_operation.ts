@@ -454,7 +454,7 @@ export function createRemoteOperation<
     $enabled,
     __: {
       executeFx,
-      meta: { ...meta, name },
+      meta: { ...meta, name, flags: {} },
       kind,
       $latestParams: readonly($latestParams),
       lowLevelAPI: {

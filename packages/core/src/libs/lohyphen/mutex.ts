@@ -6,6 +6,12 @@ export class Mutex {
   private _resolve: (() => void) | null = null;
   private _promise = Promise.resolve();
 
+  constructor(locked: boolean = false) {
+    if (locked) {
+      this.acquire();
+    }
+  }
+
   get isLocked(): boolean {
     return !!this._resolve;
   }

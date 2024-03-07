@@ -28,7 +28,7 @@ describe('ioTsContract', () => {
     expect(contract.isData(data)).toBe(false);
     expect(contract.getErrorMessages(data)).toMatchInlineSnapshot(`
       [
-        "age: Expected a number, but received: \\"not a number\\"",
+        "age: Expected a number, but received: "not a number"",
         "name: Expected a string, but received: 11",
       ]
     `);
@@ -44,7 +44,7 @@ describe('ioTsContract', () => {
     expect(contract.isData(data)).toBe(false);
     expect(contract.getErrorMessages(data)).toMatchInlineSnapshot(`
       [
-        "user.age: Expected a number, but received: \\"not a number\\"",
+        "user.age: Expected a number, but received: "not a number"",
         "user.name: Expected a string, but received: 11",
       ]
     `);
@@ -66,7 +66,7 @@ describe('ioTsContract', () => {
     expect(contract.isData(data)).toBe(false);
     expect(contract.getErrorMessages(data)).toMatchInlineSnapshot(`
       [
-        "users.1.age: Expected a number, but received: \\"eleven\\"",
+        "users.1.age: Expected a number, but received: "eleven"",
         "users.1.name: Expected a string, but received: 11",
       ]
     `);

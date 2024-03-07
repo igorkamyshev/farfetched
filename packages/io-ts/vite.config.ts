@@ -1,16 +1,30 @@
-import { defineConfig } from 'vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import dts from '../../tools/vite/types';
 
-export default defineConfig({
-  cacheDir: '../../node_modules/.vite/io-ts',
-
-  plugins: [nxViteTsPaths()],
-
+export default {
+  plugins: [tsconfigPaths(), dts()],
   test: {
-    globals: true,
-    cache: { dir: '../../node_modules/.vitest' },
-    environment: 'node',
-    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        useAtomics: true,
+      },
+    },
   },
-});
+  build: {
+    lib: {
+      entry: 'src/index.ts',
+      name: '@farfetched/io-ts',
+      fileName: 'io-ts',
+      formats: ['es', 'cjs'],
+    },
+    rollupOptions: {
+      external: [
+        'io-ts',
+        /* Because we import something from io-ts/SomePath */
+        /^io-ts\/(.+)/,
+      ],
+    },
+  },
+};

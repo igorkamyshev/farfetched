@@ -1,20 +1,17 @@
-import { spawnSync } from 'node:child_process';
-import path from 'node:path';
-import { readdir } from 'node:fs/promises';
-import { strip } from 'ansicolor';
+import { publint } from 'publint';
+import { formatMessage } from 'publint/utils';
+import fs from 'node:fs/promises';
 
-const packages = await readdir(path.join('dist', 'packages'));
+const { messages } = await publint({
+  pkgDir: '.',
+  strict: true,
+});
 
-for (const pkg of packages) {
-  const inputDir = path.join('dist', 'packages', pkg);
+if (messages.length) {
+  const pkg = await fs.readFile('package.json', 'utf8').then(JSON.parse);
 
-  /* Save to variable to strip colors */
-  const result = spawnSync('publint', [inputDir])
-    .output.toString()
-    .split(',')
-    .map(strip)
-    .join('')
-    .replaceAll('\n', '\n\n');
-
-  console.log(result);
+  for (const message of messages) {
+    console.log(formatMessage(message, pkg));
+  }
+  process.exit(1);
 }

@@ -7,7 +7,6 @@ export default withMermaid(
     title: 'Farfetched',
     description: 'The advanced data fetching tool for web applications.',
     lastUpdated: true,
-    outDir: '../../../dist/apps/website',
     head: [
       ['link', { rel: 'icon', href: '/favicon.ico', sizes: 'any' }],
       ['link', { rel: 'icon', href: '/icon.svg', type: 'image/svg+xml' }],
@@ -112,6 +111,7 @@ export default withMermaid(
                     link: '/tutorial/update_query',
                   },
                   { text: 'Retries', link: '/tutorial/retries' },
+                  { text: 'Concurrency', link: '/tutorial/concurrency' },
                   { text: 'Caching', link: '/tutorial/caching' },
                 ],
               },
@@ -206,6 +206,7 @@ export default withMermaid(
               { text: 'retry', link: '/api/operators/retry' },
               { text: 'timeout', link: '/api/operators/timeout' },
               { text: 'cache', link: '/api/operators/cache' },
+              { text: 'concurrency', link: '/api/operators/concurrency' },
               { text: 'applyBarrier', link: '/api/operators/apply_barrier' },
               { text: 'update', link: '/api/operators/update' },
               {
@@ -271,6 +272,10 @@ export default withMermaid(
                     text: 'typed-contracts',
                     link: '/api/contracts/typed-contracts',
                   },
+                  {
+                    text: 'Valibot',
+                    link: '/api/contracts/valibot',
+                  },
                 ],
               },
               {
@@ -291,10 +296,6 @@ export default withMermaid(
               {
                 text: 'Vite',
                 link: '/recipes/vite',
-              },
-              {
-                text: 'Code generation with OpenAPI',
-                link: '/recipes/open_api',
               },
               {
                 text: 'Base URL for all operations',
@@ -348,6 +349,7 @@ export default withMermaid(
                 text: 'Your own GraphQL Query',
                 link: '/recipes/graphql_query',
               },
+              { text: 'FormData in Mutation', link: '/recipes/form_data' },
             ],
           },
           {
@@ -398,7 +400,7 @@ export default withMermaid(
           {
             text: 'Releases',
             items: [
-              { text: 'v0.12', link: '/releases/0-12' },
+              { text: 'v0.12 Talat Noi', link: '/releases/0-12' },
               { text: 'v0.11 Namtok Ngao', link: '/releases/0-11' },
               { text: 'v0.10 Namtok Than Sadet', link: '/releases/0-10' },
               { text: 'v0.9', link: '/releases/0-9' },

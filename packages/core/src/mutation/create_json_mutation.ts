@@ -58,6 +58,10 @@ interface BaseJsonMutationConfigNoParams<
     HeadersSource,
     UrlSource
   >;
+  /**
+   * @deprecated Deprecated since 0.12, use `concurrency` operator instead
+   * @see {@link https://farfetched.pages.dev/adr/concurrency}
+   */
   concurrency?: ConcurrencyConfig;
 }
 
@@ -77,6 +81,10 @@ interface BaseJsonMutationConfigWithParams<
     HeadersSource,
     UrlSource
   >;
+  /**
+   * @deprecated Deprecated since 0.12, use `concurrency` operator instead
+   * @see {@link https://farfetched.pages.dev/adr/concurrency}
+   */
   concurrency?: ConcurrencyConfig;
 }
 
@@ -198,8 +206,8 @@ export function createJsonMutation<
 
 // -- Implementation --
 export function createJsonMutation(config: any): Mutation<any, any, any> {
-  const credentials: RequestCredentials =
-    config.request.credentials ?? 'same-origin';
+  const credentials: RequestCredentials | undefined =
+    config.request.credentials;
 
   const requestFx = createJsonApiRequest({
     request: { method: config.request.method, credentials },
@@ -257,10 +265,20 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
   };
 
   /* TODO: in future releases we will remove this code and make concurrency a separate function */
-  concurrency(op, {
-    strategy: config.concurrency?.strategy ?? 'TAKE_EVERY',
-    abort: config.concurrency?.abort,
-  });
+  if (config.concurrency) {
+    op.__.meta.flags.concurrencyFieldUsed = true;
+  }
+
+  if (config.concurrency) {
+    setTimeout(() => {
+      if (!op.__.meta.flags.concurrencyOperatorUsed) {
+        concurrency(op, {
+          strategy: config.concurrency?.strategy ?? 'TAKE_EVERY',
+          abortAll: config.concurrency?.abort,
+        });
+      }
+    });
+  }
 
   return op;
 }

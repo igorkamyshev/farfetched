@@ -37,7 +37,7 @@ type Refetch<Q extends Query<any, any, any, any>> =
 
 type RuleResult<Q extends Query<any, any, any, any>> =
   | {
-      result: RemoteOperationResult<Q>;
+      result: RemoteOperationResult<Q> | QueryInitialData<Q>;
       refetch?: Refetch<Q>;
     }
   | {
@@ -86,7 +86,7 @@ export function update<
   const $queryState = queryState(query);
 
   const fillQueryData = createEvent<{
-    result: RemoteOperationResult<Q>;
+    result: RemoteOperationResult<Q> | QueryInitialData<Q>;
     refetch?: Refetch<Q>;
   }>();
   const fillQueryError = createEvent<{

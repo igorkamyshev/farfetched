@@ -55,11 +55,11 @@ const authBarrier = createBarrier({
 If the client does not have access to the content of the token, we have to rely on the response from the server on particular request. In this case, we can create a barrier with explicit checking of the response status of every request which requires authentication.
 
 ```ts{4-6}
-import { createBarrier, isHttpError } from '@farfetched/core';
+import { createBarrier, isHttpErrorCode } from '@farfetched/core';
 
 const authBarrier = createBarrier({
   activateOn: {
-    failure: isHttpError(401),
+    failure: isHttpErrorCode(401),
   },
 });
 ```

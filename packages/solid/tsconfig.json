@@ -1,22 +1,18 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "declaration": true,
+    "types": ["node", "@testing-library/jest-dom"],
+    "outDir": "dist",
+    "rootDir": "src",
+    "baseUrl": "src",
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js"
   },
-  "files": [],
-  "include": [],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "references": [
     {
-      "path": "./tsconfig.lib.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
+      "path": "../core"
     }
   ]
 }

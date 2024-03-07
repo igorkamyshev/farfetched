@@ -4,8 +4,6 @@ All architecture decisions are recorded in this directory. They grouped by Farfe
 
 <script setup>
     import { data as docsByVersion } from './adr.data'
-
-    console.log(docsByVersion)  
 </script>
 
 <div v-for="[release, items] in docsByVersion">

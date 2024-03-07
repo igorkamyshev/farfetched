@@ -16,18 +16,26 @@ import { abortError } from '../errors/create_error';
  * - `TAKE_EVERY` will not cancel any requests
  * - `TAKE_LATEST` will cancel all but the latest request
  * - `TAKE_FIRST` will ignore all but the first request
- * @param config.abort All requests will be aborted on this event call
+ * @param config.abortAll All requests will be aborted on this event call
  */
 export function concurrency(
   op: RemoteOperation<any, any, any, any>,
   {
     strategy,
-    abort,
+    abortAll,
   }: {
     strategy?: 'TAKE_LATEST' | 'TAKE_EVERY' | 'TAKE_FIRST';
-    abort?: Event<any>;
+    abortAll?: Event<any>;
   }
 ) {
+  if (op.__.meta.flags.concurrencyFieldUsed) {
+    console.error(
+      `Both concurrency-operator and concurrency-field are used  on operation ${op.__.meta.name}.`,
+      `Please use only concurrency-operator, because field concurrency-field in createJsonQuery and createJsonMutation is deprecated and will be deleted soon.`
+    );
+  }
+  op.__.meta.flags.concurrencyOperatorUsed = true;
+
   const $callObjects = createStore<CallObject[]>([], { serialize: 'ignore' });
   sample({
     clock: op.__.lowLevelAPI.callObjectCreated,
@@ -110,8 +118,8 @@ export function concurrency(
     }
   }
 
-  if (abort) {
-    sample({ clock: abort, target: abortAllFx });
+  if (abortAll) {
+    sample({ clock: abortAll, target: abortAllFx });
   }
 
   return op;

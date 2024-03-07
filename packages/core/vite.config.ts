@@ -1,16 +1,26 @@
-import { defineConfig } from 'vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import dts from '../../tools/vite/types';
 
-export default defineConfig({
-  cacheDir: '../../node_modules/.vite/core',
-
-  plugins: [nxViteTsPaths()],
-
+export default {
+  plugins: [tsconfigPaths(), dts()],
   test: {
-    globals: true,
-    cache: { dir: '../../node_modules/.vitest' },
-    environment: 'node',
-    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        useAtomics: true,
+      },
+    },
   },
-});
+  build: {
+    lib: {
+      entry: 'src/index.ts',
+      name: '@farfetched/core',
+      fileName: 'core',
+      formats: ['es', 'cjs'],
+    },
+    rollupOptions: {
+      external: ['effector'],
+    },
+  },
+};

@@ -1,5 +1,34 @@
 # @farfetched/core
 
+## 0.12.0
+
+### Minor Changes
+
+- 7331eb8: Add `.reset` _Event_ to _Mutation_
+- 66991a0: Add `filter` parameter to `connectQuery` operator
+- ef2bf7d: Add `onAbort` to save abort handlers in `createQuery`/`createMutation`
+- 004c47b: Initial release of Dev Tools interface
+- b9d84bb: Add parameter `humanReadableKeys` to operator `cache`
+- 2ea13bd: Deprecate `attachOperation`
+- e8d0512: New overload `applyBarrier(operations, { barrier })`
+
+### Patch Changes
+
+- 0b8df65: Fix types of `update` operator to allow returning InitialData from callback
+- 896e27d: Update build tool-chain
+
+## 0.11.4
+
+### Patch Changes
+
+- f14f944: Fix incorrect type of `__.$instance` in Cache API
+
+## 0.11.3
+
+### Patch Changes
+
+- 3649ae9: Support Cloudflare Workers runtime by deleting explicitly setting credentials in internal code, observed behavior has not changed for other runtimes
+
 ## 0.11.2
 
 ## 0.11.1

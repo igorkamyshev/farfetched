@@ -1,11 +1,49 @@
 {
   "name": "@farfetched/typed-contracts",
-  "version": "0.11.2",
-  "dependencies": {},
-  "peerDependencies": {
-    "typed-contracts": "^3.0.0"
+  "version": "0.12.0",
+  "publishConfig": {
+    "access": "public"
   },
-  "type": "commonjs",
-  "main": "./index.cjs",
-  "module": "./index.js"
+  "license": "MIT",
+  "repository": "https://github.com/igorkamyshev/farfetched",
+  "devDependencies": {
+    "typed-contracts": "^3.0.0",
+    "@farfetched/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "typed-contracts": "^3.0.0",
+    "@farfetched/core": "workspace:*"
+  },
+  "scripts": {
+    "test:run": "vitest run --typecheck",
+    "build": "vite build",
+    "size": "size-limit",
+    "publint": "node ../../tools/scripts/publint.mjs",
+    "typelint": "attw --pack"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/typed-contracts.cjs",
+  "module": "./dist/typed-contracts.js",
+  "types": "./dist/typed-contracts.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/typed-contracts.d.ts",
+        "default": "./dist/typed-contracts.js"
+      },
+      "require": {
+        "types": "./dist/typed-contracts.d.cts",
+        "default": "./dist/typed-contracts.cjs"
+      }
+    }
+  },
+  "size-limit": [
+    {
+      "path": "./dist/typed-contracts.js",
+      "limit": "361 B"
+    }
+  ]
 }

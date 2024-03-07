@@ -1,16 +1,25 @@
-import { defineConfig } from 'vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
+import dts from '../../tools/vite/types';
 
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
-
-export default defineConfig({
-  cacheDir: '../../node_modules/.vite/typed-contracts',
-
-  plugins: [nxViteTsPaths()],
-
+export default {
+  plugins: [tsconfigPaths(), dts()],
   test: {
-    globals: true,
-    cache: { dir: '../../node_modules/.vitest' },
-    environment: 'node',
-    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        useAtomics: true,
+      },
+    },
   },
-});
+  build: {
+    lib: {
+      entry: 'src/index.ts',
+      name: '@farfetched/typed-contracts',
+      fileName: 'typed-contracts',
+      formats: ['es', 'cjs'],
+    },
+    rollupOptions: {
+      external: ['typed-contracts'],
+    },
+  },
+};

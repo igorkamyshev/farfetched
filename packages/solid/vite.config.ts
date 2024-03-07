@@ -1,21 +1,32 @@
-import { defineConfig } from 'vite';
-
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import tsconfigPaths from 'vite-tsconfig-paths';
 import solidPlugin from 'vite-plugin-solid';
 
-export default defineConfig({
-  cacheDir: '../../node_modules/.vite/solid',
+import dts from '../../tools/vite/types';
 
-  plugins: [nxViteTsPaths(), solidPlugin()],
-
+export default {
+  plugins: [tsconfigPaths(), solidPlugin(), dts()],
   test: {
     globals: true,
     setupFiles: './test.setup.ts',
-    cache: { dir: '../../node_modules/.vitest' },
-    environment: 'node',
-    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        useAtomics: true,
+      },
+    },
   },
   resolve: {
     conditions: ['browser'],
   },
-});
+  build: {
+    lib: {
+      entry: 'src/index.ts',
+      name: '@farfetched/solid',
+      fileName: 'solid',
+      formats: ['es', 'cjs'],
+    },
+    rollupOptions: {
+      external: ['solid-js', 'effector-solid', '@farfetched/core'],
+    },
+  },
+};

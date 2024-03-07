@@ -59,6 +59,10 @@ interface BaseJsonQueryConfigNoParams<
     HeadersSource,
     UrlSource
   >;
+  /**
+   * @deprecated Deprecated since 0.12, use `concurrency` operator instead
+   * @see {@link https://farfetched.pages.dev/adr/concurrency}
+   */
   concurrency?: ConcurrencyConfig;
 }
 
@@ -78,6 +82,10 @@ interface BaseJsonQueryConfigWithParams<
     HeadersSource,
     UrlSource
   >;
+  /**
+   * @deprecated Deprecated since 0.12, use `concurrency` operator instead
+   * @see {@link https://farfetched.pages.dev/adr/concurrency}
+   */
   concurrency?: ConcurrencyConfig;
 }
 
@@ -305,8 +313,8 @@ export function createJsonQuery<
 
 // -- Implementation --
 export function createJsonQuery(config: any) {
-  const credentials: RequestCredentials =
-    config.request.credentials ?? 'same-origin';
+  const credentials: RequestCredentials | undefined =
+    config.request.credentials;
 
   // Basement
   const requestFx = createJsonApiRequest({
@@ -385,9 +393,17 @@ export function createJsonQuery(config: any) {
   };
 
   /* TODO: in future releases we will remove this code and make concurrency a separate function */
-  concurrency(op, {
-    strategy: config.concurrency?.strategy ?? 'TAKE_LATEST',
-    abort: config.concurrency?.abort,
+  if (config.concurrency) {
+    op.__.meta.flags.concurrencyFieldUsed = true;
+  }
+
+  setTimeout(() => {
+    if (!op.__.meta.flags.concurrencyOperatorUsed) {
+      concurrency(op, {
+        strategy: config.concurrency?.strategy ?? 'TAKE_LATEST',
+        abortAll: config.concurrency?.abort,
+      });
+    }
   });
 
   return op;

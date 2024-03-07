@@ -8,7 +8,6 @@ import {
   sample,
   createEvent,
 } from 'effector';
-import { type FetchingStatus } from '@farfetched/core';
 
 import {
   type FarfetchedDeclaration,

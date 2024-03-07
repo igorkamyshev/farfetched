@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "rootDir": ".",
+    "composite": true,
     "sourceMap": true,
     "declaration": true,
     "moduleResolution": "node",
@@ -9,9 +9,9 @@
     "experimentalDecorators": true,
     "importHelpers": false,
     "target": "es2018",
+    "strict": true,
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": ".",
     "paths": {
       "@farfetched/atomic-router": ["packages/atomic-router/src/index.ts"],
       "@farfetched/core": ["packages/core/src/index.ts"],
@@ -21,8 +21,9 @@
       "@farfetched/solid": ["packages/solid/src/index.ts"],
       "@farfetched/superstruct": ["packages/superstruct/src/index.ts"],
       "@farfetched/typed-contracts": ["packages/typed-contracts/src/index.ts"],
-      "@farfetched/zod": ["packages/zod/src/index.ts"]
+      "@farfetched/zod": ["packages/zod/src/index.ts"],
+      "@farfetched/valibot": ["packages/valibot/src/index.ts"]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules"]
 }
