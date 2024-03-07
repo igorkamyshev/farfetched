@@ -1,6 +1,7 @@
 <script setup>
 import coreRaw from '../../../../../packages/core/dist/core.js?raw';
 import runtypesRaw from '../../../../../packages/runtypes/dist/runtypes.js?raw';
+import packageJson from '../../../../../package.json';
 import { Sandpack } from 'sandpack-vue3';
 
 const props = defineProps(['demoFile']);
@@ -13,9 +14,9 @@ const files = {
 
 const customSetup = {
   dependencies: {
-    effector: 'latest',
-    'effector-vue': 'latest',
-    runtypes: '^6.5.1',
+    effector: packageJson.dependencies.effector,
+    'effector-vue': packageJson.dependencies['effector-vue'],
+    runtypes: packageJson.dependencies.runtypes,
   },
 };
 

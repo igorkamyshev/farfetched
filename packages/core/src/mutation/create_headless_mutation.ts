@@ -63,6 +63,7 @@ export function createHeadlessMutation<
   const unitShape = {
     pending: operation.$pending,
     start: operation.start,
+    reset: operation.reset,
   };
   const unitShapeProtocol = () => unitShape;
 
