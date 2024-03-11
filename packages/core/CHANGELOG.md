@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.12.2
+
+### Patch Changes
+
+- 1b4ea89: Invoke `.finished.failure` in case of disabled `retry` applied to operation
+
 ## 0.12.1
 
 ### Patch Changes
