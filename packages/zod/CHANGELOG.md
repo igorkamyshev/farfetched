@@ -1,5 +1,14 @@
 # @farfetched/zod
 
+## 0.12.1
+
+### Patch Changes
+
+- Updated dependencies [f724207]
+- Updated dependencies [5c0f6d6]
+- Updated dependencies [ce4ea66]
+  - @farfetched/core@0.12.1
+
 ## 0.12.0
 
 ### Patch Changes
