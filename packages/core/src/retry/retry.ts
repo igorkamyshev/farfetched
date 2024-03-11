@@ -98,15 +98,17 @@ export function retry<
 
   const newAttempt = createEvent();
 
+  const $partialFilter = normalizeSourced({
+    field: filter ?? true,
+  });
+
   const { planNextAttempt, __: retriesAreOver } = split(
     sample({
       clock: failed,
       source: {
         maxAttempts: $maxAttempts,
         attempt: $attempt,
-        partialFilter: normalizeSourced({
-          field: filter ?? true,
-        }),
+        partialFilter: $partialFilter,
       },
       filter: ({ partialFilter }, clock) => partialFilter(clock),
       fn: ({ attempt, maxAttempts }, { params, error, meta }) => ({
@@ -160,27 +162,46 @@ export function retry<
 
     operation.__.lowLevelAPI.dataSourceRetrieverFx.use(
       attach({
-        source: $supressError,
-        mapParams: (opts, supressError) => ({ ...opts, supressError }),
+        source: { supressError: $supressError, partialFilter: $partialFilter },
+        mapParams: (opts, { supressError, partialFilter }) => ({
+          ...opts,
+          supressError,
+          partialFilter,
+        }),
         effect: createEffect<
           EffectParams<
             typeof operation.__.lowLevelAPI.dataSourceRetrieverFx
-          > & { supressError: boolean },
+          > & {
+            supressError: boolean;
+            partialFilter: (params: FailInfo<Q>) => boolean;
+          },
           EffectResult<typeof operation.__.lowLevelAPI.dataSourceRetrieverFx>,
           EffectError<typeof operation.__.lowLevelAPI.dataSourceRetrieverFx>
-        >(async ({ supressError, ...opts }) => {
+        >(async ({ supressError, partialFilter, ...opts }) => {
           const boundFailed = scopeBind(failed, { safe: true });
           try {
             const result = await originalFx(opts);
 
             return result;
           } catch (error: any) {
-            if (supressError) {
-              boundFailed({
-                params: opts.params,
-                error: error.error,
-                meta: opts.meta,
-              });
+            const failInfo = {
+              params: opts.params,
+              error: error.error,
+              meta: opts.meta,
+            };
+
+            if (
+              /*
+               * If filter returns false, this fail is not supposed to be retried
+               * so we should not suppress this error in any case.
+               *
+               * If filter returns is true, we should suppress this error only if
+               * supressError is true.
+               */
+              partialFilter(failInfo) &&
+              supressError
+            ) {
+              boundFailed(failInfo);
 
               throw { error: error.error, stopErrorPropagation: true };
             } else {
