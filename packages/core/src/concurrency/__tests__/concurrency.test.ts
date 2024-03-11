@@ -114,4 +114,61 @@ describe('concurrency', async () => {
 
     expect(scope.getState(q.$pending)).toBeFalsy();
   });
+
+  test('two createQuery and two onAbort, issue #449', async () => {
+    const q1Aborted = vi.fn();
+    const q2Aborted = vi.fn();
+
+    const q1 = createQuery({
+      /* Will not be resolved */
+      handler: async () => {
+        const defer = createDefer<any>();
+
+        onAbort(() => defer.reject());
+
+        return defer.promise;
+      },
+    });
+
+    const q2 = createQuery({
+      /* Will be resolved immediately */
+      handler: async () => {
+        const defer = createDefer<string>();
+
+        onAbort(() => defer.reject());
+
+        await setTimeout(1);
+
+        defer.resolve('Data');
+
+        return defer.promise;
+      },
+    });
+
+    const stop = createEvent();
+
+    concurrency(q1, { abortAll: stop });
+
+    const scope = fork();
+
+    createWatch({ unit: q1.aborted, scope, fn: q1Aborted });
+    createWatch({ unit: q2.aborted, scope, fn: q2Aborted });
+
+    allSettled(q1.start, { scope });
+    allSettled(q2.start, { scope });
+
+    await allSettled(stop, { scope });
+
+    expect(q1Aborted).toHaveBeenCalledTimes(1);
+    expect(q2Aborted).not.toHaveBeenCalled();
+
+    expect(scope.getState(q1.$pending)).toBeFalsy();
+    expect(scope.getState(q2.$pending)).toBeFalsy();
+
+    expect(scope.getState(q1.$error)).toEqual(null);
+    expect(scope.getState(q2.$error)).toEqual(null);
+
+    expect(scope.getState(q1.$data)).toEqual(null);
+    expect(scope.getState(q2.$data)).toEqual('Data');
+  });
 });
