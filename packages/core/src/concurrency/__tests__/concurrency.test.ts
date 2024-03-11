@@ -6,6 +6,9 @@ import { createDefer } from '../../libs/lohyphen';
 import { createQuery } from '../../query/create_query';
 import { onAbort } from '../../remote_operation/on_abort';
 import { concurrency } from '../concurrency';
+import { createJsonQuery } from '../../query/create_json_query';
+import { unknownContract } from '../../contract/unknown_contract';
+import { fetchFx } from '../../fetch/fetch';
 
 describe('concurrency', async () => {
   test('cancel all pending requests on abort event', async () => {
@@ -170,5 +173,60 @@ describe('concurrency', async () => {
 
     expect(scope.getState(q1.$data)).toEqual(null);
     expect(scope.getState(q2.$data)).toEqual('Data');
+  });
+
+  test('two createJsonQuery, issue #449', async () => {
+    const q1Aborted = vi.fn();
+    const q2Aborted = vi.fn();
+
+    const q1 = createJsonQuery({
+      request: { url: 'https://api.salo.com/q1', method: 'GET' },
+      response: { contract: unknownContract },
+    });
+
+    const q2 = createJsonQuery({
+      request: { url: 'https://api.salo.com/q2', method: 'GET' },
+      response: { contract: unknownContract },
+    });
+
+    const stop = createEvent();
+
+    concurrency(q1, { abortAll: stop });
+
+    const scope = fork({
+      handlers: [
+        [
+          fetchFx,
+          async (r: Request) =>
+            setTimeout(10).then(
+              () => new Response(`{ "data": "Data from ${r.url}"}`)
+            ),
+        ],
+      ],
+    });
+
+    createWatch({ unit: q1.aborted, scope, fn: q1Aborted });
+    createWatch({ unit: q2.aborted, scope, fn: q2Aborted });
+
+    allSettled(q1.start, { scope });
+    allSettled(q2.start, { scope });
+
+    await allSettled(stop, { scope });
+
+    expect(q1Aborted).toHaveBeenCalledTimes(1);
+    expect(q2Aborted).not.toHaveBeenCalled();
+
+    expect(scope.getState(q1.$pending)).toBeFalsy();
+    expect(scope.getState(q2.$pending)).toBeFalsy();
+
+    expect(scope.getState(q1.$error)).toEqual(null);
+    expect(scope.getState(q2.$error)).toEqual(null);
+
+    expect(scope.getState(q1.$data)).toEqual(null);
+    expect(scope.getState(q2.$data)).toMatchInlineSnapshot(`
+      {
+        "data": "Data from https://api.salo.com/q2",
+      }
+    `);
   });
 });
