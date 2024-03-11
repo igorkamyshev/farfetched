@@ -9,11 +9,11 @@
   "devDependencies": {
     "vue": "^3.2.37",
     "vue-json-viewer": "3",
-    "effector": "^23.0.0",
+    "effector": "^23.2.0",
     "@farfetched/core": "workspace:*"
   },
   "peerDependencies": {
-    "effector": "^23.0.0",
+    "effector": "^23.2.0",
     "@farfetched/core": "workspace:*"
   },
   "scripts": {

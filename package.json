@@ -47,7 +47,7 @@
   "dependencies": {
     "atomic-router": "0.9.1",
     "atomic-router-solid": "0.8.1",
-    "effector": "23.0.0",
+    "effector": "23.2.0",
     "effector-react": "23.0.0",
     "effector-solid": "0.23.0",
     "effector-vue": "23.0.0",

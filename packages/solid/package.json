@@ -8,13 +8,13 @@
   "repository": "https://github.com/igorkamyshev/farfetched",
   "devDependencies": {
     "effector-solid": "^0.23.0",
-    "effector": "^23.0.0",
+    "effector": "^23.2.0",
     "solid-js": "^1.4.7",
     "@farfetched/core": "workspace:*"
   },
   "peerDependencies": {
     "effector-solid": "^0.23.0",
-    "effector": "^23.0.0",
+    "effector": "^23.2.0",
     "solid-js": "^1.4.7",
     "@farfetched/core": "workspace:*"
   },
