@@ -9,7 +9,11 @@ import {
 
 import { Defer, createDefer } from '../libs/lohyphen';
 import { abortError } from '../errors/create_error';
-import { occupyCurrentCancelCallback } from './on_abort';
+import {
+  occupyCurrentCancelCallback,
+  allowCancelSetting,
+  disallowCancelSetting,
+} from './on_abort';
 
 export type CallObject = {
   id: string;
@@ -84,7 +88,8 @@ function createPatchedHandler(
      * Normal flow of the handler,
      * its result is reflected to the outside world
      */
-    const result = h(...p);
+    const { result, abortCallback } = runWithExposedAbort(h, ...p);
+
     if (result instanceof Promise) {
       /**
        * Async handlers are patched to emit call object,
@@ -92,7 +97,7 @@ function createPatchedHandler(
        */
 
       const def = createDefer();
-      const callObj = createCallObject(def);
+      const callObj = createCallObject(def, abortCallback);
       calledEvent(callObj);
       result.then(def.resolve, def.reject);
 
@@ -100,9 +105,9 @@ function createPatchedHandler(
     } else {
       /**
        * It is not possible to control sync handlers at all, because their execution is instant
-       * So call object is emitted as "finished" right away
+       * So call object is not provided with defer and thus emitted as "finished" right away
        */
-      const callObj = createCallObject();
+      const callObj = createCallObject(undefined, abortCallback);
       calledEvent(callObj);
 
       return result;
@@ -112,7 +117,7 @@ function createPatchedHandler(
   return ffMagicHandler;
 }
 
-function createCallObject(def?: Defer<unknown, unknown>) {
+function createCallObject(def?: Defer<unknown, unknown>, onAbort?: any) {
   let callStatus: CallObject['status'] = def ? 'pending' : 'finished';
 
   function finish() {
@@ -124,13 +129,11 @@ function createCallObject(def?: Defer<unknown, unknown>) {
     def.promise.then(finish, finish);
   }
 
-  const cancelCallback = occupyCurrentCancelCallback();
-
   const callObj: CallObject = {
     id: getCallId(),
     status: callStatus,
     abort: (error: unknown = abortError()) => {
-      cancelCallback?.();
+      onAbort?.();
       if (callStatus === 'finished') {
         /**
          * It is not possible to abort already finished call,
@@ -162,3 +165,39 @@ function getCallId(): string {
 
   return id;
 }
+
+/**
+ * Runs handler with exposed abort control - `onAbort` hooks works here
+ *
+ * @param h - original handler
+ * @param p - parameters to pass to the handler
+ * @returns {result: unknown, abortCallback: (() => void) | null}
+ */
+function runWithExposedAbort(
+  h: (...args: any[]) => any,
+  ...p: any[]
+): {
+  result: unknown;
+  abortCallback: (() => void) | null;
+} {
+  /**
+   * Hacky way to work around effector's mechanic to sync flush internal queue on amy imperative call,
+   * which in turn messes with `onAbort` hook mechanics, because it relies upon JS callstack here
+   *
+   * By calling dummy event we are forcing the flush of the queue early, before the handler is called.
+   * This essentially isolates handler execution from any other effector nodes in the queue.
+   */
+  flushQueue();
+
+  allowCancelSetting();
+  const result = h(...p);
+  const abortCallback = occupyCurrentCancelCallback();
+  disallowCancelSetting();
+
+  return {
+    result,
+    abortCallback,
+  };
+}
+
+const flushQueue = createEvent();
