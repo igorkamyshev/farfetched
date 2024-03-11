@@ -1,5 +1,19 @@
 # @farfetched/core
 
+## 0.12.2
+
+### Patch Changes
+
+- 1b4ea89: Invoke `.finished.failure` in case of disabled `retry` applied to operation
+
+## 0.12.1
+
+### Patch Changes
+
+- f724207: Fix typings of `createQuery` in case of handler with no params
+- 5c0f6d6: Fix race in validation of `obAbort` call in case of starting many operations by single `sample`
+- ce4ea66: Add `.reset` _Event_ to `@@unitShape` on _Mutation_
+
 ## 0.12.0
 
 ### Minor Changes
