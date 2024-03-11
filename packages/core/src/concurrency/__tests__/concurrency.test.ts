@@ -374,5 +374,109 @@ describe('concurrency', async () => {
         }
       `);
     });
+
+    test('4 parallel createJsonQuery, TAKE_LATEST, start by sample', async () => {
+      const q1Aborted = vi.fn();
+      const q2Aborted = vi.fn();
+      const q3Aborted = vi.fn();
+      const q4Aborted = vi.fn();
+
+      const q1 = createJsonQuery({
+        request: { url: 'https://api.salo.com/q1', method: 'GET' },
+        response: { contract: unknownContract },
+      });
+
+      concurrency(q1, { strategy: 'TAKE_LATEST' });
+
+      const q2 = createJsonQuery({
+        request: { url: 'https://api.salo.com/q2', method: 'GET' },
+        response: { contract: unknownContract },
+      });
+
+      concurrency(q1, { strategy: 'TAKE_LATEST' });
+
+      const q3 = createJsonQuery({
+        request: { url: 'https://api.salo.com/q3', method: 'GET' },
+        response: { contract: unknownContract },
+      });
+
+      concurrency(q3, { strategy: 'TAKE_LATEST' });
+
+      const q4 = createJsonQuery({
+        request: { url: 'https://api.salo.com/q4', method: 'GET' },
+        response: { contract: unknownContract },
+      });
+
+      concurrency(q4, { strategy: 'TAKE_LATEST' });
+
+      const start = createEvent();
+
+      sample({
+        clock: start,
+        target: [q1.start, q2.start, q3.start, q4.start],
+      });
+
+      const scope = fork({
+        handlers: [
+          [
+            fetchFx,
+            async (r: Request) => {
+              await setTimeout(10);
+
+              if (r.signal.aborted) {
+                throw new Error('Request aborted, WTF');
+              }
+
+              return new Response(`{ "data": "Data from ${r.url}"}`);
+            },
+          ],
+        ],
+      });
+
+      createWatch({ unit: q1.aborted, scope, fn: q1Aborted });
+      createWatch({ unit: q2.aborted, scope, fn: q2Aborted });
+      createWatch({ unit: q3.aborted, scope, fn: q3Aborted });
+      createWatch({ unit: q4.aborted, scope, fn: q4Aborted });
+
+      allSettled(start, { scope });
+
+      await allSettled(scope);
+
+      expect(q1Aborted).not.toHaveBeenCalled();
+      expect(q2Aborted).not.toHaveBeenCalled();
+      expect(q3Aborted).not.toHaveBeenCalled();
+      expect(q4Aborted).not.toHaveBeenCalled();
+
+      expect(scope.getState(q1.$pending)).toBeFalsy();
+      expect(scope.getState(q2.$pending)).toBeFalsy();
+      expect(scope.getState(q3.$pending)).toBeFalsy();
+      expect(scope.getState(q4.$pending)).toBeFalsy();
+
+      expect(scope.getState(q1.$error)).toEqual(null);
+      expect(scope.getState(q2.$error)).toEqual(null);
+      expect(scope.getState(q3.$error)).toEqual(null);
+      expect(scope.getState(q4.$error)).toEqual(null);
+
+      expect(scope.getState(q1.$data)).toMatchInlineSnapshot(`
+        {
+          "data": "Data from https://api.salo.com/q1",
+        }
+      `);
+      expect(scope.getState(q2.$data)).toMatchInlineSnapshot(`
+        {
+          "data": "Data from https://api.salo.com/q2",
+        }
+      `);
+      expect(scope.getState(q3.$data)).toMatchInlineSnapshot(`
+      {
+        "data": "Data from https://api.salo.com/q3",
+      }
+    `);
+      expect(scope.getState(q4.$data)).toMatchInlineSnapshot(`
+      {
+        "data": "Data from https://api.salo.com/q4",
+      }
+    `);
+    });
   });
 });
