@@ -235,6 +235,8 @@ describe('concurrency', async () => {
       const q1Aborted = vi.fn();
       const q2Aborted = vi.fn();
 
+      const q1FinishedSuccessfully = vi.fn();
+
       const q1 = createJsonQuery({
         request: { url: 'https://api.salo.com/q1', method: 'GET' },
         response: { contract: unknownContract },
@@ -251,10 +253,15 @@ describe('concurrency', async () => {
         handlers: [
           [
             fetchFx,
-            async (r: Request) =>
-              setTimeout(10).then(
-                () => new Response(`{ "data": "Data from ${r.url}"}`)
-              ),
+            async (r: Request) => {
+              await setTimeout(10);
+
+              if (r.signal.aborted) {
+                throw new Error('Request aborted, WTF');
+              }
+
+              return new Response(`{ "data": "Data from ${r.url}"}`);
+            },
           ],
         ],
       });
@@ -262,15 +269,23 @@ describe('concurrency', async () => {
       createWatch({ unit: q1.aborted, scope, fn: q1Aborted });
       createWatch({ unit: q2.aborted, scope, fn: q2Aborted });
 
+      createWatch({
+        unit: q1.finished.success,
+        scope,
+        fn: q1FinishedSuccessfully,
+      });
+
       allSettled(q1.start, { scope });
       allSettled(q1.start, { scope });
 
       allSettled(q2.start, { scope });
 
-      await allSettled(scope)
+      await allSettled(scope);
 
       expect(q1Aborted).toHaveBeenCalledTimes(1);
       expect(q2Aborted).not.toHaveBeenCalled();
+
+      expect(q1FinishedSuccessfully).toHaveBeenCalledTimes(1);
 
       expect(scope.getState(q1.$pending)).toBeFalsy();
       expect(scope.getState(q2.$pending)).toBeFalsy();
