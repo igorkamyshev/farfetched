@@ -118,115 +118,176 @@ describe('concurrency', async () => {
     expect(scope.getState(q.$pending)).toBeFalsy();
   });
 
-  test('two createQuery and two onAbort, issue #449', async () => {
-    const q1Aborted = vi.fn();
-    const q2Aborted = vi.fn();
+  describe('issue #449', () => {
+    test('two createQuery, two onAbort, abortAll', async () => {
+      const q1Aborted = vi.fn();
+      const q2Aborted = vi.fn();
 
-    const q1 = createQuery({
-      /* Will not be resolved */
-      handler: async () => {
-        const defer = createDefer<any>();
+      const q1 = createQuery({
+        /* Will not be resolved */
+        handler: async () => {
+          const defer = createDefer<any>();
 
-        onAbort(() => defer.reject());
+          onAbort(() => defer.reject());
 
-        return defer.promise;
-      },
+          return defer.promise;
+        },
+      });
+
+      const q2 = createQuery({
+        /* Will be resolved immediately */
+        handler: async () => {
+          const defer = createDefer<string>();
+
+          onAbort(() => defer.reject());
+
+          await setTimeout(1);
+
+          defer.resolve('Data');
+
+          return defer.promise;
+        },
+      });
+
+      const stop = createEvent();
+
+      concurrency(q1, { abortAll: stop });
+
+      const scope = fork();
+
+      createWatch({ unit: q1.aborted, scope, fn: q1Aborted });
+      createWatch({ unit: q2.aborted, scope, fn: q2Aborted });
+
+      allSettled(q1.start, { scope });
+      allSettled(q2.start, { scope });
+
+      await allSettled(stop, { scope });
+
+      expect(q1Aborted).toHaveBeenCalledTimes(1);
+      expect(q2Aborted).not.toHaveBeenCalled();
+
+      expect(scope.getState(q1.$pending)).toBeFalsy();
+      expect(scope.getState(q2.$pending)).toBeFalsy();
+
+      expect(scope.getState(q1.$error)).toEqual(null);
+      expect(scope.getState(q2.$error)).toEqual(null);
+
+      expect(scope.getState(q1.$data)).toEqual(null);
+      expect(scope.getState(q2.$data)).toEqual('Data');
     });
 
-    const q2 = createQuery({
-      /* Will be resolved immediately */
-      handler: async () => {
-        const defer = createDefer<string>();
+    test('two createJsonQuery, abortAll', async () => {
+      const q1Aborted = vi.fn();
+      const q2Aborted = vi.fn();
 
-        onAbort(() => defer.reject());
+      const q1 = createJsonQuery({
+        request: { url: 'https://api.salo.com/q1', method: 'GET' },
+        response: { contract: unknownContract },
+      });
 
-        await setTimeout(1);
+      const q2 = createJsonQuery({
+        request: { url: 'https://api.salo.com/q2', method: 'GET' },
+        response: { contract: unknownContract },
+      });
 
-        defer.resolve('Data');
+      const stop = createEvent();
 
-        return defer.promise;
-      },
-    });
+      concurrency(q1, { abortAll: stop });
 
-    const stop = createEvent();
-
-    concurrency(q1, { abortAll: stop });
-
-    const scope = fork();
-
-    createWatch({ unit: q1.aborted, scope, fn: q1Aborted });
-    createWatch({ unit: q2.aborted, scope, fn: q2Aborted });
-
-    allSettled(q1.start, { scope });
-    allSettled(q2.start, { scope });
-
-    await allSettled(stop, { scope });
-
-    expect(q1Aborted).toHaveBeenCalledTimes(1);
-    expect(q2Aborted).not.toHaveBeenCalled();
-
-    expect(scope.getState(q1.$pending)).toBeFalsy();
-    expect(scope.getState(q2.$pending)).toBeFalsy();
-
-    expect(scope.getState(q1.$error)).toEqual(null);
-    expect(scope.getState(q2.$error)).toEqual(null);
-
-    expect(scope.getState(q1.$data)).toEqual(null);
-    expect(scope.getState(q2.$data)).toEqual('Data');
-  });
-
-  test('two createJsonQuery, issue #449', async () => {
-    const q1Aborted = vi.fn();
-    const q2Aborted = vi.fn();
-
-    const q1 = createJsonQuery({
-      request: { url: 'https://api.salo.com/q1', method: 'GET' },
-      response: { contract: unknownContract },
-    });
-
-    const q2 = createJsonQuery({
-      request: { url: 'https://api.salo.com/q2', method: 'GET' },
-      response: { contract: unknownContract },
-    });
-
-    const stop = createEvent();
-
-    concurrency(q1, { abortAll: stop });
-
-    const scope = fork({
-      handlers: [
-        [
-          fetchFx,
-          async (r: Request) =>
-            setTimeout(10).then(
-              () => new Response(`{ "data": "Data from ${r.url}"}`)
-            ),
+      const scope = fork({
+        handlers: [
+          [
+            fetchFx,
+            async (r: Request) =>
+              setTimeout(10).then(
+                () => new Response(`{ "data": "Data from ${r.url}"}`)
+              ),
+          ],
         ],
-      ],
+      });
+
+      createWatch({ unit: q1.aborted, scope, fn: q1Aborted });
+      createWatch({ unit: q2.aborted, scope, fn: q2Aborted });
+
+      allSettled(q1.start, { scope });
+      allSettled(q2.start, { scope });
+
+      await allSettled(stop, { scope });
+
+      expect(q1Aborted).toHaveBeenCalledTimes(1);
+      expect(q2Aborted).not.toHaveBeenCalled();
+
+      expect(scope.getState(q1.$pending)).toBeFalsy();
+      expect(scope.getState(q2.$pending)).toBeFalsy();
+
+      expect(scope.getState(q1.$error)).toEqual(null);
+      expect(scope.getState(q2.$error)).toEqual(null);
+
+      expect(scope.getState(q1.$data)).toEqual(null);
+      expect(scope.getState(q2.$data)).toMatchInlineSnapshot(`
+        {
+          "data": "Data from https://api.salo.com/q2",
+        }
+      `);
     });
 
-    createWatch({ unit: q1.aborted, scope, fn: q1Aborted });
-    createWatch({ unit: q2.aborted, scope, fn: q2Aborted });
+    test('two createJsonQuery, TAKE_LATEST', async () => {
+      const q1Aborted = vi.fn();
+      const q2Aborted = vi.fn();
 
-    allSettled(q1.start, { scope });
-    allSettled(q2.start, { scope });
+      const q1 = createJsonQuery({
+        request: { url: 'https://api.salo.com/q1', method: 'GET' },
+        response: { contract: unknownContract },
+      });
 
-    await allSettled(stop, { scope });
+      const q2 = createJsonQuery({
+        request: { url: 'https://api.salo.com/q2', method: 'GET' },
+        response: { contract: unknownContract },
+      });
 
-    expect(q1Aborted).toHaveBeenCalledTimes(1);
-    expect(q2Aborted).not.toHaveBeenCalled();
+      concurrency(q1, { strategy: 'TAKE_LATEST' });
 
-    expect(scope.getState(q1.$pending)).toBeFalsy();
-    expect(scope.getState(q2.$pending)).toBeFalsy();
+      const scope = fork({
+        handlers: [
+          [
+            fetchFx,
+            async (r: Request) =>
+              setTimeout(10).then(
+                () => new Response(`{ "data": "Data from ${r.url}"}`)
+              ),
+          ],
+        ],
+      });
 
-    expect(scope.getState(q1.$error)).toEqual(null);
-    expect(scope.getState(q2.$error)).toEqual(null);
+      createWatch({ unit: q1.aborted, scope, fn: q1Aborted });
+      createWatch({ unit: q2.aborted, scope, fn: q2Aborted });
 
-    expect(scope.getState(q1.$data)).toEqual(null);
-    expect(scope.getState(q2.$data)).toMatchInlineSnapshot(`
-      {
-        "data": "Data from https://api.salo.com/q2",
-      }
-    `);
+      allSettled(q1.start, { scope });
+      allSettled(q1.start, { scope });
+
+      allSettled(q2.start, { scope });
+
+      await allSettled(scope)
+
+      expect(q1Aborted).toHaveBeenCalledTimes(1);
+      expect(q2Aborted).not.toHaveBeenCalled();
+
+      expect(scope.getState(q1.$pending)).toBeFalsy();
+      expect(scope.getState(q2.$pending)).toBeFalsy();
+
+      expect(scope.getState(q1.$error)).toEqual(null);
+      expect(scope.getState(q2.$error)).toEqual(null);
+
+      expect(scope.getState(q1.$data)).toMatchInlineSnapshot(`
+        {
+          "data": "Data from https://api.salo.com/q1",
+        }
+      `);
+      expect(scope.getState(q2.$data)).toMatchInlineSnapshot(`
+        {
+          "data": "Data from https://api.salo.com/q2",
+        }
+      `);
+    });
   });
 });
