@@ -26,7 +26,7 @@ importers:
       '@vitest/ui': ~0.34.6
       atomic-router: 0.9.1
       atomic-router-solid: 0.8.1
-      effector: 23.2.0
+      effector: 23.0.0
       effector-react: 23.0.0
       effector-solid: 0.23.0
       effector-vue: 23.0.0
@@ -64,13 +64,13 @@ importers:
       vue: ^3.2.37
       zod: ^3.19.1
     dependencies:
-      atomic-router: 0.9.1_6nzwo265u6ri4b4vtcrtdvea2m
-      atomic-router-solid: 0.8.1_i4aan4n2zgipbzzndkzqkgmkbi
-      effector: 23.2.0
-      effector-react: 23.0.0_sg26aditwd2okgcadoymbbdeui
-      effector-solid: 0.23.0_so2z4osvmhokse77bogld3qi5a
-      effector-vue: 23.0.0_effector@23.2.0+vue@3.2.37
-      forest: 0.21.2_effector@23.2.0
+      atomic-router: 0.9.1_tfx2g2o7pjcfmp4gkwc72h3yvy
+      atomic-router-solid: 0.8.1_jq3275vwkzrdbuypgwetcvinja
+      effector: 23.0.0
+      effector-react: 23.0.0_gicv25zqhzpkvioon5x4qz43ru
+      effector-solid: 0.23.0_ezer72urxqiungl44fdxkksdxi
+      effector-vue: 23.0.0_effector@23.0.0+vue@3.2.37
+      forest: 0.21.2_effector@23.0.0
       history: 5.3.0
       mermaid: 9.1.7
       react: 18.2.0
@@ -165,26 +165,26 @@ importers:
   packages/atomic-router:
     specifiers:
       '@farfetched/core': workspace:*
-      effector: ^23.2.0
+      effector: ^23.0.0
     devDependencies:
       '@farfetched/core': link:../core
-      effector: 23.2.0
+      effector: 23.0.0
 
   packages/core:
     specifiers:
-      effector: ^23.2.0
+      effector: ^23.0.0
     devDependencies:
-      effector: 23.2.0
+      effector: 23.0.0
 
   packages/dev-tools:
     specifiers:
       '@farfetched/core': workspace:*
-      effector: ^23.2.0
+      effector: ^23.0.0
       vue: ^3.2.37
       vue-json-viewer: '3'
     devDependencies:
       '@farfetched/core': link:../core
-      effector: 23.2.0
+      effector: 23.0.0
       vue: 3.3.4
       vue-json-viewer: 3.0.4_vue@3.3.4
 
@@ -209,13 +209,13 @@ importers:
   packages/solid:
     specifiers:
       '@farfetched/core': workspace:*
-      effector: ^23.2.0
+      effector: ^23.0.0
       effector-solid: ^0.23.0
       solid-js: ^1.4.7
     devDependencies:
       '@farfetched/core': link:../core
-      effector: 23.2.0
-      effector-solid: 0.23.0_so2z4osvmhokse77bogld3qi5a
+      effector: 23.0.0
+      effector-solid: 0.23.0_ezer72urxqiungl44fdxkksdxi
       solid-js: 1.5.9
 
   packages/superstruct:
@@ -237,11 +237,11 @@ importers:
   packages/valibot:
     specifiers:
       '@farfetched/core': workspace:*
-      effector: ^23.2.0
+      effector: ^23.0.0
       valibot: ^0.28.0
     devDependencies:
       '@farfetched/core': link:../core
-      effector: 23.2.0
+      effector: 23.0.0
       valibot: 0.28.1
 
   packages/zod:
@@ -2956,7 +2956,7 @@ packages:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
     dev: true
 
-  /atomic-router-solid/0.8.1_i4aan4n2zgipbzzndkzqkgmkbi:
+  /atomic-router-solid/0.8.1_jq3275vwkzrdbuypgwetcvinja:
     resolution: {integrity: sha512-jJu5kztMPZmIwCUYSqd+XgNpEbQX9Rdd1l/5XmWILGd2phcMY2RYCxmfb3jZpuF59HMjPHxacUULBx7463GB7A==}
     peerDependencies:
       atomic-router: ^0.9.0
@@ -2965,22 +2965,22 @@ packages:
       history: ~5
       solid-js: ^1.4 || ^1.5
     dependencies:
-      atomic-router: 0.9.1_6nzwo265u6ri4b4vtcrtdvea2m
+      atomic-router: 0.9.1_tfx2g2o7pjcfmp4gkwc72h3yvy
       classcat: 5.0.4
-      effector: 23.2.0
-      effector-solid: 0.23.0_so2z4osvmhokse77bogld3qi5a
+      effector: 23.0.0
+      effector-solid: 0.23.0_ezer72urxqiungl44fdxkksdxi
       history: 5.3.0
       solid-js: 1.5.9
     dev: false
 
-  /atomic-router/0.9.1_6nzwo265u6ri4b4vtcrtdvea2m:
+  /atomic-router/0.9.1_tfx2g2o7pjcfmp4gkwc72h3yvy:
     resolution: {integrity: sha512-TFn1CtDvDVETvNCaw5BI+g4ngEnuXLTu+8m4Wybu3sMseMIgtcGebSll4+t8oKoRScaX09f3dBlT3oj9Hip84g==}
     engines: {node: '>=10'}
     peerDependencies:
       effector: ^22.8.8 || ^23
       history: ^5.3.0
     dependencies:
-      effector: 23.2.0
+      effector: 23.0.0
       history: 5.3.0
       path-to-regexp: 6.2.1
     dev: false
@@ -3998,29 +3998,29 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /effector-react/23.0.0_sg26aditwd2okgcadoymbbdeui:
+  /effector-react/23.0.0_gicv25zqhzpkvioon5x4qz43ru:
     resolution: {integrity: sha512-H8G/b2Q+LCM8ligdYlaVS+3uYck1cKOlAjVV3j1Org9LcFzisEKfhOd22zK7jCCnHO2VA0m02RbFKoY7HK7I0w==}
     engines: {node: '>=11.0.0'}
     peerDependencies:
       effector: ^23.0.0
       react: '>=16.8.0 <19.0.0'
     dependencies:
-      effector: 23.2.0
+      effector: 23.0.0
       react: 18.2.0
       use-sync-external-store: 1.2.0_react@18.2.0
     dev: false
 
-  /effector-solid/0.23.0_so2z4osvmhokse77bogld3qi5a:
+  /effector-solid/0.23.0_ezer72urxqiungl44fdxkksdxi:
     resolution: {integrity: sha512-2y+tdrkAe4Av21bEtXjEZ+rSSKOGxDDJNbYIFW/y3Q9io5zsJSVtaF19/Smr7qYLD6SzhhKZEUUdWmtpfD9R9Q==}
     engines: {node: '>=11.0.0'}
     peerDependencies:
       effector: ^23.0.0
       solid-js: '>= 1.3.0'
     dependencies:
-      effector: 23.2.0
+      effector: 23.0.0
       solid-js: 1.5.9
 
-  /effector-vue/23.0.0_effector@23.2.0+vue@3.2.37:
+  /effector-vue/23.0.0_effector@23.0.0+vue@3.2.37:
     resolution: {integrity: sha512-Zn4/GeQ605nWapstNEsNvlbu/HfbQQ4+dSqlJlV0ujcuqbeVEBqEEJ0sufVzuRmwz4/+c7aNjlqk0PpTNOHOJg==}
     engines: {node: '>=11.0.0'}
     peerDependencies:
@@ -4029,12 +4029,12 @@ packages:
       effector: ^23.0.0
       vue: '*'
     dependencies:
-      effector: 23.2.0
+      effector: 23.0.0
       vue: 3.2.37
     dev: false
 
-  /effector/23.2.0:
-    resolution: {integrity: sha512-TqR/e5BSfAk4ZkHOykmqPmT9Nn4fLE/BhuBiVmy2cb7Vp6in8N+xMDFhWWZAgOdQjehgt/dIVQyXuWpXh3EoZA==}
+  /effector/23.0.0:
+    resolution: {integrity: sha512-8lT1iX8ivWRUnJL4XG2OhCZPRZku1XVc7AwbJCChxZhhB6ii/hZgs0GOTeE3BJfvc1BKf97q2hU3Yzp323sCiA==}
     engines: {node: '>=11.0.0'}
 
   /electron-to-chromium/1.4.283:
@@ -4326,13 +4326,13 @@ packages:
       tabbable: 6.1.2
     dev: true
 
-  /forest/0.21.2_effector@23.2.0:
+  /forest/0.21.2_effector@23.0.0:
     resolution: {integrity: sha512-NV16mpZHZn/C23dGAOL0lUjjYIfo/k1hAH8awPINuT7+aME41DGV0idUf9f9jNPukD1ldgIVG0LHVuAEy28zyg==}
     engines: {node: '>=11.0.0'}
     peerDependencies:
       effector: ^22.3.0
     dependencies:
-      effector: 23.2.0
+      effector: 23.0.0
     dev: false
 
   /form-data/4.0.0:

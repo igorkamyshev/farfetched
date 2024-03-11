@@ -7,10 +7,10 @@
   "license": "MIT",
   "repository": "https://github.com/igorkamyshev/farfetched",
   "devDependencies": {
-    "effector": "^23.2.0"
+    "effector": "^23.0.0"
   },
   "peerDependencies": {
-    "effector": "^23.2.0"
+    "effector": "^23.0.0"
   },
   "scripts": {
     "test:run": "vitest run --typecheck",
