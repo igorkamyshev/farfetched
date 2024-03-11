@@ -222,7 +222,7 @@ describe('attach for query', () => {
 
     expect(originalHandler).toBeCalledTimes(2);
 
-    expect(originalHandler.mock.calls[0][0].url).toBe('https://api.salo.com/1');
-    expect(originalHandler.mock.calls[1][0].url).toBe('https://api.salo.com/2');
+    expect(originalHandler.mock.calls[0][0].url).toBe('https://api.salo.com/2');
+    expect(originalHandler.mock.calls[1][0].url).toBe('https://api.salo.com/1');
   });
 });
