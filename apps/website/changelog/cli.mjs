@@ -77,7 +77,9 @@ function mergeChangelogs(packages) {
     )) {
       const logForVersion = [];
       for (const { name: packageName, changes: packageChanges } of packages) {
-        const pacakgeChangesEntries = Object.entries(packageChanges);
+        const pacakgeChangesEntries = Object.entries(packageChanges)
+          .map(([type, items]) => [type, excludeTrashUpdates(items)])
+          .filter(([, items]) => items.length > 0);
 
         let hasChanges = pacakgeChangesEntries.length > 0;
 
@@ -88,13 +90,7 @@ function mergeChangelogs(packages) {
         logForVersion.push(['para', `::: details ${packageName}`]);
 
         for (const [type, items] of pacakgeChangesEntries) {
-          const cleanItems = excludeTrashUpdates(items);
-
-          if (cleanItems.length === 0) {
-            continue;
-          }
-
-          logForVersion.push(['para', ['strong', type]], ...cleanItems);
+          logForVersion.push(['para', ['strong', type]], ...items);
         }
 
         logForVersion.push(['para', ':::']);
