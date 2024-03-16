@@ -20,7 +20,7 @@ export interface RemoteOperation<
   Error,
   Meta,
   // eslint-disable-next-line @typescript-eslint/ban-types
-  ExtraLowLevelAPI = {}
+  ExtraLowLevelAPI = {},
 > {
   /**
    * Reactive current request status
@@ -133,13 +133,13 @@ export interface RemoteOperation<
 }
 
 export type RemoteOperationResult<
-  Q extends RemoteOperation<any, any, any, any>
+  Q extends RemoteOperation<any, any, any, any>,
 > = EventPayload<Q['finished']['success']>['result'];
 export type RemoteOperationError<
-  Q extends RemoteOperation<any, any, any, any>
+  Q extends RemoteOperation<any, any, any, any>,
 > = EventPayload<Q['finished']['failure']>['error'];
 export type RemoteOperationParams<
-  Q extends RemoteOperation<any, any, any, any>
+  Q extends RemoteOperation<any, any, any, any>,
 > = EventPayload<Q['start']>;
 
 export interface ExecutionMeta {

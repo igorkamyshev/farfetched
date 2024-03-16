@@ -45,10 +45,7 @@ const locationQuery = createJsonQuery({
   request: {
     url: {
       source: combine({ language: $language, region: $region }),
-      fn: (_params, { language, region }) =>
-        region === 'us'
-          ? `https://us-west.salo.com/${language}/location`
-          : `https://eu-cent.salo.com/${language}/location`,
+      fn: (_params, { language, region }) => (region === 'us' ? `https://us-west.salo.com/${language}/location` : `https://eu-cent.salo.com/${language}/location`),
     },
   },
 });
@@ -76,14 +73,7 @@ function normalizedSourced($store, start, transform) {
 }
 
 // this transformation applied to the field `url` to get the final value
-const $url = normalizedSourced(
-  combine({ language: $language, region: $region }),
-  query.start,
-  (_params, { language, region }) =>
-    region === 'us'
-      ? `https://us-west.salo.com/${language}/location`
-      : `https://eu-cent.salo.com/${language}/location`
-);
+const $url = normalizedSourced(combine({ language: $language, region: $region }), query.start, (_params, { language, region }) => (region === 'us' ? `https://us-west.salo.com/${language}/location` : `https://eu-cent.salo.com/${language}/location`));
 ```
 
 After that, we can use `$url` in `.__.lowLevelAPI.sources`, it will contain only related data and could be used as a part of cache entry key. Same transformation applies for every sourced field to extract only significant data.

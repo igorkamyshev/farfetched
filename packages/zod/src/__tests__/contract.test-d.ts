@@ -39,7 +39,7 @@ describe('zodContract', () => {
             k: Set<string>;
           },
           'literal',
-          42
+          42,
         ]
       >();
 
@@ -53,7 +53,7 @@ describe('zodContract', () => {
             k: Set<string>;
           },
           'literal',
-          42
+          42,
         ]
       >();
     }

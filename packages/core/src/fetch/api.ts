@@ -111,7 +111,7 @@ export type JsonApiRequestError = ApiRequestError | InvalidDataError;
 export function createApiRequest<
   R extends CreationRequestConfig<B>,
   P,
-  B = RequestBody
+  B = RequestBody,
 >(config: ApiConfig<B, R, P>) {
   type ApiRequestParams = Omit<ExclusiveRequestConfig<B>, NonOptionalKeys<R>> &
     InclusiveRequestConfig;

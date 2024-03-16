@@ -50,9 +50,7 @@ Let's create a [Query](/api/primitives/query) that represents a single character
 ```ts
 const characterQuery = createQuery({
   handler: async ({ id }) => {
-    const response = await fetch(
-      `https://rickandmortyapi.com/api/character/${id}`
-    );
+    const response = await fetch(`https://rickandmortyapi.com/api/character/${id}`);
 
     return response.json();
   },

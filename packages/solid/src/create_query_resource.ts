@@ -15,7 +15,7 @@ function createQueryResource<Params, Data, QueryError>(
   Resource<Data | undefined>,
   {
     start: (params: Params) => void;
-  }
+  },
 ] {
   const [track, rerun] = createSignal<[] | undefined>(undefined, {
     equals: false,

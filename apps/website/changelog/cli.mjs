@@ -13,19 +13,19 @@ const files = await promisify(glob)(
   '../../{packages,deleted_packages}/*/CHANGELOG.md',
   {
     absolute: true,
-  }
+  },
 );
 
 const changelogs = await Promise.all(
   files.map((file) =>
     readFile(file, 'UTF-8')
       .then((content) => content.toString())
-      .then(parseChangelog)
-  )
+      .then(parseChangelog),
+  ),
 );
 
 for (const [release, changelog] of mergeChangelogs(changelogs).entries()) {
-  const md = renderChangelog(changelog);
+  const md = await renderChangelog(changelog);
 
   const releaseFile = release.replaceAll('.', '-');
   const filePath = resolve('docs/releases', `${releaseFile}.changelog.md`);
@@ -35,16 +35,16 @@ for (const [release, changelog] of mergeChangelogs(changelogs).entries()) {
 
 // --- // ---
 
-function renderChangelog(tree) {
+async function renderChangelog(tree) {
   return makeLinksOnCommits(
-    format(
+    await format(
       NodeHtmlMarkdown.translate(
-        markdown.renderJsonML(markdown.toHTMLTree(tree))
+        markdown.renderJsonML(markdown.toHTMLTree(tree)),
       ),
       {
         parser: 'markdown',
-      }
-    )
+      },
+    ),
   );
 }
 
@@ -52,7 +52,7 @@ function mergeChangelogs(packages) {
   const releases = new Set(
     Object.values(packages)
       .flatMap(({ changes }) => Object.keys(changes))
-      .map(getRelease)
+      .map(getRelease),
   );
 
   const log = new Map();
@@ -65,15 +65,15 @@ function mergeChangelogs(packages) {
         name,
         changes: Object.fromEntries(
           Object.entries(changes).filter(
-            ([version]) => getRelease(version) === release
-          )
+            ([version]) => getRelease(version) === release,
+          ),
         ),
       }))
       .filter(({ changes }) => Object.keys(changes).length > 0);
 
     currentLog.push(['header', { level: 2 }, 'Full changelog']);
     for (const { version, packages } of groupByVersions(relatedChanges).sort(
-      ({ version: v1 }, { version: v2 }) => -compareSemVer(v1, v2)
+      ({ version: v1 }, { version: v2 }) => -compareSemVer(v1, v2),
     )) {
       const logForVersion = [];
       for (const { name: packageName, changes: packageChanges } of packages) {

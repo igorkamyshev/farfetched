@@ -26,9 +26,7 @@ Of course, it looks pretty verbose, so Farfetched provides a special helper that
 import { createHeadlessMutation } from '@farfetched/core';
 
 function createAsyncStorageMutation({ storageKey }) {
-  const executeFx = createEffect((value) =>
-    asyncLocalStorage.setItem(storageKey, value)
-  );
+  const executeFx = createEffect((value) => asyncLocalStorage.setItem(storageKey, value));
 
   const headlessQuery = createHeadlessMutation(/*...*/);
   headlessQuery.__.executeFx.use(executeFx);

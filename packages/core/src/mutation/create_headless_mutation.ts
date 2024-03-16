@@ -24,7 +24,7 @@ export function createHeadlessMutation<
   MappedData,
   Error,
   MapDataSource = void,
-  ValidationSource = void
+  ValidationSource = void,
 >(
   config: SharedMutationFactoryConfig & {
     contract: Contract<Data, ContractData>;

@@ -58,12 +58,12 @@ describe('connectQuery', () => {
       }
         ? P
         : CommandResolved extends {
-            params?: infer P;
-          }
-        ? never extends P
-          ? void
-          : P | void
-        : never;
+              params?: infer P;
+            }
+          ? never extends P
+            ? void
+            : P | void
+          : never;
 
       return attach({
         source: $command,
@@ -194,12 +194,12 @@ describe('connectQuery', () => {
   test('does not require fn for void start Query created with handler, issue #443', () => {
     const refPageQuery = createQuery({
       name: 'refPageQuery',
-      handler: async () => ({} as any),
+      handler: async () => ({}) as any,
     });
 
     const createRefQuery = createQuery({
       name: 'createRefQuery',
-      handler: async () => ({} as any),
+      handler: async () => ({}) as any,
     });
 
     connectQuery({

@@ -60,8 +60,7 @@ const originalQuery = createQuery({
 
 const attachedQuery = attachOperation(originalQuery, {
   source: $externalStore,
-  mapParams: (params: number, externalSource) =>
-    (params + externalSource).toString(),
+  mapParams: (params: number, externalSource) => (params + externalSource).toString(),
 });
 ```
 
@@ -108,8 +107,7 @@ const originalMutation = createMutation({
 
 const attachedMutation = attachOperation(originalMutation, {
   source: $externalStore,
-  mapParams: (params: number, externalSource) =>
-    (params + externalSource).toString(),
+  mapParams: (params: number, externalSource) => (params + externalSource).toString(),
 });
 ```
 
