@@ -27,11 +27,7 @@ Usage of [_Effect_](https://effector.dev/en/api/effector/effect/) instead of sim
 
 ```ts
 const loginMutation = createMutation({
-  effect: createEffect<
-    { login: string; password: string },
-    { email: string },
-    LoginError
-  >(async ({ login, password }) => {
+  effect: createEffect<{ login: string; password: string }, { email: string }, LoginError>(async ({ login, password }) => {
     const response = await fetch('https://api.salo.com/login.json', {
       method: 'POST',
       body: JSON.stringify({ login, password }),
@@ -64,9 +60,7 @@ const loginMutation = createMutation({
     // Our API can return empty object, we consider it as a failed mutation
     isData: (response) => !response.email,
     // Array with description of reasons why data is invalid
-    getErrorMessages: (response) => [
-      'Expected object with email, but got empty object',
-    ],
+    getErrorMessages: (response) => ['Expected object with email, but got empty object'],
   },
 });
 

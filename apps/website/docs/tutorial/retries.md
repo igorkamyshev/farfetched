@@ -76,8 +76,7 @@ retry(characterQuery, {
   delay: 500,
   filter: {
     source: characterRoute.$isOpened,
-    fn: ({ error, params }, isCharacterRouteOpened) =>
-      isCharacterRouteOpened && isHttpErrorCode(500)({ error }),
+    fn: ({ error, params }, isCharacterRouteOpened) => isCharacterRouteOpened && isHttpErrorCode(500)({ error }),
   },
 });
 ```
@@ -125,9 +124,7 @@ Sometimes, we want to retry the same request with different parameters. For exam
 ```ts
 const characterQuery = createQuery({
   handler: async ({ id, attempt }) => {
-    const response = await fetch(
-      `https://rickandmortyapi.com/api/character/${id}?attempt=${attempt}`
-    );
+    const response = await fetch(`https://rickandmortyapi.com/api/character/${id}?attempt=${attempt}`);
 
     return response.json();
   },

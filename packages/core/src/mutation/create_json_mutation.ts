@@ -49,7 +49,7 @@ interface BaseJsonMutationConfigNoParams<
   BodySource,
   QuerySource,
   HeadersSource,
-  UrlSource
+  UrlSource,
 > extends SharedMutationFactoryConfig {
   request: RequestConfig<
     void,
@@ -71,7 +71,7 @@ interface BaseJsonMutationConfigWithParams<
   BodySource,
   QuerySource,
   HeadersSource,
-  UrlSource
+  UrlSource,
 > extends SharedMutationFactoryConfig {
   params: ParamsDeclaration<Params>;
   request: RequestConfig<
@@ -100,7 +100,7 @@ export function createJsonMutation<
   HeadersSource = void,
   UrlSource = void,
   DataSource = void,
-  ValidationSource = void
+  ValidationSource = void,
 >(
   config: BaseJsonMutationConfigWithParams<
     Params,
@@ -131,7 +131,7 @@ export function createJsonMutation<
   QuerySource = void,
   HeadersSource = void,
   UrlSource = void,
-  ValidationSource = void
+  ValidationSource = void,
 >(
   config: BaseJsonMutationConfigWithParams<
     Params,
@@ -158,7 +158,7 @@ export function createJsonMutation<
   HeadersSource = void,
   UrlSource = void,
   DataSource = void,
-  ValidationSource = void
+  ValidationSource = void,
 >(
   config: BaseJsonMutationConfigNoParams<
     TransformedData,
@@ -187,7 +187,7 @@ export function createJsonMutation<
   QuerySource = void,
   HeadersSource = void,
   UrlSource = void,
-  ValidationSource = void
+  ValidationSource = void,
 >(
   config: BaseJsonMutationConfigNoParams<
     Data,

@@ -49,7 +49,7 @@ export function update<
   Q extends Query<any, any, any, any>,
   M extends Mutation<any, any, any>,
   BySuccessSource = void,
-  ByFailureSource = void
+  ByFailureSource = void,
 >(
   query: Q,
   {

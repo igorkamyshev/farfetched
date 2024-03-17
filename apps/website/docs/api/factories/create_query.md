@@ -59,9 +59,7 @@ const languagesQuery = createQuery({
     // Our API can return empty array of languages, we consider it as an invalid data
     isData: (response) => response.languages?.length > 0,
     // Array with description of reasons why data is invalid
-    getErrorMessages: (response) => [
-      'Expected array with at least one language, but got empty array',
-    ],
+    getErrorMessages: (response) => ['Expected array with at least one language, but got empty array'],
   },
 });
 

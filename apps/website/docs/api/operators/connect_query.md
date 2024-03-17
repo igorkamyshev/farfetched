@@ -34,11 +34,7 @@ This form is used for `target` [_Query_](../primitives/query.md) with parameters
 const blocksQuery: Query<unknown, string, unknown>;
 const blocksQuery: Query<unknown, string[], unknown>;
 
-const contentQuery: Query<
-  { language: string; ids: string[] },
-  unknown,
-  unknown
->;
+const contentQuery: Query<{ language: string; ids: string[] }, unknown, unknown>;
 
 connectQuery({
   source: { language: languagesQuery, blocks: blocksQuery },

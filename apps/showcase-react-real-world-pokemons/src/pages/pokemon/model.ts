@@ -59,7 +59,7 @@ export const $pokemon = combine(
 sample({
   clock: PokemonPageGate.state,
   filter: (params) => Boolean(params.id),
-  fn: ({ id }) => ({ id } as { id: TId }),
+  fn: ({ id }) => ({ id }) as { id: TId },
   target: pokemonQuery.start,
 });
 

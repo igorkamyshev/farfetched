@@ -11,10 +11,7 @@ import { createBarrier } from '@farfetched/core';
 import { combine } from 'effector';
 
 const authBarrier = createBarrier({
-  active: combine(
-    { token: $token, now: $now },
-    ({ token, now }) => parseToken(token.exp) > now
-  ),
+  active: combine({ token: $token, now: $now }, ({ token, now }) => parseToken(token.exp) > now),
   perform: [renewTokenMutationFx],
 });
 ```
