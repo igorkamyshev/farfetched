@@ -9,7 +9,7 @@ import {
   type DynamicallySourcedField,
 } from '../libs/patronus';
 import { type ParamsDeclaration } from '../remote_operation/params';
-import { JsonQueryResponseMeta, type Query } from './type';
+import { type JsonQueryResponseMeta, type Query } from './type';
 import { type FetchApiRecord } from '../fetch/lib';
 import {
   createHeadlessQuery,

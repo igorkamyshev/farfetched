@@ -16,7 +16,7 @@ import {
   createHeadlessMutation,
   type SharedMutationFactoryConfig,
 } from './create_headless_mutation';
-import { JsonMutationResponseMeta, type Mutation } from './type';
+import { type JsonMutationResponseMeta, type Mutation } from './type';
 import { concurrency } from '../concurrency/concurrency';
 import { onAbort } from '../remote_operation/on_abort';
 
