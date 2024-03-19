@@ -16,8 +16,7 @@ A _Validator_ have to respond with `ValidationResult` that could be one of the f
 _Validator_ can be a simple function that accepts `{ result, params }` object and returns `ValidationResult`.
 
 ```ts
-const validator = ({ result, params }): ValidationResult =>
-  result[params.id] !== null;
+const validator = ({ result, params }): ValidationResult => result[params.id] !== null;
 ```
 
 ### Function with external source
@@ -27,7 +26,6 @@ _Validator_ can be an object with field `source` which is any [_Store_](https://
 ```ts
 const validator = {
   source: $externalStore,
-  fn: ({ result, params }, externalSource): ValidationResult =>
-    result[params.id] !== null && result[externalSource.id] !== null,
+  fn: ({ result, params }, externalSource): ValidationResult => result[params.id] !== null && result[externalSource.id] !== null,
 };
 ```

@@ -243,7 +243,7 @@ function extractSource<S>(sourced: SourcedField<any, any, S>): Store<S> | null {
 
 function combineSourced<
   R extends Record<string, SourcedField<any, any, any>>,
-  S
+  S,
 >(
   config: R,
   mapper?: (v: {

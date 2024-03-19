@@ -44,7 +44,7 @@ export function getFarfetchedLinks(
 }
 
 export type FarfetchedDeclaration<
-  Meta extends { type: string } = { type: string; name?: string }
+  Meta extends { type: string } = { type: string; name?: string },
 > = Declaration & {
   meta: {
     [NodeMetaSumbol]: Meta;

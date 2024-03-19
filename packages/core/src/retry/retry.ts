@@ -41,7 +41,7 @@ type RetryConfig<
   Q extends RemoteOperation<any, any, any, any>,
   DelaySource = unknown,
   FilterSource = unknown,
-  MapParamsSource = unknown
+  MapParamsSource = unknown,
 > = {
   times: StaticOrReactive<number>;
   delay: SourcedField<RetryMeta, Time, DelaySource>;
@@ -59,7 +59,7 @@ export function retry<
   Q extends RemoteOperation<any, any, any, any>,
   DelaySource = unknown,
   FilterSource = unknown,
-  MapParamsSource = unknown
+  MapParamsSource = unknown,
 >(
   operation: Q,
   {

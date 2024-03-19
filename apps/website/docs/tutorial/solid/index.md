@@ -57,9 +57,7 @@ To start [_Mutation_](/api/primitives/mutation), you can use `useUnit` from `eff
 import { useUnit } from 'effector-solid';
 
 function UserProfile() {
-  const { start: deleteAccount, pending: deletionInProgress } = useUnit(
-    deleteAccountMutation
-  );
+  const { start: deleteAccount, pending: deletionInProgress } = useUnit(deleteAccountMutation);
 
   return (
     <section>

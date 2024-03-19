@@ -39,7 +39,7 @@ importers:
       markdown: ^0.5.0
       mermaid: 9.1.7
       node-html-markdown: ^1.2.0
-      prettier: ^2.6.2
+      prettier: ^3.2.5
       publint: ^0.2.6
       react: 18.2.0
       react-dom: 18.2.0
@@ -103,7 +103,7 @@ importers:
       jsdom: 22.1.0
       markdown: 0.5.0
       node-html-markdown: 1.2.0
-      prettier: 2.7.1
+      prettier: 3.2.5
       publint: 0.2.6
       semver-parser: 4.0.1
       size-limit: 7.0.8
@@ -5690,6 +5690,12 @@ packages:
   /prettier/2.7.1:
     resolution: {integrity: sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==}
     engines: {node: '>=10.13.0'}
+    hasBin: true
+    dev: true
+
+  /prettier/3.2.5:
+    resolution: {integrity: sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==}
+    engines: {node: '>=14'}
     hasBin: true
     dev: true
 

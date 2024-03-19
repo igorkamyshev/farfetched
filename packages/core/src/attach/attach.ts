@@ -18,7 +18,7 @@ import {
 export function attachOperation<
   NewParams,
   Q extends Query<any, any, any, any>,
-  Source
+  Source,
 >(
   operation: Q,
   config: {
@@ -63,7 +63,7 @@ export function attachOperation<Q extends Query<any, any, any, any>>(
 export function attachOperation<
   NewParams,
   M extends Mutation<any, any, any>,
-  Source
+  Source,
 >(
   operation: M,
   config: {
@@ -98,7 +98,7 @@ export function attachOperation<M extends Mutation<any, any, any>>(
 export function attachOperation<
   NewParams,
   OriginalParams,
-  O extends RemoteOperation<OriginalParams, any, any, any>
+  O extends RemoteOperation<OriginalParams, any, any, any>,
 >(
   operation: O,
   config?: {

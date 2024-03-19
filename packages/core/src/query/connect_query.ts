@@ -20,34 +20,34 @@ export function connectQuery<Sources, Target extends Query<any, any, any, any>>(
     ? P extends void
       ? { fn?: undefined; filter?: () => boolean }
       : Sources extends Query<any, any, any>
-      ? {
-          fn: (sources: {
-            result: RemoteOperationResult<Sources>;
-            params: RemoteOperationParams<Sources>;
-          }) => {
-            params: RemoteOperationParams<Target>;
-          };
-          filter?: (sources: {
-            result: RemoteOperationResult<Sources>;
-            params: RemoteOperationParams<Sources>;
-          }) => boolean;
-        }
-      : Sources extends Record<string, Query<any, any, any>>
-      ? {
-          fn: (sources: {
-            [index in keyof Sources]: {
-              result: RemoteOperationResult<Sources[index]>;
-              params: RemoteOperationParams<Sources[index]>;
+        ? {
+            fn: (sources: {
+              result: RemoteOperationResult<Sources>;
+              params: RemoteOperationParams<Sources>;
+            }) => {
+              params: RemoteOperationParams<Target>;
             };
-          }) => { params: RemoteOperationParams<Target> };
-          filter?: (sources: {
-            [index in keyof Sources]: {
-              result: RemoteOperationResult<Sources[index]>;
-              params: RemoteOperationParams<Sources[index]>;
-            };
-          }) => boolean;
-        }
-      : NonExtendable
+            filter?: (sources: {
+              result: RemoteOperationResult<Sources>;
+              params: RemoteOperationParams<Sources>;
+            }) => boolean;
+          }
+        : Sources extends Record<string, Query<any, any, any>>
+          ? {
+              fn: (sources: {
+                [index in keyof Sources]: {
+                  result: RemoteOperationResult<Sources[index]>;
+                  params: RemoteOperationParams<Sources[index]>;
+                };
+              }) => { params: RemoteOperationParams<Target> };
+              filter?: (sources: {
+                [index in keyof Sources]: {
+                  result: RemoteOperationResult<Sources[index]>;
+                  params: RemoteOperationParams<Sources[index]>;
+                };
+              }) => boolean;
+            }
+          : NonExtendable
     : NonExtendable)
 ): void {
   const { source, target } = args;

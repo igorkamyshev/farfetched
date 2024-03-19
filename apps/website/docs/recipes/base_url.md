@@ -53,9 +53,6 @@ import { combine } from 'effector';
 function baseUrl(path) {
   return `https://api.salo.com${path}`; // [!code --]
 
-  /* [!code ++:4] */ return combine(
-    $langauge,
-    (language) => `https://api.salo.com/${language}${path}`
-  );
+  /* [!code ++:4] */ return combine($langauge, (language) => `https://api.salo.com/${language}${path}`);
 }
 ```

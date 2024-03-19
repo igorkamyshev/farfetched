@@ -174,10 +174,7 @@ import { createEvent, createStore } from 'effector';
 const registerNewKey = createEvent<string>();
 
 // Let's store all registered keys for the application
-const $requiredKeys = createStore<string[]>([]).on(
-  registerNewKey,
-  (keys, key) => [...keys, key]
-);
+const $requiredKeys = createStore<string[]>([]).on(registerNewKey, (keys, key) => [...keys, key]);
 
 // We will trigger it in `createFlag` function to start fetching of the feature flag
 const performRequest = createEvent();
@@ -306,9 +303,7 @@ function createFlag({ key, requestOn }) {
   // ...
 
   // find patricular flag
-  const $value = featureFlagsQuery.$data.map(
-    (data) => data.find((flag) => flag.flagKey === key) ?? null
-  );
+  const $value = featureFlagsQuery.$data.map((data) => data.find((flag) => flag.flagKey === key) ?? null);
 
   return { $value };
 }

@@ -48,7 +48,7 @@ export function createHeadlessQuery<
   MappedData,
   MapDataSource,
   ValidationSource,
-  Initial = null
+  Initial = null,
 >(
   config: {
     initialData?: Initial;
