@@ -1,4 +1,4 @@
-import { attach, createEffect, type Event, type Json } from 'effector';
+import { attach, createEffect, sample, type Event, type Json } from 'effector';
 
 import { type Contract } from '../contract/type';
 import { createJsonApiRequest } from '../fetch/json';
@@ -9,7 +9,7 @@ import {
   type DynamicallySourcedField,
 } from '../libs/patronus';
 import { type ParamsDeclaration } from '../remote_operation/params';
-import { type Query } from './type';
+import { JsonQueryResponseMeta, type Query } from './type';
 import { type FetchApiRecord } from '../fetch/lib';
 import {
   createHeadlessQuery,
@@ -114,7 +114,7 @@ export function createJsonQuery<
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
-        { result: Data; params: Params },
+        { result: Data; params: Params; meta: JsonQueryResponseMeta },
         TransformedData,
         DataSource
       >;
@@ -146,7 +146,7 @@ export function createJsonQuery<
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
-        { result: Data; params: Params },
+        { result: Data; params: Params; meta: JsonQueryResponseMeta },
         TransformedData,
         DataSource
       >;
@@ -226,7 +226,7 @@ export function createJsonQuery<
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
-        { result: Data; params: void },
+        { result: Data; params: void; meta: JsonQueryResponseMeta },
         TransformedData,
         DataSource
       >;
@@ -256,7 +256,7 @@ export function createJsonQuery<
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
-        { result: Data; params: void },
+        { result: Data; params: void; meta: JsonQueryResponseMeta },
         TransformedData,
         DataSource
       >;
@@ -324,6 +324,38 @@ export function createJsonQuery(config: any) {
     },
   });
 
+  let responseHeaders: Record<string, string> = {};
+  const updateResponseHeaderFx = createEffect(
+    (headers: Record<string, string>) => {
+      responseHeaders = headers;
+    }
+  );
+
+  const getDataMapperWithMetaParam = (
+    original: DynamicallySourcedField<
+      { result: any; params: any; meta: JsonQueryResponseMeta },
+      any,
+      any
+    >
+  ): DynamicallySourcedField<{ result: any; params: any }, any, any> => {
+    if (typeof original === 'function') {
+      return (data) =>
+        original({ ...data, meta: { headers: responseHeaders } });
+    }
+
+    return {
+      source: original.source,
+      fn: (data, source) =>
+        original.fn({ ...data, meta: { headers: responseHeaders } }, source),
+    };
+  };
+
+  sample({
+    clock: requestFx.doneData,
+    fn: (response) => response.headers,
+    target: updateResponseHeaderFx,
+  });
+
   const headlessQuery = createHeadlessQuery<
     any,
     any,
@@ -336,7 +368,9 @@ export function createJsonQuery(config: any) {
   >({
     initialData: config.initialData,
     contract: config.response.contract ?? unknownContract,
-    mapData: config.response.mapData ?? (({ result }) => result),
+    mapData: config.response.mapData
+      ? getDataMapperWithMetaParam(config.response.mapData)
+      : ({ result }) => result,
     validate: config.response.validate,
     enabled: config.enabled,
     name: config.name,
@@ -350,10 +384,12 @@ export function createJsonQuery(config: any) {
     paramsAreMeaningless: true,
   });
 
-  const executeFx = createEffect((c: any) => {
+  const executeFx = createEffect(async (c: any) => {
     const abortController = new AbortController();
     onAbort(() => abortController.abort());
-    return requestFx({ ...c, abortController });
+    const response = await requestFx({ ...c, abortController });
+
+    return response.data;
   });
 
   headlessQuery.__.executeFx.use(

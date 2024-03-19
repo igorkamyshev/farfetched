@@ -1,4 +1,4 @@
-import { attach, type Json, type Event, createEffect } from 'effector';
+import { attach, type Json, type Event, createEffect, sample } from 'effector';
 
 import { type Contract } from '../contract/type';
 import { unknownContract } from '../contract/unknown_contract';
@@ -16,7 +16,7 @@ import {
   createHeadlessMutation,
   type SharedMutationFactoryConfig,
 } from './create_headless_mutation';
-import { type Mutation } from './type';
+import { JsonMutationResponseMeta, type Mutation } from './type';
 import { concurrency } from '../concurrency/concurrency';
 import { onAbort } from '../remote_operation/on_abort';
 
@@ -113,7 +113,7 @@ export function createJsonMutation<
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
-        { result: Data; params: Params },
+        { result: Data; params: Params; meta: JsonMutationResponseMeta },
         TransformedData,
         DataSource
       >;
@@ -170,7 +170,7 @@ export function createJsonMutation<
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
-        { result: Data; params: void },
+        { result: Data; params: void; meta: JsonMutationResponseMeta },
         TransformedData,
         DataSource
       >;
@@ -214,9 +214,43 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
     response: { status: config.response.status },
   });
 
+  let responseHeaders: Record<string, string> = {};
+  const updateResponseHeaderFx = createEffect(
+    (headers: Record<string, string>) => {
+      responseHeaders = headers;
+    }
+  );
+
+  const getDataMapperWithMetaParam = (
+    original: DynamicallySourcedField<
+      { result: any; params: any; meta: JsonMutationResponseMeta },
+      any,
+      any
+    >
+  ): DynamicallySourcedField<{ result: any; params: any }, any, any> => {
+    if (typeof original === 'function') {
+      return (data) =>
+        original({ ...data, meta: { headers: responseHeaders } });
+    }
+
+    return {
+      source: original.source,
+      fn: (data, source) =>
+        original.fn({ ...data, meta: { headers: responseHeaders } }, source),
+    };
+  };
+
+  sample({
+    clock: requestFx.doneData,
+    fn: (response) => response.headers,
+    target: updateResponseHeaderFx,
+  });
+
   const headlessMutation = createHeadlessMutation({
     contract: config.response.contract ?? unknownContract,
-    mapData: config.response.mapData ?? (({ result }) => result),
+    mapData: config.response.mapData
+      ? getDataMapperWithMetaParam(config.response.mapData)
+      : ({ result }) => result,
     validate: config.response.validate,
     enabled: config.enabled,
     name: config.name,

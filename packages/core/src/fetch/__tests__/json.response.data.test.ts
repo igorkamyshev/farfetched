@@ -52,7 +52,12 @@ describe('fetch/json.response.data', () => {
       params: { body: {} },
     });
 
-    expect(watcher.listeners.onDoneData).toBeCalledWith({ test: 'value' });
+    expect(watcher.listeners.onDoneData).toBeCalledWith({
+      data: { test: 'value' },
+      headers: {
+        'content-type': 'text/plain;charset=UTF-8',
+      },
+    });
   });
 
   test('empty body as null', async () => {
@@ -74,7 +79,13 @@ describe('fetch/json.response.data', () => {
     });
 
     expect(watcher.listeners.onFailData).not.toBeCalled();
-    expect(watcher.listeners.onDoneData).toBeCalledWith(null);
+    expect(watcher.listeners.onDoneData).toBeCalledWith({
+      data: null,
+      headers: {
+        'content-length': '0',
+        'content-type': 'text/plain;charset=UTF-8',
+      },
+    });
   });
 
   test('empty body without header as null', async () => {
@@ -92,6 +103,11 @@ describe('fetch/json.response.data', () => {
     });
 
     expect(watcher.listeners.onFailData).not.toBeCalled();
-    expect(watcher.listeners.onDoneData).toBeCalledWith(null);
+    expect(watcher.listeners.onDoneData).toBeCalledWith({
+      data: null,
+      headers: {
+        'content-type': 'text/plain;charset=UTF-8',
+      },
+    });
   });
 });

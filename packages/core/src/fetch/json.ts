@@ -54,7 +54,10 @@ export function createJsonApiRequest<R extends CreationRequestConfig>(
     /* Request config, it does not include mapBody, so let's add it */ R & {
       mapBody: (jsonBody: Json) => string;
     },
-    /* Result of preparation */ unknown,
+    /* Result of preparation */ {
+      data: unknown;
+      headers: Record<string, string>;
+    },
     /* Allowed body */ Json
   >({
     ...config,
@@ -69,10 +72,16 @@ export function createJsonApiRequest<R extends CreationRequestConfig>(
         const emptyContent = await isEmptyResponse(response);
 
         if (emptyContent) {
-          return null;
+          return {
+            data: null,
+            headers: Object.fromEntries(response.headers.entries()),
+          };
         }
 
-        return response.json();
+        return {
+          data: await response.json(),
+          headers: Object.fromEntries(response.headers.entries()),
+        };
       },
       transformError: (error) => {
         if (!isHttpError({ error })) {

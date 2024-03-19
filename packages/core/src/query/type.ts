@@ -63,3 +63,7 @@ export type QueryInitialData<Q extends Query<any, any, any, any>> =
 export function isQuery(value: any): value is Query<any, any, any> {
   return value?.__?.kind === QuerySymbol;
 }
+
+export type JsonQueryResponseMeta = {
+  headers: Record<string, string>;
+};

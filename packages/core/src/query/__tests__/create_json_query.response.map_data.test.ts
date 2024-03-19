@@ -5,6 +5,7 @@ import { unknownContract } from '../../contract/unknown_contract';
 import { createJsonQuery } from '../create_json_query';
 import { declareParams } from '../../remote_operation/params';
 import { Contract } from '../../contract/type';
+import { fetchFx } from '../../fetch/fetch';
 
 describe('remote_data/query/json.response.map_data', () => {
   // Does not matter
@@ -93,5 +94,32 @@ describe('remote_data/query/json.response.map_data', () => {
     await allSettled(query.start, { scope });
 
     expect(scope.getState(query.$data)).toBe(transformed);
+  });
+
+  test('`meta` parameter is passed to callback', async () => {
+    const response = new Response(null, {
+      headers: { 'content-type': 'application/json' },
+    });
+
+    const fetchMock = vi.fn(() => response);
+    const listener = vi.fn();
+
+    const query = createJsonQuery({
+      request,
+      response: {
+        contract: unknownContract,
+        mapData: listener,
+      },
+    });
+
+    const scope = fork({ handlers: [[fetchFx, fetchMock]] });
+
+    await allSettled(query.start, { scope });
+
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        meta: { headers: { 'content-type': 'application/json' } },
+      })
+    );
   });
 });

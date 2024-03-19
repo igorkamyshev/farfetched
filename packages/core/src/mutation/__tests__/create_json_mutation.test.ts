@@ -116,7 +116,10 @@ describe('createJsonMutation', () => {
           validationErrors: [
             'Expected response status has to be one of [201], got 200',
           ],
-          response: null,
+          response: {
+            data: null,
+            headers: {},
+          },
         },
         params: undefined,
       })
@@ -143,7 +146,10 @@ describe('createJsonMutation', () => {
     expect(listeners.onSuccess).toHaveBeenCalled();
     expect(listeners.onSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
-        result: null,
+        result: {
+          data: null,
+          headers: {},
+        },
         params: undefined,
       })
     );
@@ -209,6 +215,37 @@ describe('createJsonMutation', () => {
     expect(fetchMock).toBeCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledWith(
       expect.objectContaining({ credentials: 'omit' })
+    );
+  });
+
+  test('`meta` parameter is passed to mapData callback', async () => {
+    const response = new Response(null, {
+      headers: { 'content-type': 'application/json' },
+    });
+
+    const fetchMock = vi.fn(() => response);
+    const listener = vi.fn();
+
+    const query = createJsonMutation({
+      request: {
+        method: 'GET',
+        url: 'https://api.salo.com',
+        credentials: 'omit',
+      },
+      response: {
+        contract: unknownContract,
+        mapData: listener,
+      },
+    });
+
+    const scope = fork({ handlers: [[fetchFx, fetchMock]] });
+
+    await allSettled(query.start, { scope });
+
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        meta: { headers: { 'content-type': 'application/json' } },
+      })
     );
   });
 });
