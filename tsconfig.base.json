@@ -17,6 +17,7 @@
       "@farfetched/core": ["packages/core/src/index.ts"],
       "@farfetched/dev-tools": ["packages/dev-tools/src/index.ts"],
       "@farfetched/io-ts": ["packages/io-ts/src/index.ts"],
+      "@farfetched/json-schema": ["packages/json-schema/src/index.ts"],
       "@farfetched/runtypes": ["packages/runtypes/src/index.ts"],
       "@farfetched/solid": ["packages/solid/src/index.ts"],
       "@farfetched/superstruct": ["packages/superstruct/src/index.ts"],
