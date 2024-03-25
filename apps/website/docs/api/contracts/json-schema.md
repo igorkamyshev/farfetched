@@ -1,4 +1,4 @@
-# Farfetched and json-schema
+# Farfetched and JSON Schema
 
 Integration is distributed as a separate package, you have to install it and its peer dependencies before usage
 
@@ -20,7 +20,7 @@ npm install @farfetched/json-schema
 
 ## `jsonSchemaContract`
 
-Creates a [_Contract_](/api/primitives/contract) based on provided json schema.
+Creates a [_Contract_](/api/primitives/contract) based on provided JSON Schema.
 
 ```ts
 import { jsonSchemaContract } from '@farfetched/json-schema';
