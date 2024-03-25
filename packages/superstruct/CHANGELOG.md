@@ -1,5 +1,13 @@
 # @farfetched/superstruct
 
+## 0.12.3
+
+### Patch Changes
+
+- 16f68b2: Update formatting (bump prettier to v3)
+- Updated dependencies [16f68b2]
+  - @farfetched/core@0.12.3
+
 ## 0.12.2
 
 ### Patch Changes
