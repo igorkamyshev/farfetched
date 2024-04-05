@@ -10,6 +10,9 @@ import { Mutation } from './type';
 import { resolveExecuteEffect } from '../remote_operation/resolve_execute_effect';
 import { unknownContract } from '../contract/unknown_contract';
 
+// Overload: Only handler without config
+export function createMutation<Params, Data>(handler: (params: Params) => Promise<Data>): Mutation<Params, Data, unknown>;
+
 // Overload: Only handler
 export function createMutation<Params, Data>(
   config: {
@@ -37,14 +40,16 @@ export function createMutation(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config: any
 ): Mutation<any, any, any> {
+  const params = typeof config === 'function' ? { handler: config } : config;
+
   const mutation = createHeadlessMutation({
-    name: config.name,
-    enabled: config.enabled,
-    contract: config.contract ?? unknownContract,
+    name: params.name,
+    enabled: params.enabled,
+    contract: params.contract ?? unknownContract,
     mapData: ({ result }) => result,
   });
 
-  mutation.__.executeFx.use(resolveExecuteEffect(config));
+  mutation.__.executeFx.use(resolveExecuteEffect(params));
 
   return mutation;
 }
