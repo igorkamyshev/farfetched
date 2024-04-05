@@ -7,6 +7,21 @@ import { ExecutionMeta } from '../../remote_operation/type';
 import { createMutation } from '../create_mutation';
 
 describe('createMutation', () => {
+  test("infer params and data from handler shorthand", () => {
+    const mutation = createMutation(async (params: number) => params.toString());
+
+    expectTypeOf(mutation.start).toBeCallableWith(1);
+    // @ts-expect-error invalid params type
+    expectTypeOf(mutation.start).toBeCallableWith({});
+
+    expectTypeOf(mutation.finished.success).toEqualTypeOf<
+      Event<{ params: number; result: string; meta: ExecutionMeta }>
+    >();
+    expectTypeOf(mutation.finished.success).not.toEqualTypeOf<
+      Event<{ params: string; result: string; meta: ExecutionMeta }>
+    >();
+  });
+
   test('infer params and data from handler', () => {
     const mutation = createMutation({
       handler: async (params: number) => params.toString(),
