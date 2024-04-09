@@ -40,6 +40,10 @@ export { sessionStorageCache } from './cache/adapters/session_storage';
 export { voidCache } from './cache/adapters/void';
 export { createCacheAdapter } from './cache/adapters/instance';
 
+// Success & Failure public API
+export { default as success } from './success/success';
+export { default as failure } from './failure/failure';
+
 // Exposed libs
 export {
   type SourcedField,
