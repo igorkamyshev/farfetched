@@ -1,0 +1,54 @@
+{
+  "name": "@farfetched/json-schema",
+  "version": "0.0.1",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/igorkamyshev/farfetched",
+  "dependencies": {
+    "@apideck/better-ajv-errors": "^0.3.6",
+    "ajv": "^8.12.0",
+    "json-schema-to-ts": "^3.0.1"
+  },
+  "devDependencies": {
+    "@farfetched/core": "workspace:*",
+    "effector": "^23.0.0"
+  },
+  "peerDependencies": {
+    "@farfetched/core": "workspace:*",
+    "effector": "^23.0.0"
+  },
+  "scripts": {
+    "test:run": "vitest run --typecheck",
+    "build": "vite build",
+    "size": "size-limit",
+    "publint": "node ../../tools/scripts/publint.mjs",
+    "typelint": "attw --pack"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/json-schema.cjs",
+  "module": "./dist/json-schema.js",
+  "types": "./dist/json-schema.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/json-schema.d.ts",
+        "default": "./dist/json-schema.js"
+      },
+      "require": {
+        "types": "./dist/json-schema.d.cts",
+        "default": "./dist/json-schema.cjs"
+      }
+    }
+  },
+  "size-limit": [
+    {
+      "path": "./dist/json-schema.js",
+      "limit": "50 kB"
+    }
+  ]
+}
