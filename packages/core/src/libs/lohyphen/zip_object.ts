@@ -1,6 +1,6 @@
 export function zipObject<
   ExternalKeys extends string,
-  InternalKeys extends string
+  InternalKeys extends string,
 >(
   object: Record<ExternalKeys, Record<InternalKeys, unknown>>
 ): Record<InternalKeys, Record<ExternalKeys, unknown>> {

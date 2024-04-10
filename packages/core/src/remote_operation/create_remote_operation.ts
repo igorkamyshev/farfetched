@@ -38,7 +38,7 @@ export function createRemoteOperation<
   Error,
   Meta,
   MapDataSource = void,
-  ValidationSource = void
+  ValidationSource = void,
 >({
   name: ownName,
   meta,

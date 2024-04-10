@@ -85,20 +85,20 @@ Note that [plugins for SWC are experimental](https://github.com/swc-project/swc/
 ::: code-group
 
 ```sh [pnpm]
-pnpm add --save-dev unplugin-swc @effector/swc-plugin @swc/core
+pnpm add --save-dev unplugin-swc effector-swc-plugin @swc/core
 ```
 
 ```sh [yarn]
-yarn add --dev unplugin-swc @effector/swc-plugin @swc/core
+yarn add --dev unplugin-swc effector-swc-plugin @swc/core
 ```
 
 ```sh [npm]
-npm install --dev unplugin-swc @effector/swc-plugin @swc/core
+npm install --dev unplugin-swc effector-swc-plugin @swc/core
 ```
 
 :::
 
-2. Add [`unplugin-swc`](https://github.com/egoist/unplugin-swc) and [`@effector/swc-plugin`](https://github.com/effector/swc-plugin) to your config:
+2. Add [`unplugin-swc`](https://github.com/egoist/unplugin-swc) and [`effector-swc-plugin`](https://github.com/kireevmp/effector-swc-plugin) to your config:
 
 ```ts
 // vite.config.ts
@@ -110,7 +110,7 @@ export default defineConfig({
     swc.vite({
       jsc: {
         experimental: {
-          plugins: ['@effector/swc-plugin'],
+          plugins: ['effector-swc-plugin'],
         },
       },
     }),
@@ -119,7 +119,7 @@ export default defineConfig({
 ```
 
 ::: tip
-If you are using [`@vitejs/plugin-react-swc`](https://github.com/vitejs/vite-plugin-react-swc) in your project, you do not need to add `unplugin-swc` to your config, because it is already included in `@vitejs/plugin-react-swc`. So, just modify your config to enable `@effector/swc-plugin`.
+If you are using [`@vitejs/plugin-react-swc`](https://github.com/vitejs/vite-plugin-react-swc) in your project, you do not need to add `unplugin-swc` to your config, because it is already included in `@vitejs/plugin-react-swc`. So, just modify your config to enable `effector-swc-plugin`.
 
 ```ts
 // vite.config.js
@@ -128,7 +128,7 @@ import react from "@vitejs/plugin-react-swc";
 
 export default defineConfig({
   plugins: [
-    react({ plugins: [["@effector/swc-plugin", {}]] });
+    react({ plugins: [["effector-swc-plugin", {}]] });
   ],
 });
 ```

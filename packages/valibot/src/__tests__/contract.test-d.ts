@@ -39,7 +39,7 @@ describe('valibotContract', () => {
             k: Set<string>;
           },
           'literal',
-          42
+          42,
         ]
       >();
 
@@ -55,7 +55,7 @@ describe('valibotContract', () => {
             k: Set<string>;
           },
           'literal',
-          42
+          42,
         ]
       >();
     }

@@ -19,9 +19,7 @@ Let's create two [Queries](/api/primitives/query), the second one will require d
 // Our Query from the previous section
 const characterQuery = createQuery({
   handler: async ({ id }) => {
-    const response = await fetch(
-      `https://rickandmortyapi.com/api/character/${id}`
-    );
+    const response = await fetch(`https://rickandmortyapi.com/api/character/${id}`);
 
     return response.json();
   },

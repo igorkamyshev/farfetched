@@ -319,6 +319,10 @@ export default withMermaid(
                     text: 'Valibot',
                     link: '/api/contracts/valibot',
                   },
+                  {
+                    text: 'JSON Schema',
+                    link: '/api/contracts/json-schema',
+                  },
                 ],
               },
               {

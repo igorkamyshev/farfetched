@@ -50,7 +50,7 @@ interface BaseJsonQueryConfigNoParams<
   BodySource,
   QuerySource,
   HeadersSource,
-  UrlSource
+  UrlSource,
 > extends SharedQueryFactoryConfig<Data> {
   request: RequestConfig<
     void,
@@ -72,7 +72,7 @@ interface BaseJsonQueryConfigWithParams<
   BodySource,
   QuerySource,
   HeadersSource,
-  UrlSource
+  UrlSource,
 > extends SharedQueryFactoryConfig<Data> {
   params: ParamsDeclaration<Params>;
   request: RequestConfig<
@@ -101,7 +101,7 @@ export function createJsonQuery<
   HeadersSource = void,
   UrlSource = void,
   DataSource = void,
-  ValidationSource = void
+  ValidationSource = void,
 >(
   config: BaseJsonQueryConfigWithParams<
     Params,
@@ -132,7 +132,7 @@ export function createJsonQuery<
   HeadersSource = void,
   UrlSource = void,
   DataSource = void,
-  ValidationSource = void
+  ValidationSource = void,
 >(
   config: BaseJsonQueryConfigWithParams<
     Params,
@@ -163,7 +163,7 @@ export function createJsonQuery<
   QuerySource = void,
   HeadersSource = void,
   UrlSource = void,
-  ValidationSource = void
+  ValidationSource = void,
 >(
   config: BaseJsonQueryConfigWithParams<
     Params,
@@ -187,7 +187,7 @@ export function createJsonQuery<
   QuerySource = void,
   HeadersSource = void,
   UrlSource = void,
-  ValidationSource = void
+  ValidationSource = void,
 >(
   config: BaseJsonQueryConfigWithParams<
     Params,
@@ -214,7 +214,7 @@ export function createJsonQuery<
   HeadersSource = void,
   UrlSource = void,
   DataSource = void,
-  ValidationSource = void
+  ValidationSource = void,
 >(
   config: BaseJsonQueryConfigNoParams<
     TransformedData,
@@ -243,7 +243,7 @@ export function createJsonQuery<
   HeadersSource = void,
   UrlSource = void,
   DataSource = void,
-  ValidationSource = void
+  ValidationSource = void,
 >(
   config: BaseJsonQueryConfigNoParams<
     TransformedData,
@@ -272,7 +272,7 @@ export function createJsonQuery<
   QuerySource = void,
   HeadersSource = void,
   UrlSource = void,
-  ValidationSource = void
+  ValidationSource = void,
 >(
   config: BaseJsonQueryConfigNoParams<
     Data,
@@ -294,7 +294,7 @@ export function createJsonQuery<
   QuerySource = void,
   HeadersSource = void,
   UrlSource = void,
-  ValidationSource = void
+  ValidationSource = void,
 >(
   config: BaseJsonQueryConfigNoParams<
     Data,

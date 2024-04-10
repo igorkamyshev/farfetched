@@ -80,12 +80,10 @@ import { createCacheAdapter } from '@farfetched/core';
 
 function redisCache({ maxAge }: { maxAge: number }) {
   return createCacheAdapter({
-    get: createEffect(
-      (_: { key: string }): { value: unknown; cachedAt: number } | null => {
-        // TODO: implement
-        return null;
-      }
-    ),
+    get: createEffect((_: { key: string }): { value: unknown; cachedAt: number } | null => {
+      // TODO: implement
+      return null;
+    }),
     set: createEffect((_: { key: string; value: unknown }) => {
       // TODO: implement
       return;
