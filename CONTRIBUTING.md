@@ -22,7 +22,7 @@ Any new feature or change should be covered by tests. It is a part of the featur
 
 ### Implementation last
 
-After documentation and tests are ready, you can start implementing the feature. Please ensure that your implementation is passing all checks. You can run them via `pnpm local_check` to get quicker feedback than CI.
+After documentation and tests are ready, you can start implementing the feature. Please ensure that your implementation is passing all checks. You can run them via `pnpm ci:local` to get quicker feedback than CI.
 
 ### Changeset
 
@@ -46,3 +46,9 @@ While writing code, keep in mind that Farfetched is a library that is focused on
 2. Performance is important. Avoid unnecessary computations and slow algorithms.
 3. TypeScript is a must. Ensure that your implementation is typed correctly.
 4. Declarative API > Imperative API. Users should be able to express the logic of a computation without describing its control flow using your feature.
+
+## General advice
+
+- Respect [`.nvmrc`](./.nvmrc) file. We cannot guarantee that Farfetched will work with other Node.js versions.
+- Respect `packageManager` field in [`package.json`](./package.json).
+- Keep PRs on-topic. If you want to introduce two unrelated changes, please create two separate PRs.
