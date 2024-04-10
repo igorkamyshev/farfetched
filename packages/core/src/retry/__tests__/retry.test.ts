@@ -51,7 +51,7 @@ describe('retry', () => {
     expect(onFailure).toBeCalledTimes(1);
   });
 
-  test.only('does supress contract failure error as well, issue #459', async () => {
+  test('does supress contract failure error as well, issue #459', async () => {
     const q = createJsonQuery({
       request: { url: 'https://api.salo.com', method: 'GET' },
       response: {
