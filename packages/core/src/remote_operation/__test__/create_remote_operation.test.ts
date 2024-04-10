@@ -540,7 +540,7 @@ describe('RemoteOperation and onAbort callback', () => {
     expect(handleCancel).toBeCalledTimes(0);
   });
 
-  test('abort in-flight operations in case of .reset call', async () => {
+  test('abort in-flight operations in case of .reset call, issue #461', async () => {
     const operation = createRemoteOperation({
       ...defaultConfig,
     });
