@@ -10,7 +10,7 @@ The following is a set of guidelines for contributing to Farfetched. These are m
 
 Any new feature or change should be discussed with maintainers via issue with RFC. It will help to avoid unnecessary work and make sure that the feature will be accepted. RFCs are accepted in English and Russian languages.
 
-After discussion, RFC should be transformed to and ADR in the `apps/website/adr` directory. It will be a part of the documentation. ADRs are accepted in English only.
+After discussion, RFC should be transformed to an ADR in the `apps/website/adr` directory. It will be a part of the documentation. ADRs are accepted in English only.
 
 ### Documentation first
 
