@@ -123,6 +123,11 @@ export interface RemoteOperation<
       pushError: EventCallable<Error>;
       startWithMeta: EventCallable<{ params: Params; meta: ExecutionMeta }>;
       callObjectCreated: Event<CallObject>;
+      failedIgnoreSuppression: Event<{
+        params: Params;
+        error: Error;
+        meta: ExecutionMeta;
+      }>;
     } & ExtraLowLevelAPI;
     experimentalAPI?: {
       attach: <Source, NewParams>(config: {
