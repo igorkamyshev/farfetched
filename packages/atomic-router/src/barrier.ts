@@ -23,13 +23,7 @@ export function barrierChain(barrier: Barrier): ChainProtocol<any> {
     },
   });
 
-  sample({
-    clock: beforeOpen,
-    target: barrier.__.touch,
-    /* Use batch:false to increase priority of touch call */
-    batch: false,
-  });
-  sample({ clock: beforeOpen, target: fx });
+  sample({ clock: beforeOpen, target: [barrier.__.touch, fx] });
 
   return {
     beforeOpen,

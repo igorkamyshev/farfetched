@@ -1,5 +1,6 @@
 import { allSettled, createStore, createWatch, fork } from 'effector';
 import { describe, test, expect, vi } from 'vitest';
+import { setTimeout } from 'timers/promises';
 
 import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { unknownContract } from '../../contract/unknown_contract';
@@ -8,7 +9,6 @@ import { createRemoteOperation } from '../create_remote_operation';
 import { isTimeoutError } from '../../errors/guards';
 import { timeoutError } from '../../errors/create_error';
 import { onAbort } from '../on_abort';
-import { setTimeout as wait } from 'timers/promises';
 
 const defaultConfig = {
   name: 'test',
@@ -317,9 +317,9 @@ describe('RemoteOperation.__.lowLevelAPI.callObjectCreated', () => {
       unit: operation.__.lowLevelAPI.callObjectCreated,
       scope,
       fn: ({ abort }) => {
-        setTimeout(() => {
+        setTimeout(10).then(() => {
           abort();
-        }, 10);
+        });
       },
     });
 
@@ -337,7 +337,7 @@ describe('RemoteOperation.__.lowLevelAPI.callObjectCreated', () => {
     });
 
     await allSettled(operation.start, { scope, params: 42 });
-    await new Promise((resolve) => setTimeout(resolve, 20));
+    await setTimeout(20);
 
     expect(operationFinished).toBeCalledTimes(1);
     expect(operationFinished.mock.calls.map(([arg]) => arg))
@@ -444,7 +444,7 @@ describe('RemoteOperation and onAbort callback', () => {
     const handleCancel = vi.fn();
 
     operation.__.executeFx.use(async () => {
-      await wait(0);
+      await setTimeout(0);
 
       onAbort(handleCancel);
 
@@ -538,5 +538,30 @@ describe('RemoteOperation and onAbort callback', () => {
       ]
     `);
     expect(handleCancel).toBeCalledTimes(0);
+  });
+
+  test('abort in-flight operations in case of .reset call, issue #461', async () => {
+    const operation = createRemoteOperation({
+      ...defaultConfig,
+    });
+
+    const handleCancel = vi.fn();
+
+    operation.__.executeFx.use(async () => {
+      onAbort(handleCancel);
+
+      await setTimeout(10);
+
+      return null;
+    });
+
+    const scope = fork();
+
+    allSettled(operation.start, { scope, params: 42 });
+    allSettled(operation.reset, { scope });
+
+    await allSettled(scope);
+
+    expect(handleCancel).toBeCalledTimes(1);
   });
 });

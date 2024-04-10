@@ -29,6 +29,7 @@ import { type RemoteOperation } from './type';
 import { get } from '../libs/lohyphen';
 import { isAbortError } from '../errors/guards';
 import { getCallObjectEvent } from './with_call_object';
+import { abortAllInFlight } from '../concurrency/concurrency';
 
 export function createRemoteOperation<
   Params,
@@ -467,7 +468,7 @@ export function createRemoteOperation<
     target: finished.finally,
   });
 
-  return {
+  const op = {
     start,
     finished,
     started,
@@ -499,6 +500,10 @@ export function createRemoteOperation<
       },
     },
   };
+
+  abortAllInFlight(op, { clock: reset });
+
+  return op;
 }
 
 function createDataSourceHandlers<Params>(dataSources: DataSource<Params>[]) {
