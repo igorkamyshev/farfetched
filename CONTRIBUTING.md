@@ -26,7 +26,7 @@ After documentation and tests are ready, you can start implementing the feature.
 
 ### Changeset
 
-After implementation is ready, you have to fill in changes via `pnpm changeset`. It will create a new changeset in the `changes` directory. Changesets are accepted in English only. It will be used for versioning and changelog generation.
+After implementation is ready, you have to fill in changes via `pnpm changeset`. It will create a new changeset in the `.changeset` directory. Changesets are accepted in English only. It will be used for versioning and changelog generation.
 
 ## How to create a good API
 
