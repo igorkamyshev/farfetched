@@ -12,6 +12,7 @@ import type { CallObject } from './with_call_object';
 interface DefaultMeta {
   name: string;
   flags: Record<string, boolean>;
+  $callObjects?: Store<CallObject[]>;
 }
 
 export interface RemoteOperation<
