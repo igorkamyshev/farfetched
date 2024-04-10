@@ -27,3 +27,22 @@ After documentation and tests are ready, you can start implementing the feature.
 ### Changeset
 
 After implementation is ready, you have to fill in changes via `pnpm changeset`. It will create a new changeset in the `changes` directory. Changesets are accepted in English only. It will be used for versioning and changelog generation.
+
+## How to create a good API
+
+While writing RFC, keep in mind that the new API (or changes in the existing API) should be consistent with the following principles:
+
+1. Solve a real problem. The new feature should solve a real problem that is faced by developers. You have to provide a clear example of the problem and how the new feature solves it.
+2. Be consistent. The new feature should be consistent with the existing API. It should not introduce new concepts or patterns that are not used in the existing API unless it is necessary.
+3. Simple solutions for simple problems, complex solutions for complex problems. Not vice versa.
+
+Read existing [ADRs](https://farfetched.pages.dev/adr/) to get an understanding of the existing API and principles.
+
+## How to create a good implementation
+
+While writing code, keep in mind that Farfetched is a library that is focused on developer and user experiences. Moreover, Farfetched is based on [Effector](https://effector.dev/) and has to be consistent with its principles and APIs. There are some tips that will help you to create a good implementation:
+
+1. Fork API is a key. Any feature should support Fork API.
+2. Performance is important. Avoid unnecessary computations and slow algorithms.
+3. TypeScript is a must. Ensure that your implementation is typed correctly.
+4. Declarative API > Imperative API. Users should be able to express the logic of a computation without describing its control flow using your feature.
