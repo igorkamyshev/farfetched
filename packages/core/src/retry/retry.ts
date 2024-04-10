@@ -160,6 +160,11 @@ export function retry<
     const originalFx =
       operation.__.lowLevelAPI.dataSourceRetrieverFx.use.getCurrent();
 
+    sample({
+      clock: operation.__.lowLevelAPI.failedIgnoreSuppression,
+      target: failed,
+    });
+
     operation.__.lowLevelAPI.dataSourceRetrieverFx.use(
       attach({
         source: { supressError: $supressError, partialFilter: $partialFilter },
@@ -182,7 +187,7 @@ export function retry<
           try {
             const result = await originalFx(opts);
 
-            return result;
+            return { ...result, stopErrorPropagation: supressError };
           } catch (error: any) {
             const failInfo = {
               params: opts.params,

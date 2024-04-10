@@ -41,7 +41,7 @@
   "size-limit": [
     {
       "path": "./dist/core.js",
-      "limit": "16.1 kB"
+      "limit": "16.2 kB"
     }
   ]
 }
