@@ -21,6 +21,10 @@ Continue reading about Farfetched in the [documentation](https://farfetched.page
 
 Repository contains [several showcases](./apps/) of Farfetched usage. To start playing with them, clone repository and run `pnpm install && pnpm run --filter NAME dev` in the root directory, where `NAME` is the name of the showcase.
 
+## Contributing
+
+If you want to contribute to Farfetched, please read the [CONTRIBUTING.md](./CONTRIBUTING.md) file first.
+
 ## Maintains
 
 ### Getting started

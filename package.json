@@ -2,7 +2,8 @@
   "packageManager": "pnpm@7.28.0",
   "scripts": {
     "format:check": "pnpm prettier {packages,apps}/**/*.{ts,tsx,md,vue} --check",
-    "format:apply": "pnpm prettier {packages,apps}/**/*.{ts,tsx,md,vue} --write"
+    "format:apply": "pnpm prettier {packages,apps}/**/*.{ts,tsx,md,vue} --write",
+    "ci:local": "pnpm run format:check && pnpm run -r build && pnpm run -r test:run && pnpm run -r size && pnpm run -r publint && pnpm run -r typelint"
   },
   "devDependencies": {
     "@algolia/client-search": "^4.14.2",
