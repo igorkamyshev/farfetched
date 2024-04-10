@@ -152,6 +152,11 @@ export function createRemoteOperation<
     error: Error | InvalidDataError;
     meta: ExecutionMeta;
   }>();
+  const failedIgnoreSuppression = createEvent<{
+    params: Params;
+    error: Error | InvalidDataError;
+    meta: ExecutionMeta;
+  }>();
   const aborted = createEvent<{
     params: Params;
     meta: ExecutionMeta;
@@ -283,7 +288,10 @@ export function createRemoteOperation<
     fn: ({ params, result }) => ({
       params: params.params,
       result: result.result as Data,
-      meta: { stopErrorPropagation: false, stale: result.stale },
+      meta: {
+        stopErrorPropagation: result.stopErrorPropagation ?? false,
+        stale: result.stale,
+      },
     }),
     filter: $enabled,
     target: applyContractFx,
@@ -374,6 +382,17 @@ export function createRemoteOperation<
   });
 
   sample({
+    clock: applyContractFx.fail,
+    fn: ({ error, params }) => ({
+      error,
+      // Extract original params, it is params of params
+      params: params.params,
+      meta: params.meta,
+    }),
+    target: failedIgnoreSuppression,
+  });
+
+  sample({
     clock: invalidDataRecieved,
     filter: ({ meta }) => !meta.stopErrorPropagation,
     fn: ({ params, validation, meta, result }) => ({
@@ -385,6 +404,19 @@ export function createRemoteOperation<
       meta,
     }),
     target: failedNoFilters,
+  });
+
+  sample({
+    clock: invalidDataRecieved,
+    fn: ({ params, validation, meta, result }) => ({
+      params,
+      error: invalidDataError({
+        validationErrors: unwrapValidationResult(validation),
+        response: result,
+      }),
+      meta,
+    }),
+    target: failedIgnoreSuppression,
   });
 
   // Emit skip for disabling in-flight operation
@@ -463,6 +495,7 @@ export function createRemoteOperation<
         pushData,
         startWithMeta,
         callObjectCreated,
+        failedIgnoreSuppression,
       },
     },
   };
@@ -475,7 +508,7 @@ function createDataSourceHandlers<Params>(dataSources: DataSource<Params>[]) {
       skipStale?: boolean;
       meta: ExecutionMeta;
     },
-    { result: unknown; stale: boolean },
+    { result: unknown; stale: boolean; stopErrorPropagation?: boolean },
     { stopErrorPropagation: boolean; error: unknown }
   >({
     handler: async ({ params, skipStale }) => {
