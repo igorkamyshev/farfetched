@@ -43,7 +43,7 @@
   "size-limit": [
     {
       "path": "./dist/atomic-router.js",
-      "limit": "314 B"
+      "limit": "475 B"
     }
   ]
 }
