@@ -106,6 +106,10 @@ export function attachOperation<
     mapParams?: (params: NewParams, source?: any) => OriginalParams;
   }
 ) {
+  console.error(
+    'attachOperation is deprecated since 0.12, please read the migration guide: https://farfetched.pages.dev/adr/attach_operation_deprecation.html'
+  );
+
   const { source, mapParams } = config ?? {};
 
   return operation.__.experimentalAPI?.attach({
