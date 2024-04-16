@@ -9,7 +9,10 @@ export function freshChain(
   mapParams?: ({ params }: { params: any }) => void
 ): ChainProtocol<any>;
 
-export function freshChain<RouteParams extends Record<string, any>, QueryParams extends any>(
+export function freshChain<
+  RouteParams extends Record<string, any>,
+  QueryParams extends any,
+>(
   query: Query<QueryParams, any, any, any>,
   mapParams?: ({ params }: { params: RouteParams }) => QueryParams
 ): ChainProtocol<RouteParams>;

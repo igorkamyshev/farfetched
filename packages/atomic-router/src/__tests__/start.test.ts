@@ -117,15 +117,18 @@ describe('startChain', () => {
     const query = createQuery({ handler });
 
     const route = createRoute<{ id: number }>();
-    const chainedRoute = chainRoute({ route, ...startChain(query, ({ params }) => params.id.toString()) });
+    const chainedRoute = chainRoute({
+      route,
+      ...startChain(query, ({ params }) => params.id.toString()),
+    });
 
     const scope = fork();
     await allSettled(route.open, { scope, params: { id: 1 } });
     expect(handler).toBeCalledTimes(1);
-    expect(handler).toBeCalledWith("1");
+    expect(handler).toBeCalledWith('1');
 
     await allSettled(route.open, { scope, params: { id: 2 } });
     expect(handler).toBeCalledTimes(2);
-    expect(handler).toBeCalledWith("2");
+    expect(handler).toBeCalledWith('2');
   });
 });
