@@ -1,3 +1,3 @@
 # @farfetched/solid
 
-Read documentation [here](https://farfetched.pages.dev/api/ui/solid.html).
+Read documentation [here](https://ff.effector.dev/api/ui/solid.html).

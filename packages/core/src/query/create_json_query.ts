@@ -61,7 +61,7 @@ interface BaseJsonQueryConfigNoParams<
   >;
   /**
    * @deprecated Deprecated since 0.12, use `concurrency` operator instead
-   * @see {@link https://farfetched.pages.dev/adr/concurrency}
+   * @see {@link https://ff.effector.dev/adr/concurrency}
    */
   concurrency?: ConcurrencyConfig;
 }
@@ -84,7 +84,7 @@ interface BaseJsonQueryConfigWithParams<
   >;
   /**
    * @deprecated Deprecated since 0.12, use `concurrency` operator instead
-   * @see {@link https://farfetched.pages.dev/adr/concurrency}
+   * @see {@link https://ff.effector.dev/adr/concurrency}
    */
   concurrency?: ConcurrencyConfig;
 }

@@ -15,7 +15,7 @@ const randomQuotesQuery = createJsonQuery({
     /*
      * We use runtypes to validate response,
      * but you can replace it with other library, see 👇
-     * https://farfetched.pages.dev/tutorial/contracts.html#third-party-solutions
+     * https://ff.effector.dev/tutorial/contracts.html#third-party-solutions
      */
     contract: runtypeContract(
       Array(
