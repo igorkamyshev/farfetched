@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "declaration": true,
+    "types": ["node"],
+    "outDir": "dist",
+    "rootDir": "src",
+    "baseUrl": "src",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src/**/*.ts"],
+  "references": [
+    {
+      "path": "../core"
+    }
+  ]
+}

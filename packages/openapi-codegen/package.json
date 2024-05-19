@@ -1,0 +1,49 @@
+{
+  "name": "@farfetched/openapi-codegen",
+  "version": "0.0.1",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/igorkamyshev/farfetched",
+  "dependencies": {
+    "handlebars": "^4.7.8",
+    "oas": "^24.1.0",
+    "oas-normalize": "^11.0.1"
+  },
+  "devDependencies": {
+    "@farfetched/core": "workspace:*",
+    "@farfetched/json-schema": "workspace:*",
+    "tsx": "^4.6.2"
+  },
+  "peerDependencies": {
+    "@farfetched/core": "workspace:*",
+    "@farfetched/json-schema": "workspace:*",
+    "effector": "^23.0.0"
+  },
+  "scripts": {
+    "start": "tsx ./src/index.ts",
+    "test:run": "vitest run --typecheck",
+    "publint": "node ../../tools/scripts/publint.mjs",
+    "typelint": "attw --pack"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/openapi-codegen.cjs",
+  "module": "./dist/openapi-codegen.js",
+  "types": "./dist/openapi-codegen.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/openapi-codegen.d.ts",
+        "default": "./dist/openapi-codegen.js"
+      },
+      "require": {
+        "types": "./dist/openapi-codegen.d.cts",
+        "default": "./dist/openapi-codegen.cjs"
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+import { createQuery } from '@farfetched/core';
+
+const listPets = createQuery({
+  handler: async ({{params}}) => {
+    const response = await fetch(
+      `https://rickandmortyapi.com/api/character/${id}`
+    );
+    return response.json();
+  },
+});
