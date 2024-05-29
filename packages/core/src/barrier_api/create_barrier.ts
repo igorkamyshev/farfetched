@@ -5,6 +5,7 @@ import {
   is,
   sample,
   split,
+  combine,
   type EventCallable,
   type Effect,
   type Event,
@@ -78,6 +79,7 @@ export function createBarrier({
 }): Barrier {
   const activated = createEvent();
   const deactivated = createEvent();
+  const performed = createEvent();
 
   const touch = createEvent();
 
@@ -92,14 +94,21 @@ export function createBarrier({
 
   const performers = normalizePerformers(perform ?? []);
 
-  let $active;
+  const forceDeactivate = createEvent();
+  const $forceDeactivated = createStore(false, {
+    sid: 'barrier.$forceDeactivated',
+    name: 'barrier.$forceDeactivated',
+    serialize: 'ignore',
+  }).on(forceDeactivate, () => true);
+
+  let $rawActive;
   // Overload: active
   if (active) {
-    $active = active;
+    $rawActive = active;
   }
   // Overload: activateOn/deactivateOn
   else if (is.event(activateOn) && is.event(deactivateOn)) {
-    $active = createStore(false, {
+    $rawActive = createStore(false, {
       sid: 'barrier.$active',
       name: 'barrier.$active',
     })
@@ -108,7 +117,7 @@ export function createBarrier({
   }
   // Overload: activateOn only
   else if (activateOn) {
-    $active = createStore(false, {
+    $rawActive = createStore(false, {
       sid: 'barrier.$active',
       name: 'barrier.$active',
     });
@@ -119,7 +128,7 @@ export function createBarrier({
         clock: operationFailed,
         filter: ({ error, params }) => callback({ error, params }),
         fn: () => true,
-        target: [$active, touch],
+        target: [$rawActive, touch],
       });
 
       sample({
@@ -128,12 +137,23 @@ export function createBarrier({
           reset: operationFailed,
         }),
         fn: () => false,
-        target: $active,
+        target: $rawActive,
       });
     }
   } else {
     throw new Error('Invalid configuration of createBarrier');
   }
+
+  const $active = combine(
+    $rawActive,
+    $forceDeactivated,
+    (active, forceDeactivated) => (forceDeactivated ? false : active)
+  );
+
+  sample({
+    clock: performers.map(get('end')),
+    target: performed,
+  });
 
   split({
     clock: [$active, touch],
@@ -182,6 +202,8 @@ export function createBarrier({
     $active: readonly($active),
     activated: readonly(activated),
     deactivated: readonly(deactivated),
+    performed: readonly(performed),
+    forceDeactivate: forceDeactivate,
     __: { touch, operationFailed, operationDone, $mutex },
   };
 }

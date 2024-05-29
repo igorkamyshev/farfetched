@@ -58,19 +58,17 @@ function barrierCircuitBreaker(barrier, { maxAttempts }) {
     target: $currentAttempt,
   });
 
-  // If the number of attempts exceeds the limit,
   // force the Barrier to deactivate
   sample({
     clock: $currentAttemp,
+    // If the number of attempts exceeds the limit,
     filter: (currentAttemp) => currentAttemp >= maxAttempts,
-    target: barrier.forceDeactivate,
-  });
-
-  // Reset the current attempt counter
-  // after the Barrier is deactivated
-  sample({
-    clock: barrier.deactivated,
-    target: $currentAttempt.reinit,
+    target: [
+      // force the Barrier to deactivate
+      barrier.forceDeactivate,
+      // and reset the current attempt counter
+      $currentAttempt.reinit,
+    ],
   });
 }
 ```
