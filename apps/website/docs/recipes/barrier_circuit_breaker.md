@@ -47,22 +47,17 @@ In this case, we can write some kind of circuit breaker that will stop the token
 
 ```ts
 function barrierCircuitBreaker(barrier, { maxAttempts }) {
-  const $currentAttempt = createStore(0);
+  const $currentAttempt = createStore(0).on(
+    // every time after the Barrier is performed
+    barrier.forceDeactivate,
+    // increment the current attempt
+    (attempt) => attempt + 1
+  );
 
-  // Increment the current attempt
-  // every time after the Barrier is performed
   sample({
-    clock: barrier.performed,
-    source: $burrentAttempt,
-    fn: (attempt) => attempt + 1,
-    target: $currentAttempt,
-  });
-
-  // force the Barrier to deactivate
-  sample({
-    clock: $currentAttemp,
     // If the number of attempts exceeds the limit,
-    filter: (currentAttemp) => currentAttemp >= maxAttempts,
+    clock: $currentAttempt,
+    filter: (currentAttempt) => currentAttempt >= maxAttempts,
     target: [
       // force the Barrier to deactivate
       barrier.forceDeactivate,

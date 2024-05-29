@@ -41,14 +41,10 @@ describe('Barrier API', () => {
       barrier: Barrier,
       { maxAttempts }: { maxAttempts: number }
     ) {
-      const $currentAttempt = createStore(0);
-
-      sample({
-        clock: barrier.performed,
-        source: $currentAttempt,
-        fn: (attempt) => attempt + 1,
-        target: $currentAttempt,
-      });
+      const $currentAttempt = createStore(0).on(
+        barrier.forceDeactivate,
+        (attempt) => attempt + 1
+      );
 
       sample({
         clock: $currentAttempt,
