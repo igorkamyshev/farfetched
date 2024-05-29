@@ -203,7 +203,7 @@ export function createBarrier({
     activated: readonly(activated),
     deactivated: readonly(deactivated),
     performed: readonly(performed),
-    forceDeactivate: forceDeactivate,
+    forceDeactivate,
     __: { touch, operationFailed, operationDone, $mutex },
   };
 }
