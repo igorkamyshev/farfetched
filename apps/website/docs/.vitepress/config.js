@@ -295,7 +295,7 @@ export default withMermaid(
           {
             text: 'How to',
             items: [
-              { text: 'Server side rendering', link: '/recipes/ssr' },
+              { text: 'Server Side Rendering', link: '/recipes/ssr' },
               { text: 'Testing', link: '/recipes/testing' },
               {
                 text: 'Vite',
@@ -304,6 +304,10 @@ export default withMermaid(
               {
                 text: 'Base URL for all operations',
                 link: '/recipes/base_url',
+              },
+              {
+                text: 'Barrier Circuit Breaker',
+                link: '/recipes/barrier_circuit_breaker',
               },
             ],
           },
