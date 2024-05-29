@@ -49,7 +49,7 @@ In this case, we can write some kind of circuit breaker that will stop the token
 function barrierCircuitBreaker(barrier, { maxAttempts }) {
   const $currentAttempt = createStore(0).on(
     // every time after the Barrier is performed
-    barrier.forceDeactivate,
+    barrier.performed,
     // increment the current attempt
     (attempt) => attempt + 1
   );

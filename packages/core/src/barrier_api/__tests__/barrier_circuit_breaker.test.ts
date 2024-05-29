@@ -42,7 +42,7 @@ describe('Barrier API', () => {
       { maxAttempts }: { maxAttempts: number }
     ) {
       const $currentAttempt = createStore(0).on(
-        barrier.forceDeactivate,
+        barrier.performed,
         (attempt) => attempt + 1
       );
 
