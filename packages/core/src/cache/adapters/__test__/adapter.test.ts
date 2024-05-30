@@ -3,8 +3,15 @@
  */
 
 import { allSettled, createEvent, fork, scopeBind } from 'effector';
-import { setTimeout } from 'timers/promises';
-import { describe, beforeEach, test, expect, vi } from 'vitest';
+import {
+  describe,
+  beforeEach,
+  test,
+  expect,
+  vi,
+  beforeAll,
+  afterAll,
+} from 'vitest';
 
 import { withFactory } from '../../../libs/patronus';
 import { inMemoryCache } from '../in_memory';
@@ -17,6 +24,14 @@ describe.each([
   { name: 'sessionSotrage', adapter: sessionStorageCache },
   { name: 'localStorage', adapter: localStorageCache },
 ])('adapter $name', ({ adapter }) => {
+  beforeAll(() => {
+    vi.useFakeTimers();
+  });
+
+  afterAll(() => {
+    vi.useRealTimers();
+  });
+
   beforeEach(() => {
     localStorage.clear();
     sessionStorage.clear();
@@ -84,7 +99,7 @@ describe.each([
     })({ key: 'key' });
     expect(resultOne?.value).toEqual('myValue');
 
-    await setTimeout(1 * 1000);
+    await vi.advanceTimersByTimeAsync(1 * 1000);
 
     const resultTwo = await scopeBind(cache.get, {
       scope,
@@ -197,7 +212,7 @@ describe.each([
         scope,
       })({ key: 'firstKey', value: 'myValue' });
 
-      await setTimeout(1 * 1000);
+      await vi.advanceTimersByTimeAsync(1 * 1000);
 
       await scopeBind(cache.set, {
         scope,
