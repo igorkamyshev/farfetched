@@ -15,3 +15,7 @@ export interface Mutation<Params, Data, Error>
 export function isMutation(value: any): value is Mutation<any, any, any> {
   return value?.__?.kind === MutationSymbol;
 }
+
+export type JsonMutationResponseMeta = {
+  headers: Record<string, string>;
+};
