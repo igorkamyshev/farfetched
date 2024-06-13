@@ -29,6 +29,7 @@ import { type RemoteOperation } from './type';
 import { get } from '../libs/lohyphen';
 import { isAbortError } from '../errors/guards';
 import { getCallObjectEvent } from './with_call_object';
+import { abortAllInFlight } from '../concurrency/concurrency';
 
 export function createRemoteOperation<
   Params,
@@ -148,6 +149,11 @@ export function createRemoteOperation<
     >(),
   };
   const failedNoFilters = createEvent<{
+    params: Params;
+    error: Error | InvalidDataError;
+    meta: ExecutionMeta;
+  }>();
+  const failedIgnoreSuppression = createEvent<{
     params: Params;
     error: Error | InvalidDataError;
     meta: ExecutionMeta;
@@ -283,7 +289,10 @@ export function createRemoteOperation<
     fn: ({ params, result }) => ({
       params: params.params,
       result: result.result as Data,
-      meta: { stopErrorPropagation: false, stale: result.stale },
+      meta: {
+        stopErrorPropagation: result.stopErrorPropagation ?? false,
+        stale: result.stale,
+      },
     }),
     filter: $enabled,
     target: applyContractFx,
@@ -374,6 +383,17 @@ export function createRemoteOperation<
   });
 
   sample({
+    clock: applyContractFx.fail,
+    fn: ({ error, params }) => ({
+      error,
+      // Extract original params, it is params of params
+      params: params.params,
+      meta: params.meta,
+    }),
+    target: failedIgnoreSuppression,
+  });
+
+  sample({
     clock: invalidDataRecieved,
     filter: ({ meta }) => !meta.stopErrorPropagation,
     fn: ({ params, validation, meta, result }) => ({
@@ -385,6 +405,19 @@ export function createRemoteOperation<
       meta,
     }),
     target: failedNoFilters,
+  });
+
+  sample({
+    clock: invalidDataRecieved,
+    fn: ({ params, validation, meta, result }) => ({
+      params,
+      error: invalidDataError({
+        validationErrors: unwrapValidationResult(validation),
+        response: result,
+      }),
+      meta,
+    }),
+    target: failedIgnoreSuppression,
   });
 
   // Emit skip for disabling in-flight operation
@@ -435,7 +468,7 @@ export function createRemoteOperation<
     target: finished.finally,
   });
 
-  return {
+  const op = {
     start,
     finished,
     started,
@@ -463,9 +496,14 @@ export function createRemoteOperation<
         pushData,
         startWithMeta,
         callObjectCreated,
+        failedIgnoreSuppression,
       },
     },
   };
+
+  abortAllInFlight(op, { clock: reset });
+
+  return op;
 }
 
 function createDataSourceHandlers<Params>(dataSources: DataSource<Params>[]) {
@@ -475,7 +513,7 @@ function createDataSourceHandlers<Params>(dataSources: DataSource<Params>[]) {
       skipStale?: boolean;
       meta: ExecutionMeta;
     },
-    { result: unknown; stale: boolean },
+    { result: unknown; stale: boolean; stopErrorPropagation?: boolean },
     { stopErrorPropagation: boolean; error: unknown }
   >({
     handler: async ({ params, skipStale }) => {

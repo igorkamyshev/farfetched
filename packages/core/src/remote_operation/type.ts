@@ -12,6 +12,7 @@ import type { CallObject } from './with_call_object';
 interface DefaultMeta {
   name: string;
   flags: Record<string, boolean>;
+  $callObjects?: Store<CallObject[]>;
 }
 
 export interface RemoteOperation<
@@ -122,6 +123,11 @@ export interface RemoteOperation<
       pushError: EventCallable<Error>;
       startWithMeta: EventCallable<{ params: Params; meta: ExecutionMeta }>;
       callObjectCreated: Event<CallObject>;
+      failedIgnoreSuppression: Event<{
+        params: Params;
+        error: Error;
+        meta: ExecutionMeta;
+      }>;
     } & ExtraLowLevelAPI;
     experimentalAPI?: {
       attach: <Source, NewParams>(config: {

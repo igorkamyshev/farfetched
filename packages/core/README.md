@@ -1,3 +1,3 @@
 # @farfetched/core
 
-Read documentation [here](https://farfetched.pages.dev).
+Read documentation [here](https://ff.effector.dev).

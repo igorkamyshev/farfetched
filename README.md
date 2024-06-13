@@ -15,11 +15,15 @@ The advanced data fetching tool for web applications
 
 ### Documentation
 
-Continue reading about Farfetched in the [documentation](https://farfetched.pages.dev). It covers integration with the most popular UI-frameworks (such React and Solid), error handling, dependent queries, advanced contracts and other great tools.
+Continue reading about Farfetched in the [documentation](https://ff.effector.dev). It covers integration with the most popular UI-frameworks (such React and Solid), error handling, dependent queries, advanced contracts and other great tools.
 
 ### Showcases
 
 Repository contains [several showcases](./apps/) of Farfetched usage. To start playing with them, clone repository and run `pnpm install && pnpm run --filter NAME dev` in the root directory, where `NAME` is the name of the showcase.
+
+## Contributing
+
+If you want to contribute to Farfetched, please read the [CONTRIBUTING.md](./CONTRIBUTING.md) file first.
 
 ## Maintains
 

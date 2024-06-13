@@ -58,7 +58,7 @@ jobs:
 
             Latest canary version is ${{ steps.canary_info.outputs.canaryVersion }}
 
-            [More information about canary versions](https://farfetched.pages.dev/releases/canary.html)
+            [More information about canary versions](https://ff.effector.dev/releases/canary.html)
 
             ---
 
@@ -76,7 +76,7 @@ jobs:
               
             Latest canary version is ${{ steps.canary_info.outputs.canaryVersion }}
 
-            [More information about canary versions](https://farfetched.pages.dev/releases/canary.html)
+            [More information about canary versions](https://ff.effector.dev/releases/canary.html)
 
             ---
 

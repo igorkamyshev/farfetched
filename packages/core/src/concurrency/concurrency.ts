@@ -1,5 +1,6 @@
 import {
   type Event,
+  type Store,
   createStore,
   sample,
   attach,
@@ -30,37 +31,13 @@ export function concurrency(
 ) {
   if (op.__.meta.flags.concurrencyFieldUsed) {
     console.error(
-      `Both concurrency-operator and concurrency-field are used  on operation ${op.__.meta.name}.`,
+      `Both concurrency-operator and concurrency-field are used on operation ${op.__.meta.name}.`,
       `Please use only concurrency-operator, because field concurrency-field in createJsonQuery and createJsonMutation is deprecated and will be deleted soon.`
     );
   }
   op.__.meta.flags.concurrencyOperatorUsed = true;
 
-  const $callObjects = createStore<CallObject[]>([], { serialize: 'ignore' });
-  sample({
-    clock: op.__.lowLevelAPI.callObjectCreated,
-    source: $callObjects,
-    fn: (callObjects, callObject) =>
-      callObjects.filter((obj) => obj.status === 'pending').concat(callObject),
-    target: $callObjects,
-  });
-
-  const abortManyFx = createEffect((callObjects: CallObject[]) => {
-    callObjects.forEach((callObject) => callObject.abort());
-  });
-
-  const abortAllFx = attach({
-    source: $callObjects,
-    effect: abortManyFx,
-  });
-
-  sample({
-    clock: abortManyFx.done,
-    source: $callObjects,
-    fn: (callObjects, { params: abortedCallObjects }) =>
-      callObjects.filter((obj) => !abortedCallObjects.includes(obj)),
-    target: $callObjects,
-  });
+  const $callObjects = callObejcts(op);
 
   if (strategy) {
     switch (strategy) {
@@ -119,8 +96,49 @@ export function concurrency(
   }
 
   if (abortAll) {
-    sample({ clock: abortAll, target: abortAllFx });
+    abortAllInFlight(op, { clock: abortAll });
   }
 
   return op;
 }
+
+export function abortAllInFlight(
+  op: RemoteOperation<any, any, any, any>,
+  { clock }: { clock: Event<any> }
+) {
+  sample({ clock, source: callObejcts(op), target: abortManyFx });
+}
+
+function callObejcts(
+  op: RemoteOperation<any, any, any, any>
+): Store<CallObject[]> {
+  if (!op.__.meta.$callObjects) {
+    const $callObjects = createStore<CallObject[]>([], { serialize: 'ignore' });
+
+    sample({
+      clock: op.__.lowLevelAPI.callObjectCreated,
+      source: $callObjects,
+      fn: (callObjects, callObject) =>
+        callObjects
+          .filter((obj) => obj.status === 'pending')
+          .concat(callObject),
+      target: $callObjects,
+    });
+
+    sample({
+      clock: abortManyFx.done,
+      source: $callObjects,
+      fn: (callObjects, { params: abortedCallObjects }) =>
+        callObjects.filter((obj) => !abortedCallObjects.includes(obj)),
+      target: $callObjects,
+    });
+
+    op.__.meta.$callObjects = $callObjects;
+  }
+
+  return op.__.meta.$callObjects!;
+}
+
+const abortManyFx = createEffect((callObjects: CallObject[]) =>
+  callObjects.forEach((callObject) => callObject.abort())
+);

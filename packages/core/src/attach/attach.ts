@@ -13,7 +13,7 @@ import {
 
 /**
  * @deprecated Deprecated since 0.12
- * @see {@link https://farfetched.pages.dev/adr/attach_operation_deprecation.html#how-to-migrate}
+ * @see {@link https://ff.effector.dev/adr/attach_operation_deprecation.html#how-to-migrate}
  */
 export function attachOperation<
   NewParams,
@@ -34,7 +34,7 @@ export function attachOperation<
 
 /**
  * @deprecated Deprecated since 0.12
- * @see {@link https://farfetched.pages.dev/adr/attach_operation_deprecation.html#how-to-migrate}
+ * @see {@link https://ff.effector.dev/adr/attach_operation_deprecation.html#how-to-migrate}
  */
 export function attachOperation<NewParams, Q extends Query<any, any, any, any>>(
   operation: Q,
@@ -48,7 +48,7 @@ export function attachOperation<NewParams, Q extends Query<any, any, any, any>>(
 
 /**
  * @deprecated Deprecated since 0.12
- * @see {@link https://farfetched.pages.dev/adr/attach_operation_deprecation.html#how-to-migrate}
+ * @see {@link https://ff.effector.dev/adr/attach_operation_deprecation.html#how-to-migrate}
  */
 export function attachOperation<Q extends Query<any, any, any, any>>(
   operation: Q
@@ -58,7 +58,7 @@ export function attachOperation<Q extends Query<any, any, any, any>>(
 
 /**
  * @deprecated Deprecated since 0.12
- * @see {@link https://farfetched.pages.dev/adr/attach_operation_deprecation.html#how-to-migrate}
+ * @see {@link https://ff.effector.dev/adr/attach_operation_deprecation.html#how-to-migrate}
  */
 export function attachOperation<
   NewParams,
@@ -74,7 +74,7 @@ export function attachOperation<
 
 /**
  * @deprecated Deprecated since 0.12
- * @see {@link https://farfetched.pages.dev/adr/attach_operation_deprecation.html#how-to-migrate}
+ * @see {@link https://ff.effector.dev/adr/attach_operation_deprecation.html#how-to-migrate}
  */
 export function attachOperation<NewParams, M extends Mutation<any, any, any>>(
   operation: M,
@@ -83,7 +83,7 @@ export function attachOperation<NewParams, M extends Mutation<any, any, any>>(
 
 /**
  * @deprecated Deprecated since 0.12
- * @see {@link https://farfetched.pages.dev/adr/attach_operation_deprecation.html#how-to-migrate}
+ * @see {@link https://ff.effector.dev/adr/attach_operation_deprecation.html#how-to-migrate}
  */
 export function attachOperation<M extends Mutation<any, any, any>>(
   operation: M
@@ -93,7 +93,7 @@ export function attachOperation<M extends Mutation<any, any, any>>(
 
 /**
  * @deprecated Deprecated since 0.12
- * @see {@link https://farfetched.pages.dev/adr/attach_operation_deprecation.html#how-to-migrate}
+ * @see {@link https://ff.effector.dev/adr/attach_operation_deprecation.html#how-to-migrate}
  */
 export function attachOperation<
   NewParams,

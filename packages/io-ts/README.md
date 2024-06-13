@@ -1,3 +1,3 @@
 # @farfetched/io-ts
 
-Read documentation [here](https://farfetched.pages.dev/api/contracts/io-ts.html).
+Read documentation [here](https://ff.effector.dev/api/contracts/io-ts.html).

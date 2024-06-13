@@ -1,5 +1,15 @@
 # @farfetched/core
 
+## 0.12.4
+
+## 0.12.3
+
+### Patch Changes
+
+- 16f68b2: Update formatting (bump prettier to v3)
+- d0fc25b: Fix bug with extra fires of `finished.failure` in case of failed contract application with `retry` operator
+- 1f59bb3: Abort all in-flight operations on `.reset`
+
 ## 0.12.2
 
 ### Patch Changes
