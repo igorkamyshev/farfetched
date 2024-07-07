@@ -72,14 +72,14 @@ After this call [Mutation](/api/primitives/mutation) will start its handler with
 Since [_Mutation_](/api/primitives/mutation) does not store any data inside, it provides only lifecycle [_Events_](https://effector.dev/en/api/effector/event/). The most important of them are `finished.success` and `finished.failure`. Let's subscribe to these events:
 
 ```ts
-createEntityMutation.finished.success.watch(({ params, data }) => {
+createEntityMutation.finished.success.watch(({ params, result }) => {
   showNotification({
     message: `Entity ${params.id} was created!`,
     type: 'info',
   });
 });
 
-createEntityMutation.finished.failure.watch(({ params, data }) => {
+createEntityMutation.finished.failure.watch(({ params, error }) => {
   showNotification({
     message: `Entity ${params.id} was not created!`,
     type: 'error',
