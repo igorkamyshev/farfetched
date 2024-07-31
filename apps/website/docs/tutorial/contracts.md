@@ -60,38 +60,38 @@ const someQuery = createQuery({
 
 Even though Farfetched provides a way to create your own [_Contract_](/api/primitives/contract), it's way more convenient to use third-party solutions for contracts.
 
-### Runtypes
+### `@withease/contracts`
 
-We recommend using [Runtypes](https://github.com/pelotom/runtypes), it has first class TS-support, it is well-documented and has a lot of useful features. Farfetched provides [an integration to use Runtype as a Contract](/api/contracts/runtypes).
+We recommend using [`@withease/contracts`](https://withease.effector.dev/contracts/) as a default solution for contracts. It is extremely lightweight, has a lot of useful features and is well-documented. Futhermore, it is a part of Effector's family, so it is well-integrated with any Effector-based solution and does not require any additional compatibility layers.
 
 ```ts
-import { Number } from 'runtypes';
-import { runtypeContract } from '@farfetched/runtypes';
+import { num } from '@withease/contracts';
 
-const numberContract = runtypeContract(Number);
+const someQuery = createQuery({
+  // ...
+  contract: num,
+});
 ```
 
-That is a complete equivalent of the previous example. For such a simple contract, it's not a big deal, but for more complex contracts, it's much more convenient to use Runtypes than to create a contract by hand.
+Let us write a more complete equivalent of the previous example. For such a simple contract, it's not a big deal, but for more complex contracts, it's much more convenient to use `@withease/contracts` than to create a contract by hand.
 
 ```ts
-import { Record, String, Number, Union, Literal } from 'runtypes';
+import { obj, str, num, or, val } from '`@withease/contracts`';
 
-const characterContract = runtypeContract(
-  Record({
-    id: Number,
-    name: String,
-    status: Union(Literal('Alive'), Literal('Dead'), Literal('unknown')),
-    species: String,
-    type: String,
-    origin: Record({ name: String, url: Url }),
-    location: Record({ name: String, url: Url }),
-  })
-);
+const characterContract = obj({
+  id: num,
+  name: str,
+  status: or(val('Alive'), val('Dead'), val('unknown')),
+  species: str,
+  type: str,
+  origin: obj({ name: str, url: str }),
+  location: obj({ name: str, url: str }),
+});
 ```
 
 ## Other integrations
 
-Farfetched provides integrations for the following third-party solutions:
+In case you are using some other solution for contracts, Farfetched provides a plenty of integrations for the following third-party solutions:
 
 - [Runtypes](/api/contracts/runtypes)
 - [Zod](/api/contracts/zod)

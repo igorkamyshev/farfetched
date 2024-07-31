@@ -3,7 +3,7 @@ import { string } from 'superstruct';
 
 import { superstructContract } from '../contract';
 
-describe('runtypeContract', () => {
+describe('superstructContract', () => {
   const contract = superstructContract(string());
 
   const smth: unknown = null;

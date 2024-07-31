@@ -115,19 +115,18 @@ It's time to find out arguments of the `createFlag` function.
 4. `contract` — we need to know how to check the value of the feature flag. It will be used to prevent unexpected structure that can break the application. Since Farfetched has a built-in [structure to do it](/api/primitives/contract), we can use it here.
 
 ```ts
-import { runtypeContract } from '@farftehced/runtypes';
-import { Boolean } from 'runtypes';
+import { bool } from '@withease/contracts';
 
 const { $value: $dynamicFaviconEnabled } = createFlag({
   key: 'exp-dynamic-favicon',
   defaultValue: false,
-  contract: runtypeContract(Boolean),
+  contract: bool,
   fetchOn: applicationInitialized,
 });
 ```
 
 ::: tip
-We use `runtypes` as a library for creating [_Contracts_](/api/primitives/contract) there. However, you can use any library you want. Read more in [the tutorial](/tutorial/contracts).
+We use `@withease/contracts` as a library for creating [_Contracts_](/api/primitives/contract) there. However, you can use any library you want. Read more in [the tutorial](/tutorial/contracts).
 :::
 
 ## Implementation
@@ -257,7 +256,7 @@ So, we have an internal implementation that handles fetching, context passing, e
 const { $value: $dynamicFaviconEnabled } = createFlag({
   key: 'exp-dynamic-favicon',
   defaultValue: false,
-  contract: runtypeContract(Boolean),
+  contract: bool,
   fetchOn: applicationInitialized,
 });
 ```
@@ -302,7 +301,7 @@ The last thing we need to do is to return a store with a value of the feature fl
 function createFlag({ key, requestOn }) {
   // ...
 
-  // find patricular flag
+  // find particular flag
   const $value = featureFlagsQuery.$data.map((data) => data.find((flag) => flag.flagKey === key) ?? null);
 
   return { $value };
@@ -362,8 +361,7 @@ Now, we have a feature flags service. Let's integrate it with our application.
 
 ```ts
 import { createEvent, createEffect, sample } from 'effector';
-import { runtypeContract } from '@farfetched/runtypes';
-import { Boolean } from 'runtypes';
+import { bool } from '@withease/contracts';
 
 // Do not forget to call it after application initialization
 const applicationInitialized = createEvent();
@@ -371,7 +369,7 @@ const applicationInitialized = createEvent();
 const { $value: $dynamicFaviconEnabled } = createFlag({
   key: 'exp-dynamic-favicon',
   defaultValue: false,
-  contract: runtypeContract(Boolean),
+  contract: bool,
   fetchOn: applicationInitialized,
 });
 

@@ -16,7 +16,7 @@ Built-in factories are easier to use, and they are more declarative, which makes
 
 ## JSON API
 
-A lot of modern APIs work with JSON. It accepts JSON as input and returns JSON as output. It's a very convenient format, because it's easy to read and write. Not only that, but it's also very flexible, because it allows you to send only the data you need. So, Farfetch has a built-in factory for JSON API — `createJsonQuery`.
+A lot of modern APIs work with JSON. It accepts JSON as input and returns JSON as output. It's a very convenient format, because it's easy to read and write. Not only that, but it's also very flexible, because it allows you to send only the data you need. So, Farfetched has a built-in factory for JSON API — `createJsonQuery`.
 
 Let's start with an example, and then we'll explain what's going on.
 
@@ -30,7 +30,7 @@ const characterQuery = createJsonQuery({
     url: ({ id }) => `https://rickandmortyapi.com/api/character/${id}`,
   },
   response: {
-    contract: runtypeContract(Character),
+    contract: Character,
   },
 });
 ```
@@ -53,7 +53,7 @@ const characterQuery = createJsonQuery({
     url: ({ id }) => `https://rickandmortyapi.com/api/character/${id}`,
   },
   response: {
-    contract: runtypeContract(Character),
+    contract: Character,
   },
 });
 ```
@@ -67,7 +67,7 @@ By default, `createJsonQuery` returns a [_Query_](/api/primitives/query) without
 - `request.method` has to be a _string_ with an HTTP method in uppercase, e.g. `GET` or `POST`.
 - `request.url` is used to formulate a URL of the request, it could be declared in many forms, but two the most interesting for us:
   - just static _string_
-  - function that accepts [_Query_](/api/primitives/query) paramters and returns a _string_
+  - function that accepts [_Query_](/api/primitives/query) parameters and returns a _string_
 
 ```ts{3-6}
 const characterQuery = createJsonQuery({
@@ -77,7 +77,7 @@ const characterQuery = createJsonQuery({
     url: ({ id }) => `https://rickandmortyapi.com/api/character/${id}`,
   },
   response: {
-    contract: runtypeContract(Character),
+    contract: Character,
   },
 });
 ```
@@ -96,7 +96,7 @@ const characterQuery = createJsonQuery({
     url: ({ id }) => `https://rickandmortyapi.com/api/character/${id}`,
   },
   response: {
-    contract: runtypeContract(Character),
+    contract: Character,
   },
 });
 ```

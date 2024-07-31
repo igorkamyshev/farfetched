@@ -16,7 +16,7 @@ const customSetup = {
   dependencies: {
     effector: packageJson.dependencies.effector,
     'effector-vue': packageJson.dependencies['effector-vue'],
-    runtypes: packageJson.dependencies.runtypes,
+    '@withease/contracts': packageJson.dependencies['@withease/contracts'],
   },
 };
 
