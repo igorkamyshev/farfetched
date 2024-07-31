@@ -1,14 +1,10 @@
-import { Number, Record, Static } from 'runtypes';
+import { val, or, num, obj, type UnContract, str } from '@withease/contracts';
 
-import { Url } from './url';
-
-const Info = Record({
-  count: Number,
-  pages: Number,
-  next: Url.nullable(),
-  prev: Url.nullable(),
+export const Info = obj({
+  count: num,
+  pages: num,
+  next: or(str, val(null)),
+  prev: or(str, val(null)),
 });
 
-type TInfo = Static<typeof Info>;
-
-export { Info, type TInfo };
+export type TInfo = UnContract<typeof Info>;

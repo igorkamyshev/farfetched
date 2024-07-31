@@ -9,9 +9,9 @@ import {
   originQuery,
   characterEpisodesQuery,
 } from './model';
-import { episodeRoute } from '../episode/model';
+import { episodeRoute } from '../../entities/episode';
 
-function CharacterPage() {
+export function CharacterPage() {
   const [character] = createQueryResource(currentCharacterQuery);
   const [origin] = createQueryResource(originQuery);
   const [currentLocation] = createQueryResource(currentLocationQuery);
@@ -64,5 +64,3 @@ function CharacterPage() {
     </Suspense>
   );
 }
-
-export { CharacterPage };

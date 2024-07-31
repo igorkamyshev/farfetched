@@ -1,14 +1,9 @@
-import { Array, Record, String } from 'runtypes';
+import { arr, obj, num, str } from '@withease/contracts';
 
-import { Id } from '../../shared/id';
-import { Url } from '../../shared/url';
-
-const Location = Record({
-  id: Id,
-  name: String,
-  type: String,
-  dimension: String,
-  residents: Array(Url),
+export const Location = obj({
+  id: num,
+  name: str,
+  type: str,
+  dimension: str,
+  residents: arr(str),
 });
-
-export { Location };

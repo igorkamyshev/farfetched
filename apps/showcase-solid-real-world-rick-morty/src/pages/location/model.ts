@@ -3,14 +3,13 @@ import { sample } from 'effector';
 
 import { createCharacterListQuery } from '../../entities/character';
 import { createLocationQuery, locationRoute } from '../../entities/location';
-import { TId, urlToId } from '../../shared/id';
-import { TUrl } from '../../shared/url';
+import { urlToId } from '../../shared/id';
 
-const currentLocationQuery = createLocationQuery({
-  mapParams: ({ locationId }: { locationId: TId }) => ({ id: locationId }),
+export const currentLocationQuery = createLocationQuery({
+  mapParams: ({ locationId }: { locationId: number }) => ({ id: locationId }),
 });
-const residentsQuery = createCharacterListQuery({
-  mapParams: (urls: TUrl[]) => ({ ids: urls.map(urlToId) }),
+export const residentsQuery = createCharacterListQuery({
+  mapParams: (urls: string[]) => ({ ids: urls.map(urlToId) }),
 });
 
 sample({
@@ -28,5 +27,3 @@ connectQuery({
   },
   target: residentsQuery,
 });
-
-export { currentLocationQuery, residentsQuery };

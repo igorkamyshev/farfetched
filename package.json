@@ -45,6 +45,7 @@
     "vue": "^3.2.37"
   },
   "dependencies": {
+    "@withease/contracts": "^1.0.0",
     "atomic-router": "0.9.1",
     "atomic-router-solid": "0.8.1",
     "effector": "23.0.0",

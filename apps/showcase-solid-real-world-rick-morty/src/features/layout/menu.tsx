@@ -3,7 +3,7 @@ import { Link } from 'atomic-router-solid';
 import { characterListRoute } from '../../entities/character';
 import { episodeListRoute } from '../../entities/episode';
 
-function Menu() {
+export function Menu() {
   return (
     <nav>
       <Link to={characterListRoute}>Characters</Link>
@@ -11,5 +11,3 @@ function Menu() {
     </nav>
   );
 }
-
-export { Menu };

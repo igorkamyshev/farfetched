@@ -1,32 +1,27 @@
-import { Array, Literal, Record, String, Union } from 'runtypes';
+import { arr, val, obj, str, or, num } from '@withease/contracts';
 
-import { Id } from '../../shared/id';
-import { Url } from '../../shared/url';
+const UnknownLiteral = val('unknown');
 
-const UnknownLiteral = Literal('unknown');
+const Status = or(val('Alive'), val('Dead'), UnknownLiteral);
 
-const Status = Union(Literal('Alive'), Literal('Dead'), UnknownLiteral);
-
-const Gender = Union(
-  Literal('Female'),
-  Literal('Male'),
-  Literal('Genderless'),
+const Gender = or(
+  val('Female'),
+  val('Male'),
+  val('Genderless'),
   UnknownLiteral
 );
 
-const LocationLink = Record({ name: String, url: Url });
+const LocationLink = obj({ name: str, url: str });
 
-const Character = Record({
-  id: Id,
-  name: String,
+export const Character = obj({
+  id: num,
+  name: str,
   status: Status,
-  species: String,
-  type: String,
+  species: str,
+  type: str,
   gender: Gender,
   origin: LocationLink,
   location: LocationLink,
-  image: Url,
-  episode: Array(Url),
+  episode: arr(str),
+  image: str,
 });
-
-export { Character };

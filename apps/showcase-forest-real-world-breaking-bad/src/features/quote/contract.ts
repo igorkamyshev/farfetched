@@ -1,6 +1,6 @@
-import { Record, String } from 'runtypes';
+import { obj, str } from '@withease/contracts';
 
-export const Quote = Record({
-  author: String,
-  quote: String,
+export const Quote = obj({
+  author: str,
+  quote: str,
 });

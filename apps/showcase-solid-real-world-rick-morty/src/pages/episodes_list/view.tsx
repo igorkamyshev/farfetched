@@ -7,7 +7,7 @@ import { episodeListRoute, episodeRoute } from '../../entities/episode';
 import { Pagination } from '../../features/pagination';
 import { $currentPage, episodesQuery } from './model';
 
-function EpisodesListPage() {
+export function EpisodesListPage() {
   const { currentPage } = useUnit({ currentPage: $currentPage });
   const [data] = createQueryResource(episodesQuery);
 
@@ -45,5 +45,3 @@ function EpisodesListPage() {
     </>
   );
 }
-
-export { EpisodesListPage };

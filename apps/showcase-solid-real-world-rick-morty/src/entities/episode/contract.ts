@@ -1,14 +1,9 @@
-import { Array, Record, String } from 'runtypes';
+import { arr, num, obj, str } from '@withease/contracts';
 
-import { Id } from '../../shared/id';
-import { Url } from '../../shared/url';
-
-const Episode = Record({
-  id: Id,
-  name: String,
-  air_date: String,
-  episode: String,
-  characters: Array(Url),
+export const Episode = obj({
+  id: num,
+  name: str,
+  air_date: str,
+  episode: str,
+  characters: arr(str),
 });
-
-export { Episode };

@@ -1,21 +1,19 @@
-import { Number, Record, String } from 'runtypes';
+import { obj, num, str } from '@withease/contracts';
 
 import { EntityLink } from '../../shared/entity_link';
-import { Id } from '../../shared/id';
-import { Url } from '../../shared/url';
 
-export const Pokemon = Record({
-  id: Id,
-  name: String,
-  height: Number,
-  weight: Number,
-  sprites: Record({ front_default: Url }),
+export const Pokemon = obj({
+  id: num,
+  name: str,
+  height: num,
+  weight: num,
+  sprites: obj({ front_default: str }),
   species: EntityLink,
 });
 
-export const Species = Record({
-  id: Id,
-  name: String,
+export const Species = obj({
+  id: num,
+  name: str,
   color: EntityLink,
   generation: EntityLink,
 });
