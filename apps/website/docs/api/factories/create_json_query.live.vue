@@ -1,8 +1,7 @@
 <script setup>
 import { createJsonQuery } from '@farfetched/core';
-import { runtypeContract } from '@farfetched/runtypes';
+import { obj, str, arr } from '@withease/contracts';
 import { useUnit } from 'effector-vue/composition';
-import { Record, String, Array } from 'runtypes';
 
 const randomQuotesQuery = createJsonQuery({
   initialData: [],
@@ -13,17 +12,15 @@ const randomQuotesQuery = createJsonQuery({
   },
   response: {
     /*
-     * We use runtypes to validate response,
+     * We use @withease/contracts to validate response,
      * but you can replace it with other library, see 👇
-     * https://farfetched.pages.dev/tutorial/contracts.html#third-party-solutions
+     * https://ff.effector.dev/tutorial/contracts.html#third-party-solutions
      */
-    contract: runtypeContract(
-      Array(
-        Record({
-          author: String,
-          quote: String,
-        })
-      )
+    contract: arr(
+      obj({
+        author: str,
+        quote: str,
+      })
     ),
   },
 });

@@ -3,7 +3,7 @@ import * as t from 'io-ts';
 
 import { ioTsContract } from '../contract';
 
-describe('runtypeContract', () => {
+describe('ioTsContract', () => {
   const contract = ioTsContract(t.string);
 
   const smth: unknown = null;

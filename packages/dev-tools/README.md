@@ -1,3 +1,3 @@
 # @farfetched/dev-tools
 
-Read documentation [here](https://farfetched.pages.dev/tutorial/devtools.html).
+Read documentation [here](https://ff.effector.dev/tutorial/devtools.html).

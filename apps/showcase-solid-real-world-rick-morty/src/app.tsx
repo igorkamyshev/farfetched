@@ -27,10 +27,9 @@ const router = createHistoryRouter({
 });
 
 const history = createBrowserHistory();
-// @ts-expect-error will be fixes after new router
 router.setHistory(history);
 
-function App() {
+export function App() {
   return (
     <RouterProvider router={router}>
       <Menu />
@@ -42,5 +41,3 @@ function App() {
     </RouterProvider>
   );
 }
-
-export { App };

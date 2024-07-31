@@ -15,7 +15,7 @@ The advanced data fetching tool for web applications
 
 ### Documentation
 
-Continue reading about Farfetched in the [documentation](https://farfetched.pages.dev). It covers integration with the most popular UI-frameworks (such React and Solid), error handling, dependent queries, advanced contracts and other great tools.
+Continue reading about Farfetched in the [documentation](https://ff.effector.dev). It covers integration with the most popular UI-frameworks (such React and Solid), error handling, dependent queries, advanced contracts and other great tools.
 
 ### Showcases
 

@@ -5,7 +5,7 @@ import { For, Show, Suspense } from 'solid-js';
 import { characterRoute } from '../../entities/character';
 import { currentLocationQuery, residentsQuery } from './model';
 
-function LocationPage() {
+export function LocationPage() {
   const [location] = createQueryResource(currentLocationQuery);
   const [residents] = createQueryResource(residentsQuery);
 
@@ -38,4 +38,3 @@ function LocationPage() {
     </Suspense>
   );
 }
-export { LocationPage };

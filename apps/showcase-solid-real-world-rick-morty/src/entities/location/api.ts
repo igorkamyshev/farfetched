@@ -1,10 +1,8 @@
-import { TId } from '../../shared/id';
+export function locationUrl(): string;
+export function locationUrl({ id }: { id: number }): string;
+export function locationUrl({ ids }: { ids: number[] }): string;
 
-function locationUrl(): string;
-function locationUrl({ id }: { id: TId }): string;
-function locationUrl({ ids }: { ids: TId[] }): string;
-
-function locationUrl(params?: { id?: TId; ids?: TId[] }) {
+export function locationUrl(params?: { id?: number; ids?: number[] }) {
   if (params?.ids) {
     return `https://rickandmortyapi.com/api/location/[${params.ids.join(',')}]`;
   }
@@ -15,5 +13,3 @@ function locationUrl(params?: { id?: TId; ids?: TId[] }) {
 
   return 'https://rickandmortyapi.com/api/location';
 }
-
-export { locationUrl };

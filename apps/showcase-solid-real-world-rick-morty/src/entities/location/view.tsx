@@ -1,13 +1,13 @@
 import { Link } from 'atomic-router-solid';
-import { Static } from 'runtypes';
+import { UnContract } from '@withease/contracts';
 import { Show } from 'solid-js';
 
 import { Location } from './contract';
 import { locationRoute } from './model';
 
-function LocationDetails(props: {
+export function LocationDetails(props: {
   title: string;
-  location?: Static<typeof Location>;
+  location?: UnContract<typeof Location>;
 }) {
   return (
     <Show when={props.location}>
@@ -36,5 +36,3 @@ function LocationDetails(props: {
     </Show>
   );
 }
-
-export { LocationDetails };

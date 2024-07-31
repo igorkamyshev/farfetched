@@ -1,10 +1,8 @@
-import { TId } from '../../shared/id';
+export function episodeUrl(): string;
+export function episodeUrl({ id }: { id: number }): string;
+export function episodeUrl({ ids }: { ids: number[] }): string;
 
-function episodeUrl(): string;
-function episodeUrl({ id }: { id: TId }): string;
-function episodeUrl({ ids }: { ids: TId[] }): string;
-
-function episodeUrl(params?: { id?: TId; ids?: TId[] }) {
+export function episodeUrl(params?: { id?: number; ids?: number[] }) {
   if (params?.ids) {
     return `https://rickandmortyapi.com/api/episode/[${params.ids.join(',')}]`;
   }
@@ -15,5 +13,3 @@ function episodeUrl(params?: { id?: TId; ids?: TId[] }) {
 
   return 'https://rickandmortyapi.com/api/episode';
 }
-
-export { episodeUrl };

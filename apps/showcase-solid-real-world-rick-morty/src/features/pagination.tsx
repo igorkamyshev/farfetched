@@ -4,7 +4,7 @@ import { For, Show } from 'solid-js';
 
 import { TInfo } from '../shared/info';
 
-function Pagination(props: {
+export function Pagination(props: {
   currentPage: number;
   info: TInfo;
   route: RouteInstance<{ page?: number }>;
@@ -53,5 +53,3 @@ function allInRange(from: number, to: number) {
     .fill(0)
     .map((_, i) => i + from);
 }
-
-export { Pagination };

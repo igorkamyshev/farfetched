@@ -1,10 +1,8 @@
-import { TId } from '../../shared/id';
+export function characterUrl(): string;
+export function characterUrl({ id }: { id: number }): string;
+export function characterUrl({ ids }: { ids: number[] }): string;
 
-function characterUrl(): string;
-function characterUrl({ id }: { id: TId }): string;
-function characterUrl({ ids }: { ids: TId[] }): string;
-
-function characterUrl(params?: { id?: TId; ids?: TId[] }) {
+export function characterUrl(params?: { id?: number; ids?: number[] }) {
   if (params?.ids) {
     return `https://rickandmortyapi.com/api/character/[${params.ids.join(
       ','
@@ -17,5 +15,3 @@ function characterUrl(params?: { id?: TId; ids?: TId[] }) {
 
   return 'https://rickandmortyapi.com/api/character';
 }
-
-export { characterUrl };

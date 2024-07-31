@@ -4,7 +4,6 @@ import {
   createJsonQuery,
   declareParams,
 } from '@farfetched/core';
-import { runtypeContract } from '@farfetched/runtypes';
 import { createGate } from 'effector-react';
 import { combine, sample } from 'effector';
 
@@ -14,18 +13,18 @@ import {
   Species,
   speciesUrl,
 } from '../../entities/pokemon';
-import { TId, urlToId } from '../../shared/id';
+import { urlToId } from '../../shared/id';
 
 export const PokemonPageGate = createGate<{ id: number }>();
 
 const pokemonQuery = createJsonQuery({
-  params: declareParams<{ id: TId }>(),
+  params: declareParams<{ id: number }>(),
   request: {
     method: 'GET',
     url: ({ id }) => pokemonUrl({ id }),
   },
   response: {
-    contract: runtypeContract(Pokemon),
+    contract: Pokemon,
     mapData({ result: { sprites, ...data } }) {
       return {
         ...data,
@@ -38,13 +37,13 @@ const pokemonQuery = createJsonQuery({
 concurrency(pokemonQuery, { strategy: 'TAKE_LATEST' });
 
 const speciesQuery = createJsonQuery({
-  params: declareParams<{ id: TId }>(),
+  params: declareParams<{ id: string }>(),
   request: {
     method: 'GET',
     url: ({ id }) => speciesUrl({ id }),
   },
   response: {
-    contract: runtypeContract(Species),
+    contract: Species,
   },
 });
 
@@ -59,7 +58,7 @@ export const $pokemon = combine(
 sample({
   clock: PokemonPageGate.state,
   filter: (params) => Boolean(params.id),
-  fn: ({ id }) => ({ id }) as { id: TId },
+  fn: ({ id }) => ({ id }),
   target: pokemonQuery.start,
 });
 

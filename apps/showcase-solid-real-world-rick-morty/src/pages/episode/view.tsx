@@ -5,7 +5,7 @@ import { For, Show, Suspense } from 'solid-js';
 import { characterRoute } from '../../entities/character';
 import { charactersInEpisodeQuery, curentEpisodeQuery } from './model';
 
-function EpisodePage() {
+export function EpisodePage() {
   const [episode] = createQueryResource(curentEpisodeQuery);
   const [charactersInEpisode] = createQueryResource(charactersInEpisodeQuery);
 
@@ -42,5 +42,3 @@ function EpisodePage() {
     </Suspense>
   );
 }
-
-export { EpisodePage };

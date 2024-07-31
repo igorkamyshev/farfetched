@@ -1,6 +1,5 @@
 import { concurrency, createJsonQuery, declareParams } from '@farfetched/core';
-import { runtypeContract } from '@farfetched/runtypes';
-import { Array, Number, Record } from 'runtypes';
+import { arr, num, obj } from '@withease/contracts';
 import { createGate } from 'effector-react';
 import { combine, createStore, sample } from 'effector';
 
@@ -23,9 +22,7 @@ const pokemonListQuery = createJsonQuery({
     },
   },
   response: {
-    contract: runtypeContract(
-      Record({ count: Number, results: Array(EntityLink) })
-    ),
+    contract: obj({ count: num, results: arr(EntityLink) }),
     mapData({ result }) {
       return {
         ...result,

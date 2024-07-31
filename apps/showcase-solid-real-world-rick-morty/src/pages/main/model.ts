@@ -6,11 +6,11 @@ import {
   createCharacterPageQuery,
 } from '../../entities/character';
 
-const allCharactersQuery = createCharacterPageQuery();
+export const allCharactersQuery = createCharacterPageQuery();
 
 retry(allCharactersQuery, { times: 3, delay: exponentialDelay(50) });
 
-const $currentPage = characterListRoute.$params.map(
+export const $currentPage = characterListRoute.$params.map(
   (params) => params.page ?? 1
 );
 
@@ -19,5 +19,3 @@ sample({
   source: { page: $currentPage },
   target: allCharactersQuery.start,
 });
-
-export { $currentPage, allCharactersQuery };

@@ -1,9 +1,7 @@
-import { TId } from '../../shared/id';
+export function pokemonUrl(): string;
+export function pokemonUrl({ id }: { id: number }): string;
 
-function pokemonUrl(): string;
-function pokemonUrl({ id }: { id: TId }): string;
-
-function pokemonUrl(params?: { id: TId }) {
+export function pokemonUrl(params?: { id: number }) {
   if (params?.id) {
     return `https://pokeapi.co/api/v2/pokemon/${params.id}`;
   }
@@ -11,15 +9,13 @@ function pokemonUrl(params?: { id: TId }) {
   return 'https://pokeapi.co/api/v2/pokemon';
 }
 
-function speciesUrl(): string;
-function speciesUrl({ id }: { id: TId }): string;
+export function speciesUrl(): string;
+export function speciesUrl({ id }: { id: number }): string;
 
-function speciesUrl(params?: { id: TId }) {
+export function speciesUrl(params?: { id: number }) {
   if (params?.id) {
     return `https://pokeapi.co/api/v2/pokemon-species/${params.id}`;
   }
 
   return 'https://pokeapi.co/api/v2/pokemon-species';
 }
-
-export { pokemonUrl, speciesUrl };

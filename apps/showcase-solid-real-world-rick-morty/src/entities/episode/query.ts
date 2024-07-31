@@ -1,20 +1,18 @@
 import { concurrency, createJsonQuery, declareParams } from '@farfetched/core';
-import { runtypeContract } from '@farfetched/runtypes';
-import { Array, Record } from 'runtypes';
+import { arr, obj } from '@withease/contracts';
 
-import { TId } from '../../shared/id';
 import { Info } from '../../shared/info';
 import { episodeUrl } from './api';
 import { Episode } from './contract';
 
 export function createEpisodeQuery() {
   const q = createJsonQuery({
-    params: declareParams<{ id: TId }>(),
+    params: declareParams<{ id: number }>(),
     request: {
       url: ({ id }) => episodeUrl({ id }),
       method: 'GET',
     },
-    response: { contract: runtypeContract(Episode) },
+    response: { contract: Episode },
   });
 
   concurrency(q, { strategy: 'TAKE_LATEST' });
@@ -25,7 +23,7 @@ export function createEpisodeQuery() {
 export function createEpisodeListQuery<T>({
   mapParams,
 }: {
-  mapParams: (params: T) => { ids: TId[] };
+  mapParams: (params: T) => { ids: number[] };
 }) {
   const q = createJsonQuery({
     params: declareParams<T>(),
@@ -33,7 +31,7 @@ export function createEpisodeListQuery<T>({
       url: (params) => episodeUrl(mapParams(params)),
       method: 'GET',
     },
-    response: { contract: runtypeContract(Array(Episode)) },
+    response: { contract: arr(Episode) },
   });
 
   concurrency(q, { strategy: 'TAKE_LATEST' });
@@ -50,9 +48,7 @@ export function createEpisodePageQuery() {
       method: 'GET',
     },
     response: {
-      contract: runtypeContract(
-        Record({ info: Info, results: Array(Episode) })
-      ),
+      contract: obj({ info: Info, results: arr(Episode) }),
     },
   });
 

@@ -4,11 +4,10 @@ import { sample } from 'effector';
 import { createCharacterListQuery } from '../../entities/character';
 import { createEpisodeQuery, episodeRoute } from '../../entities/episode';
 import { urlToId } from '../../shared/id';
-import { TUrl } from '../../shared/url';
 
-const curentEpisodeQuery = createEpisodeQuery();
-const charactersInEpisodeQuery = createCharacterListQuery({
-  mapParams: (urls: TUrl[]) => ({ ids: urls.map(urlToId) }),
+export const curentEpisodeQuery = createEpisodeQuery();
+export const charactersInEpisodeQuery = createCharacterListQuery({
+  mapParams: (urls: string[]) => ({ ids: urls.map(urlToId) }),
 });
 
 connectQuery({
@@ -26,5 +25,3 @@ sample({
   },
   target: curentEpisodeQuery.start,
 });
-
-export { episodeRoute, curentEpisodeQuery, charactersInEpisodeQuery };

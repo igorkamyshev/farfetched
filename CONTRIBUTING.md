@@ -36,7 +36,7 @@ While writing RFC, keep in mind that the new API (or changes in the existing API
 2. Be consistent. The new feature should be consistent with the existing API. It should not introduce new concepts or patterns that are not used in the existing API unless it is necessary.
 3. Simple solutions for simple problems, complex solutions for complex problems. Not vice versa.
 
-Read existing [ADRs](https://farfetched.pages.dev/adr/) to get an understanding of the existing API and principles.
+Read existing [ADRs](https://ff.effector.dev/adr/) to get an understanding of the existing API and principles.
 
 ## How to create a good implementation
 

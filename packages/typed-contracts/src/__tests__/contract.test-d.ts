@@ -3,7 +3,7 @@ import { string } from 'typed-contracts';
 
 import { typedContract } from '../contract';
 
-describe('runtypeContract', () => {
+describe('typedContract', () => {
   const contract = typedContract(string);
 
   const smth: unknown = null;

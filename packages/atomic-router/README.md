@@ -1,3 +1,3 @@
 # @farfetched/atomic-router
 
-Read documentation [here](https://farfetched.pages.dev/api/routers/atomic-router.html).
+Read documentation [here](https://ff.effector.dev/api/routers/atomic-router.html).

@@ -1,8 +1,6 @@
-import { Record, String } from 'runtypes';
+import { obj, str } from '@withease/contracts';
 
-import { Url } from './url';
-
-export const EntityLink = Record({
-  name: String,
-  url: Url,
+export const EntityLink = obj({
+  name: str,
+  url: str,
 });

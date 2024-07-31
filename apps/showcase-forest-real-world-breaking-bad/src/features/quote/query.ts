@@ -1,6 +1,5 @@
 import { concurrency, createJsonQuery, declareParams } from '@farfetched/core';
-import { runtypeContract } from '@farfetched/runtypes';
-import { Array } from 'runtypes';
+import { arr } from '@withease/contracts';
 
 import { Quote } from './contract';
 
@@ -13,7 +12,7 @@ export const randomQuotesQuery = createJsonQuery({
       `https://api.breakingbadquotes.xyz/v1/quotes/${amount}`,
   },
   response: {
-    contract: runtypeContract(Array(Quote)),
+    contract: arr(Quote),
   },
 });
 

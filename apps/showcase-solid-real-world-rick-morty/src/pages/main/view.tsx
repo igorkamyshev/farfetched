@@ -7,7 +7,7 @@ import { characterRoute, characterListRoute } from '../../entities/character';
 import { Pagination } from '../../features/pagination';
 import { $currentPage, allCharactersQuery } from './model';
 
-function MainPage() {
+export function MainPage() {
   const [data] = createQueryResource(allCharactersQuery);
   const { currentPage } = useUnit({
     currentPage: $currentPage,
@@ -46,5 +46,3 @@ function MainPage() {
     </>
   );
 }
-
-export { MainPage };
