@@ -73,6 +73,11 @@ export function formatUrl(
   url: string,
   queryRecord: FetchApiRecord | string
 ): URL {
+  let urlBase: string | undefined;
+  if (url.startsWith('/')) {
+    urlBase = window.location.origin;
+  }
+
   let urlString: string;
   let queryString: string;
 
@@ -89,7 +94,7 @@ export function formatUrl(
   }
 
   try {
-    return new URL(urlString);
+    return new URL(urlString, urlBase);
   } catch (e) {
     throw configurationError({
       reason: 'Invalid URL',
