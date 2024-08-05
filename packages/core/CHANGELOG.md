@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.12.5
+
+### Patch Changes
+
+- 0d4c1a6: Fix support of relative urls in `createJsonQuery` and `createJsonMutation`
+
 ## 0.12.4
 
 ## 0.12.3
