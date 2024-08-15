@@ -30,7 +30,7 @@ To achieve this, Every [_Query_](/api/primitives/query) exposes `.__.lowLevelAPI
 
 ## Cache key generation
 
-[`cache`](/api/operators/cache) does not require any manual key generation to work, it uses the [SID](/recipes/sids) of the [_Query_](/api/primitives/query) and all external [_Stores_](https://effector.dev/en/api/effector/store/) that affect [_Query_](/api/primitives/query) to create a unique identifier for every cache entry. It means, key generation is fully automatic, and you don't need to worry about it.
+[`cache`](/api/operators/cache) does not require any manual key generation to work, it uses the [SID](https://effector.dev/en/explanation/sids/) of the [_Query_](/api/primitives/query) and all external [_Stores_](https://effector.dev/en/api/effector/store/) that affect [_Query_](/api/primitives/query) to create a unique identifier for every cache entry. It means, key generation is fully automatic, and you don't need to worry about it.
 
 ### Sources extraction
 
@@ -86,7 +86,7 @@ Static nature of [Effector](/statements/effector) allows us to perform this tran
 
 ### SID
 
-Every [_Query_](/api/primitives/query) has a unique identifier — [SID](/recipes/sids). Effector provides a couple of plugins for automatic SIDs generation.
+Every [_Query_](/api/primitives/query) has a unique identifier — [SID](https://effector.dev/en/explanation/sids/). Effector provides a couple of plugins for automatic SIDs generation.
 
 <!--@include: ../shared/sids_plugins.md-->
 

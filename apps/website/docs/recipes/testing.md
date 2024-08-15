@@ -1,7 +1,7 @@
 # Unit tests
 
 ::: info
-For better testing experience, we recommend reading article about [SIDs](/recipes/sids)
+For better testing experience, we recommend reading article about [SIDs](https://effector.dev/en/explanation/sids/)
 :::
 
 Farfetched offers a couple of features to simplify writing unit tests.

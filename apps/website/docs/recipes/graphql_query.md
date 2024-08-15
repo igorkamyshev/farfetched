@@ -29,7 +29,7 @@ function createGraphQLQuery(config) {
 ```
 
 :::tip
-Do not forget to add path of the factory to a factories list in the [code transformations configuration](/recipes/sids).
+Do not forget to add path of the factory to a factories list in the [code transformations configuration](https://effector.dev/en/explanation/sids/).
 :::
 
 Now, we have to write code with mapping from config of `createGraphQLQuery` to config of `createJsonQuery`.

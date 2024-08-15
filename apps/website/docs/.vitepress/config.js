@@ -326,7 +326,6 @@ export default withMermaid(
             text: 'Deep dive',
             collapsed: false,
             items: [
-              { text: 'Unique store identifiers', link: '/recipes/sids' },
               {
                 text: 'Data flow in Remote Operation',
                 link: '/recipes/data_flow',
