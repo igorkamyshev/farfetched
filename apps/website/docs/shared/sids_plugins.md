@@ -18,40 +18,7 @@ Read more about `effector/babel-plugin` configuration in the [Effector's documen
 Note that [plugins for SWC are experimental](https://github.com/swc-project/swc/discussions/3540) and may not work as expected. We recommend to stick with Babel for now.
 :::
 
-[SWC](https://swc.rs) is a blazing fast alternative to Babel. If you are using it, you can install `effector-swc-plugin` to get the same DX as with Babel.
-
-::: code-group
-
-```sh [pnpm]
-pnpm add --save-dev effector-swc-plugin @swc/core
-```
-
-```sh [yarn]
-yarn add --dev effector-swc-plugin @swc/core
-```
-
-```sh [npm]
-npm install --dev effector-swc-plugin @swc/core
-```
-
-:::
-
-Now just modify your `.swcrc` config to enable installed plugin:
-
-```json
-{
-  "$schema": "https://json.schemastore.org/swcrc",
-  "jsc": {
-    "experimental": {
-      "plugins": ["effector-swc-plugin"]
-    }
-  }
-}
-```
-
-:::info
-Read more about `effector-swc-plugin` configuration in the [plugin documentation](https://github.com/kireevmp/effector-swc-plugin).
-:::
+If you are using [SWC](https://swc.rs), please read the official documentation of [`@effector/swc-plugin`](https://effector.dev/en/api/effector/swc-plugin/).
 
 **Vite**
 

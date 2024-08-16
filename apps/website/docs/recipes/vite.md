@@ -80,60 +80,7 @@ export default defineConfig({
 Note that [plugins for SWC are experimental](https://github.com/swc-project/swc/discussions/3540) and may not work as expected. We recommend to stick with Babel for now.
 :::
 
-1. Install required dependencies:
-
-::: code-group
-
-```sh [pnpm]
-pnpm add --save-dev unplugin-swc effector-swc-plugin @swc/core
-```
-
-```sh [yarn]
-yarn add --dev unplugin-swc effector-swc-plugin @swc/core
-```
-
-```sh [npm]
-npm install --dev unplugin-swc effector-swc-plugin @swc/core
-```
-
-:::
-
-2. Add [`unplugin-swc`](https://github.com/egoist/unplugin-swc) and [`effector-swc-plugin`](https://github.com/kireevmp/effector-swc-plugin) to your config:
-
-```ts
-// vite.config.ts
-import { defineConfig } from 'vite';
-import swc from 'unplugin-swc';
-
-export default defineConfig({
-  plugins: [
-    swc.vite({
-      jsc: {
-        experimental: {
-          plugins: ['effector-swc-plugin'],
-        },
-      },
-    }),
-  ],
-});
-```
-
-::: tip
-If you are using [`@vitejs/plugin-react-swc`](https://github.com/vitejs/vite-plugin-react-swc) in your project, you do not need to add `unplugin-swc` to your config, because it is already included in `@vitejs/plugin-react-swc`. So, just modify your config to enable `effector-swc-plugin`.
-
-```ts
-// vite.config.js
-import { defineConfig } from 'vite';
-import react from "@vitejs/plugin-react-swc";
-
-export default defineConfig({
-  plugins: [
-    react({ plugins: [["effector-swc-plugin", {}]] });
-  ],
-});
-```
-
-:::
+Due to the experimental status of SWC plugins, we do not provide a detailed guide on how to use SWC with Farfetched. However, you can find an instruction in the official documentation of [`@effector/swc-plugin`](https://effector.dev/en/api/effector/swc-plugin/).
 
 ## Disable HMR
 
