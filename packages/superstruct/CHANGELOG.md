@@ -1,5 +1,12 @@
 # @farfetched/superstruct
 
+## 0.12.6
+
+### Patch Changes
+
+- Updated dependencies [6107570]
+  - @farfetched/core@0.12.6
+
 ## 0.12.5
 
 ### Patch Changes
