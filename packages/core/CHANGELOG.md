@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.12.6
+
+### Patch Changes
+
+- 6107570: Fix types in `connectQuery` in case of source _Query_ with `initialData`
+
 ## 0.12.5
 
 ### Patch Changes
