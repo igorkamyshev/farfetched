@@ -361,11 +361,11 @@ export default withMermaid(
             items: [
               {
                 text: 'SolidJS',
-                link: 'https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/solid-real-world-rick-morty',
+                link: 'https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase-solid-real-world-rick-morty',
               },
               {
                 text: 'React and React Router',
-                link: 'https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/react-real-world-pokemons',
+                link: 'https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase-react-real-world-pokemons',
               },
               {
                 text: 'Next.js',
@@ -373,7 +373,7 @@ export default withMermaid(
               },
               {
                 text: 'Forest',
-                link: 'https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/forest-real-world-breaking-bad',
+                link: 'https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase-forest-real-world-breaking-bad',
               },
             ],
           },
