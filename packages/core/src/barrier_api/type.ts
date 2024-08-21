@@ -16,6 +16,14 @@ export type Barrier = {
    */
   deactivated: Event<void>;
   /**
+   * Event that triggers every time when all Barrier's performers are finished
+   */
+  performed: Event<void>;
+  /**
+   * Event that can be called to forcely deactivate Barrier
+   */
+  forceDeactivate: EventCallable<void>;
+  /**
    * Semi-private properties, you have to avoid using them
    */
   __: {

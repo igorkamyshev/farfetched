@@ -5,13 +5,21 @@ import {
   createStore,
   fork,
 } from 'effector';
-import { describe, test, vi, expect } from 'vitest';
+import { describe, test, vi, expect, beforeAll, afterAll } from 'vitest';
 
 import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { createQuery } from '../../query/create_query';
 import { retry } from '../retry';
 
 describe('retry with query', () => {
+  beforeAll(() => {
+    vi.useFakeTimers();
+  });
+
+  afterAll(() => {
+    vi.useRealTimers();
+  });
+
   test('starts query after failure with same args by default', async () => {
     const handler = vi.fn().mockRejectedValue(new Error('Sorry'));
     const query = createQuery({
@@ -22,7 +30,10 @@ describe('retry with query', () => {
 
     const scope = fork();
 
-    await allSettled(query.start, { scope, params: 'Some test param' });
+    allSettled(query.start, { scope, params: 'Some test param' });
+
+    await vi.advanceTimersByTimeAsync(10);
+    await allSettled(scope);
 
     expect(handler).toBeCalledTimes(2);
 
@@ -41,7 +52,10 @@ describe('retry with query', () => {
 
     const scope = fork();
 
-    await allSettled(query.start, { scope, params: 'Some test param' });
+    allSettled(query.start, { scope, params: 'Some test param' });
+
+    await vi.advanceTimersByTimeAsync(10);
+    await allSettled(scope);
 
     expect(handler).toBeCalledTimes(5);
   });
@@ -58,7 +72,10 @@ describe('retry with query', () => {
 
     const start = Date.now();
 
-    await allSettled(query.start, { scope, params: 'Some test param' });
+    allSettled(query.start, { scope, params: 'Some test param' });
+
+    await vi.advanceTimersByTimeAsync(100);
+    await allSettled(scope);
 
     const end = Date.now();
 
@@ -80,7 +97,10 @@ describe('retry with query', () => {
 
     const start = Date.now();
 
-    await allSettled(query.start, { scope, params: 'Some test param' });
+    allSettled(query.start, { scope, params: 'Some test param' });
+
+    await vi.advanceTimersByTimeAsync(100 + 200 + 300);
+    await allSettled(scope);
 
     const end = Date.now();
 
@@ -99,7 +119,10 @@ describe('retry with query', () => {
 
     const start = Date.now();
 
-    await allSettled(query.start, { scope, params: 'Some test param' });
+    allSettled(query.start, { scope, params: 'Some test param' });
+
+    await vi.advanceTimersByTimeAsync(1000);
+    await allSettled(scope);
 
     const end = Date.now();
 
@@ -124,7 +147,10 @@ describe('retry with query', () => {
 
     const scope = fork();
 
-    await allSettled(query.start, { scope, params: 'Initial' });
+    allSettled(query.start, { scope, params: 'Initial' });
+    
+    await vi.advanceTimersByTimeAsync(10);
+    await allSettled(scope);
 
     expect(handler).toBeCalledTimes(4);
     expect(handler).toHaveBeenNthCalledWith(1, 'Initial');
@@ -192,11 +218,17 @@ describe('retry with query', () => {
 
     const scope = fork();
 
-    await allSettled(query.start, { scope });
+    allSettled(query.start, { scope });
+
+    await vi.advanceTimersByTimeAsync(10);
+    await allSettled(scope);
 
     expect(handler).toBeCalledTimes(3);
 
-    await allSettled(query.start, { scope });
+    allSettled(query.start, { scope });
+
+    await vi.advanceTimersByTimeAsync(10);
+    await allSettled(scope);
 
     expect(scope.getState(query.$data)).toEqual('Success');
     expect(handler).toBeCalledTimes(6);
@@ -217,7 +249,10 @@ describe('retry with query', () => {
 
     const scope = fork();
 
-    await allSettled(query.start, { scope });
+    allSettled(query.start, { scope });
+
+    await vi.advanceTimersByTimeAsync(10);
+    await allSettled(scope);
 
     expect(handler).toBeCalledTimes(1);
   });
@@ -237,7 +272,10 @@ describe('retry with query', () => {
 
     const scope = fork();
 
-    await allSettled(query.start, { scope });
+    allSettled(query.start, { scope });
+
+    await vi.advanceTimersByTimeAsync(10);
+    await allSettled(scope);
 
     expect(handler).toBeCalledTimes(1);
   });
@@ -260,7 +298,10 @@ describe('retry with query', () => {
 
     const scope = fork();
 
-    await allSettled(query.start, { scope });
+    allSettled(query.start, { scope });
+
+    await vi.advanceTimersByTimeAsync(10);
+    await allSettled(scope);
 
     expect(handler).toBeCalledTimes(1);
     expect(filter).toBeCalledWith(
@@ -286,7 +327,10 @@ describe('retry with query', () => {
 
     const scope = fork();
 
-    await allSettled(query.start, { scope, params: 42 });
+    allSettled(query.start, { scope, params: 42 });
+
+    await vi.advanceTimersByTimeAsync(10);
+    await allSettled(scope);
 
     expect(otherwiseListener).toBeCalledTimes(1);
     expect(otherwiseListener).toBeCalledWith(
@@ -315,7 +359,10 @@ describe('retry with query', () => {
 
     const scope = fork();
 
-    await allSettled(query.start, { scope, params: 42 });
+    allSettled(query.start, { scope, params: 42 });
+
+    await vi.advanceTimersByTimeAsync(10);
+    await allSettled(scope);
 
     expect(otherwiseListener).not.toBeCalled();
   });
@@ -331,13 +378,19 @@ describe('retry with query', () => {
 
     const scope = fork();
 
-    await allSettled(query.start, { scope, params: 42 });
+    allSettled(query.start, { scope, params: 42 });
+
+    await vi.advanceTimersByTimeAsync(10);
+    await allSettled(scope);
 
     // 1 for start
     // 1 for retry
     expect(handler).toBeCalledTimes(2);
 
-    await allSettled(query.start, { scope, params: 42 });
+    allSettled(query.start, { scope, params: 42 });
+
+    await vi.advanceTimersByTimeAsync(10);
+    await allSettled(scope);
 
     // 1 for start
     // 1 for retry
@@ -355,7 +408,10 @@ describe('retry with query', () => {
 
     const { listeners } = watchRemoteOperation(query, scope);
 
-    await allSettled(query.start, { scope, params: 42 });
+    allSettled(query.start, { scope, params: 42 });
+
+    await vi.advanceTimersByTimeAsync(10);
+    await allSettled(scope);
 
     // 1 for original start
     // 1 for retry
@@ -381,7 +437,10 @@ describe('retry with query', () => {
 
     const { listeners } = watchRemoteOperation(query, scope);
 
-    await allSettled(query.start, { scope, params: { attempt: 0 } });
+    allSettled(query.start, { scope, params: { attempt: 0 } });
+
+    await vi.advanceTimersByTimeAsync(10);
+    await allSettled(scope);
 
     // 1 for retry
     expect(listeners.onFailure).toBeCalledTimes(1);

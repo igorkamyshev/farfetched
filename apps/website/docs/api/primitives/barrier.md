@@ -15,3 +15,11 @@ For user-land code, it is a read-only object that have the following properties:
 ## `deactivated`
 
 [_Event_](https://effector.dev/en/api/effector/event/) that will be triggered when the _Barrier_ is deactivated.
+
+## `performed` <Badge type="tip" text="since v0.13" />
+
+[_Event_](https://effector.dev/en/api/effector/event/) that triggers every time when all Barrier's performers are finished.
+
+## `forceDeactivate` <Badge type="tip" text="since v0.13" />
+
+[_Event_](https://effector.dev/en/api/effector/event/) that can be called to forcely deactivate Barrier.
