@@ -1,5 +1,5 @@
 import { Query } from '../../query/type';
-import { sha1 } from '../lib/hash';
+import { hashCode } from '../lib/hash';
 import { stableStringify } from '../lib/stable_stringify';
 
 export function createHumanReadbleKey({
@@ -30,7 +30,7 @@ export function createKey({
   try {
     const stableString = stableStringify({ params, sources, sid })!;
 
-    return sha1(stableString);
+    return hashCode(stableString);
   } catch (e: unknown) {
     return null;
   }

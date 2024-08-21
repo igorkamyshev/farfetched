@@ -98,10 +98,10 @@ So, the key is a hash of the following data:
 - `params` of the particular call of the [_Query_](/api/primitives/query)
 - current values of all external [_Stores_](https://effector.dev/en/api/effector/store/) that affect [_Query_](/api/primitives/query)
 
-To get short and unique key, we stringify all data, concatenate it and then hash it with [SHA-1](https://en.wikipedia.org/wiki/SHA-1).
+To get short and unique key, we stringify all data, concatenate it and then hash it with [custom hash function](https://github.com/igorkamyshev/farfetched/blob/master/packages/core/src/cache/lib/hash.ts).
 
 :::tip
-SHA-1 is a [cryptographically broken](https://blog.mozilla.org/security/2017/02/23/the-end-of-sha-1-on-the-public-web/), but we use it for key generation only, so it is safe to use it in this case.
+It is a cryptographically broken, but we use it for key generation only, so it is safe to use it in this case.
 :::
 
 ## Adapter replacement
