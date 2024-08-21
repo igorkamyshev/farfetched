@@ -6,6 +6,15 @@ outline: [2, 3]
 
 Representation of a piece of remote data.
 
+::: info Rule of thumb:
+
+- some piece of data is stored in a remote location (like a server)
+- its local representation can be be easily deleted and re-fetched from the remote location
+
+So, it is a good candidate for a _Query_.
+
+:::
+
 ## Commands
 
 This section describes the [_Event_](https://effector.dev/en/api/effector/event/) that can be used to perform actions on the _Query_. Commands should be called in application code.
