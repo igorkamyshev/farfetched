@@ -5,6 +5,7 @@ import {
   readonly,
   type DynamicallySourcedField,
   type StaticOrReactive,
+  getFactoryName,
 } from '../libs/patronus';
 import { type Mutation, MutationSymbol } from './type';
 import { type Contract } from '../contract/type';
@@ -48,7 +49,7 @@ export function createHeadlessMutation<
     MapDataSource,
     ValidationSource
   >({
-    name,
+    name: name ?? getFactoryName(),
     serialize: 'ignore',
     enabled,
     kind: MutationSymbol,

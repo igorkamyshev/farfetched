@@ -4,6 +4,7 @@ import { describe, test, expect, vi } from 'vitest';
 import { createQuery } from '../create_query';
 import { onAbort } from '../../remote_operation/on_abort';
 import { createDefer } from '../../libs/lohyphen';
+import { withFactory } from '../../libs/patronus';
 import { setTimeout } from 'timers/promises';
 
 describe('core/createQuery/handler', () => {
@@ -163,5 +164,18 @@ describe('createQuery/onAbort', () => {
 
     expect(scope.getState(q.$status)).toBe('initial');
     expect(abortListener).toHaveBeenCalledTimes(1);
+  });
+
+  test('get name from factory', () => {
+    const q = withFactory({
+      name: 'myQueryName',
+      sid: 'q',
+      fn: () =>
+        createQuery({
+          handler: async (_: void) => {},
+        }),
+    });
+
+    expect(q.__.meta.name).toBe('myQueryName');
   });
 });
