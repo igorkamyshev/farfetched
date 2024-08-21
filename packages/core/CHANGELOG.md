@@ -1,5 +1,12 @@
 # @farfetched/core
 
+## 0.12.7
+
+### Patch Changes
+
+- 88b6096: Decrease bundle size and key length in `cache` operator by replacing sha-1 by custom hashing function
+- 1d05aba: Fix name extraction in _Query_ and _Mutation_ from babel-plugin/swc-plugin
+
 ## 0.12.6
 
 ### Patch Changes

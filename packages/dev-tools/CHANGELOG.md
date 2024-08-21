@@ -1,5 +1,13 @@
 # @farfetched/dev-tools
 
+## 0.12.7
+
+### Patch Changes
+
+- Updated dependencies [88b6096]
+- Updated dependencies [1d05aba]
+  - @farfetched/core@0.12.7
+
 ## 0.12.6
 
 ### Patch Changes
