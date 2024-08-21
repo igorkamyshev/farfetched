@@ -161,6 +161,36 @@ const query = createQuery({
 query.aborted // will be called when the operation is cancelled
 ```
 
+## Mutations
+
+::: danger TL;DR
+[`concurrency`](/api/operators/concurrency) supports [_Mutations_](/api/primitives/mutation) as well. However, it is not recommended to use it with [_Mutations_](/api/primitives/mutation) because of its the nature — they are not idempotent, and it is hard to predict the outcome of the operation if it is cancelled.
+:::
+
+Let us say we have a [_Mutation_](/api/primitives/mutation) that posts a new comment to the server:
+
+```ts
+import { createJsonMutation, declareParams } from '@farfetched/core';
+
+const postCommentMutation = createJsonMutation({
+  params: declareParams<{ text: string }>(),
+  request: {
+    url: '/comments',
+    method: 'POST',
+  },
+});
+```
+
+We might want to cancel in flight comment posting if the user decides to post another comment. We can use the `concurrency` operator to achieve this:
+
+```ts
+import { concurrency } from '@farfetched/core';
+
+concurrency(postCommentMutation, { strategy: 'TAKE_LATEST' });
+```
+
+But it could be potentially dangerous because the server might process the first comment even if it was cancelled. So, to avoid such situations it is important to ensure that the server supports [idempotent operations](https://en.wikipedia.org/wiki/Idempotence), communicate with your backend-team to add support for it.
+
 ## References
 
 - [API Reference: operator `concurrency`](/api/operators/concurrency)
