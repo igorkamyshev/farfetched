@@ -37,7 +37,7 @@ import axios from 'axios';
 
 const loginMutation = createMutation({
   async handler({ login, password }) {
-    const response = await axios.post('/login', { login, password })
+    const response = await axios.post('/login', { login, password });
 
     return response.data;
   },
