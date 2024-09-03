@@ -61,14 +61,14 @@ describe('zodContract', () => {
 
   test('branded type', () => {
     const BrandedContainer = zod.object({
-      branded: zod.string().brand<'Branded'>()
-   })
-    const brandedContract = zodContract(BrandedContainer)
+      branded: zod.string().brand<'Branded'>(),
+    });
+    const brandedContract = zodContract(BrandedContainer);
 
     const smth: unknown = { branded: 'branded' };
 
     if (brandedContract.isData(smth)) {
       expectTypeOf(smth).toEqualTypeOf<zod.infer<typeof BrandedContainer>>();
     }
-  })
+  });
 });
