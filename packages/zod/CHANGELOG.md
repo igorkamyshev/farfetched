@@ -1,5 +1,12 @@
 # @farfetched/zod
 
+## 0.12.8
+
+### Patch Changes
+
+- 7769b64: Fix `zodContracts` type inference for branded types
+  - @farfetched/core@0.12.8
+
 ## 0.12.7
 
 ### Patch Changes
