@@ -2,4 +2,4 @@
 "@farfetched/zod": patch
 ---
 
-fix zodContracts output type inference
+Fix `zodContracts` type inference for branded types
