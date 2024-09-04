@@ -1,5 +1,11 @@
 # @farfetched/runtypes
 
+## 0.12.8
+
+### Patch Changes
+
+- @farfetched/core@0.12.8
+
 ## 0.12.7
 
 ### Patch Changes
