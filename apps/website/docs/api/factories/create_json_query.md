@@ -30,8 +30,15 @@ Config fields:
   - `contract`: [_Contract_](/api/primitives/contract) allows you to validate the response and decide how your application should treat it — as a success response or as a failed one.
   - `validate?`: [_Validator_](/api/primitives/validator) allows you to dynamically validate received data.
   - `mapData?`: optional mapper for the response data, available overloads:
-    - `({ result, params }) => mapped`
-    - `{ source: Store, fn: (data, { result, params }) => mapped }`
+
+    - `(res) => mapped`
+    - `{ source: Store, fn: (data, res) => mapped }`
+
+    `res` object contains:
+
+    - `result`: parsed and validated response data
+    - `params`: params which were passed to the [_Query_](/api/primitives/query)
+    - `headers`: <Badge type="tip" text="since v0.7" /> raw response headers
 
 - `concurrency?`: concurrency settings for the [_Query_](/api/primitives/query)
   ::: danger Deprecation warning
