@@ -5,6 +5,7 @@ import { unknownContract } from '../../contract/unknown_contract';
 import { createJsonQuery } from '../create_json_query';
 import { declareParams } from '../../remote_operation/params';
 import { Contract } from '../../contract/type';
+import { fetchFx } from '../../fetch/fetch';
 
 describe('remote_data/query/json.response.map_data', () => {
   // Does not matter
@@ -93,5 +94,78 @@ describe('remote_data/query/json.response.map_data', () => {
     await allSettled(query.start, { scope });
 
     expect(scope.getState(query.$data)).toBe(transformed);
+  });
+
+  describe('metaResponse', () => {
+    test('simple callback', async () => {
+      const query = createJsonQuery({
+        request,
+        response: {
+          contract: unknownContract,
+          mapData: ({ result, responseMeta }) => {
+            expect(responseMeta.status).toBe(201);
+            expect(responseMeta.headers.get('X-Test')).toBe('42');
+
+            return result;
+          },
+        },
+      });
+
+      // We need to mock it on transport level
+      // because we can't pass meta to executeFx
+      const scope = fork({
+        handlers: [
+          [
+            fetchFx,
+            () =>
+              new Response(JSON.stringify({}), {
+                status: 201,
+                headers: { 'X-Test': '42' },
+              }),
+          ],
+        ],
+      });
+
+      await allSettled(query.start, { scope });
+
+      expect(scope.getState(query.$data)).toEqual({});
+    });
+  });
+
+  test('sourced callback', async () => {
+    const query = createJsonQuery({
+      request,
+      response: {
+        contract: unknownContract,
+        mapData: {
+          source: createStore(''),
+          fn: ({ result, responseMeta }, s) => {
+            expect(responseMeta.status).toBe(201);
+            expect(responseMeta.headers.get('X-Test')).toBe('42');
+
+            return result;
+          },
+        },
+      },
+    });
+
+    // We need to mock it on transport level
+    // because we can't pass meta to executeFx
+    const scope = fork({
+      handlers: [
+        [
+          fetchFx,
+          () =>
+            new Response(JSON.stringify({}), {
+              status: 201,
+              headers: { 'X-Test': '42' },
+            }),
+        ],
+      ],
+    });
+
+    await allSettled(query.start, { scope });
+
+    expect(scope.getState(query.$data)).toEqual({});
   });
 });
