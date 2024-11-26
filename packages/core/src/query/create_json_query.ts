@@ -19,6 +19,7 @@ import { unknownContract } from '../contract/unknown_contract';
 import { type Validator } from '../validation/type';
 import { concurrency } from '../concurrency/concurrency';
 import { onAbort } from '../remote_operation/on_abort';
+import { JsonResponseMeta } from 'fetch/meta';
 
 // -- Shared
 
@@ -114,7 +115,7 @@ export function createJsonQuery<
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
-        { result: Data; params: Params },
+        { result: Data; params: Params, responseMeta: JsonResponseMeta },
         TransformedData,
         DataSource
       >;
@@ -146,7 +147,7 @@ export function createJsonQuery<
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
-        { result: Data; params: Params },
+        { result: Data; params: Params, responseMeta: JsonResponseMeta },
         TransformedData,
         DataSource
       >;
@@ -226,7 +227,7 @@ export function createJsonQuery<
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
-        { result: Data; params: void },
+        { result: Data; params: void, responseMeta: JsonResponseMeta },
         TransformedData,
         DataSource
       >;
@@ -256,7 +257,7 @@ export function createJsonQuery<
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
-        { result: Data; params: void },
+        { result: Data; params: void, responseMeta: JsonResponseMeta },
         TransformedData,
         DataSource
       >;
