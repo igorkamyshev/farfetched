@@ -14,6 +14,7 @@
   },
   "scripts": {
     "test:run": "vitest run --typecheck",
+    "test:watch": "vitest watch --typecheck",
     "build": "vite build",
     "size": "size-limit",
     "publint": "node ../../tools/scripts/publint.mjs",

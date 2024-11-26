@@ -89,7 +89,7 @@ export function createRemoteOperation<
 
   const callObjectCreated = getCallObjectEvent(executeFx);
 
-  const remoteDataSoruce: DataSource<Params> = {
+  const remoteDataSource: DataSource<Params> = {
     name: 'remote_source',
     get: createEffect<
       { params: Params },
@@ -102,7 +102,7 @@ export function createRemoteOperation<
     }),
   };
 
-  const dataSources = [remoteDataSoruce];
+  const dataSources = [remoteDataSource];
 
   const {
     retrieveDataFx,
