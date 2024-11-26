@@ -4,7 +4,6 @@ import { describe, test, expectTypeOf } from 'vitest';
 import { unknownContract } from '../../contract/unknown_contract';
 import { declareParams } from '../../remote_operation/params';
 import { createJsonQuery } from '../create_json_query';
-import { JsonResponseMeta } from '../../fetch/meta';
 
 describe('createJsonQuery', () => {
   describe('mapData', () => {
@@ -14,10 +13,10 @@ describe('createJsonQuery', () => {
         request: { url: 'http://api.salo.com', method: 'GET' as const },
         response: {
           contract: unknownContract,
-          mapData: ({ result, params, responseMeta }) => {
+          mapData: ({ result, params, headers }) => {
             expectTypeOf(result).toEqualTypeOf<unknown>();
             expectTypeOf(params).toEqualTypeOf<string>();
-            expectTypeOf(responseMeta).toEqualTypeOf<JsonResponseMeta>();
+            expectTypeOf(headers).toEqualTypeOf<Headers>();
 
             return 12;
           },
@@ -32,11 +31,11 @@ describe('createJsonQuery', () => {
           contract: unknownContract,
           mapData: {
             source: createStore(12),
-            fn: ({ result, params, responseMeta }, source) => {
+            fn: ({ result, params, headers }, source) => {
               expectTypeOf(result).toEqualTypeOf<unknown>();
               expectTypeOf(params).toEqualTypeOf<string>();
               expectTypeOf(source).toEqualTypeOf<number>();
-              expectTypeOf(responseMeta).toEqualTypeOf<JsonResponseMeta>();
+              expectTypeOf(headers).toEqualTypeOf<Headers>();
 
               return 12;
             },

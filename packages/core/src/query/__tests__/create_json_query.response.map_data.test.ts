@@ -102,9 +102,8 @@ describe('remote_data/query/json.response.map_data', () => {
         request,
         response: {
           contract: unknownContract,
-          mapData: ({ result, responseMeta }) => {
-            expect(responseMeta.status).toBe(201);
-            expect(responseMeta.headers.get('X-Test')).toBe('42');
+          mapData: ({ result, headers }) => {
+            expect(headers.get('X-Test')).toBe('42');
 
             return result;
           },
@@ -119,7 +118,6 @@ describe('remote_data/query/json.response.map_data', () => {
             fetchFx,
             () =>
               new Response(JSON.stringify({}), {
-                status: 201,
                 headers: { 'X-Test': '42' },
               }),
           ],
@@ -139,9 +137,8 @@ describe('remote_data/query/json.response.map_data', () => {
         contract: unknownContract,
         mapData: {
           source: createStore(''),
-          fn: ({ result, responseMeta }, s) => {
-            expect(responseMeta.status).toBe(201);
-            expect(responseMeta.headers.get('X-Test')).toBe('42');
+          fn: ({ result, headers }, s) => {
+            expect(headers.get('X-Test')).toBe('42');
 
             return result;
           },
@@ -157,7 +154,6 @@ describe('remote_data/query/json.response.map_data', () => {
           fetchFx,
           () =>
             new Response(JSON.stringify({}), {
-              status: 201,
               headers: { 'X-Test': '42' },
             }),
         ],
