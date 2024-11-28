@@ -148,7 +148,7 @@ describe('retry with query', () => {
     const scope = fork();
 
     allSettled(query.start, { scope, params: 'Initial' });
-    
+
     await vi.advanceTimersByTimeAsync(10);
     await allSettled(scope);
 
