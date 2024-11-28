@@ -1,4 +1,10 @@
-import { allSettled, createEvent, createWatch, fork } from 'effector';
+import {
+  allSettled,
+  createEvent,
+  createStore,
+  createWatch,
+  fork,
+} from 'effector';
 import { setTimeout } from 'timers/promises';
 import { describe, test, expect, vi } from 'vitest';
 
@@ -9,6 +15,7 @@ import { fetchFx } from '../../fetch/fetch';
 import { createJsonMutation } from '../create_json_mutation';
 import { isMutation } from '../type';
 import { concurrency } from '../../concurrency/concurrency';
+import { declareParams } from 'remote_operation/params';
 
 describe('createJsonMutation', () => {
   test('isMutation', () => {
@@ -210,5 +217,124 @@ describe('createJsonMutation', () => {
     expect(fetchMock).toHaveBeenCalledWith(
       expect.objectContaining({ credentials: 'omit' })
     );
+  });
+
+  describe('metaResponse', () => {
+    test('simple callback', async () => {
+      const mutation = createJsonMutation({
+        request: {
+          method: 'GET',
+          url: 'https://api.salo.com',
+        },
+        response: {
+          contract: unknownContract,
+          mapData: ({ result, headers }) => {
+            expect(headers?.get('X-Test')).toBe('42');
+
+            return result;
+          },
+        },
+      });
+
+      // We need to mock it on transport level
+      // because we can't pass meta to executeFx
+      const scope = fork({
+        handlers: [
+          [
+            fetchFx,
+            () =>
+              new Response(JSON.stringify({}), {
+                headers: { 'X-Test': '42' },
+              }),
+          ],
+        ],
+      });
+
+      await allSettled(mutation.start, { scope });
+
+      expect(scope.getState(mutation.$status)).toEqual('done');
+    });
+
+    test('sourced callback', async () => {
+      const mutation = createJsonMutation({
+        request: {
+          method: 'GET',
+          url: 'https://api.salo.com',
+        },
+        response: {
+          contract: unknownContract,
+          mapData: {
+            source: createStore(''),
+            fn: ({ result, headers }, s) => {
+              expect(headers?.get('X-Test')).toBe('42');
+
+              return result;
+            },
+          },
+        },
+      });
+
+      // We need to mock it on transport level
+      // because we can't pass meta to executeFx
+      const scope = fork({
+        handlers: [
+          [
+            fetchFx,
+            () =>
+              new Response(JSON.stringify({}), {
+                headers: { 'X-Test': '42' },
+              }),
+          ],
+        ],
+      });
+
+      await allSettled(mutation.start, { scope });
+
+      expect(scope.getState(mutation.$status)).toEqual('done');
+    });
+
+    test('do not mix meta between calls', async () => {
+      const mutation = createJsonMutation({
+        params: declareParams<string>(),
+        request: {
+          url: (params) => `http://api.salo.com/${params}`,
+          method: 'GET' as const,
+        },
+        response: {
+          contract: unknownContract,
+          mapData: ({ result, params, headers }) => {
+            expect(headers?.get('X-Test')).toBe(
+              `http://api.salo.com/${params}`
+            );
+
+            return result;
+          },
+        },
+      });
+
+      // We need to mock it on transport level
+      // because we can't pass meta to executeFx
+      const scope = fork({
+        handlers: [
+          [
+            fetchFx,
+            (req: Request) =>
+              setTimeout(1).then(
+                () =>
+                  new Response(JSON.stringify({}), {
+                    headers: { 'X-Test': req.url },
+                  })
+              ),
+          ],
+        ],
+      });
+
+      await Promise.all([
+        allSettled(mutation.start, { scope, params: '1' }),
+        allSettled(mutation.start, { scope, params: '2' }),
+      ]);
+
+      expect(scope.getState(mutation.$status)).toEqual('done');
+    });
   });
 });

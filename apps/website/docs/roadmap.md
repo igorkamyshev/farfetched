@@ -4,11 +4,6 @@ Since Farfetched [v0.12](/releases/0-12) we declare feature freeze and focus on 
 
 ## Future releases
 
-### v0.13
-
-- Strong deprecation of `attachOperation` according to [the ADR](/adr/attach_operation_deprecation)
-- Strong deprecation of `concurrency` field in `creteJsonQuery` and `createJsonMutation` according to [the ADR](/adr/concurrency)
-
 ### v0.14
 
 - Delete `attachOperation` according to [the ADR](/adr/attach_operation_deprecation)

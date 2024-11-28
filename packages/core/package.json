@@ -14,6 +14,7 @@
   },
   "scripts": {
     "test:run": "vitest run --typecheck",
+    "test:watch": "vitest watch --typecheck",
     "build": "vite build",
     "size": "size-limit",
     "publint": "node ../../tools/scripts/publint.mjs",
@@ -41,7 +42,7 @@
   "size-limit": [
     {
       "path": "./dist/core.js",
-      "limit": "15.52 kB"
+      "limit": "16 kB"
     }
   ]
 }

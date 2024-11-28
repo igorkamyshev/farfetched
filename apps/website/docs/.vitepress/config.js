@@ -295,7 +295,7 @@ export default withMermaid(
           {
             text: 'How to',
             items: [
-              { text: 'Server side rendering', link: '/recipes/ssr' },
+              { text: 'Server Side Rendering', link: '/recipes/ssr' },
               { text: 'Testing', link: '/recipes/testing' },
               {
                 text: 'Vite',
@@ -304,6 +304,10 @@ export default withMermaid(
               {
                 text: 'Base URL for all operations',
                 link: '/recipes/base_url',
+              },
+              {
+                text: 'Barrier Circuit Breaker',
+                link: '/recipes/barrier_circuit_breaker',
               },
             ],
           },
@@ -403,6 +407,7 @@ export default withMermaid(
           {
             text: 'Releases',
             items: [
+              { text: 'v0.13 Naiharn', link: '/releases/0-13' },
               { text: 'v0.12 Talat Noi', link: '/releases/0-12' },
               { text: 'v0.11 Namtok Ngao', link: '/releases/0-11' },
               { text: 'v0.10 Namtok Than Sadet', link: '/releases/0-10' },

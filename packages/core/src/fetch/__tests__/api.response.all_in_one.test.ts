@@ -41,8 +41,11 @@ describe('fetch/api.response.all_in_one', () => {
     });
 
     expect(watcher.listeners.onDoneData).toHaveBeenCalledWith({
-      data: [1, 2],
-      errors: null,
+      result: {
+        data: [1, 2],
+        errors: null,
+      },
+      meta: expect.anything(),
     });
   });
 
