@@ -8,7 +8,7 @@ import { Contract } from '../../contract/type';
 import { createQuery } from '../../query/create_query';
 import { inMemoryCache } from '../adapters/in_memory';
 import { cache } from '../cache';
-import { sha1 } from '../lib/hash';
+import { hashCode } from '../lib/hash';
 import { createJsonQuery } from '../../query/create_json_query';
 import { declareParams } from '../../remote_operation/params';
 import { unknownContract } from '../../contract/unknown_contract';
@@ -144,7 +144,7 @@ describe('cache', () => {
     await allSettled(adapter.set, {
       scope,
       params: {
-        key: sha1(
+        key: hashCode(
           query.$data.sid +
             /* params is undefined */ JSON.stringify(undefined) +
             /* sources is [] */ JSON.stringify([])

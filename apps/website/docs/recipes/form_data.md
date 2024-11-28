@@ -159,7 +159,7 @@ const uploadPhotoMutation = createUploadFileMutation();
 ### SSR, `cache` and DevTools support
 
 ::: tip Deep dive
-If you want to learn more about the reasons behind this requirement, please read [this article](/recipes/sids).
+If you want to learn more about the reasons behind this requirement, please read [this article](https://effector.dev/en/explanation/sids/).
 :::
 
 If you use Farfetched in SSR, want to use [DevTools](/tutorial/devtools) or [`cache`](/api/operators/cache), you need to provide a unique name for each [_Mutation_](/api/primitives/mutation). It can be done by passing the `name` option to the [`createMutation`](/api/factories/create_mutation) factory:

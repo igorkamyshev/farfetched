@@ -30,7 +30,7 @@ To achieve this, Every [_Query_](/api/primitives/query) exposes `.__.lowLevelAPI
 
 ## Cache key generation
 
-[`cache`](/api/operators/cache) does not require any manual key generation to work, it uses the [SID](/recipes/sids) of the [_Query_](/api/primitives/query) and all external [_Stores_](https://effector.dev/en/api/effector/store/) that affect [_Query_](/api/primitives/query) to create a unique identifier for every cache entry. It means, key generation is fully automatic, and you don't need to worry about it.
+[`cache`](/api/operators/cache) does not require any manual key generation to work, it uses the [SID](https://effector.dev/en/explanation/sids/) of the [_Query_](/api/primitives/query) and all external [_Stores_](https://effector.dev/en/api/effector/store/) that affect [_Query_](/api/primitives/query) to create a unique identifier for every cache entry. It means, key generation is fully automatic, and you don't need to worry about it.
 
 ### Sources extraction
 
@@ -86,7 +86,7 @@ Static nature of [Effector](/statements/effector) allows us to perform this tran
 
 ### SID
 
-Every [_Query_](/api/primitives/query) has a unique identifier — [SID](/recipes/sids). Effector provides a couple of plugins for automatic SIDs generation.
+Every [_Query_](/api/primitives/query) has a unique identifier — [SID](https://effector.dev/en/explanation/sids/). Effector provides a couple of plugins for automatic SIDs generation.
 
 <!--@include: ../shared/sids_plugins.md-->
 
@@ -98,10 +98,10 @@ So, the key is a hash of the following data:
 - `params` of the particular call of the [_Query_](/api/primitives/query)
 - current values of all external [_Stores_](https://effector.dev/en/api/effector/store/) that affect [_Query_](/api/primitives/query)
 
-To get short and unique key, we stringify all data, concatenate it and then hash it with [SHA-1](https://en.wikipedia.org/wiki/SHA-1).
+To get short and unique key, we stringify all data, concatenate it and then hash it with [custom hash function](https://github.com/igorkamyshev/farfetched/blob/master/packages/core/src/cache/lib/hash.ts).
 
 :::tip
-SHA-1 is a [cryptographically broken](https://blog.mozilla.org/security/2017/02/23/the-end-of-sha-1-on-the-public-web/), but we use it for key generation only, so it is safe to use it in this case.
+It is a cryptographically broken, but we use it for key generation only, so it is safe to use it in this case.
 :::
 
 ## Adapter replacement

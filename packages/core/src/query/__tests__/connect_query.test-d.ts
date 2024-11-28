@@ -226,4 +226,33 @@ describe('connectQuery', () => {
       target: query2,
     });
   });
+
+  test('allows query with initialData to be used as source', () => {
+    const query1 = createQuery({
+      initialData: [],
+      async handler(ids: number[]) {
+        return Promise.resolve([1]);
+      },
+    });
+
+    const query2 = createQuery({
+      initialData: [],
+      async handler(ids: number[]) {
+        return Promise.resolve([1]);
+      },
+    });
+
+    connectQuery({
+      source: query1,
+      fn: (a) => {
+        a.params.forEach;
+        a.result.forEach;
+
+        return {
+          params: [1],
+        };
+      },
+      target: query2,
+    });
+  });
 });

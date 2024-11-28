@@ -19,6 +19,7 @@ import {
   type StaticOrReactive,
   type DynamicallySourcedField,
   type SourcedField,
+  getFactoryName,
 } from '../libs/patronus';
 import { type Validator } from '../validation/type';
 import { type Query, type QueryMeta, QuerySymbol } from './type';
@@ -86,7 +87,7 @@ export function createHeadlessQuery<
     MapDataSource,
     ValidationSource
   >({
-    name,
+    name: name ?? getFactoryName(),
     kind: QuerySymbol,
     serialize: serializationForSideStore(serialize),
     enabled,

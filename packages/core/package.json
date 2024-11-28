@@ -1,6 +1,6 @@
 {
   "name": "@farfetched/core",
-  "version": "0.12.4",
+  "version": "0.12.8",
   "publishConfig": {
     "access": "public"
   },
@@ -41,7 +41,7 @@
   "size-limit": [
     {
       "path": "./dist/core.js",
-      "limit": "16.44 kB"
+      "limit": "15.52 kB"
     }
   ]
 }

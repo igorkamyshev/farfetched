@@ -10,7 +10,7 @@ Let's talk about [caching](/tutorial/caching) and [SSR](/recipes/ssr) in the sin
 
 ## Pre-requisites
 
-Do not forget that [`cache`](/api/operators/cache) operator requires setting up [SIDs](/recipes/sids) in your application. It can be done by using code transformation tools.
+Do not forget that [`cache`](/api/operators/cache) operator requires setting up [SIDs](https://effector.dev/en/explanation/sids/) in your application. It can be done by using code transformation tools.
 
 <!--@include: ../shared/sids_plugins.md-->
 

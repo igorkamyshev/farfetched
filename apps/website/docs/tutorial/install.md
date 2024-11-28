@@ -45,4 +45,4 @@ For some advanced usage, like [`cache`](/api/operators/cache) or [server-side re
 
 ### Deep dive
 
-If you are interested in how code transformations works under the hood and why they are required for some use cases, you can dive into [advanced article about SIDs](/recipes/sids).
+If you are interested in how code transformations works under the hood and why they are required for some use cases, you can dive into [advanced article about SIDs](https://effector.dev/en/explanation/sids/).

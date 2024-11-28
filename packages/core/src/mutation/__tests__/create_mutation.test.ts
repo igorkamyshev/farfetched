@@ -3,6 +3,7 @@ import { describe, test, expect, vi } from 'vitest';
 
 import { watchRemoteOperation } from '../../test_utils/watch_query';
 import { createMutation } from '../create_mutation';
+import { withFactory } from '../../libs/patronus';
 
 describe('createMutation', () => {
   test('use function as handler', async () => {
@@ -95,5 +96,18 @@ describe('createMutation', () => {
     await allSettled(mutation.start, { scope, params: 42 });
 
     expect(handler).not.toBeCalled();
+  });
+
+  test('get name from factory', () => {
+    const q = withFactory({
+      name: 'myMutationName',
+      sid: 'q',
+      fn: () =>
+        createMutation({
+          handler: async (_: void) => {},
+        }),
+    });
+
+    expect(q.__.meta.name).toBe('myMutationName');
   });
 });

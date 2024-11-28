@@ -24,12 +24,12 @@ Configuration fields:
 ### `createBarrier({ activateOn, perform })`
 
 ```ts
-import { createBarrier, isHttpError } from '@farfetched/core';
+import { createBarrier, isHttpErrorCode } from '@farfetched/core';
 import { combine } from 'effector';
 
 const authBarrier = createBarrier({
   activateOn: {
-    failure: isHttpError(401),
+    failure: isHttpErrorCode(401),
   },
   perform: [renewTokenMutationFx],
 });

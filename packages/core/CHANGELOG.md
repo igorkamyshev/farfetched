@@ -1,5 +1,26 @@
 # @farfetched/core
 
+## 0.12.8
+
+## 0.12.7
+
+### Patch Changes
+
+- 88b6096: Decrease bundle size and key length in `cache` operator by replacing sha-1 by custom hashing function
+- 1d05aba: Fix name extraction in _Query_ and _Mutation_ from babel-plugin/swc-plugin
+
+## 0.12.6
+
+### Patch Changes
+
+- 6107570: Fix types in `connectQuery` in case of source _Query_ with `initialData`
+
+## 0.12.5
+
+### Patch Changes
+
+- 0d4c1a6: Fix support of relative urls in `createJsonQuery` and `createJsonMutation`
+
 ## 0.12.4
 
 ## 0.12.3

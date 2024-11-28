@@ -36,8 +36,8 @@ import { createMutation } from '@farfetched/core';
 import axios from 'axios';
 
 const loginMutation = createMutation({
-  async handler({ login, password } {
-    const response = await axios.post('/login', { login, password })
+  async handler({ login, password }) {
+    const response = await axios.post('/login', { login, password });
 
     return response.data;
   },

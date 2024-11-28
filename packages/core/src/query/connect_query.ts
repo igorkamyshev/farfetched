@@ -19,7 +19,7 @@ export function connectQuery<Sources, Target extends Query<any, any, any, any>>(
   } & (Target extends Query<infer P, any, any, any>
     ? P extends void
       ? { fn?: undefined; filter?: () => boolean }
-      : Sources extends Query<any, any, any>
+      : Sources extends Query<any, any, any, any>
         ? {
             fn: (sources: {
               result: RemoteOperationResult<Sources>;
@@ -32,7 +32,7 @@ export function connectQuery<Sources, Target extends Query<any, any, any, any>>(
               params: RemoteOperationParams<Sources>;
             }) => boolean;
           }
-        : Sources extends Record<string, Query<any, any, any>>
+        : Sources extends Record<string, Query<any, any, any, any>>
           ? {
               fn: (sources: {
                 [index in keyof Sources]: {
