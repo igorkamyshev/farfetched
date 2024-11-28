@@ -114,7 +114,7 @@ export function createJsonMutation<
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
-        { result: Data; params: Params },
+        { result: Data; params: Params; headers?: Headers },
         TransformedData,
         DataSource
       >;
@@ -171,7 +171,7 @@ export function createJsonMutation<
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
-        { result: Data; params: void },
+        { result: Data; params: void; headers?: Headers },
         TransformedData,
         DataSource
       >;
