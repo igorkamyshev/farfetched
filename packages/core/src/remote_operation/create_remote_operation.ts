@@ -30,6 +30,7 @@ import { get } from '../libs/lohyphen';
 import { isAbortError } from '../errors/guards';
 import { getCallObjectEvent } from './with_call_object';
 import { abortAllInFlight } from '../concurrency/concurrency';
+import { hasMeta, Result, Meta } from './store_meta';
 
 export function createRemoteOperation<
   Params,
@@ -89,20 +90,28 @@ export function createRemoteOperation<
 
   const callObjectCreated = getCallObjectEvent(executeFx);
 
-  const remoteDataSoruce: DataSource<Params> = {
+  const remoteDataSource: DataSource<Params> = {
     name: 'remote_source',
     get: createEffect<
       { params: Params },
-      { result: unknown; stale: boolean } | null,
+      { result: unknown; stale: boolean; meta?: unknown } | null,
       unknown
     >(async ({ params }) => {
       const result = await executeFx(params);
+
+      if (hasMeta(result)) {
+        return {
+          result: result[Result],
+          stale: false,
+          meta: result[Meta],
+        };
+      }
 
       return { result, stale: false };
     }),
   };
 
-  const dataSources = [remoteDataSoruce];
+  const dataSources = [remoteDataSource];
 
   const {
     retrieveDataFx,
@@ -292,6 +301,7 @@ export function createRemoteOperation<
       meta: {
         stopErrorPropagation: result.stopErrorPropagation ?? false,
         stale: result.stale,
+        responseMeta: result.meta,
       },
     }),
     filter: $enabled,
@@ -350,7 +360,11 @@ export function createRemoteOperation<
       }),
     },
     fn: ({ partialMapper }, { params, result, meta }) => ({
-      result: partialMapper({ params, result }),
+      result: partialMapper({
+        params,
+        result,
+        ...(metaHasResponseMeta(meta) ? meta.responseMeta : {}),
+      }),
       params,
       meta,
     }),
@@ -513,7 +527,12 @@ function createDataSourceHandlers<Params>(dataSources: DataSource<Params>[]) {
       skipStale?: boolean;
       meta: ExecutionMeta;
     },
-    { result: unknown; stale: boolean; stopErrorPropagation?: boolean },
+    {
+      result: unknown;
+      stale: boolean;
+      stopErrorPropagation?: boolean;
+      meta?: unknown;
+    },
     { stopErrorPropagation: boolean; error: unknown }
   >({
     handler: async ({ params, skipStale }) => {
@@ -583,4 +602,10 @@ function createDataSourceHandlers<Params>(dataSources: DataSource<Params>[]) {
     notifyAboutNewValidDataFx,
     notifyAboutDataInvalidationFx,
   };
+}
+
+function metaHasResponseMeta(
+  meta: any
+): meta is { responseMeta: Record<string, unknown> } {
+  return 'responseMeta' in meta && typeof meta.responseMeta === 'object';
 }

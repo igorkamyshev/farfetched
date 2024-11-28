@@ -13,9 +13,10 @@ describe('createJsonQuery', () => {
         request: { url: 'http://api.salo.com', method: 'GET' as const },
         response: {
           contract: unknownContract,
-          mapData: ({ result, params }) => {
+          mapData: ({ result, params, headers }) => {
             expectTypeOf(result).toEqualTypeOf<unknown>();
             expectTypeOf(params).toEqualTypeOf<string>();
+            expectTypeOf(headers).toEqualTypeOf<Headers | undefined>();
 
             return 12;
           },
@@ -23,17 +24,19 @@ describe('createJsonQuery', () => {
       });
     });
 
-    test('stora and callbacl', () => {
+    test('store and callback', () => {
       createJsonQuery({
         request: { url: 'http://api.salo.com', method: 'GET' as const },
         response: {
           contract: unknownContract,
           mapData: {
             source: createStore(12),
-            fn: ({ result, params }, source) => {
+            fn: ({ result, params, headers }, source) => {
               expectTypeOf(result).toEqualTypeOf<unknown>();
               expectTypeOf(params).toEqualTypeOf<string>();
               expectTypeOf(source).toEqualTypeOf<number>();
+              expectTypeOf(headers).toEqualTypeOf<Headers | undefined>();
+
               return 12;
             },
           },

@@ -60,6 +60,7 @@ export {
   type RemoteOperationParams,
 } from './remote_operation/type';
 export { onAbort } from './remote_operation/on_abort';
+export { Meta, Result } from './remote_operation/store_meta';
 
 // Validation public API
 export { type ValidationResult, type Validator } from './validation/type';
