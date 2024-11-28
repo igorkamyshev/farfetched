@@ -38,7 +38,7 @@ Config fields:
 
     - `result`: parsed and validated response data
     - `params`: params which were passed to the [_Query_](/api/primitives/query)
-    - `headers`: <Badge type="tip" text="since v0.7" /> raw response headers
+    - `headers`: <Badge type="tip" text="since v0.13" /> raw response headers
 
 - `concurrency?`: concurrency settings for the [_Query_](/api/primitives/query)
   ::: danger Deprecation warning
