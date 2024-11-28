@@ -1,5 +1,16 @@
 # @farfetched/core
 
+## 0.13.0
+
+### Minor Changes
+
+- 9345f18: Add _Event_ `.forceDeactivate` to _Barrier_
+- 121de27: Runtime deprecation warnings about `concurrency` field in `createJsonQuery` and `createJsonMutation`
+- 00cb181: Pass response original `headers` to `mapData` callback in `createJsonQuery`
+- 46c3402: Runtime deprecation warning in `attachOperation`
+- 9345f18: Add _Event_ `.performed` to _Barrier_
+- 00cb181: Pass response original `headers` to `mapData` callback in `createJsonMutation`
+
 ## 0.12.8
 
 ## 0.12.7
