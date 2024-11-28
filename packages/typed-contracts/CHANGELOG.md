@@ -1,5 +1,17 @@
 # @farfetched/typed-contracts
 
+## 0.13.0
+
+### Patch Changes
+
+- Updated dependencies [9345f18]
+- Updated dependencies [121de27]
+- Updated dependencies [00cb181]
+- Updated dependencies [46c3402]
+- Updated dependencies [9345f18]
+- Updated dependencies [00cb181]
+  - @farfetched/core@0.13.0
+
 ## 0.12.8
 
 ### Patch Changes
