@@ -270,6 +270,10 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
 
   /* TODO: in future releases we will remove this code and make concurrency a separate function */
   if (config.concurrency) {
+    console.error(
+      'concurrency field in createJsonMutation is deprecated, please use concurrency operator instead: https://farfetched.pages.dev/adr/concurrency'
+    );
+
     op.__.meta.flags.concurrencyFieldUsed = true;
   }
 
