@@ -16,7 +16,7 @@ describe('createJsonQuery', () => {
           mapData: ({ result, params, headers }) => {
             expectTypeOf(result).toEqualTypeOf<unknown>();
             expectTypeOf(params).toEqualTypeOf<string>();
-            expectTypeOf(headers).toEqualTypeOf<Headers>();
+            expectTypeOf(headers).toEqualTypeOf<Headers | undefined>();
 
             return 12;
           },
@@ -35,7 +35,7 @@ describe('createJsonQuery', () => {
               expectTypeOf(result).toEqualTypeOf<unknown>();
               expectTypeOf(params).toEqualTypeOf<string>();
               expectTypeOf(source).toEqualTypeOf<number>();
-              expectTypeOf(headers).toEqualTypeOf<Headers>();
+              expectTypeOf(headers).toEqualTypeOf<Headers | undefined>();
 
               return 12;
             },

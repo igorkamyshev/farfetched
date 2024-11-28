@@ -19,6 +19,7 @@ import { unknownContract } from '../contract/unknown_contract';
 import { type Validator } from '../validation/type';
 import { concurrency } from '../concurrency/concurrency';
 import { onAbort } from '../remote_operation/on_abort';
+import { Result, Meta } from '../remote_operation/store_meta';
 
 // -- Shared
 
@@ -114,7 +115,7 @@ export function createJsonQuery<
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
-        { result: Data; params: Params; headers: Headers },
+        { result: Data; params: Params; headers?: Headers },
         TransformedData,
         DataSource
       >;
@@ -146,7 +147,7 @@ export function createJsonQuery<
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
-        { result: Data; params: Params; headers: Headers },
+        { result: Data; params: Params; headers?: Headers },
         TransformedData,
         DataSource
       >;
@@ -226,7 +227,7 @@ export function createJsonQuery<
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
-        { result: Data; params: void; headers: Headers },
+        { result: Data; params: void; headers?: Headers },
         TransformedData,
         DataSource
       >;
@@ -256,7 +257,7 @@ export function createJsonQuery<
     response: {
       contract: Contract<unknown, Data>;
       mapData: DynamicallySourcedField<
-        { result: Data; params: void; headers: Headers },
+        { result: Data; params: void; headers?: Headers },
         TransformedData,
         DataSource
       >;
@@ -350,10 +351,13 @@ export function createJsonQuery(config: any) {
     paramsAreMeaningless: true,
   });
 
-  const executeFx = createEffect((c: any) => {
+  const executeFx = createEffect(async (c: any) => {
     const abortController = new AbortController();
     onAbort(() => abortController.abort());
-    return requestFx({ ...c, abortController });
+
+    const { result, meta } = await requestFx({ ...c, abortController });
+
+    return { [Result]: result, [Meta]: meta };
   });
 
   headlessQuery.__.executeFx.use(

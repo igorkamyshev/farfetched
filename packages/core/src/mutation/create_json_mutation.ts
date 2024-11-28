@@ -19,6 +19,7 @@ import {
 import { type Mutation } from './type';
 import { concurrency } from '../concurrency/concurrency';
 import { onAbort } from '../remote_operation/on_abort';
+import { Meta, Result } from '../remote_operation/store_meta';
 
 // -- Shared --
 
@@ -222,10 +223,13 @@ export function createJsonMutation(config: any): Mutation<any, any, any> {
     name: config.name,
   });
 
-  const executeFx = createEffect((c: any) => {
+  const executeFx = createEffect(async (c: any) => {
     const abortController = new AbortController();
     onAbort(() => abortController.abort());
-    return requestFx({ ...c, abortController });
+
+    const { result, meta } = await requestFx({ ...c, abortController });
+
+    return { [Result]: result, [Meta]: meta };
   });
 
   headlessMutation.__.executeFx.use(

@@ -123,7 +123,7 @@ export function createApiRequest<
     DynamicRequestConfig<B> & {
       method: HttpMethod;
     },
-    ApiRequestResult,
+    { result: ApiRequestResult; meta: { headers: Headers } },
     ApiRequestError
   >(
     async ({
@@ -180,7 +180,7 @@ export function createApiRequest<
         }
       }
 
-      return prepared;
+      return { result: prepared, meta: { headers: response.headers } };
     }
   );
 

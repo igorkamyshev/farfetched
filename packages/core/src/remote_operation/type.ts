@@ -157,7 +157,7 @@ export type DataSource<Params> = {
   name: string;
   get: Effect<
     { params: Params },
-    { result: unknown; stale: boolean } | null,
+    { result: unknown; stale: boolean; meta?: unknown } | null,
     unknown
   >;
   set?: Effect<{ params: Params; result: unknown }, void, unknown>;

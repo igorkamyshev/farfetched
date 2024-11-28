@@ -52,7 +52,10 @@ describe('fetch/json.response.data', () => {
       params: { body: {} },
     });
 
-    expect(watcher.listeners.onDoneData).toBeCalledWith({ test: 'value' });
+    expect(watcher.listeners.onDoneData).toBeCalledWith({
+      result: { test: 'value' },
+      meta: expect.anything(),
+    });
   });
 
   test('empty body as null', async () => {
@@ -74,7 +77,10 @@ describe('fetch/json.response.data', () => {
     });
 
     expect(watcher.listeners.onFailData).not.toBeCalled();
-    expect(watcher.listeners.onDoneData).toBeCalledWith(null);
+    expect(watcher.listeners.onDoneData).toBeCalledWith({
+      result: null,
+      meta: expect.anything(),
+    });
   });
 
   test('empty body without header as null', async () => {
@@ -92,6 +98,9 @@ describe('fetch/json.response.data', () => {
     });
 
     expect(watcher.listeners.onFailData).not.toBeCalled();
-    expect(watcher.listeners.onDoneData).toBeCalledWith(null);
+    expect(watcher.listeners.onDoneData).toBeCalledWith({
+      result: null,
+      meta: expect.anything(),
+    });
   });
 });
