@@ -31,7 +31,7 @@ import {
 } from '../remote_operation/type';
 import { type RetryMeta } from './type';
 
-type FailInfo<Q extends RemoteOperation<any, any, any, any>> = {
+export type FailInfo<Q extends RemoteOperation<any, any, any, any>> = {
   params: RemoteOperationParams<Q>;
   error: RemoteOperationError<Q>;
   meta: ExecutionMeta;
@@ -51,7 +51,7 @@ type RetryConfig<
     RemoteOperationParams<Q>,
     MapParamsSource
   >;
-  otherwise?: EventCallable<FailInfo<Q>>;
+  otherwise?: EventCallable<FailInfo<Q> | void>;
   supressIntermediateErrors?: boolean;
 };
 
