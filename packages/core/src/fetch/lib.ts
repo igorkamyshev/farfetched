@@ -93,8 +93,14 @@ export function formatUrl(
     urlString = `${url}?${queryString}`;
   }
 
+  /**
+   * Workararound for Safari 14.0
+   * @see https://github.com/igorkamyshev/farfetched/issues/528
+   */
+  const urlArgs = [urlString, urlBase].filter(Boolean) as [string, string];
+
   try {
-    return new URL(urlString, urlBase);
+    return new URL(...urlArgs);
   } catch (e) {
     throw configurationError({
       reason: 'Invalid URL',
