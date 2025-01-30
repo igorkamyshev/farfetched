@@ -96,6 +96,27 @@ export function formatUrl(
   try {
     return new URL(urlString, urlBase);
   } catch (e) {
+    if (!urlBase) {
+      try {
+        /**
+         * Fallback branch for Safari 14.0
+         * @see https://github.com/igorkamyshev/farfetched/issues/528
+         *
+         * If url is full path, but we're in Safari 14.0, we will have a TypeError for new URL(urlString, undefined)
+         *
+         * So we have to manually split url into base and path parts first
+         */
+        const { base, path } = splitUrl(urlString);
+
+        return new URL(path, base);
+      } catch (_e) {
+        throw configurationError({
+          reason: 'Invalid URL',
+          validationErrors: [`"${urlString}" is not valid URL`],
+        });
+      }
+    }
+
     throw configurationError({
       reason: 'Invalid URL',
       validationErrors: [`"${urlString}" is not valid URL`],
@@ -128,4 +149,20 @@ function clearValue(
   }
 
   return value ?? null;
+}
+
+/**
+ *  @see https://github.com/igorkamyshev/farfetched/issues/528
+ */
+export function splitUrl(urlString: string): { base: string; path: string } {
+  const urlPattern = /^(https?:\/\/[^\/]+)(\/.*)?$/;
+  const match = urlString.match(urlPattern);
+
+  if (!match) {
+    throw new Error(`Invalid URL: ${urlString}`);
+  }
+
+  const base = match[1];
+  const path = match[2] || '';
+  return { base, path };
 }
