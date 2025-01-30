@@ -1,5 +1,12 @@
 # @farfetched/io-ts
 
+## 0.13.1
+
+### Patch Changes
+
+- Updated dependencies [7fc6e28]
+  - @farfetched/core@0.13.1
+
 ## 0.13.0
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.13.1
+
+### Patch Changes
+
+- 7fc6e28: Add workaround for Safari 14.0 bugged implementation of URL constructor
+
 ## 0.13.0
 
 ### Minor Changes
