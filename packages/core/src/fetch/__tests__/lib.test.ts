@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 
-import { mergeRecords, splitUrl } from '../lib';
+import { mergeRecords } from '../lib';
 
 describe('mergeRecords', () => {
   test('empty to empty object', () => {
@@ -39,23 +39,5 @@ describe('mergeRecords', () => {
     expect(result).toEqual({
       'Content-Type': 'application/json',
     });
-  });
-});
-
-describe('Safari 14.0 bug', () => {
-  test('splitUrl', () => {
-    const url = 'https://example.com/api?foo=bar';
-
-    const split = splitUrl(url);
-
-    expect(split).toEqual({
-      base: 'https://example.com',
-      path: '/api?foo=bar',
-    });
-
-    const url1 = new URL(url);
-    const url2 = new URL(split.path, split.base);
-
-    expect(url1.href).toBe(url2.href);
   });
 });
