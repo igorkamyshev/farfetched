@@ -8,7 +8,7 @@ Config fields:
 
 - `params?`: parameters for the [_Query_](/api/primitives/query)
 
-  - You can declare [_Query_](/api/primitives/query) parameters by call `declareParams` function.
+  - You can declare [_Query_](/api/primitives/query) parameters by call [`declareParams`](/tutorial/built_in_query_factories#parameters-declaration) function.
   - If not passed, [_Query_](/api/primitives/query) will be created without parameters.
 
 - `initialData?`: initial data of the [_Query_](/api/primitives/query), will be passed to the `$data` store as an initial value

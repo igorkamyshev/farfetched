@@ -8,7 +8,7 @@ Config fields:
 
 - `params?`: parameters for the [_Mutation_](/api/primitives/mutation)
 
-  - You can declare [_Mutation_](/api/primitives/mutation) parameters by call `declareParams` function.
+  - You can declare [_Mutation_](/api/primitives/mutation) parameters by call [`declareParams`](/tutorial/built_in_mutation_factories#parameters-declaration) function.
   - If not passed, [_Mutation_](/api/primitives/mutation) will be created without parameters.
 
 - `request`: declarative rules to formulate request to the API.

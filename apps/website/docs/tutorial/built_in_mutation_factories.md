@@ -33,7 +33,7 @@ const loginMutation = createJsonMutation({
 
 ### Parameters declaration
 
-Parameters declaration is the same as in `createJsonQuery`, it is literally the same function.
+Parameters declaration is the same as in [`createJsonQuery`](/tutorial/built_in_query_factories#parameters-declaration), it is literally the same function.
 
 ### Request
 
