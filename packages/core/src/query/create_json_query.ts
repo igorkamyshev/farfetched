@@ -399,7 +399,7 @@ export function createJsonQuery(config: any) {
   /* TODO: in future releases we will remove this code and make concurrency a separate function */
   if (config.concurrency) {
     console.error(
-      'concurrency field in createJsonQuery is deprecated, please use concurrency operator instead: https://farfetched.pages.dev/adr/concurrency'
+      'concurrency field in createJsonQuery is deprecated, please use concurrency operator instead: https://ff.effector.dev/adr/concurrency.html'
     );
 
     op.__.meta.flags.concurrencyFieldUsed = true;
@@ -408,7 +408,7 @@ export function createJsonQuery(config: any) {
   setTimeout(() => {
     if (!op.__.meta.flags.concurrencyOperatorUsed) {
       console.error(
-        'Please apply concurrency operator to the query, read more: https://farfetched.pages.dev/adr/concurrency'
+        'Please apply concurrency operator to the query, read more: https://ff.effector.dev/adr/concurrency.html'
       );
 
       concurrency(op, {
