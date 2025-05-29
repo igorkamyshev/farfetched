@@ -1,5 +1,11 @@
 # @farfetched/core
 
+## 0.13.2
+
+### Patch Changes
+
+- 8084897: Fix incorrect links in console warnings
+
 ## 0.13.1
 
 ### Patch Changes
