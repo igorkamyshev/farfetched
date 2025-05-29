@@ -15,4 +15,4 @@ What you really interested in - is yours application events. Like: specific page
 
 E.g. if you want to fetch some data, when user enters some page, you should not place such request to `<PageComponent />` lifecycle hooks - instead it is much better to use your router events, since router is the actual trigger of page transitions and the owner of relevant state.
 
-> We suggest using [Atomic Router](https://atomic-router.github.io). It is simple and powerful router that is framework-agnostic. You can find an example of integration it with Farfetched in [this real-world showcase](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/solid-real-world-rick-morty/).
+> We suggest using [Atomic Router](https://atomic-router.github.io). It is simple and powerful router that is framework-agnostic. You can find an example of integration it with Farfetched in [this real-world showcase](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase-solid-real-world-rick-morty/).

@@ -15,7 +15,7 @@
 Browsers have a built-in cache for HTTP requests — [HTTP cache](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching). It is a great tool to improve performance of your application that allows you to avoid unnecessary requests to the server and reduce the load on it.
 
 ::: info Example
-[Real-world showcase with SolidJS around JSON API](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/solid-real-world-rick-morty/) in the Farfetched repository is using HTTP cache. Try to walk through the application and observe — after the initial load it is blazing fast because of proper HTTP cache headers in API.
+[Real-world showcase with SolidJS around JSON API](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase-solid-real-world-rick-morty/) in the Farfetched repository is using HTTP cache. Try to walk through the application and observe — after the initial load it is blazing fast because of proper HTTP cache headers in API.
 :::
 
 Browser cache is build on top of HTTP headers, so this mechanism cannot be controlled directly by frontend applications.

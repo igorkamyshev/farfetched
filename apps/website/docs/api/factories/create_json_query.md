@@ -57,9 +57,9 @@ Config fields:
 
 ## Showcases
 
-- [Real-world showcase with SolidJS around JSON API](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/solid-real-world-rick-morty/)
-- [Real-world showcase with React around JSON API](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/react-real-world-pokemons/)
-- [Real-world showcase with Forest around JSON API](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase/forest-real-world-breaking-bad/)
+- [Real-world showcase with SolidJS around JSON API](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase-solid-real-world-rick-morty/)
+- [Real-world showcase with React around JSON API](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase-react-real-world-pokemons/)
+- [Real-world showcase with Forest around JSON API](https://github.com/igorkamyshev/farfetched/tree/master/apps/showcase-forest-real-world-breaking-bad/)
 
 ## Live demo
 
