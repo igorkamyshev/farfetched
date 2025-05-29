@@ -107,7 +107,7 @@ export function attachOperation<
   }
 ) {
   console.error(
-    'attachOperation is deprecated since 0.12, please read the migration guide: https://farfetched.pages.dev/adr/attach_operation_deprecation.html'
+    'attachOperation is deprecated since 0.12, please read the migration guide: https://ff.effector.dev/adr/attach_operation_deprecation.html'
   );
 
   const { source, mapParams } = config ?? {};
